@@ -1,0 +1,58 @@
+{
+  "nav": {
+    "home": "Home",
+    "projects": "Projects",
+    "about": "About",
+    "contact": "Contact"
+  },
+  "hero": {
+    "greeting": "Hi, I'm",
+    "description": "Full Stack Developer",
+    "intro": "I build modern, performant web applications with a focus on user experience and clean code. Passionate about React, TypeScript, and creating delightful interfaces.",
+    "cta": "View projects",
+    "contact": "Contact"
+  },
+  "projects": {
+    "title": "Projects",
+    "subtitle": "Some of my recent work",
+    "allSubtitle": "A collection of my work, experiments, and side projects",
+    "viewAll": "View all projects",
+    "viewProject": "View project",
+    "viewCode": "View code",
+    "technologies": "Technologies",
+    "featured": "Featured",
+    "noProjects": "No projects yet. Check back soon!",
+    "pageDescription": "Browse my portfolio of web development projects, from personal experiments to production applications."
+  },
+  "work": {
+    "title": "Experience",
+    "subtitle": "My professional journey",
+    "current": "Current",
+    "present": "Present"
+  },
+  "about": {
+    "title": "About",
+    "subtitle": "Get to know more about my background and expertise",
+    "intro": "Hi! I'm Sebastian, a software developer passionate about creating beautiful, functional web applications. I specialize in frontend development with a strong focus on user experience and modern web technologies.",
+    "experience": "With several years of experience in the field, I've worked on a variety of projects ranging from small business websites to large-scale applications. I love solving complex problems and turning ideas into reality through code.",
+    "personal": "When I'm not coding, you can find me exploring new technologies, contributing to open source, or sharing my knowledge through blog posts and tutorials.",
+    "contactTitle": "Contact",
+    "findMeTitle": "Find Me",
+    "skillsTitle": "Skills & Technologies"
+  },
+  "footer": {
+    "quickLinks": "Quick Links",
+    "connect": "Connect",
+    "allRights": "All rights reserved",
+    "builtWith": "Built with",
+    "rights": "All rights reserved",
+    "madeWith": "Made with",
+    "in": "in"
+  },
+  "common": {
+    "readMore": "Read more",
+    "learnMore": "Learn more",
+    "viewMore": "View more",
+    "backToHome": "Back to home"
+  }
+}

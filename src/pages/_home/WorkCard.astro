@@ -1,0 +1,73 @@
+---
+import Card from '@/components/ui/Card.astro'
+import Badge from '@/components/ui/Badge.astro'
+import type { WorkExperience } from '@/types'
+import { formatDate } from '@/lib/utils'
+
+interface Props {
+  work: WorkExperience
+}
+
+const { work } = Astro.props
+const { company, position, description, startDate, endDate, current, location, skills, logo, url } = work.data
+
+const formatDateRange = () => {
+  const start = formatDate(startDate).split(' ').slice(0, 2).join(' ')
+  const end = current ? 'Present' : endDate ? formatDate(endDate).split(' ').slice(0, 2).join(' ') : ''
+  return `${start} - ${end}`
+}
+---
+
+<Card class="relative">
+  <div class="flex gap-4">
+    {logo && (
+      <div class="flex-shrink-0">
+        <div class="w-12 h-12 rounded-lg bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center overflow-hidden">
+          <img src={logo} alt={company} class="w-full h-full object-cover" />
+        </div>
+      </div>
+    )}
+
+    <div class="flex-1">
+      <div class="flex items-start justify-between mb-2">
+        <div>
+          <h3 class="text-lg font-bold">
+            {url ? (
+              <a href={url} target="_blank" rel="noopener noreferrer" class="hover:text-primary-600 dark:hover:text-primary-400 no-underline">
+                {company}
+              </a>
+            ) : (
+              company
+            )}
+          </h3>
+          <p class="text-sm font-medium text-foreground">
+            {position}
+          </p>
+        </div>
+        {current && (
+          <Badge variant="success">Current</Badge>
+        )}
+      </div>
+
+      <div class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 text-sm text-muted-foreground mb-3">
+        <span>{formatDateRange()}</span>
+        {location && (
+          <>
+            <span class="hidden sm:inline">•</span>
+            <span>{location}</span>
+          </>
+        )}
+      </div>
+
+      <p class="text-sm text-muted-foreground mb-4">
+        {description}
+      </p>
+
+      <div class="flex flex-wrap gap-2">
+        {skills.map((skill) => (
+          <Badge variant="default">{skill}</Badge>
+        ))}
+      </div>
+    </div>
+  </div>
+</Card>

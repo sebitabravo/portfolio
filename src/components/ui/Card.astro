@@ -1,0 +1,27 @@
+---
+import { cn } from '@/lib/utils'
+
+export interface Props {
+  class?: string
+  hover?: boolean
+}
+
+const { class: className, hover = true } = Astro.props
+
+const classes = cn(
+  'rounded-xl border bg-card text-card-foreground shadow',
+  hover && 'transition-all duration-300 hover:shadow-lg hover:-translate-y-1',
+  className
+)
+---
+
+<div class={classes}>
+  <slot />
+</div>
+
+<style>
+  /* Card hover effect */
+  div:hover {
+    border-color: hsl(var(--primary) / 0.2);
+  }
+</style>

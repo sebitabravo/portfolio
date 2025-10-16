@@ -1,0 +1,390 @@
+---
+/**
+ * HomePage Component
+ *
+ * Single source of truth for the home page content.
+ * Works with i18n automatically - translations come from the locale context.
+ *
+ * Usage:
+ * - src/pages/index.astro (es)
+ * - src/pages/en/index.astro (en)
+ */
+
+import BaseLayout from '@/layouts/BaseLayout.astro'
+import Section from '@/shared/components/Section.astro'
+import SectionTitle from '@/shared/components/SectionTitle.astro'
+import ProjectCard from '@/shared/components/ProjectCard.astro'
+import WorkCard from '@/pages/_home/WorkCard.astro'
+import FadeIn from '@/pages/_home/FadeIn.astro'
+import SlideUp from '@/pages/_home/SlideUp.astro'
+import AvailableBadge from '@/pages/_home/AvailableBadge.astro'
+
+// New UI Components
+import Button from '@/components/ui/Button.astro'
+import Avatar from '@/components/ui/Avatar.astro'
+import Badge from '@/components/ui/Badge.astro'
+import Separator from '@/components/ui/Separator.astro'
+import Card from '@/components/ui/Card.astro'
+
+import { getCollection } from 'astro:content'
+import { sortByDate } from '@/lib/utils'
+import { siteConfig } from '@/lib/config'
+import { getLocaleFromUrl, getTranslations, type Locale } from '@/lib/i18n'
+import { filterByLocale } from '@/lib/i18n/utils'
+
+// Get current locale from URL
+const locale = getLocaleFromUrl(Astro.url) as Locale
+const t = getTranslations(locale)
+
+// Get all projects filtered by locale
+const allProjects = await getCollection('projects')
+const projects = sortByDate(filterByLocale(allProjects, locale))
+
+// Get all work experience filtered by locale
+const allWork = await getCollection('work')
+const workExperience = sortByDate(filterByLocale(allWork, locale))
+
+// Skills data with categories and icons
+const skillsData = [
+  {
+    category: 'Frontend Development',
+    description: 'Building responsive and interactive user interfaces',
+    skills: [
+      { name: 'React', years: '3+', icon: '⚛️' },
+      { name: 'TypeScript', years: '2+', icon: '📘' },
+      { name: 'Next.js', years: '2+', icon: '▲' },
+      { name: 'Tailwind CSS', years: '2+', icon: '🎨' },
+      { name: 'Astro', years: '1+', icon: '🚀' },
+    ]
+  },
+  {
+    category: 'Backend Development',
+    description: 'Creating robust and scalable server-side applications',
+    skills: [
+      { name: 'Node.js', years: '3+', icon: '🟢' },
+      { name: 'Express', years: '2+', icon: '🚂' },
+      { name: 'PostgreSQL', years: '2+', icon: '🐘' },
+      { name: 'REST APIs', years: '3+', icon: '🔌' },
+    ]
+  },
+  {
+    category: 'Tools & Workflow',
+    description: 'Professional development and collaboration tools',
+    skills: [
+      { name: 'Git', years: '3+', icon: '🌿' },
+      { name: 'Docker', years: '1+', icon: '🐳' },
+      { name: 'Figma', years: '2+', icon: '🎨' },
+      { name: 'VS Code', years: '3+', icon: '💻' },
+    ]
+  },
+]
+
+// Social links for hero
+const socialLinks = [
+  {
+    name: 'GitHub',
+    url: siteConfig.social.github,
+    icon: 'github',
+    ariaLabel: 'View my GitHub profile'
+  },
+  {
+    name: 'LinkedIn',
+    url: siteConfig.social.linkedin,
+    icon: 'linkedin',
+    ariaLabel: 'Connect with me on LinkedIn'
+  },
+  {
+    name: 'Email',
+    url: `mailto:${siteConfig.email}`,
+    icon: 'email',
+    ariaLabel: 'Send me an email'
+  },
+]
+---
+
+<BaseLayout>
+  <!-- Hero Section -->
+  <Section id="home" class="pt-20 sm:pt-24 md:pt-28 pb-16 md:pb-20 bg-background">
+    <div class="max-w-4xl mx-auto text-center">
+      <FadeIn class="flex flex-col items-center gap-6 sm:gap-8">
+        <!-- Avatar -->
+        <div class="relative">
+          <div class="absolute inset-0 bg-gradient-to-br from-primary-500/20 to-secondary-500/20 rounded-full blur-2xl"></div>
+          <Avatar
+            src="https://api.dicebear.com/7.x/avataaars/svg?seed=Sebastian"
+            alt="Sebastian Bravo"
+            fallback="Sebastian Bravo"
+            size="2xl"
+            class="relative border-4 border-background shadow-2xl"
+          />
+        </div>
+
+        <!-- Hero Content -->
+        <SlideUp delay={200} class="space-y-6 sm:space-y-8">
+          <!-- Name and Title -->
+          <div class="space-y-4">
+            <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-tight">
+              {t.hero.greeting} <span class="text-gradient">{siteConfig.name}</span>
+            </h1>
+            <p class="text-xl md:text-2xl text-muted-foreground font-medium">
+              {t.hero.description}
+            </p>
+            <p class="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto px-4 sm:px-0 leading-relaxed">
+              {t.hero.intro}
+            </p>
+          </div>
+
+          <!-- Available Badge - ORIGINAL COMPONENT -->
+          <div class="flex justify-center pt-2">
+            <AvailableBadge href={siteConfig.social.linkedin || '#'} />
+          </div>
+
+          <!-- Social Links -->
+          <div class="flex justify-center gap-4 pt-2">
+            {socialLinks.filter(link => link.url).map((link) => (
+              <a
+                href={link.url}
+                target={link.name !== 'Email' ? '_blank' : undefined}
+                rel={link.name !== 'Email' ? 'noopener noreferrer' : undefined}
+                class="p-3 bg-card border border-border rounded-xl hover:bg-accent hover:border-primary/50 transition-all hover:scale-105 focus-visible:ring-2 focus-visible:ring-ring no-underline"
+                aria-label={link.ariaLabel}
+              >
+                {link.icon === 'github' && (
+                  <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                  </svg>
+                )}
+                {link.icon === 'linkedin' && (
+                  <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                  </svg>
+                )}
+                {link.icon === 'email' && (
+                  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                  </svg>
+                )}
+              </a>
+            ))}
+          </div>
+
+          <!-- CTAs -->
+          <div class="flex flex-col sm:flex-row gap-4 justify-center pt-4 w-full sm:w-auto px-4 sm:px-0">
+            <Button variant="default" size="lg" href="#projects">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+              </svg>
+              {t.hero.cta}
+            </Button>
+            <Button variant="outline" size="lg" href={`mailto:${siteConfig.email}`}>
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+              </svg>
+              Get in Touch
+            </Button>
+          </div>
+        </SlideUp>
+      </FadeIn>
+    </div>
+  </Section>
+
+  <!-- Section Separator -->
+  <div class="container-custom py-8">
+    <Separator decorative={true} class="max-w-xs mx-auto" />
+  </div>
+
+  <!-- Work Experience Section -->
+  {workExperience.length > 0 && (
+    <Section id="experience" class="bg-background">
+      <SectionTitle
+        title={t.work.title}
+        subtitle={t.work.subtitle}
+      />
+
+      <div class="max-w-4xl mx-auto space-y-6 mt-8">
+        {workExperience.map((work, index) => (
+          <FadeIn delay={index * 100}>
+            <WorkCard work={work} />
+          </FadeIn>
+        ))}
+      </div>
+    </Section>
+  )}
+
+  <!-- Section Separator -->
+  <div class="container-custom py-8">
+    <Separator decorative={true} class="max-w-xs mx-auto" />
+  </div>
+
+  <!-- Projects Section -->
+  {projects.length > 0 && (
+    <Section id="projects" class="bg-gradient-to-b from-muted/30 to-background">
+      <SectionTitle
+        title={t.projects.title}
+        subtitle={t.projects.subtitle}
+      />
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-8 max-w-6xl mx-auto">
+        {projects.slice(0, 3).map((project, index) => (
+          <FadeIn delay={index * 150}>
+            <ProjectCard project={project} />
+          </FadeIn>
+        ))}
+      </div>
+
+      {projects.length > 3 && (
+        <div class="flex justify-center mt-12">
+          <Button variant="outline" size="lg" href="/projects">
+            View All Projects
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+            </svg>
+          </Button>
+        </div>
+      )}
+    </Section>
+  )}
+
+  <!-- Section Separator -->
+  <div class="container-custom py-8">
+    <Separator decorative={true} class="max-w-xs mx-auto" />
+  </div>
+
+  <!-- About & Skills Section -->
+  <Section id="about" class="bg-background">
+    <div class="max-w-4xl mx-auto">
+      <SectionTitle
+        title={t.nav.about}
+        subtitle={t.about.subtitle}
+        align="left"
+      />
+
+      <!-- About Content -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12 mb-16">
+        <div class="lg:col-span-2 space-y-6 text-base sm:text-lg text-foreground/80">
+          <p class="leading-relaxed">
+            {t.about.intro}
+          </p>
+
+          <p class="leading-relaxed">
+            {t.about.experience}
+          </p>
+
+          <p class="leading-relaxed">
+            {t.about.personal}
+          </p>
+        </div>
+
+        <!-- Contact Sidebar -->
+        <div class="space-y-6">
+          <Card class="p-6">
+            <h3 class="text-xl font-bold mb-4">{t.about.contactTitle}</h3>
+            <div class="space-y-4">
+              <div>
+                <p class="text-sm text-muted-foreground mb-1">Email</p>
+                <a
+                  href={`mailto:${siteConfig.email}`}
+                  class="text-foreground hover:text-primary transition-colors font-medium"
+                >
+                  {siteConfig.email}
+                </a>
+              </div>
+
+              <Separator />
+
+              <div>
+                <p class="text-sm text-muted-foreground mb-3">{t.about.findMeTitle}</p>
+                <div class="flex gap-3">
+                  {socialLinks.filter(link => link.url).map((link) => (
+                    <a
+                      href={link.url}
+                      target={link.name !== 'Email' ? '_blank' : undefined}
+                      rel={link.name !== 'Email' ? 'noopener noreferrer' : undefined}
+                      class="text-muted-foreground hover:text-primary transition-colors no-underline"
+                      aria-label={link.ariaLabel}
+                    >
+                      {link.icon === 'github' && (
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                        </svg>
+                      )}
+                      {link.icon === 'linkedin' && (
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                        </svg>
+                      )}
+                      {link.icon === 'email' && (
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                        </svg>
+                      )}
+                    </a>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </Card>
+        </div>
+      </div>
+
+      <!-- Skills Section -->
+      <div>
+        <h3 class="text-2xl sm:text-3xl font-bold mb-8">
+          <span class="text-gradient">{t.about.skillsTitle}</span>
+        </h3>
+
+        <div class="space-y-8">
+          {skillsData.map((category, categoryIndex) => (
+            <FadeIn delay={categoryIndex * 100}>
+              <Card class="overflow-hidden">
+                <div class="p-6 bg-gradient-to-br from-primary/5 to-secondary/5 border-b border-border">
+                  <h4 class="text-lg font-bold mb-1">{category.category}</h4>
+                  <p class="text-sm text-muted-foreground">{category.description}</p>
+                </div>
+                <div class="p-6">
+                  <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                    {category.skills.map((skill) => (
+                      <div class="group relative">
+                        <div class="flex flex-col items-center justify-center p-4 bg-card border border-border rounded-lg hover:border-primary hover:shadow-md transition-all duration-300 hover:-translate-y-1 cursor-default">
+                          <span class="text-3xl mb-2 group-hover:scale-110 transition-transform">
+                            {skill.icon}
+                          </span>
+                          <span class="font-medium text-sm text-center">
+                            {skill.name}
+                          </span>
+                          <Badge variant="secondary" size="sm" class="mt-2">
+                            {skill.years}
+                          </Badge>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </Card>
+            </FadeIn>
+          ))}
+        </div>
+      </div>
+    </div>
+  </Section>
+
+</BaseLayout>
+
+<style>
+  /* Ensure smooth scrolling with offset for fixed header */
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 80px;
+  }
+
+  /* Reduced motion for accessibility */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+</style>

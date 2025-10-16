@@ -1,0 +1,44 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro'
+import Section from '@/shared/components/Section.astro'
+import SectionTitle from '@/shared/components/SectionTitle.astro'
+import ProjectCard from '@/shared/components/ProjectCard.astro'
+import { getCollection } from 'astro:content'
+import { sortByDate } from '@/lib/utils'
+import { getTranslations, type Locale, getLocaleFromUrl } from '@/lib/i18n'
+import { filterByLocale } from '@/lib/i18n/utils'
+
+// Get current locale
+const locale = getLocaleFromUrl(Astro.url)
+const t = getTranslations(locale)
+
+// Get all projects filtered by locale
+const allProjects = await getCollection('projects')
+const projects = sortByDate(filterByLocale(allProjects, locale))
+---
+
+<BaseLayout
+  title={`${t.projects.title} - Sebastian Bravo`}
+  description={t.projects.pageDescription}
+>
+  <Section class="pt-32 pb-16">
+    <SectionTitle
+      title={t.projects.title}
+      subtitle={t.projects.allSubtitle}
+    />
+
+    {projects.length > 0 ? (
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+        {projects.map((project) => (
+          <ProjectCard project={project} />
+        ))}
+      </div>
+    ) : (
+      <div class="text-center py-12">
+        <p class="text-xl text-muted-foreground">
+          {t.projects.noProjects}
+        </p>
+      </div>
+    )}
+  </Section>
+</BaseLayout>

@@ -2,7 +2,7 @@
 import { cn } from '@/lib/utils'
 
 export interface Props {
-  variant?: 'default' | 'secondary' | 'destructive' | 'outline' | 'success'
+  variant?: 'default' | 'secondary' | 'destructive' | 'outline' | 'success' | 'tech'
   size?: 'sm' | 'md' | 'lg'
   pulse?: boolean
   class?: string
@@ -20,7 +20,9 @@ const variantClasses = {
   secondary: 'border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80',
   destructive: 'border-transparent bg-destructive text-destructive-foreground shadow hover:bg-destructive/80',
   outline: 'text-foreground',
-          success: 'border-transparent bg-green-600 text-white shadow hover:bg-green-700',}
+  success: 'border-transparent bg-green-600 text-white shadow hover:bg-green-700',
+  tech: '', // Custom classes will be provided via className for tech badges
+}
 
 const sizeClasses = {
   sm: 'px-2 py-0.5 text-xs',
@@ -28,7 +30,7 @@ const sizeClasses = {
   lg: 'px-3 py-1 text-sm',
 }
 
-const baseClasses = 'inline-flex items-center gap-1.5 rounded-md border font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2'
+const baseClasses = 'inline-flex items-center gap-1.5 rounded-md border font-semibold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2'
 
 const classes = cn(
   baseClasses,

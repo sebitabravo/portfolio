@@ -1,11 +1,13 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
-
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+/**
+ * Home Page - Spanish (Default)
+ *
+ * This is just a wrapper that renders the HomePage component.
+ * The component automatically detects the locale from the URL.
+ *
+ * All content and logic is in: src/shared/components/HomePage.astro
+ */
+import HomePage from '@/shared/components/HomePage.astro'
 ---
 
-<Layout>
-	<Welcome />
-</Layout>
+<HomePage />

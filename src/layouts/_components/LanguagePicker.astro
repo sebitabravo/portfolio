@@ -1,0 +1,75 @@
+---
+import { locales, type Locale, getLocaleFromUrl } from '@/lib/i18n'
+
+const currentLocale = getLocaleFromUrl(Astro.url)
+
+// Generate alternate URLs for each locale using manual approach
+// Note: getAbsoluteLocaleUrlList() requires dynamic routes, so we handle it manually
+const alternateUrls = locales.map(locale => {
+  const pathname = Astro.url.pathname
+  let href = ''
+
+  if (locale === 'es') {
+    // Remove /en prefix if exists
+    href = pathname.replace(/^\/en(\/|$)/, '/')
+  } else {
+    // Add /en prefix if not default locale
+    if (pathname.startsWith('/en')) {
+      href = pathname
+    } else {
+      href = `/en${pathname}`
+    }
+  }
+
+  return {
+    locale,
+    href,
+    label: locale.toUpperCase(),
+    active: locale === currentLocale
+  }
+})
+---
+
+<div class="language-picker">
+  {alternateUrls.map(({ locale, href, label, active }) => (
+    <a 
+      href={href}
+      class:list={['lang-link', { active }]}
+      aria-current={active ? 'page' : undefined}
+      aria-label={`Switch to ${locale === 'es' ? 'Spanish' : 'English'}`}
+    >
+      {label}
+    </a>
+  ))}
+</div>
+
+<style>
+  .language-picker {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+  }
+  
+  .lang-link {
+    padding: 0.25rem 0.5rem;
+    text-decoration: none;
+    color: hsl(var(--foreground));
+    font-size: 0.875rem;
+    font-weight: 500;
+    border-radius: 0.375rem;
+    transition: all 0.2s ease;
+    opacity: 0.8;
+  }
+
+  .lang-link:hover {
+    opacity: 1;
+    background-color: hsl(var(--accent));
+  }
+
+  .lang-link.active {
+    color: hsl(var(--primary));
+    font-weight: 700;
+    background-color: hsl(var(--primary) / 0.1);
+    opacity: 1;
+  }
+</style>

@@ -1,0 +1,58 @@
+{
+  "nav": {
+    "home": "Inicio",
+    "projects": "Proyectos",
+    "about": "Sobre mí",
+    "contact": "Contacto"
+  },
+  "hero": {
+    "greeting": "Hola, soy",
+    "description": "Desarrollador Full Stack",
+    "intro": "Construyo aplicaciones web modernas y eficientes con enfoque en la experiencia de usuario y código limpio. Apasionado por React, TypeScript y la creación de interfaces atractivas.",
+    "cta": "Ver proyectos",
+    "contact": "Contactar"
+  },
+  "projects": {
+    "title": "Proyectos",
+    "subtitle": "Algunos de mis trabajos recientes",
+    "allSubtitle": "Una colección de mis trabajos, experimentos y proyectos personales",
+    "viewAll": "Ver todos los proyectos",
+    "viewProject": "Ver proyecto",
+    "viewCode": "Ver código",
+    "technologies": "Tecnologías",
+    "featured": "Destacado",
+    "noProjects": "Aún no hay proyectos. ¡Vuelve pronto!",
+    "pageDescription": "Explora mi portafolio de proyectos de desarrollo web, desde experimentos personales hasta aplicaciones en producción."
+  },
+  "work": {
+    "title": "Experiencia",
+    "subtitle": "Mi trayectoria profesional",
+    "current": "Actual",
+    "present": "Presente"
+  },
+  "about": {
+    "title": "Sobre mí",
+    "subtitle": "Conoce más sobre mi experiencia y conocimientos",
+    "intro": "¡Hola! Soy Sebastian, un desarrollador de software apasionado por crear aplicaciones web hermosas y funcionales. Me especializo en desarrollo frontend con un fuerte enfoque en la experiencia del usuario y tecnologías web modernas.",
+    "experience": "Con varios años de experiencia en el campo, he trabajado en una variedad de proyectos que van desde sitios web para pequeñas empresas hasta aplicaciones a gran escala. Me encanta resolver problemas complejos y convertir ideas en realidad a través del código.",
+    "personal": "Cuando no estoy programando, puedes encontrarme explorando nuevas tecnologías, contribuyendo al código abierto o compartiendo mi conocimiento a través de publicaciones de blog y tutoriales.",
+    "contactTitle": "Contacto",
+    "findMeTitle": "Encuéntrame",
+    "skillsTitle": "Habilidades y Tecnologías"
+  },
+  "footer": {
+    "quickLinks": "Enlaces Rápidos",
+    "connect": "Conecta",
+    "allRights": "Todos los derechos reservados",
+    "builtWith": "Hecho con",
+    "rights": "Todos los derechos reservados",
+    "madeWith": "Hecho con",
+    "in": "en"
+  },
+  "common": {
+    "readMore": "Leer más",
+    "learnMore": "Aprender más",
+    "viewMore": "Ver más",
+    "backToHome": "Volver al inicio"
+  }
+}

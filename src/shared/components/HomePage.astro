@@ -25,6 +25,7 @@ import Avatar from '@/components/ui/Avatar.astro'
 import Badge from '@/components/ui/Badge.astro'
 import Separator from '@/components/ui/Separator.astro'
 import Card from '@/components/ui/Card.astro'
+import TechCarousel from '@/components/TechCarousel.astro'
 
 import { getCollection } from 'astro:content'
 import { sortByDate } from '@/lib/utils'
@@ -43,41 +44,6 @@ const projects = sortByDate(filterByLocale(allProjects, locale))
 // Get all work experience filtered by locale
 const allWork = await getCollection('work')
 const workExperience = sortByDate(filterByLocale(allWork, locale))
-
-// Skills data with categories and icons
-const skillsData = [
-  {
-    category: 'Frontend Development',
-    description: 'Building responsive and interactive user interfaces',
-    skills: [
-      { name: 'React', years: '3+', icon: '⚛️' },
-      { name: 'TypeScript', years: '2+', icon: '📘' },
-      { name: 'Next.js', years: '2+', icon: '▲' },
-      { name: 'Tailwind CSS', years: '2+', icon: '🎨' },
-      { name: 'Astro', years: '1+', icon: '🚀' },
-    ]
-  },
-  {
-    category: 'Backend Development',
-    description: 'Creating robust and scalable server-side applications',
-    skills: [
-      { name: 'Node.js', years: '3+', icon: '🟢' },
-      { name: 'Express', years: '2+', icon: '🚂' },
-      { name: 'PostgreSQL', years: '2+', icon: '🐘' },
-      { name: 'REST APIs', years: '3+', icon: '🔌' },
-    ]
-  },
-  {
-    category: 'Tools & Workflow',
-    description: 'Professional development and collaboration tools',
-    skills: [
-      { name: 'Git', years: '3+', icon: '🌿' },
-      { name: 'Docker', years: '1+', icon: '🐳' },
-      { name: 'Figma', years: '2+', icon: '🎨' },
-      { name: 'VS Code', years: '3+', icon: '💻' },
-    ]
-  },
-]
 
 // Social links for hero
 const socialLinks = [
@@ -329,41 +295,11 @@ const socialLinks = [
 
       <!-- Skills Section -->
       <div>
-        <h3 class="text-2xl sm:text-3xl font-bold mb-8">
+        <h3 class="text-2xl sm:text-3xl font-bold mb-8 text-center">
           <span class="text-gradient">{t.about.skillsTitle}</span>
         </h3>
 
-        <div class="space-y-8">
-          {skillsData.map((category, categoryIndex) => (
-            <FadeIn delay={categoryIndex * 100}>
-              <Card class="overflow-hidden">
-                <div class="p-6 bg-gradient-to-br from-primary/5 to-secondary/5 border-b border-border">
-                  <h4 class="text-lg font-bold mb-1">{category.category}</h4>
-                  <p class="text-sm text-muted-foreground">{category.description}</p>
-                </div>
-                <div class="p-6">
-                  <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-                    {category.skills.map((skill) => (
-                      <div class="group relative">
-                        <div class="flex flex-col items-center justify-center p-4 bg-card border border-border rounded-lg hover:border-primary hover:shadow-md transition-all duration-300 hover:-translate-y-1 cursor-default">
-                          <span class="text-3xl mb-2 group-hover:scale-110 transition-transform">
-                            {skill.icon}
-                          </span>
-                          <span class="font-medium text-sm text-center">
-                            {skill.name}
-                          </span>
-                          <Badge variant="secondary" size="sm" class="mt-2">
-                            {skill.years}
-                          </Badge>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </Card>
-            </FadeIn>
-          ))}
-        </div>
+        <TechCarousel />
       </div>
     </div>
   </Section>

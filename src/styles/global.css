@@ -160,21 +160,27 @@ h4 {
 
 /* Links */
 a {
-  color: rgb(2 132 199);
-  transition-property: color;
+  color: rgb(1 100 150);
+  transition-property: color, text-decoration-color;
   transition-duration: 200ms;
+  text-decoration: underline;
+  text-decoration-color: rgb(1 100 150 / 0.3);
+  text-underline-offset: 3px;
 }
 
 a:hover {
-  color: rgb(3 105 161);
+  color: rgb(1 80 120);
+  text-decoration-color: rgb(1 80 120);
 }
 
 :is(.dark a) {
-  color: rgb(56 189 248);
+  color: rgb(100 200 255);
+  text-decoration-color: rgb(100 200 255 / 0.4);
 }
 
 :is(.dark a:hover) {
-  color: rgb(125 211 252);
+  color: rgb(150 220 255);
+  text-decoration-color: rgb(150 220 255);
 }
 
 /* Code blocks */

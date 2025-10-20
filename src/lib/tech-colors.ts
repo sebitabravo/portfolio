@@ -143,10 +143,10 @@ export const techColors: Record<string, TechStyle> = {
     hoverBg: 'hover:bg-[#47A248]/20 dark:hover:bg-[#47A248]/30'
   },
   'PostgreSQL': {
-    bg: 'bg-[#4169E1]/10 dark:bg-[#4169E1]/20',
-    text: 'text-[#4169E1] dark:text-[#4169E1]',
-    border: 'border-[#4169E1]/30',
-    hoverBg: 'hover:bg-[#4169E1]/20 dark:hover:bg-[#4169E1]/30'
+    bg: 'bg-[#336DB8]/10 dark:bg-[#4169E1]/20',
+    text: 'text-[#2D5A9E] dark:text-[#5C8BFF]',
+    border: 'border-[#336DB8]/30',
+    hoverBg: 'hover:bg-[#336DB8]/20 dark:hover:bg-[#4169E1]/30'
   },
   'MySQL': {
     bg: 'bg-[#4479A1]/10 dark:bg-[#4479A1]/20',
@@ -175,10 +175,10 @@ export const techColors: Record<string, TechStyle> = {
     hoverBg: 'hover:bg-[#E34F26]/20 dark:hover:bg-[#E34F26]/30'
   },
   'Bootstrap': {
-    bg: 'bg-[#7952B3]/10 dark:bg-[#7952B3]/20',
-    text: 'text-[#7952B3] dark:text-[#7952B3]',
-    border: 'border-[#7952B3]/30',
-    hoverBg: 'hover:bg-[#7952B3]/20 dark:hover:bg-[#7952B3]/30'
+    bg: 'bg-[#6B3FA0]/10 dark:bg-[#7952B3]/20',
+    text: 'text-[#5A3486] dark:text-[#9370DB]',
+    border: 'border-[#6B3FA0]/30',
+    hoverBg: 'hover:bg-[#6B3FA0]/20 dark:hover:bg-[#7952B3]/30'
   },
   'Django': {
     bg: 'bg-[#092E20]/10 dark:bg-[#44B78B]/20',

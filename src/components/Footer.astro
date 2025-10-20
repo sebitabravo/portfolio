@@ -17,19 +17,19 @@ const currentYear = new Date().getFullYear()
   <div
     class="rounded-lg w-full max-w-screen-xl mx-auto md:flex md:items-center md:justify-between py-4"
   >
-    <span class="text-sm sm:text-center text-foreground/80">
+    <span class="text-sm sm:text-center text-foreground/90">
       &copy; {currentYear}
-      <a href="/" class="hover:underline">{personalInfo.name}</a>.
+      <a href="/">{personalInfo.name}</a>.
       {t.footer.madeWith} ❤️ {t.footer.in} Astro
     </span>
     <ul
-      class="flex flex-wrap items-center mt-3 text-sm font-medium text-foreground/80 sm:mt-0"
+      class="flex flex-wrap items-center mt-3 text-sm font-medium text-foreground/90 sm:mt-0"
     >
       <li>
-        <a href="/#sobre-mi" class="hover:underline me-4 md:me-6">{t.nav.about}</a>
+        <a href="/#sobre-mi" class="me-4 md:me-6">{t.nav.about}</a>
       </li>
       <li>
-        <a id="contacto" href={`mailto:${personalInfo.email}`} class="hover:underline">
+        <a id="contacto" href={`mailto:${personalInfo.email}`}>
           {t.nav.contact}
         </a>
       </li>

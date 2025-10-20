@@ -1,0 +1,51 @@
+---
+// About Me Component
+import { getAboutMe, type Locale } from "@/lib/data"
+import TechCarousel from "@/components/TechCarousel.astro"
+
+interface Props {
+  locale?: Locale
+}
+
+const { locale = 'es' } = Astro.props
+const aboutMe = getAboutMe(locale)
+---
+
+<div class="space-y-12">
+  <!-- About Me Content -->
+  <article class="flex flex-col items-center justify-center gap-8 text-foreground/80 md:flex-row">
+    <div class="[&>p]:mb-4 [&>p>strong]:text-yellow-500 dark:[&>p>strong]:text-yellow-100 [&>p>strong]:font-normal [&>p>strong]:font-mono text-pretty order-2 md:order-1">
+      <p>{aboutMe.intro}</p>
+      <p>{aboutMe.experience}</p>
+      <p>{aboutMe.personal}</p>
+
+      <div class="mt-8">
+        <h3 class="text-xl font-semibold mb-4 text-foreground">{aboutMe.interestsTitle}</h3>
+        <ul class="list-disc list-inside space-y-2">
+          {aboutMe.interests.map((interest) => (
+            <li>{interest}</li>
+          ))}
+        </ul>
+      </div>
+    </div>
+
+    <img
+      width="200"
+      height="200"
+      src="/perfil.jpeg"
+      alt="Sebastian Bravo"
+      class="order-1 object-cover w-64 h-full p-1 md:order-2 rotate-3 lg:p-2 lg:w-64 aspect-square rounded-2xl bg-black/20 dark:bg-yellow-500/5 ring-1 ring-black/70 dark:ring-white/20"
+      style="object-position: 50% 50%"
+    />
+  </article>
+
+  <!-- Tech Stack Carousel -->
+  <div class="mt-12">
+    <h3 class="text-2xl font-semibold mb-6 text-center text-foreground">
+      <span class="bg-gradient-to-r from-yellow-500 to-yellow-600 dark:from-yellow-400 dark:to-yellow-500 bg-clip-text text-transparent">
+        {aboutMe.techStackTitle}
+      </span>
+    </h3>
+    <TechCarousel />
+  </div>
+</div>

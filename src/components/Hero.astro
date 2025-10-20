@@ -1,0 +1,65 @@
+---
+// Hero Component - Main hero section
+import { personalInfo, social } from "@/lib/data"
+import { getTranslations, type Locale } from "@/lib/i18n"
+import AvailableBadge from "./AvailableBadge.astro"
+import SocialPill from "./SocialPill.astro"
+import GitHubIcon from "./icons/GitHub.astro"
+import LinkedInIcon from "./icons/LinkedIn.astro"
+import MailIcon from "./icons/Mail.astro"
+import DownloadIcon from "./icons/Download.astro"
+
+interface Props {
+  locale?: Locale
+}
+
+const { locale = 'es' } = Astro.props
+const t = getTranslations(locale)
+---
+
+<div class="max-w-xl">
+  <div class="flex gap-4 mb-4">
+    <img
+      class="rounded-full shadow-lg size-16"
+      src={personalInfo.avatar}
+      alt={personalInfo.name}
+    />
+    {personalInfo.available && (
+      <a
+        href={social.linkedin}
+        target="_blank"
+        rel="noopener"
+        class="flex items-center transition md:justify-center md:hover:scale-105"
+      >
+        <AvailableBadge>{locale === 'en' ? 'Available for work' : 'Disponible para trabajar'}</AvailableBadge>
+      </a>
+    )}
+  </div>
+
+  <h1 class="text-4xl font-bold tracking-tight sm:text-5xl text-foreground">
+    {t.hero.greeting} {personalInfo.name}
+  </h1>
+
+  <p class="mt-6 text-xl text-foreground/80 [&>strong]:text-yellow-500 dark:[&>strong]:text-yellow-200 [&>strong]:font-semibold">
+    {t.hero.intro}
+  </p>
+
+  <nav class="flex flex-wrap gap-4 mt-8">
+    <SocialPill href={`mailto:${personalInfo.email}`}>
+      <MailIcon class="size-4" />
+      {t.hero.contact}
+    </SocialPill>
+    <SocialPill href={social.linkedin}>
+      <LinkedInIcon class="size-4" />
+      LinkedIn
+    </SocialPill>
+    <SocialPill href={social.github}>
+      <GitHubIcon class="size-4" />
+      GitHub
+    </SocialPill>
+    <SocialPill href="/cv.pdf" download>
+      <DownloadIcon class="size-4" />
+      {locale === 'en' ? 'Download CV' : 'Descargar CV'}
+    </SocialPill>
+  </nav>
+</div>

@@ -1,13 +1,87 @@
 ---
 /**
- * Home Page - Spanish (Default)
+ * Portfolio de Sebastian Bravo - Desarrollador Full Stack
  *
- * This is just a wrapper that renders the HomePage component.
- * The component automatically detects the locale from the URL.
- *
- * All content and logic is in: src/shared/components/HomePage.astro
+ * Página principal en español con arquitectura simple y mantenible.
+ * Inspirado en el portfolio de midudev con datos centralizados.
  */
-import HomePage from '@/shared/components/HomePage.astro'
+import Layout from "@/layouts/Layout.astro"
+import { personalInfo } from "@/lib/data"
+
+// Components
+import Hero from "@/components/Hero.astro"
+import Experience from "@/components/Experience.astro"
+import Projects from "@/components/Projects.astro"
+import Education from "@/components/Education.astro"
+import Certifications from "@/components/Certifications.astro"
+import AboutMe from "@/components/AboutMe.astro"
+import SectionContainer from "@/components/SectionContainer.astro"
+import TitleSection from "@/components/TitleSection.astro"
+
+// Icons
+import BriefcaseIcon from "@/components/icons/Briefcase.astro"
+import CodeIcon from "@/components/icons/Code.astro"
+import GraduationCapIcon from "@/components/icons/GraduationCap.astro"
+import CertificateIcon from "@/components/icons/Certificate.astro"
+import ProfileCheckIcon from "@/components/icons/ProfileCheck.astro"
 ---
 
-<HomePage />
+<Layout
+  title={`Portfolio - ${personalInfo.name} | ${personalInfo.title}`}
+  description={personalInfo.description}
+  locale="es"
+>
+  <main class="px-4">
+    <!-- Hero Section -->
+    <SectionContainer class="py-16 md:py-36">
+      <Hero locale="es" />
+    </SectionContainer>
+
+    <div class="space-y-24">
+      <!-- Experience Section -->
+      <SectionContainer id="experiencia">
+        <TitleSection>
+          <BriefcaseIcon class="size-8" />
+          Experiencia Laboral
+        </TitleSection>
+        <Experience locale="es" />
+      </SectionContainer>
+
+      <!-- Projects Section -->
+      <SectionContainer id="proyectos">
+        <TitleSection>
+          <CodeIcon class="size-7" />
+          Proyectos
+        </TitleSection>
+        <Projects locale="es" />
+      </SectionContainer>
+
+      <!-- Education Section -->
+      <SectionContainer id="educacion">
+        <TitleSection>
+          <GraduationCapIcon class="size-8" />
+          Educación
+        </TitleSection>
+        <Education locale="es" />
+      </SectionContainer>
+
+      <!-- Certifications Section -->
+      <SectionContainer id="certificaciones">
+        <TitleSection>
+          <CertificateIcon class="size-8" />
+          Certificaciones
+        </TitleSection>
+        <Certifications locale="es" />
+      </SectionContainer>
+
+      <!-- About Me Section -->
+      <SectionContainer id="sobre-mi">
+        <TitleSection>
+          <ProfileCheckIcon class="size-8" />
+          Sobre mí
+        </TitleSection>
+        <AboutMe locale="es" />
+      </SectionContainer>
+    </div>
+  </main>
+</Layout>

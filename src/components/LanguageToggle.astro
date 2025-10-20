@@ -1,0 +1,149 @@
+---
+// LanguageToggle Component - Toggle between ES and EN
+import LanguagesIcon from "./icons/Languages.astro"
+---
+
+<div class="relative inline-block" id="language-toggle-wrapper">
+  <button
+    id="language-toggle"
+    type="button"
+    class="inline-flex items-center justify-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-foreground/80 hover:bg-muted/50 transition-colors"
+    aria-label="Toggle language"
+  >
+    <LanguagesIcon class="size-4" />
+    <span id="current-language">ES</span>
+  </button>
+
+  <div
+    id="language-menu"
+    class="hidden absolute left-1/2 -translate-x-1/2 mt-2 w-32 rounded-md shadow-lg bg-card ring-1 ring-black ring-opacity-5 z-[9999]"
+    role="menu"
+  >
+    <div class="py-1">
+      <button
+        type="button"
+        data-lang="es"
+        class="language-option flex items-center justify-between w-full px-4 py-2 text-sm text-foreground/80 hover:bg-muted/50 text-left"
+      >
+        <span>Español</span>
+        <span class="check-es hidden">✓</span>
+      </button>
+      <button
+        type="button"
+        data-lang="en"
+        class="language-option flex items-center justify-between w-full px-4 py-2 text-sm text-foreground/80 hover:bg-muted/50 text-left"
+      >
+        <span>English</span>
+        <span class="check-en hidden">✓</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  function initLanguageToggle() {
+    const LANG_KEY = 'language-preference'
+    
+    const toggle = document.getElementById('language-toggle')
+    const menu = document.getElementById('language-menu')
+    const wrapper = document.getElementById('language-toggle-wrapper')
+    const currentLangEl = document.getElementById('current-language')
+    
+    if (!toggle || !menu || !wrapper || !currentLangEl) {
+      console.error('Language toggle elements not found')
+      return
+    }
+
+    function setLanguagePreference(lang: string): void {
+      localStorage.setItem(LANG_KEY, lang)
+    }
+
+    function updateLanguageDisplay(lang: string): void {
+      if (!currentLangEl || !wrapper) return
+
+      currentLangEl.textContent = lang.toUpperCase()
+
+      const checkEs = wrapper.querySelector('.check-es')
+      const checkEn = wrapper.querySelector('.check-en')
+
+      if (checkEs && checkEn) {
+        checkEs.classList.toggle('hidden', lang !== 'es')
+        checkEn.classList.toggle('hidden', lang !== 'en')
+      }
+    }
+
+    function switchLanguage(lang: string) {
+      const currentPath = window.location.pathname
+      const isEnglish = currentPath.startsWith('/en')
+
+      if (lang === 'en' && !isEnglish) {
+        // Switch to English
+        window.location.href = '/en'
+      } else if (lang === 'es' && isEnglish) {
+        // Switch to Spanish (home)
+        window.location.href = '/'
+      }
+      // If already on the correct language, do nothing
+    }
+
+    // Detect current language from URL
+    function getCurrentLanguageFromUrl(): string {
+      const currentPath = window.location.pathname
+      return currentPath.startsWith('/en') ? 'en' : 'es'
+    }
+
+    // Initialize current language based on URL
+    const currentLang = getCurrentLanguageFromUrl()
+    setLanguagePreference(currentLang)
+    updateLanguageDisplay(currentLang)
+
+    // Toggle menu
+    toggle.addEventListener('click', (e) => {
+      e.preventDefault()
+      e.stopPropagation()
+      menu.classList.toggle('hidden')
+      console.log('Language menu toggled')
+    })
+
+    // Close menu when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!wrapper.contains(e.target as Node)) {
+        menu.classList.add('hidden')
+      }
+    })
+
+    // Language selection
+    const langButtons = menu.querySelectorAll('.language-option')
+    langButtons.forEach(button => {
+      button.addEventListener('click', (e) => {
+        e.preventDefault()
+        const lang = (e.currentTarget as HTMLElement).dataset.lang
+        if (lang) {
+          console.log('Language selected:', lang)
+          setLanguagePreference(lang)
+          updateLanguageDisplay(lang)
+          menu.classList.add('hidden')
+
+          // Switch to the selected language
+          switchLanguage(lang)
+        }
+      })
+    })
+  }
+
+  // Initialize on DOM ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initLanguageToggle)
+  } else {
+    initLanguageToggle()
+  }
+
+  // Re-initialize on Astro page transitions
+  document.addEventListener('astro:after-swap', initLanguageToggle)
+</script>
+
+<style>
+  #language-menu {
+    min-width: max-content;
+  }
+</style>

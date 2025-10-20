@@ -1,0 +1,18 @@
+---
+// Badge component - Modern gradient badge with animated border
+---
+
+<div class="flex items-center">
+  <span class="relative inline-flex overflow-hidden rounded-full p-[1px]">
+    <span
+      class="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#10b981_0%,#06b6d4_33%,#8b5cf6_66%,#10b981_100%)]"
+    ></span>
+    <div class="inline-flex items-center justify-center w-full px-3 py-1 text-sm text-green-800 bg-green-100 rounded-full cursor-pointer dark:bg-neutral-800 dark:text-white/80 backdrop-blur-3xl whitespace-nowrap gap-2">
+      <span class="relative flex h-3 w-3">
+        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+        <span class="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+      </span>
+      <slot />
+    </div>
+  </span>
+</div>

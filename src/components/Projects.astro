@@ -1,0 +1,90 @@
+---
+// Projects Component
+import { getProjects, getTranslations, type Locale } from "@/lib/data"
+import { getTechStyle } from "@/lib/tech-colors"
+import { getTechIcon } from "@/lib/tech-icons-map"
+import GitHubIcon from "./icons/GitHub.astro"
+import LinkIcon from "./icons/Link.astro"
+import Card from "./ui/Card.astro"
+import Button from "./ui/Button.astro"
+import Badge from "./ui/Badge.astro"
+
+interface Props {
+  locale?: Locale
+}
+
+const { locale = 'es' } = Astro.props
+const t = getTranslations(locale)
+const projects = getProjects(locale)
+
+// Solo mostrar proyectos que tienen vista previa (liveUrl)
+const featuredProjects = projects.filter(project => project.liveUrl).slice(0, 3)
+---
+
+<div class="flex flex-col gap-y-16">
+  {featuredProjects.map(({ image, title, description, tags, liveUrl, githubUrl }) => (
+    <article class="flex flex-col space-x-0 space-y-8 group md:flex-row md:space-x-8 md:space-y-0">
+      <div class="w-full md:w-1/2">
+        <Card class="overflow-hidden border-border/40 hover:border-primary/20">
+          <img
+            alt={title}
+            class="object-cover object-top w-full h-56 transition duration-500 sm:h-full md:scale-110 md:group-hover:scale-105"
+            loading="lazy"
+            src={image}
+          />
+        </Card>
+      </div>
+
+      <div class="w-full md:w-1/2 md:max-w-lg">
+        <h3 class="text-2xl font-bold text-foreground">
+          {title}
+        </h3>
+
+        <div class="flex flex-wrap mt-2">
+          <ul class="flex flex-row mb-2 gap-x-2 flex-wrap gap-y-2">
+            {tags.map((tag) => {
+              const style = getTechStyle(tag)
+              const Icon = getTechIcon(tag)
+              return (
+                <li>
+                  <Badge variant="tech" class={`${style.bg} ${style.text} ${style.border} flex items-center gap-1.5`}>
+                    {Icon && <Icon class="size-4" />}
+                    {tag}
+                  </Badge>
+                </li>
+              )
+            })}
+          </ul>
+
+          <div class="mt-2 text-foreground/80">{description}</div>
+
+          <footer class="flex items-end justify-start mt-4 gap-x-4">
+            {githubUrl && (
+              <Button variant="outline" size="sm" href={githubUrl}>
+                <GitHubIcon class="size-4" />
+                {t.projects.viewCode}
+              </Button>
+            )}
+            {liveUrl && (
+              <Button variant="default" size="sm" href={liveUrl}>
+                <LinkIcon class="size-4" />
+                {t.projects.viewProject}
+              </Button>
+            )}
+          </footer>
+        </div>
+      </div>
+    </article>
+  ))}
+
+  <!-- Ver más proyectos -->
+  <div class="flex justify-center mt-8">
+    <Button variant="outline" size="lg" href="https://github.com/sebitabravo?tab=repositories">
+      <GitHubIcon class="size-5" />
+      {t.projects.viewMoreGithub}
+      <svg class="size-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+      </svg>
+    </Button>
+  </div>
+</div>

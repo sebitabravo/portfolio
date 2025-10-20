@@ -1,0 +1,8 @@
+---
+// Section Container - Main container for sections
+const { class: className, ...rest } = Astro.props
+---
+
+<section {...rest} class:list={["w-full mx-auto lg:max-w-4xl md:max-w-2xl", className]}>
+  <slot />
+</section>

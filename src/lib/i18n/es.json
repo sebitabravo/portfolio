@@ -19,6 +19,7 @@
     "viewAll": "Ver todos los proyectos",
     "viewProject": "Ver proyecto",
     "viewCode": "Ver código",
+    "viewMoreGithub": "Ver más proyectos en GitHub",
     "technologies": "Tecnologías",
     "featured": "Destacado",
     "noProjects": "Aún no hay proyectos. ¡Vuelve pronto!",
@@ -28,7 +29,26 @@
     "title": "Experiencia",
     "subtitle": "Mi trayectoria profesional",
     "current": "Actual",
-    "present": "Presente"
+    "present": "Presente",
+    "currently": "Actualmente...",
+    "viewMore": "Ver más →",
+    "noExperience": "Experiencia laboral próximamente..."
+  },
+  "education": {
+    "title": "Educación",
+    "subtitle": "Mi formación académica",
+    "current": "En curso",
+    "present": "Presente",
+    "grade": "Calificación"
+  },
+  "certifications": {
+    "title": "Certificaciones",
+    "subtitle": "Mis certificados y logros profesionales",
+    "viewCredential": "Ver credencial",
+    "skills": "Habilidades",
+    "issuedBy": "Emitido por",
+    "credentialId": "ID de credencial",
+    "noExpiration": "Sin vencimiento"
   },
   "about": {
     "title": "Sobre mí",

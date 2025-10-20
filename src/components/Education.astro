@@ -1,0 +1,53 @@
+---
+// Education Component
+import { getEducation, getTranslations, type Locale } from "@/lib/data"
+import { getTechStyle } from "@/lib/tech-colors"
+import { formatDate } from "@/lib/utils"
+
+interface Props {
+  locale?: Locale
+}
+
+const { locale = 'es' } = Astro.props
+const t = getTranslations(locale)
+const education = getEducation(locale)
+---
+
+<div class="flex flex-col gap-8 mt-8">
+  {education.map(({ institution, degree, description, startDate, endDate, current, location, grade, skills }) => (
+    <article class="flex flex-col space-y-4 p-6 rounded-lg border border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-700 transition-colors">
+      <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2">
+        <div>
+          <h3 class="text-xl font-bold text-foreground">{degree}</h3>
+          <h4 class="text-lg text-foreground/80">{institution}</h4>
+        </div>
+        <div class="text-sm text-foreground/80 text-right">
+          <time>{formatDate(startDate, locale)}</time>
+          <span> - </span>
+          <time>{current ? t.education.present : endDate ? formatDate(endDate, locale) : ""}</time>
+          {location && <p>{location}</p>}
+          {grade && <p class="font-semibold">{t.education.grade}: {grade}</p>}
+        </div>
+      </div>
+
+      {description && (
+        <div class="text-foreground/80 text-sm leading-relaxed whitespace-pre-line">
+          {description}
+        </div>
+      )}
+
+      {skills && skills.length > 0 && (
+        <div class="flex flex-wrap gap-2 mt-2">
+          {skills.map((skill) => {
+            const style = getTechStyle(skill)
+            return (
+              <span class={`text-xs px-2 py-1 rounded-full ${style.bg} ${style.text} ${style.border} border`}>
+                {skill}
+              </span>
+            )
+          })}
+        </div>
+      )}
+    </article>
+  ))}
+</div>

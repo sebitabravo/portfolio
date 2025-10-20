@@ -1,0 +1,67 @@
+---
+// Experience Item Component
+import { getTechStyle } from "@/lib/tech-colors"
+import { formatDate } from "@/lib/utils"
+import { getTranslations, type Locale } from "@/lib/i18n"
+import Badge from "./ui/Badge.astro"
+import Button from "./ui/Button.astro"
+
+interface Props {
+  company: string
+  position: string
+  description: string
+  startDate: Date
+  endDate?: Date | null
+  current: boolean
+  location?: string
+  skills: string[]
+  url?: string
+  locale?: Locale
+}
+
+const { company, position, description, startDate, endDate, current, location, skills, url, locale = 'es' } = Astro.props
+
+const t = getTranslations(locale)
+
+const dateText = current
+  ? t.work.currently
+  : endDate
+    ? formatDate(endDate, locale)
+    : formatDate(startDate, locale)
+---
+
+<div class="relative mx-12 pb-12 grid before:absolute before:left-[-35px] before:block before:h-full before:border-l-2 before:border-black/20 dark:before:border-white/15 before:content-[''] md:grid-cols-5 md:gap-10 md:space-x-4]">
+  <div class="relative pb-12 md:col-span-2">
+    <div class="sticky top-0">
+      <span class="text-yellow-500 -left-[42px] absolute rounded-full text-5xl">&bull;</span>
+
+      <h3 class="text-xl font-bold text-yellow-500">{position}</h3>
+      <h4 class="font-semibold text-xl text-foreground">{company}</h4>
+      <time class="p-0 m-0 text-sm text-foreground/80">{dateText}</time>
+      {location && <p class="text-sm text-foreground/80">{location}</p>}
+    </div>
+  </div>
+
+  <div class="relative flex flex-col gap-2 pb-4 text-foreground dark:text-gray-300 md:col-span-3">
+    <p>{description}</p>
+
+    {skills.length > 0 && (
+      <div class="flex flex-wrap gap-2 mt-2">
+        {skills.map((skill) => {
+          const style = getTechStyle(skill)
+          return (
+            <Badge variant="tech" size="sm" class={`${style.bg} ${style.text} ${style.border}`}>
+              {skill}
+            </Badge>
+          )
+        })}
+      </div>
+    )}
+
+    {url && (
+      <Button variant="link" size="sm" href={url} class="justify-start p-0 mt-2 text-yellow-500 hover:text-yellow-600">
+        {t.work.viewMore}
+      </Button>
+    )}
+  </div>
+</div>

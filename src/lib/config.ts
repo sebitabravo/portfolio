@@ -12,10 +12,3 @@ export const siteConfig: SiteConfig = {
     twitter: 'https://twitter.com/sebitabravo',
   },
 }
-
-export const navItems = [
-  { label: 'Home', href: '/' },
-  { label: 'Projects', href: '#projects' },
-  { label: 'Experience', href: '#experience' },
-  { label: 'About', href: '#about' },
-]

@@ -1,0 +1,195 @@
+---
+// ThemeToggle Component - Toggle between light, dark, and system theme
+import SunIcon from "./icons/Sun.astro"
+import MoonIcon from "./icons/Moon.astro"
+import MonitorIcon from "./icons/Monitor.astro"
+---
+
+<div class="relative inline-block" id="theme-toggle-wrapper">
+  <button
+    id="theme-toggle"
+    type="button"
+    class="inline-flex items-center justify-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-foreground/80 hover:bg-muted/50 transition-colors"
+    aria-label="Toggle theme"
+  >
+    <SunIcon class="size-4 theme-icon-light hidden" />
+    <MoonIcon class="size-4 theme-icon-dark hidden" />
+    <MonitorIcon class="size-4 theme-icon-system" />
+    <span id="current-theme">System</span>
+  </button>
+
+  <div
+    id="theme-menu"
+    class="hidden absolute left-1/2 -translate-x-1/2 mt-2 w-48 rounded-md shadow-lg bg-card ring-1 ring-black ring-opacity-5 z-[9999]"
+    role="menu"
+  >
+    <div class="py-1">
+      <button
+        type="button"
+        data-theme="light"
+        class="theme-option flex items-center justify-between w-full px-4 py-2 text-sm text-foreground/80 hover:bg-muted/50 text-left"
+      >
+        <span class="flex items-center gap-3">
+          <SunIcon class="size-4" />
+          Light
+        </span>
+        <span class="check-light hidden">✓</span>
+      </button>
+      <button
+        type="button"
+        data-theme="dark"
+        class="theme-option flex items-center justify-between w-full px-4 py-2 text-sm text-foreground/80 hover:bg-muted/50 text-left"
+      >
+        <span class="flex items-center gap-3">
+          <MoonIcon class="size-4" />
+          Dark
+        </span>
+        <span class="check-dark hidden">✓</span>
+      </button>
+      <button
+        type="button"
+        data-theme="system"
+        class="theme-option flex items-center justify-between w-full px-4 py-2 text-sm text-foreground/80 hover:bg-muted/50 text-left"
+      >
+        <span class="flex items-center gap-3">
+          <MonitorIcon class="size-4" />
+          System
+        </span>
+        <span class="check-system hidden">✓</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  function initThemeToggle() {
+    const THEME_KEY = 'theme'
+    
+    const toggle = document.getElementById('theme-toggle')
+    const menu = document.getElementById('theme-menu')
+    const wrapper = document.getElementById('theme-toggle-wrapper')
+    
+    if (!toggle || !menu || !wrapper) {
+      console.error('Theme toggle elements not found')
+      return
+    }
+
+    function getThemePreference() {
+      return localStorage.getItem(THEME_KEY) || 'system'
+    }
+
+    function setThemePreference(theme) {
+      localStorage.setItem(THEME_KEY, theme)
+    }
+
+    function getSystemTheme() {
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+    }
+
+    function updateThemeIcon(theme) {
+      const lightIcon = wrapper.querySelector('.theme-icon-light')
+      const darkIcon = wrapper.querySelector('.theme-icon-dark')
+      const systemIcon = wrapper.querySelector('.theme-icon-system')
+      const themeText = document.getElementById('current-theme')
+      const checkLight = wrapper.querySelector('.check-light')
+      const checkDark = wrapper.querySelector('.check-dark')
+      const checkSystem = wrapper.querySelector('.check-system')
+
+      if (!lightIcon || !darkIcon || !systemIcon) return
+
+      lightIcon.classList.add('hidden')
+      darkIcon.classList.add('hidden')
+      systemIcon.classList.add('hidden')
+
+      if (checkLight && checkDark && checkSystem) {
+        checkLight.classList.add('hidden')
+        checkDark.classList.add('hidden')
+        checkSystem.classList.add('hidden')
+      }
+
+      if (theme === 'light') {
+        lightIcon.classList.remove('hidden')
+        if (themeText) themeText.textContent = 'Light'
+        if (checkLight) checkLight.classList.remove('hidden')
+      } else if (theme === 'dark') {
+        darkIcon.classList.remove('hidden')
+        if (themeText) themeText.textContent = 'Dark'
+        if (checkDark) checkDark.classList.remove('hidden')
+      } else {
+        systemIcon.classList.remove('hidden')
+        if (themeText) themeText.textContent = 'System'
+        if (checkSystem) checkSystem.classList.remove('hidden')
+      }
+    }
+
+    function applyTheme(theme) {
+      const effectiveTheme = theme === 'system' ? getSystemTheme() : theme
+      const html = document.documentElement
+      
+      if (effectiveTheme === 'dark') {
+        html.classList.add('dark')
+      } else {
+        html.classList.remove('dark')
+      }
+      
+      updateThemeIcon(theme)
+    }
+
+    // Initialize theme
+    const currentTheme = getThemePreference()
+    applyTheme(currentTheme)
+
+    // Toggle menu
+    toggle.addEventListener('click', (e) => {
+      e.preventDefault()
+      e.stopPropagation()
+      menu.classList.toggle('hidden')
+      console.log('Theme menu toggled')
+    })
+
+    // Close menu when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!wrapper.contains(e.target as Node)) {
+        menu.classList.add('hidden')
+      }
+    })
+
+    // Theme selection
+    const themeButtons = menu.querySelectorAll('.theme-option')
+    themeButtons.forEach(button => {
+      button.addEventListener('click', (e) => {
+        e.preventDefault()
+        const theme = (e.currentTarget as HTMLElement).dataset.theme
+        if (theme) {
+          console.log('Theme selected:', theme)
+          setThemePreference(theme)
+          applyTheme(theme)
+          menu.classList.add('hidden')
+        }
+      })
+    })
+
+    // Listen for system theme changes
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+      if (getThemePreference() === 'system') {
+        applyTheme('system')
+      }
+    })
+  }
+
+  // Initialize on DOM ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initThemeToggle)
+  } else {
+    initThemeToggle()
+  }
+
+  // Re-initialize on Astro page transitions
+  document.addEventListener('astro:after-swap', initThemeToggle)
+</script>
+
+<style>
+  #theme-menu {
+    min-width: max-content;
+  }
+</style>

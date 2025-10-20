@@ -1,0 +1,13 @@
+---
+// Social Pill component - For social links  
+import Button from "./ui/Button.astro"
+---
+
+<Button
+  {...Astro.props}
+  variant="outline"
+  size="sm"
+  class="rounded-full"
+>
+  <slot />
+</Button>

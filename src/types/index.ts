@@ -2,6 +2,8 @@ import type { CollectionEntry } from 'astro:content';
 
 export type Project = CollectionEntry<'projects'>;
 export type WorkExperience = CollectionEntry<'work'>;
+export type Education = CollectionEntry<'education'>;
+export type Certification = CollectionEntry<'certifications'>;
 
 export interface SiteConfig {
 	name: string;
@@ -15,9 +17,4 @@ export interface SiteConfig {
 		twitter?: string;
 		instagram?: string;
 	};
-}
-
-export interface NavItem {
-	label: string;
-	href: string;
 }

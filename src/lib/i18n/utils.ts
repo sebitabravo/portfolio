@@ -1,5 +1,5 @@
 import type { CollectionEntry } from 'astro:content'
-import type { Locale } from './i18n'
+import type { Locale } from './index'
 
 /**
  * Filter collection entries by locale

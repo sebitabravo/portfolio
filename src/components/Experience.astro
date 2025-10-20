@@ -1,0 +1,28 @@
+---
+// Experience Component
+import { getWorkExperience } from "@/lib/data"
+import { getTranslations, type Locale } from "@/lib/i18n"
+import ExperienceItem from "./ExperienceItem.astro"
+
+interface Props {
+  locale?: Locale
+}
+
+const { locale = 'es' } = Astro.props
+const t = getTranslations(locale)
+const workExperience = getWorkExperience(locale)
+---
+
+{workExperience.length > 0 ? (
+  <ol class="relative mt-16">
+    {workExperience.map((experience) => (
+      <li>
+        <ExperienceItem {...experience} locale={locale} />
+      </li>
+    ))}
+  </ol>
+) : (
+  <div class="text-center text-foreground/80 mt-8">
+    <p>{t.work.noExperience}</p>
+  </div>
+)}

@@ -1,13 +1,90 @@
 ---
 /**
- * Home Page - English
+ * Portfolio de Sebastian Bravo - Full Stack Developer (English Version)
  *
- * This is just a wrapper that renders the HomePage component.
- * The component automatically detects the locale from the URL (/en/).
- *
- * All content and logic is in: src/shared/components/HomePage.astro
+ * English home page with simple and maintainable architecture.
+ * Inspired by midudev's portfolio with centralized data.
  */
-import HomePage from '@/shared/components/HomePage.astro'
+import Layout from "@/layouts/Layout.astro"
+import { personalInfo } from "@/lib/data"
+import { getTranslations } from "@/lib/i18n"
+
+const t = getTranslations('en')
+
+// Components
+import Hero from "@/components/Hero.astro"
+import Experience from "@/components/Experience.astro"
+import Projects from "@/components/Projects.astro"
+import Education from "@/components/Education.astro"
+import Certifications from "@/components/Certifications.astro"
+import AboutMe from "@/components/AboutMe.astro"
+import SectionContainer from "@/components/SectionContainer.astro"
+import TitleSection from "@/components/TitleSection.astro"
+
+// Icons
+import BriefcaseIcon from "@/components/icons/Briefcase.astro"
+import CodeIcon from "@/components/icons/Code.astro"
+import GraduationCapIcon from "@/components/icons/GraduationCap.astro"
+import CertificateIcon from "@/components/icons/Certificate.astro"
+import ProfileCheckIcon from "@/components/icons/ProfileCheck.astro"
 ---
 
-<HomePage />
+<Layout
+  title={`Portfolio - ${personalInfo.name} | ${personalInfo.title}`}
+  description={personalInfo.description}
+  locale="en"
+>
+  <main class="px-4">
+    <!-- Hero Section -->
+    <SectionContainer class="py-16 md:py-36">
+      <Hero locale="en" />
+    </SectionContainer>
+
+    <div class="space-y-24">
+      <!-- Experience Section -->
+      <SectionContainer id="experience">
+        <TitleSection>
+          <BriefcaseIcon class="size-8" />
+          {t.work.title}
+        </TitleSection>
+        <Experience locale="en" />
+      </SectionContainer>
+
+      <!-- Projects Section -->
+      <SectionContainer id="projects">
+        <TitleSection>
+          <CodeIcon class="size-7" />
+          {t.projects.title}
+        </TitleSection>
+        <Projects locale="en" />
+      </SectionContainer>
+
+      <!-- Education Section -->
+      <SectionContainer id="education">
+        <TitleSection>
+          <GraduationCapIcon class="size-8" />
+          {t.education.title}
+        </TitleSection>
+        <Education locale="en" />
+      </SectionContainer>
+
+      <!-- Certifications Section -->
+      <SectionContainer id="certifications">
+        <TitleSection>
+          <CertificateIcon class="size-8" />
+          {t.certifications.title}
+        </TitleSection>
+        <Certifications locale="en" />
+      </SectionContainer>
+
+      <!-- About Me Section -->
+      <SectionContainer id="about">
+        <TitleSection>
+          <ProfileCheckIcon class="size-8" />
+          {t.about.title}
+        </TitleSection>
+        <AboutMe locale="en" />
+      </SectionContainer>
+    </div>
+  </main>
+</Layout>

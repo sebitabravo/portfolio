@@ -60,13 +60,13 @@ const featuredProjects = projects.filter(project => project.liveUrl).slice(0, 3)
 
           <footer class="flex items-end justify-start mt-4 gap-x-4">
             {githubUrl && (
-              <Button variant="outline" size="sm" href={githubUrl}>
+              <Button variant="outline" size="sm" href={githubUrl} target="_blank" rel="noopener">
                 <GitHubIcon class="size-4" />
                 {t.projects.viewCode}
               </Button>
             )}
             {liveUrl && (
-              <Button variant="default" size="sm" href={liveUrl}>
+              <Button variant="default" size="sm" href={liveUrl} target="_blank" rel="noopener">
                 <LinkIcon class="size-4" />
                 {t.projects.viewProject}
               </Button>
@@ -79,7 +79,7 @@ const featuredProjects = projects.filter(project => project.liveUrl).slice(0, 3)
 
   <!-- Ver más proyectos -->
   <div class="flex justify-center mt-8">
-    <Button variant="outline" size="lg" href="https://github.com/sebitabravo?tab=repositories">
+    <Button variant="outline" size="lg" href="https://github.com/sebitabravo?tab=repositories" target="_blank" rel="noopener">
       <GitHubIcon class="size-5" />
       {t.projects.viewMoreGithub}
       <svg class="size-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">

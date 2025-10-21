@@ -8,6 +8,7 @@ import GitHubIcon from "./icons/GitHub.astro"
 import LinkedInIcon from "./icons/LinkedIn.astro"
 import MailIcon from "./icons/Mail.astro"
 import DownloadIcon from "./icons/Download.astro"
+import cvPdf from "@/assets/Sebastian_Bravo_CV.pdf"
 
 interface Props {
   locale?: Locale
@@ -49,15 +50,15 @@ const t = getTranslations(locale)
       <MailIcon class="size-4" />
       {t.hero.contact}
     </SocialPill>
-    <SocialPill href={social.linkedin}>
+    <SocialPill href={social.linkedin} target="_blank" rel="noopener">
       <LinkedInIcon class="size-4" />
       LinkedIn
     </SocialPill>
-    <SocialPill href={social.github}>
+    <SocialPill href={social.github} target="_blank" rel="noopener">
       <GitHubIcon class="size-4" />
       GitHub
     </SocialPill>
-    <SocialPill href="/cv.pdf" download>
+    <SocialPill href={cvPdf} target="_blank" rel="noopener">
       <DownloadIcon class="size-4" />
       {locale === 'en' ? 'Download CV' : 'Descargar CV'}
     </SocialPill>

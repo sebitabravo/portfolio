@@ -26,22 +26,7 @@ export default defineConfig({
 			}
 		},
 		build: {
-			// Optimize chunk splitting for better caching
-			rollupOptions: {
-				output: {
-					manualChunks: {
-						// Separate vendor chunks for better caching
-						'vendor': [
-							'class-variance-authority',
-							'clsx',
-							'tailwind-merge'
-						]
-					}
-				}
-			},
-			// Enable CSS code splitting
 			cssCodeSplit: true,
-			// Use esbuild minifier (faster than terser, already included)
 			minify: 'esbuild',
 			target: 'esnext'
 		}

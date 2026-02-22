@@ -49,10 +49,7 @@ import LanguagesIcon from "./icons/Languages.astro"
     const wrapper = document.getElementById('language-toggle-wrapper')
     const currentLangEl = document.getElementById('current-language')
     
-    if (!toggle || !menu || !wrapper || !currentLangEl) {
-      console.error('Language toggle elements not found')
-      return
-    }
+    if (!toggle || !menu || !wrapper || !currentLangEl) return
 
     function setLanguagePreference(lang: string): void {
       localStorage.setItem(LANG_KEY, lang)
@@ -102,7 +99,6 @@ import LanguagesIcon from "./icons/Languages.astro"
       e.preventDefault()
       e.stopPropagation()
       menu.classList.toggle('hidden')
-      console.log('Language menu toggled')
     })
 
     // Close menu when clicking outside
@@ -119,7 +115,6 @@ import LanguagesIcon from "./icons/Languages.astro"
         e.preventDefault()
         const lang = (e.currentTarget as HTMLElement).dataset.lang
         if (lang) {
-          console.log('Language selected:', lang)
           setLanguagePreference(lang)
           updateLanguageDisplay(lang)
           menu.classList.add('hidden')

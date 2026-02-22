@@ -69,10 +69,7 @@ import MonitorIcon from "./icons/Monitor.astro"
     const menu = document.getElementById('theme-menu')
     const wrapper = document.getElementById('theme-toggle-wrapper')
     
-    if (!toggle || !menu || !wrapper) {
-      console.error('Theme toggle elements not found')
-      return
-    }
+    if (!toggle || !menu || !wrapper) return
 
     function getThemePreference() {
       return localStorage.getItem(THEME_KEY) || 'system'
@@ -144,7 +141,6 @@ import MonitorIcon from "./icons/Monitor.astro"
       e.preventDefault()
       e.stopPropagation()
       menu.classList.toggle('hidden')
-      console.log('Theme menu toggled')
     })
 
     // Close menu when clicking outside
@@ -161,7 +157,6 @@ import MonitorIcon from "./icons/Monitor.astro"
         e.preventDefault()
         const theme = (e.currentTarget as HTMLElement).dataset.theme
         if (theme) {
-          console.log('Theme selected:', theme)
           setThemePreference(theme)
           applyTheme(theme)
           menu.classList.add('hidden')

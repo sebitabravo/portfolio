@@ -1,6 +1,7 @@
 ---
 // Projects Component
-import { getProjects, getTranslations, type Locale } from "@/lib/data"
+import { getProjects } from "@/lib/data"
+import { getTranslations, type Locale } from "@/lib/i18n"
 import { getTechStyle } from "@/lib/tech-colors"
 import { getTechIcon } from "@/lib/tech-icons-map"
 import GitHubIcon from "./icons/GitHub.astro"
@@ -31,6 +32,8 @@ const featuredProjects = projects.filter(project => project.liveUrl).slice(0, 3)
             class="object-cover object-top w-full h-56 transition duration-500 sm:h-full md:scale-110 md:group-hover:scale-105"
             loading="lazy"
             src={image}
+            width={800}
+            height={600}
           />
         </Card>
       </div>

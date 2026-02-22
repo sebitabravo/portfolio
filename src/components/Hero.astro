@@ -1,7 +1,9 @@
 ---
 // Hero Component - Main hero section
+import { Image } from "astro:assets"
 import { personalInfo, social } from "@/lib/data"
 import { getTranslations, type Locale } from "@/lib/i18n"
+import profileImage from "@/assets/perfil.jpeg"
 import AvailableBadge from "./AvailableBadge.astro"
 import SocialPill from "./SocialPill.astro"
 import GitHubIcon from "./icons/GitHub.astro"
@@ -20,9 +22,11 @@ const t = getTranslations(locale)
 
 <div class="max-w-xl">
   <div class="flex gap-4 mb-4">
-    <img
+    <Image
       class="rounded-full shadow-lg size-16"
-      src={personalInfo.avatar}
+      src={profileImage}
+      width={64}
+      height={64}
       alt={personalInfo.name}
     />
     {personalInfo.available && (
@@ -32,7 +36,7 @@ const t = getTranslations(locale)
         rel="noopener"
         class="flex items-center transition md:justify-center md:hover:scale-105"
       >
-        <AvailableBadge>{locale === 'en' ? 'Available for work' : 'Disponible para trabajar'}</AvailableBadge>
+        <AvailableBadge>{t.hero.available}</AvailableBadge>
       </a>
     )}
   </div>
@@ -41,7 +45,7 @@ const t = getTranslations(locale)
     {t.hero.greeting} {personalInfo.name}
   </h1>
 
-  <p class="mt-6 text-xl text-foreground/80 [&>strong]:text-yellow-500 dark:[&>strong]:text-yellow-200 [&>strong]:font-semibold">
+  <p class="mt-6 text-xl text-foreground/80">
     {t.hero.intro}
   </p>
 
@@ -60,7 +64,7 @@ const t = getTranslations(locale)
     </SocialPill>
     <SocialPill href={cvPdf} target="_blank" rel="noopener">
       <DownloadIcon class="size-4" />
-      {locale === 'en' ? 'Download CV' : 'Descargar CV'}
+      {t.hero.downloadCv}
     </SocialPill>
   </nav>
 </div>

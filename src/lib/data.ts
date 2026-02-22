@@ -5,6 +5,8 @@
  * Inspirado en la arquitectura simple del portfolio de referencia.
  */
 
+import type { Locale } from "@/lib/i18n"
+
 // ============================================
 // INFORMACIÓN PERSONAL Y CONFIGURACIÓN
 // ============================================
@@ -15,7 +17,6 @@ export const personalInfo = {
   description: "Desarrollador Full Stack apasionado por crear aplicaciones web modernas y eficientes. Especializado en React, Django y tecnologías cloud.",
   email: "hello@sebastianbravo.dev",
   location: "Chile 🇨🇱",
-  avatar: "/perfil.jpeg",
   available: true,
 }
 
@@ -58,7 +59,7 @@ const workExperienceData = {
   ]
 }
 
-export function getWorkExperience(locale: 'es' | 'en' = 'es') {
+export function getWorkExperience(locale: Locale = 'es') {
   return workExperienceData[locale]
 }
 
@@ -314,7 +315,7 @@ const projectsData = {
   ]
 }
 
-export function getProjects(locale: 'es' | 'en' = 'es') {
+export function getProjects(locale: Locale = 'es') {
   return projectsData[locale]
 }
 
@@ -380,7 +381,7 @@ const educationData = {
   ]
 }
 
-export function getEducation(locale: 'es' | 'en' = 'es') {
+export function getEducation(locale: Locale = 'es') {
   return educationData[locale]
 }
 
@@ -399,7 +400,7 @@ const certificationsData = {
       description: "Conocimientos fundamentales en computación en la nube, servicios AWS (EC2, S3, RDS, Lambda), arquitectura de alta disponibilidad y seguridad en la nube.",
       issueDate: new Date("2025-07-01"),
       expirationDate: null,
-      pdfUrl: "/src/assets/certifications/aws-cloud-foundations.pdf",
+      pdfUrl: "/certifications/aws-cloud-foundations.pdf",
       skills: ["AWS", "Cloud Computing", "EC2", "S3", "Cloud Architecture"],
       order: 1,
     },
@@ -409,7 +410,7 @@ const certificationsData = {
       description: "Control de versiones avanzado con Git: branching strategies, Git Flow, resolución de conflictos, GitHub workflows y automatización.",
       issueDate: new Date("2025-01-01"),
       expirationDate: null,
-      pdfUrl: "/src/assets/certifications/git-noob-pro.pdf",
+      pdfUrl: "/certifications/git-noob-pro.pdf",
       skills: ["Git", "GitHub", "Control de Versiones", "Git Flow"],
       order: 2,
     },
@@ -419,7 +420,7 @@ const certificationsData = {
       description: "Desarrollo full stack completo: Frontend (HTML5, CSS3, JavaScript, React.js) y Backend (Python, Django, REST APIs), con deployment y mejores prácticas.",
       issueDate: new Date("2024-12-01"),
       expirationDate: null,
-      pdfUrl: "/src/assets/certifications/full-stack-developer.pdf",
+      pdfUrl: "/certifications/full-stack-developer.pdf",
       skills: ["Django", "Python", "JavaScript", "React.js", "REST API", "Full Stack"],
       order: 3,
     },
@@ -429,7 +430,7 @@ const certificationsData = {
       description: "Fundamentos de programación orientada a objetos, estructuras de datos, algoritmos y desarrollo con Python.",
       issueDate: new Date("2024-12-01"),
       expirationDate: null,
-      pdfUrl: "/src/assets/certifications/basic-app-development.pdf",
+      pdfUrl: "/certifications/basic-app-development.pdf",
       skills: ["POO", "Python", "Estructuras de Datos", "Algoritmos"],
       order: 4,
     },
@@ -439,7 +440,7 @@ const certificationsData = {
       description: "Administración de sistemas Windows/Linux, troubleshooting de redes, Cisco Packet Tracer y mantenimiento preventivo.",
       issueDate: new Date("2024-12-01"),
       expirationDate: null,
-      pdfUrl: "/src/assets/certifications/computer-support.pdf",
+      pdfUrl: "/certifications/computer-support.pdf",
       skills: ["Linux", "Windows", "Soporte Técnico", "Packet Tracer", "Networking"],
       order: 5,
     },
@@ -449,7 +450,7 @@ const certificationsData = {
       description: "Diseño de bases de datos relacionales, SQL avanzado, MySQL, PostgreSQL, MongoDB y optimización de rendimiento.",
       issueDate: new Date("2024-10-01"),
       expirationDate: null,
-      pdfUrl: "/src/assets/certifications/database-design.pdf",
+      pdfUrl: "/certifications/database-design.pdf",
       skills: ["MongoDB", "MySQL", "PostgreSQL", "SQL", "Database Design"],
       order: 6,
     },
@@ -459,7 +460,7 @@ const certificationsData = {
       description: "Metodologías ágiles (Scrum, Kanban), gestión de sprints, user stories y herramientas de gestión ágil (Jira, Trello).",
       issueDate: new Date("2024-10-01"),
       expirationDate: null,
-      pdfUrl: "/src/assets/certifications/agile-systems-design.pdf",
+      pdfUrl: "/certifications/agile-systems-design.pdf",
       skills: ["Scrum", "Metodologías Ágiles", "Agile", "Sprint Planning"],
       order: 7,
     },
@@ -469,7 +470,7 @@ const certificationsData = {
       description: "Instalación y configuración de Windows 10/11, Windows Server, Active Directory, Group Policy y PowerShell básico.",
       issueDate: new Date("2023-12-01"),
       expirationDate: null,
-      pdfUrl: "/src/assets/certifications/windows-installation.pdf",
+      pdfUrl: "/certifications/windows-installation.pdf",
       skills: ["Windows", "Windows Server", "Active Directory", "Group Policy"],
       order: 8,
     },
@@ -481,7 +482,7 @@ const certificationsData = {
       description: "Fundamental knowledge in cloud computing, AWS services (EC2, S3, RDS, Lambda), high availability architecture and cloud security.",
       issueDate: new Date("2025-07-01"),
       expirationDate: null,
-      pdfUrl: "/src/assets/certifications/aws-cloud-foundations.pdf",
+      pdfUrl: "/certifications/aws-cloud-foundations.pdf",
       skills: ["AWS", "Cloud Computing", "EC2", "S3", "Cloud Architecture"],
       order: 1,
     },
@@ -491,7 +492,7 @@ const certificationsData = {
       description: "Advanced version control with Git: branching strategies, Git Flow, conflict resolution, GitHub workflows and automation.",
       issueDate: new Date("2025-01-01"),
       expirationDate: null,
-      pdfUrl: "/src/assets/certifications/git-noob-pro.pdf",
+      pdfUrl: "/certifications/git-noob-pro.pdf",
       skills: ["Git", "GitHub", "Version Control", "Git Flow"],
       order: 2,
     },
@@ -501,7 +502,7 @@ const certificationsData = {
       description: "Complete full stack development: Frontend (HTML5, CSS3, JavaScript, React.js) and Backend (Python, Django, REST APIs), with deployment and best practices.",
       issueDate: new Date("2024-12-01"),
       expirationDate: null,
-      pdfUrl: "/src/assets/certifications/full-stack-developer.pdf",
+      pdfUrl: "/certifications/full-stack-developer.pdf",
       skills: ["Django", "Python", "JavaScript", "React.js", "REST API", "Full Stack"],
       order: 3,
     },
@@ -511,7 +512,7 @@ const certificationsData = {
       description: "Fundamentals of object-oriented programming, data structures, algorithms and Python development.",
       issueDate: new Date("2024-12-01"),
       expirationDate: null,
-      pdfUrl: "/src/assets/certifications/basic-app-development.pdf",
+      pdfUrl: "/certifications/basic-app-development.pdf",
       skills: ["OOP", "Python", "Data Structures", "Algorithms"],
       order: 4,
     },
@@ -521,7 +522,7 @@ const certificationsData = {
       description: "Windows/Linux system administration, network troubleshooting, Cisco Packet Tracer and preventive maintenance.",
       issueDate: new Date("2024-12-01"),
       expirationDate: null,
-      pdfUrl: "/src/assets/certifications/computer-support.pdf",
+      pdfUrl: "/certifications/computer-support.pdf",
       skills: ["Linux", "Windows", "Technical Support", "Packet Tracer", "Networking"],
       order: 5,
     },
@@ -531,7 +532,7 @@ const certificationsData = {
       description: "Relational database design, advanced SQL, MySQL, PostgreSQL, MongoDB and performance optimization.",
       issueDate: new Date("2024-10-01"),
       expirationDate: null,
-      pdfUrl: "/src/assets/certifications/database-design.pdf",
+      pdfUrl: "/certifications/database-design.pdf",
       skills: ["MongoDB", "MySQL", "PostgreSQL", "SQL", "Database Design"],
       order: 6,
     },
@@ -541,7 +542,7 @@ const certificationsData = {
       description: "Agile methodologies (Scrum, Kanban), sprint management, user stories and agile management tools (Jira, Trello).",
       issueDate: new Date("2024-10-01"),
       expirationDate: null,
-      pdfUrl: "/src/assets/certifications/agile-systems-design.pdf",
+      pdfUrl: "/certifications/agile-systems-design.pdf",
       skills: ["Scrum", "Agile Methodologies", "Agile", "Sprint Planning"],
       order: 7,
     },
@@ -551,14 +552,14 @@ const certificationsData = {
       description: "Installation and configuration of Windows 10/11, Windows Server, Active Directory, Group Policy and basic PowerShell.",
       issueDate: new Date("2023-12-01"),
       expirationDate: null,
-      pdfUrl: "/src/assets/certifications/windows-installation.pdf",
+      pdfUrl: "/certifications/windows-installation.pdf",
       skills: ["Windows", "Windows Server", "Active Directory", "Group Policy"],
       order: 8,
     },
   ]
 }
 
-export function getCertifications(locale: 'es' | 'en' = 'es') {
+export function getCertifications(locale: Locale = 'es') {
   return certificationsData[locale]
 }
 
@@ -618,139 +619,10 @@ const aboutMeData = {
   }
 }
 
-export function getAboutMe(locale: 'es' | 'en' = 'es') {
+export function getAboutMe(locale: Locale = 'es') {
   return aboutMeData[locale]
 }
 
 // Mantener exportación por defecto para compatibilidad
 export const aboutMe = aboutMeData.es
 
-// ============================================
-// TRADUCCIONES (i18n simple)
-// ============================================
-
-export const translations = {
-  es: {
-    nav: {
-      home: "Inicio",
-      projects: "Proyectos",
-      experience: "Experiencia",
-      education: "Educación",
-      certifications: "Certificaciones",
-      about: "Sobre mí",
-      contact: "Contacto",
-    },
-    hero: {
-      greeting: "Hola, soy",
-      available: "Disponible para trabajar",
-      contactMe: "Contáctame",
-      viewProjects: "Ver proyectos",
-    },
-    projects: {
-      title: "Proyectos",
-      subtitle: "Algunos de mis trabajos recientes",
-      viewProject: "Ver proyecto",
-      viewCode: "Ver código",
-      technologies: "Tecnologías",
-      featured: "Destacado",
-      viewMoreGithub: "Ver más proyectos en GitHub",
-    },
-    experience: {
-      title: "Experiencia",
-      subtitle: "Mi trayectoria profesional",
-      current: "Actual",
-      present: "Presente",
-    },
-    education: {
-      title: "Educación",
-      subtitle: "Mi formación académica",
-      current: "En curso",
-      present: "Presente",
-      grade: "Calificación",
-    },
-    certifications: {
-      title: "Certificaciones",
-      subtitle: "Mis certificados y logros profesionales",
-      viewCredential: "Ver credencial",
-      skills: "Habilidades",
-      issuedBy: "Emitido por",
-      noExpiration: "Sin vencimiento",
-    },
-    about: {
-      title: "Sobre mí",
-      subtitle: "Conoce más sobre mi experiencia y conocimientos",
-      skillsTitle: "Habilidades y Tecnologías",
-      contactTitle: "Contacto",
-      findMe: "Encuéntrame",
-    },
-    footer: {
-      madeWith: "Hecho con",
-      in: "en",
-      rights: "Todos los derechos reservados",
-    },
-  },
-  en: {
-    nav: {
-      home: "Home",
-      projects: "Projects",
-      experience: "Experience",
-      education: "Education",
-      certifications: "Certifications",
-      about: "About",
-      contact: "Contact",
-    },
-    hero: {
-      greeting: "Hi, I'm",
-      available: "Available for work",
-      contactMe: "Contact me",
-      viewProjects: "View projects",
-    },
-    projects: {
-      title: "Projects",
-      subtitle: "Some of my recent work",
-      viewProject: "View project",
-      viewCode: "View code",
-      technologies: "Technologies",
-      featured: "Featured",
-      viewMoreGithub: "View more projects on GitHub",
-    },
-    experience: {
-      title: "Experience",
-      subtitle: "My professional journey",
-      current: "Current",
-      present: "Present",
-    },
-    education: {
-      title: "Education",
-      subtitle: "My academic background",
-      current: "In progress",
-      present: "Present",
-      grade: "Grade",
-    },
-    certifications: {
-      title: "Certifications",
-      subtitle: "My professional certificates and achievements",
-      viewCredential: "View credential",
-      skills: "Skills",
-      issuedBy: "Issued by",
-      noExpiration: "No expiration",
-    },
-    about: {
-      title: "About",
-      subtitle: "Get to know more about my background and expertise",
-      skillsTitle: "Skills & Technologies",
-      contactTitle: "Contact",
-      findMe: "Find Me",
-    },
-    footer: {
-      madeWith: "Made with",
-      in: "in",
-      rights: "All rights reserved",
-    },
-  },
-}
-
-// Helper para obtener traducciones
-export function getTranslations(locale: 'es' | 'en' = 'es') {
-  return translations[locale]
-}

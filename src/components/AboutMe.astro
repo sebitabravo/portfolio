@@ -1,6 +1,9 @@
 ---
 // About Me Component
-import { getAboutMe, type Locale } from "@/lib/data"
+import { Image } from "astro:assets"
+import { getAboutMe } from "@/lib/data"
+import type { Locale } from "@/lib/i18n"
+import profileImage from "@/assets/perfil.jpeg"
 import TechCarousel from "@/components/TechCarousel.astro"
 
 interface Props {
@@ -29,10 +32,10 @@ const aboutMe = getAboutMe(locale)
       </div>
     </div>
 
-    <img
-      width="200"
-      height="200"
-      src="/perfil.jpeg"
+    <Image
+      width={256}
+      height={256}
+      src={profileImage}
       alt="Sebastian Bravo"
       class="order-1 object-cover w-64 h-full p-1 md:order-2 rotate-3 lg:p-2 lg:w-64 aspect-square rounded-2xl bg-black/20 dark:bg-yellow-500/5 ring-1 ring-black/70 dark:ring-white/20"
       style="object-position: 50% 50%"

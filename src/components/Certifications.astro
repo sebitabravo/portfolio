@@ -1,6 +1,7 @@
 ---
 // Certifications Component
-import { getCertifications, type Locale } from "@/lib/data"
+import { getCertifications } from "@/lib/data"
+import type { Locale } from "@/lib/i18n"
 import CertificationCarousel from "@/components/CertificationCarousel.astro"
 
 interface Props {
@@ -16,7 +17,7 @@ const certificationsForCarousel = certifications.map(cert => ({
     name: cert.name,
     organization: cert.organization,
     logo: undefined, // You can add logos later if needed
-    pdfUrl: cert.pdfUrl || cert.credentialUrl || '#'
+    pdfUrl: cert.pdfUrl || '#'
   }
 }))
 ---

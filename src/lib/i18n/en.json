@@ -1,7 +1,10 @@
 {
   "nav": {
     "home": "Home",
+    "experience": "Experience",
     "projects": "Projects",
+    "education": "Education",
+    "certifications": "Certifications",
     "about": "About",
     "contact": "Contact"
   },
@@ -10,7 +13,9 @@
     "description": "Full Stack Developer",
     "intro": "I build modern, performant web applications with a focus on user experience and clean code. Passionate about React, TypeScript, and creating delightful interfaces.",
     "cta": "View projects",
-    "contact": "Contact"
+    "contact": "Contact",
+    "available": "Available for work",
+    "downloadCv": "Download CV"
   },
   "projects": {
     "title": "Projects",

@@ -1,6 +1,7 @@
 ---
 // Header Component - Navigation
-import { personalInfo, getTranslations, type Locale } from "@/lib/data"
+import { personalInfo } from "@/lib/data"
+import { getTranslations, type Locale } from "@/lib/i18n"
 import ThemeToggle from "./ThemeToggle.astro"
 import LanguageToggle from "./LanguageToggle.astro"
 
@@ -10,38 +11,22 @@ interface Props {
 
 const { locale = 'es' } = Astro.props
 const t = getTranslations(locale)
+const prefix = locale === 'es' ? '' : '/en'
+
+const sectionIds = {
+  es: { experience: 'experiencia', projects: 'proyectos', education: 'educacion', certifications: 'certificaciones', about: 'sobre-mi' },
+  en: { experience: 'experience', projects: 'projects', education: 'education', certifications: 'certifications', about: 'about' },
+} as const
+
+const ids = sectionIds[locale]
 
 const navItems = [
-  {
-    title: t.nav.experience,
-    label: "experiencia",
-    url: "/#experiencia",
-  },
-  {
-    title: t.nav.projects,
-    label: "proyectos",
-    url: "/#proyectos",
-  },
-  {
-    title: t.nav.education,
-    label: "educacion",
-    url: "/#educacion",
-  },
-  {
-    title: t.nav.certifications,
-    label: "certificaciones",
-    url: "/#certificaciones",
-  },
-  {
-    title: t.nav.about,
-    label: "sobre-mi",
-    url: "/#sobre-mi",
-  },
-  {
-    title: t.nav.contact,
-    label: "contacto",
-    url: `mailto:${personalInfo.email}`,
-  },
+  { title: t.nav.experience, label: ids.experience, url: `${prefix}#${ids.experience}` },
+  { title: t.nav.projects, label: ids.projects, url: `${prefix}#${ids.projects}` },
+  { title: t.nav.education, label: ids.education, url: `${prefix}#${ids.education}` },
+  { title: t.nav.certifications, label: ids.certifications, url: `${prefix}#${ids.certifications}` },
+  { title: t.nav.about, label: ids.about, url: `${prefix}#${ids.about}` },
+  { title: t.nav.contact, label: "contacto", url: `mailto:${personalInfo.email}` },
 ]
 ---
 

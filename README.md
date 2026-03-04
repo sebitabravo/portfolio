@@ -68,3 +68,5 @@ pnpm preview
 - **GitHub:** [@sebitabravo](https://github.com/sebitabravo)
 - **Email:** hello@sebastianbravo.dev
 - **LinkedIn:** [Sebastian Bravo](https://linkedin.com/in/sebitabravo)
+
+<!-- prueba de permisos gh desde openclaw: 2026-03-04 -->

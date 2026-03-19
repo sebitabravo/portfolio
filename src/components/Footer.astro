@@ -11,10 +11,11 @@ const { locale = 'es' } = Astro.props
 const t = getTranslations(locale)
 const currentYear = new Date().getFullYear()
 const aboutUrl = locale === 'es' ? '#sobre-mi' : '/en#about'
+const contactUrl = locale === 'es' ? '#contacto' : '/en#contact'
 ---
 
 <footer
-  class="opacity-80 m-4 min-[375px]:pl-4 md:pl-0 mt-16 w-full mx-auto container lg:max-w-4xl md:max-w-2xl mb-10 flex justify-center"
+  class="m-4 min-[375px]:pl-4 md:pl-0 mt-16 w-full mx-auto container lg:max-w-4xl md:max-w-2xl mb-10 flex justify-center"
 >
   <div
     class="rounded-lg w-full max-w-screen-xl mx-auto md:flex md:items-center md:justify-between py-4"
@@ -25,13 +26,13 @@ const aboutUrl = locale === 'es' ? '#sobre-mi' : '/en#about'
       {t.footer.madeWith} ❤️ {t.footer.in} Astro
     </span>
     <ul
-      class="flex flex-wrap items-center mt-3 text-sm font-medium text-foreground/90 sm:mt-0"
+      class="flex flex-wrap items-center mt-3 text-sm font-medium sm:mt-0"
     >
       <li>
         <a href={aboutUrl} class="me-4 md:me-6">{t.nav.about}</a>
       </li>
       <li>
-        <a id="contacto" href={`mailto:${personalInfo.email}`}>
+        <a href={contactUrl}>
           {t.nav.contact}
         </a>
       </li>

@@ -1,12 +1,14 @@
 ---
 import { ViewTransitions } from "astro:transitions"
 import { SEO } from "astro-seo"
+import Analytics from "@vercel/analytics/astro"
 
 import "@/styles/global.css"
 
 import Footer from "@/components/Footer.astro"
 import Header from "@/components/Header.astro"
 import { siteConfig } from "@/lib/config"
+import { personalInfo, social } from "@/lib/data"
 import type { Locale } from "@/lib/i18n"
 
 interface Props {
@@ -22,6 +24,37 @@ const {
   image,
   locale = 'es',
 } = Astro.props
+
+const profileUrl = locale === "es" ? "https://sebita.dev/" : "https://sebita.dev/en"
+const dynamicOgImage = new URL(
+  `/og/${locale}.svg?title=${encodeURIComponent(title)}`,
+  "https://sebita.dev",
+).toString()
+const seoImage = image ?? dynamicOgImage
+const sameAsProfiles = [social.github, social.linkedin].filter(
+  (url): url is string => Boolean(url),
+)
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Person",
+      name: personalInfo.name,
+      url: profileUrl,
+      jobTitle: personalInfo.title,
+      email: `mailto:${personalInfo.email}`,
+      sameAs: sameAsProfiles,
+      knowsAbout: ["React", "TypeScript", "Astro", "Django", "PostgreSQL"],
+    },
+    {
+      "@type": "WebSite",
+      name: siteConfig.title,
+      url: "https://sebita.dev",
+      inLanguage: locale,
+    },
+  ],
+}
 ---
 
 <!doctype html>
@@ -39,7 +72,7 @@ const {
         basic: {
           title: title,
           type: "website",
-          image: image ?? "/og-image.png",
+          image: seoImage,
         },
       }}
       twitter={{
@@ -48,7 +81,7 @@ const {
         site: "@sebitabravo",
         title: title,
         description: description,
-        image: image ?? "/og-image.png",
+        image: seoImage,
       }}
       extend={{
         // Overrides the default meta tags
@@ -71,11 +104,14 @@ const {
 
     <ViewTransitions fallback="none" />
 
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd)}></script>
+
     <script is:inline src="/theme-init.js"></script>
   </head>
   <body class="bg-background text-foreground">
     <Header locale={locale} />
     <slot />
     <Footer locale={locale} />
+    <Analytics />
   </body>
 </html>

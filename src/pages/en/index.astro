@@ -18,6 +18,7 @@ import Projects from "@/components/Projects.astro"
 import Education from "@/components/Education.astro"
 import Certifications from "@/components/Certifications.astro"
 import AboutMe from "@/components/AboutMe.astro"
+import ContactForm from "@/components/ContactForm.astro"
 import SectionContainer from "@/components/SectionContainer.astro"
 import TitleSection from "@/components/TitleSection.astro"
 
@@ -27,6 +28,7 @@ import CodeIcon from "@/components/icons/Code.astro"
 import GraduationCapIcon from "@/components/icons/GraduationCap.astro"
 import CertificateIcon from "@/components/icons/Certificate.astro"
 import ProfileCheckIcon from "@/components/icons/ProfileCheck.astro"
+import MailIcon from "@/components/icons/Mail.astro"
 ---
 
 <Layout
@@ -84,6 +86,15 @@ import ProfileCheckIcon from "@/components/icons/ProfileCheck.astro"
           {t.about.title}
         </TitleSection>
         <AboutMe locale="en" />
+      </SectionContainer>
+
+      <!-- Contact Section -->
+      <SectionContainer id="contact">
+        <TitleSection>
+          <MailIcon class="size-8" />
+          {t.contactForm.title}
+        </TitleSection>
+        <ContactForm locale="en" />
       </SectionContainer>
     </div>
   </main>

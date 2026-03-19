@@ -21,11 +21,15 @@ const duplicatedTechs = [...technologies, ...technologies]
     <div class="tech-carousel">
       {duplicatedTechs.map((tech, index) => {
         const IconComponent = techIconsMap[tech.name as keyof typeof techIconsMap]
+        const isDuplicate = index >= technologies.length
 
         return (
           <div
             class="tech-item"
             style={`animation-delay: ${(index % technologies.length) * 0.1}s`}
+            aria-hidden={isDuplicate ? "true" : undefined}
+            tabindex={isDuplicate ? "-1" : undefined}
+            data-duplicate={isDuplicate ? "true" : undefined}
           >
             <span class="tech-icon">
               {IconComponent ? (
@@ -165,14 +169,33 @@ const duplicatedTechs = [...technologies, ...technologies]
     }
   }
 
-  /* Reduced motion for accessibility */
+  /* Reduced motion: muestra todos los items en grilla en lugar de carrusel oculto */
   @media (prefers-reduced-motion: reduce) {
+    .tech-carousel-container {
+      overflow: visible;
+      -webkit-mask-image: none;
+      mask-image: none;
+    }
+
+    .tech-carousel-wrapper {
+      width: 100%;
+    }
+
     .tech-carousel {
       animation: none;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1rem;
     }
 
     .tech-item {
       animation: none;
+      min-width: 80px;
+    }
+
+    /* Oculta los items duplicados — solo necesarios para el loop de animación */
+    .tech-item[data-duplicate="true"] {
+      display: none;
     }
   }
 </style>

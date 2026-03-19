@@ -1,9 +1,9 @@
 ---
 // Header Component - Navigation
-import { personalInfo } from "@/lib/data"
 import { getTranslations, type Locale } from "@/lib/i18n"
 import ThemeToggle from "./ThemeToggle.astro"
 import LanguageToggle from "./LanguageToggle.astro"
+import DropdownMenu from "./ui/DropdownMenu.astro"
 
 interface Props {
   locale?: Locale
@@ -14,11 +14,12 @@ const t = getTranslations(locale)
 const prefix = locale === 'es' ? '' : '/en'
 
 const sectionIds = {
-  es: { experience: 'experiencia', projects: 'proyectos', education: 'educacion', certifications: 'certificaciones', about: 'sobre-mi' },
-  en: { experience: 'experience', projects: 'projects', education: 'education', certifications: 'certifications', about: 'about' },
+  es: { experience: 'experiencia', projects: 'proyectos', education: 'educacion', certifications: 'certificaciones', about: 'sobre-mi', contact: 'contacto' },
+  en: { experience: 'experience', projects: 'projects', education: 'education', certifications: 'certifications', about: 'about', contact: 'contact' },
 } as const
 
 const ids = sectionIds[locale]
+const mobileMenuId = `mobile-nav-${locale}`
 
 const navItems = [
   { title: t.nav.experience, label: ids.experience, url: `${prefix}#${ids.experience}` },
@@ -26,7 +27,7 @@ const navItems = [
   { title: t.nav.education, label: ids.education, url: `${prefix}#${ids.education}` },
   { title: t.nav.certifications, label: ids.certifications, url: `${prefix}#${ids.certifications}` },
   { title: t.nav.about, label: ids.about, url: `${prefix}#${ids.about}` },
-  { title: t.nav.contact, label: "contacto", url: `mailto:${personalInfo.email}` },
+  { title: t.nav.contact, label: ids.contact, url: `${prefix}#${ids.contact}` },
 ]
 ---
 
@@ -34,12 +35,28 @@ const navItems = [
   class="fixed top-0 z-50 flex items-center justify-center w-full mx-auto mt-2"
 >
   <nav
+    aria-label={locale === 'es' ? 'Navegación principal' : 'Main navigation'}
     class="flex px-3 text-sm font-medium rounded-full text-foreground/80 justify-center items-center gap-x-1 glass"
   >
+    <DropdownMenu id={mobileMenuId} triggerLabel={t.nav.menu} class="md:hidden">
+      <div class="flex flex-col gap-1">
+        {navItems.map((link) => (
+          <a
+            href={link.url}
+            aria-label={link.label}
+            class="rounded-md px-3 py-2 text-sm text-foreground/85 transition hover:bg-accent hover:text-accent-foreground"
+            role="menuitem"
+          >
+            {link.title}
+          </a>
+        ))}
+      </div>
+    </DropdownMenu>
+
     {
       navItems.map((link) => (
         <a
-          class="relative hidden md:block px-2 py-2 transition hover:text-yellow-500 dark:hover:text-yellow-500"
+          class="relative hidden md:block rounded-md px-3 py-2 transition hover:bg-accent hover:text-accent-foreground"
           aria-label={link.label}
           href={link.url}
         >
@@ -48,7 +65,7 @@ const navItems = [
       ))
     }
 
-    <div class="flex items-center gap-1 md:ml-2 md:border-l md:border-border/50 md:pl-2">
+    <div class="flex items-center gap-1 border-l border-border/50 pl-2 md:ml-2">
       <ThemeToggle />
       <LanguageToggle />
     </div>
@@ -65,9 +82,9 @@ const navItems = [
         if (entry.isIntersecting) {
           navItems.forEach((item) => {
             if (item.getAttribute("aria-label") == entry.target.id) {
-              item.classList.add("text-yellow-500")
+              item.classList.add("nav-active")
             } else {
-              item.classList.remove("text-yellow-500")
+              item.classList.remove("nav-active")
             }
           })
         }
@@ -98,6 +115,15 @@ const navItems = [
 </script>
 
 <style>
+  /* Estado activo del ítem de nav — contraste WCAG AA en ambos modos */
+  .nav-active {
+    color: #92400e; /* yellow-800: ratio ~7:1 sobre fondo claro */
+  }
+
+  :global(.dark) .nav-active {
+    color: #fde047; /* yellow-300: ratio ~9:1 sobre fondo oscuro */
+  }
+
   nav {
     animation: nav-shadown 1s linear both;
     animation-timeline: scroll();

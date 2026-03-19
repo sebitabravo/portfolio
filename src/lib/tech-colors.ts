@@ -229,10 +229,23 @@ export const techColors: Record<string, TechStyle> = {
  * Returns default style if tech not found in mapping
  */
 export function getTechStyle(tech: string): TechStyle {
-  return techColors[tech] || {
+  const fallbackStyle: TechStyle = {
     bg: 'bg-neutral-100 dark:bg-neutral-800',
     text: 'text-neutral-900 dark:text-neutral-100',
     border: 'border-neutral-300 dark:border-neutral-700',
     hoverBg: 'hover:bg-neutral-200 dark:hover:bg-neutral-700'
+  }
+
+  const style = techColors[tech] || fallbackStyle
+
+  // En light mode los colores de marca sobre fondo pastel no pasan WCAG AA (ratio < 4.5:1).
+  // Forzamos text-foreground en light y preservamos el color de marca solo en dark.
+  const existingDark = style.text.split(' ').find(c => c.startsWith('dark:text-'))
+  const lightText = style.text.split(' ').find(c => c.startsWith('text-')) ?? 'text-foreground'
+  const darkText = existingDark ?? `dark:${lightText}`
+
+  return {
+    ...style,
+    text: `text-foreground ${darkText}`,
   }
 }

@@ -20,6 +20,9 @@
 - **Responsive** - Mobile-first design
 - **Image Optimization** - Automatic WebP/AVIF via `astro:assets`
 - **View Transitions** - Smooth page navigation
+- **Contact Form** - Functional form with validation and feedback states
+- **SEO Ready** - Automatic sitemap + robots + JSON-LD schema
+- **Quality Gates** - Vitest smoke tests + link validation in CI
 
 ## Tech Stack
 
@@ -34,6 +37,13 @@
 ```bash
 pnpm install
 pnpm dev
+```
+
+## Testing
+
+```bash
+pnpm test
+pnpm validate:links
 ```
 
 ## Project Structure

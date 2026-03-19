@@ -28,6 +28,7 @@ const duplicatedTechs = [...technologies, ...technologies]
             class="tech-item"
             style={`animation-delay: ${(index % technologies.length) * 0.1}s`}
             aria-hidden={isDuplicate ? "true" : undefined}
+            tabindex={isDuplicate ? "-1" : undefined}
             data-duplicate={isDuplicate ? "true" : undefined}
           >
             <span class="tech-icon">

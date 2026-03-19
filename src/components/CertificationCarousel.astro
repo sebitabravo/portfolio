@@ -26,6 +26,7 @@ const duplicatedCerts = [...certifications, ...certifications]
     <div class="cert-carousel">
       {duplicatedCerts.map((cert, index) => {
         const { name, organization, logo, pdfUrl } = cert.data
+        const isDuplicate = index >= certifications.length
 
         return (
           <a
@@ -35,6 +36,8 @@ const duplicatedCerts = [...certifications, ...certifications]
             class="cert-item"
             style={`animation-delay: ${(index % certifications.length) * 0.15}s`}
             title={`${name} - ${organization}`}
+            aria-hidden={isDuplicate ? "true" : undefined}
+            data-duplicate={isDuplicate ? "true" : undefined}
           >
             {logo ? (
               <div class="cert-logo-wrapper">
@@ -229,14 +232,33 @@ const duplicatedCerts = [...certifications, ...certifications]
     }
   }
 
-  /* Reduced motion for accessibility */
+  /* Reduced motion: muestra todas las certificaciones en grilla en lugar de carrusel oculto */
   @media (prefers-reduced-motion: reduce) {
+    .cert-carousel-container {
+      overflow: visible;
+      -webkit-mask-image: none;
+      mask-image: none;
+    }
+
+    .cert-carousel-wrapper {
+      width: 100%;
+    }
+
     .cert-carousel {
       animation: none;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1rem;
     }
 
     .cert-item {
       animation: none;
+      min-width: 140px;
+    }
+
+    /* Oculta los items duplicados — solo necesarios para el loop de animación */
+    .cert-item[data-duplicate="true"] {
+      display: none;
     }
   }
 </style>

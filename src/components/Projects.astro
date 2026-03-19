@@ -15,9 +15,6 @@ import Button from "./ui/Button.astro"
 import Badge from "./ui/Badge.astro"
 import Dialog from "./ui/Dialog.astro"
 import Skeleton from "./ui/Skeleton.astro"
-import Tabs from "./ui/Tabs.astro"
-import Tooltip from "./ui/Tooltip.astro"
-import Separator from "./ui/Separator.astro"
 
 interface Props {
   locale?: Locale
@@ -37,25 +34,9 @@ const imageMap = {
   crm: crmImage,
 } as const
 
-const tagSet = new Set<string>()
-projects.forEach((project) => {
-  project.tags.forEach((tag) => tagSet.add(tag))
-})
-
-const tabsId = `projects-tabs-${locale}`
-const tagOptions = [
-  { value: "all", label: t.projects.filterAll },
-  ...Array.from(tagSet).map((tag) => ({ value: tag, label: tag })),
-]
 ---
 
 <div class="space-y-10">
-  <div class="flex justify-center">
-    <Tabs id={tabsId} options={tagOptions} class="max-w-3xl" />
-  </div>
-
-  <Separator class="mx-auto max-w-4xl" />
-
   <div class="flex flex-col gap-y-16" data-projects-list>
     {projects.map(({ slug, image, title, description, fullDescription, tags, liveUrl, githubUrl, featured }) => {
       const imageSource = imageMap[image as keyof typeof imageMap] ?? camportImage
@@ -101,12 +82,10 @@ const tagOptions = [
                 const Icon = getTechIcon(tag)
 
                 return (
-                  <Tooltip text={`${t.projects.technologyLabel}: ${tag}`}>
-                    <Badge variant="tech" class={`${style.bg} ${style.text} ${style.border} flex items-center gap-1.5`}>
-                      {Icon && <Icon class="size-4" />}
-                      {tag}
-                    </Badge>
-                  </Tooltip>
+                  <Badge variant="tech" class={`${style.bg} ${style.text} ${style.border} flex items-center gap-1.5`}>
+                    {Icon && <Icon class="size-4" />}
+                    {tag}
+                  </Badge>
                 )
               })}
             </div>
@@ -115,14 +94,16 @@ const tagOptions = [
 
             <footer class="mt-6 flex flex-wrap items-center gap-3">
               {githubUrl && (
-                <Button variant="outline" size="sm" href={githubUrl} target="_blank" rel="noopener">
+                <Button variant="outline" size="sm" href={githubUrl} target="_blank" rel="noopener"
+                  data-track-project={slug} data-track-action="code">
                   <GitHubIcon class="size-4" />
                   {t.projects.viewCode}
                 </Button>
               )}
 
               {liveUrl && (
-                <Button variant="default" size="sm" href={liveUrl} target="_blank" rel="noopener">
+                <Button variant="default" size="sm" href={liveUrl} target="_blank" rel="noopener"
+                  data-track-project={slug} data-track-action="live">
                   <LinkIcon class="size-4" />
                   {t.projects.viewProject}
                 </Button>
@@ -161,37 +142,23 @@ const tagOptions = [
   </div>
 </div>
 
-<script is:inline define:vars={{ tabsId }}>
-  const setupProjectFilters = () => {
-    const tabsElement = document.getElementById(tabsId)
-    if (!(tabsElement instanceof HTMLElement)) return
-    if (tabsElement.dataset.filtersBound === "true") return
+<script>
+  import { trackEvent } from "@/lib/analytics"
 
-    tabsElement.dataset.filtersBound = "true"
-
-    const cards = document.querySelectorAll("[data-project-card]")
-    const applyFilter = (value) => {
-      cards.forEach((card) => {
-        if (!(card instanceof HTMLElement)) return
-
-        const tags = card.dataset.projectTags?.split(",") ?? []
-        const isVisible = value === "all" || tags.includes(value)
-        card.classList.toggle("hidden", !isVisible)
+  const setupProjects = () => {
+    // --- Tracking de clicks en botones de proyecto ---
+    const trackButtons = document.querySelectorAll<HTMLElement>("[data-track-project]")
+    trackButtons.forEach((btn) => {
+      if (btn.dataset.trackBound === "true") return
+      btn.dataset.trackBound = "true"
+      btn.addEventListener("click", () => {
+        const project = btn.dataset.trackProject ?? ""
+        const action = (btn.dataset.trackAction ?? "details") as "live" | "code" | "details"
+        trackEvent({ name: "project_view", props: { project, action } })
       })
-    }
-
-    const initialValue = tabsElement.dataset.tabsValue || "all"
-    applyFilter(initialValue)
-
-    tabsElement.addEventListener("tabs:change", (event) => {
-      const customEvent = event
-      const value = customEvent.detail?.value
-      if (typeof value === "string") {
-        applyFilter(value)
-      }
     })
   }
 
-  document.addEventListener("astro:page-load", setupProjectFilters)
-  setupProjectFilters()
+  document.addEventListener("astro:page-load", setupProjects)
+  setupProjects()
 </script>

@@ -57,17 +57,44 @@ const contactUrl = locale === 'es' ? '#contacto' : '/en#contact'
       <MailIcon class="size-4" />
       {t.hero.contact}
     </SocialPill>
-    <SocialPill href={social.linkedin} target="_blank" rel="noopener">
+    <SocialPill href={social.linkedin} target="_blank" rel="noopener" data-track-social="linkedin">
       <LinkedInIcon class="size-4" />
       LinkedIn
     </SocialPill>
-    <SocialPill href={social.github} target="_blank" rel="noopener">
+    <SocialPill href={social.github} target="_blank" rel="noopener" data-track-social="github">
       <GitHubIcon class="size-4" />
       GitHub
     </SocialPill>
-    <SocialPill href={cvPdf} target="_blank" rel="noopener">
+    <SocialPill href={cvPdf} target="_blank" rel="noopener" data-track-cv={locale}>
       <DownloadIcon class="size-4" />
       {t.hero.downloadCv}
     </SocialPill>
   </nav>
 </div>
+
+<script>
+  import { trackEvent } from "@/lib/analytics"
+
+  const setupHeroTracking = () => {
+    // Tracking de social pills
+    document.querySelectorAll<HTMLElement>("[data-track-social]").forEach((el) => {
+      if (el.dataset.trackBound === "true") return
+      el.dataset.trackBound = "true"
+      el.addEventListener("click", () => {
+        trackEvent({ name: "social_click", props: { platform: el.dataset.trackSocial ?? "" } })
+      })
+    })
+
+    // Tracking de descarga de CV
+    document.querySelectorAll<HTMLElement>("[data-track-cv]").forEach((el) => {
+      if (el.dataset.trackBound === "true") return
+      el.dataset.trackBound = "true"
+      el.addEventListener("click", () => {
+        trackEvent({ name: "cv_download", props: { locale: el.dataset.trackCv ?? "" } })
+      })
+    })
+  }
+
+  document.addEventListener("astro:page-load", setupHeroTracking)
+  setupHeroTracking()
+</script>

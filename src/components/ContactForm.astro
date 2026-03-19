@@ -87,7 +87,9 @@ const endpoint = `https://formsubmit.co/ajax/${personalInfo.email}`
   <Toast id={toastId} />
 </div>
 
-<script is:inline>
+<script>
+  import { trackEvent } from "@/lib/analytics"
+
   const initializeContactForms = () => {
     const forms = document.querySelectorAll("[data-contact-form]")
 
@@ -150,8 +152,10 @@ const endpoint = `https://formsubmit.co/ajax/${personalInfo.email}`
 
           formElement.reset()
           showFeedback(successMessage, "success")
+          trackEvent({ name: "contact_submit", props: { status: "success" } })
         } catch {
           showFeedback(errorMessage, "error")
+          trackEvent({ name: "contact_submit", props: { status: "error" } })
         } finally {
           if (submitButton instanceof HTMLButtonElement) {
             submitButton.disabled = false

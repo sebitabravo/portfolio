@@ -2,47 +2,111 @@ name: Reviewer Auto PR
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened]
+    types: [review_requested]
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: "PR number to review manually"
+        required: true
+        type: string
 
 permissions:
   contents: read
   pull-requests: write
+  issues: write
 
 concurrency:
-  group: reviewer-${{ github.event.pull_request.number }}
+  group: reviewer-${{ github.event.pull_request.number || inputs.pr_number || github.run_id }}
   cancel-in-progress: true
 
 jobs:
   reviewer:
-    if: |
-      !github.event.pull_request.draft &&
-      github.event.pull_request.head.repo.fork == false
     runs-on: [self-hosted, openclaw-reviewer]
     timeout-minutes: 15
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
-          fetch-depth: 1
-
-      - name: Run reviewer assistant
+      - name: Resolve trigger context
+        id: ctx
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-          REPO: ${{ github.repository }}
-          PR_URL: ${{ github.event.pull_request.html_url }}
-          PR_TITLE: ${{ github.event.pull_request.title }}
-          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
-          PR_BASE_REF: ${{ github.event.pull_request.base.ref }}
-          PR_HEAD_REF: ${{ github.event.pull_request.head.ref }}
-          OPENCLAW_REVIEWER_COMMAND: ${{ vars.OPENCLAW_REVIEWER_COMMAND }}
+          EVENT_NAME: ${{ github.event_name }}
+          PR_NUMBER_FROM_EVENT: ${{ github.event.pull_request.number }}
+          PR_NUMBER_FROM_INPUT: ${{ inputs.pr_number }}
+          REQUESTED_REVIEWER: ${{ github.event.requested_reviewer.login }}
+          PR_DRAFT: ${{ github.event.pull_request.draft }}
+          PR_IS_FORK: ${{ github.event.pull_request.head.repo.fork }}
+          CONFIGURED_REVIEWER_LOGIN: ${{ vars.OPENCLAW_REVIEWER_LOGIN }}
+          DEFAULT_REVIEWER_LOGIN: sebitabravo-code
         shell: bash
         run: |
           set -euo pipefail
-          if [ -z "${OPENCLAW_REVIEWER_COMMAND:-}" ]; then
-            gh pr comment "$PR_NUMBER" --repo "$REPO" --body "⚠️ Reviewer auto activo, pero falta OPENCLAW_REVIEWER_COMMAND en Variables de Actions."
+
+          REVIEWER_LOGIN="${CONFIGURED_REVIEWER_LOGIN:-$DEFAULT_REVIEWER_LOGIN}"
+
+          if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
+            if [ -z "${PR_NUMBER_FROM_INPUT:-}" ]; then
+              echo "::error::workflow_dispatch requires pr_number"
+              exit 1
+            fi
+
+            echo "should_run=true" >> "$GITHUB_OUTPUT"
+            echo "pr_number=$PR_NUMBER_FROM_INPUT" >> "$GITHUB_OUTPUT"
+            echo "reason=manual-dispatch" >> "$GITHUB_OUTPUT"
             exit 0
           fi
 
-          bash -lc "$OPENCLAW_REVIEWER_COMMAND"
+          if [ "${PR_DRAFT:-false}" = "true" ]; then
+            echo "should_run=false" >> "$GITHUB_OUTPUT"
+            echo "reason=draft-pr" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          if [ "${PR_IS_FORK:-false}" = "true" ]; then
+            echo "should_run=false" >> "$GITHUB_OUTPUT"
+            echo "reason=fork-pr" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          if [ -z "${REQUESTED_REVIEWER:-}" ]; then
+            echo "should_run=false" >> "$GITHUB_OUTPUT"
+            echo "reason=no-requested-reviewer" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          if [ "$REQUESTED_REVIEWER" != "$REVIEWER_LOGIN" ]; then
+            echo "should_run=false" >> "$GITHUB_OUTPUT"
+            echo "reason=requested-reviewer-$REQUESTED_REVIEWER-does-not-match-$REVIEWER_LOGIN" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo "should_run=true" >> "$GITHUB_OUTPUT"
+          echo "pr_number=$PR_NUMBER_FROM_EVENT" >> "$GITHUB_OUTPUT"
+          echo "reason=review-requested-for-$REVIEWER_LOGIN" >> "$GITHUB_OUTPUT"
+
+      - name: Skip when trigger does not qualify
+        if: steps.ctx.outputs.should_run != 'true'
+        run: echo "Skipping reviewer workflow: ${{ steps.ctx.outputs.reason }}"
+
+      - name: Run reviewer assistant
+        if: steps.ctx.outputs.should_run == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ steps.ctx.outputs.pr_number }}
+          REPO: ${{ github.repository }}
+          REVIEWER_MODE: isolated
+          ALLOWED_COMMANDS: gh,git,jq
+          OPENCLAW_REVIEWER_COMMAND: ${{ vars.OPENCLAW_REVIEWER_COMMAND }}
+          DEFAULT_OPENCLAW_REVIEWER_COMMAND: bash /home/node/.openclaw/workspace-reviewer/scripts/run-reviewer-secured.sh
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if ! command -v gh >/dev/null 2>&1; then
+            echo "::error::GitHub CLI (gh) is required on the self-hosted runner"
+            exit 1
+          fi
+
+          REVIEW_CMD="${OPENCLAW_REVIEWER_COMMAND:-$DEFAULT_OPENCLAW_REVIEWER_COMMAND}"
+
+          echo "Running reviewer for PR #$PR_NUMBER on $REPO"
+          echo "Command: $REVIEW_CMD"
+
+          bash -lc "$REVIEW_CMD"

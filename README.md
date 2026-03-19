@@ -46,6 +46,12 @@ pnpm test
 pnpm validate:links
 ```
 
+## CI/CD
+
+- **Primary quality gate:** `.github/workflows/ci.yml` on PRs and pushes to `main` (unit tests, Playwright E2E, link validation, and build).
+- **Lighthouse audit:** `.github/workflows/lighthouse.yml` runs as an informational workflow with `continue-on-error: true` and manual trigger support via `workflow_dispatch`.
+- **Official deployment source:** Vercel native GitHub integration (no GitHub Actions deploy workflow).
+
 ## Project Structure
 
 ```

@@ -229,10 +229,12 @@ export const techColors: Record<string, TechStyle> = {
  * Returns default style if tech not found in mapping
  */
 export function getTechStyle(tech: string): TechStyle {
-  return techColors[tech] || {
+  const fallbackStyle: TechStyle = {
     bg: 'bg-neutral-100 dark:bg-neutral-800',
     text: 'text-neutral-900 dark:text-neutral-100',
     border: 'border-neutral-300 dark:border-neutral-700',
     hoverBg: 'hover:bg-neutral-200 dark:hover:bg-neutral-700'
   }
+
+  return techColors[tech] || fallbackStyle
 }

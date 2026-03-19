@@ -11,6 +11,7 @@ const { locale = 'es' } = Astro.props
 const t = getTranslations(locale)
 const currentYear = new Date().getFullYear()
 const aboutUrl = locale === 'es' ? '#sobre-mi' : '/en#about'
+const contactUrl = locale === 'es' ? '#contacto' : '/en#contact'
 ---
 
 <footer
@@ -31,7 +32,7 @@ const aboutUrl = locale === 'es' ? '#sobre-mi' : '/en#about'
         <a href={aboutUrl} class="me-4 md:me-6">{t.nav.about}</a>
       </li>
       <li>
-        <a id="contacto" href={`mailto:${personalInfo.email}`}>
+        <a href={contactUrl}>
           {t.nav.contact}
         </a>
       </li>

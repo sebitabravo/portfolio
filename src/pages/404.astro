@@ -1,0 +1,18 @@
+---
+import Layout from "@/layouts/Layout.astro"
+import Button from "@/components/ui/Button.astro"
+import { personalInfo } from "@/lib/data"
+---
+
+<Layout
+  title={`404 | ${personalInfo.name}`}
+  description="La página que buscás no existe."
+  locale="es"
+>
+  <main class="mx-auto flex min-h-[60vh] max-w-2xl flex-col items-center justify-center gap-6 px-4 text-center">
+    <p class="text-sm font-semibold uppercase tracking-[0.2em] text-muted-foreground">Error 404</p>
+    <h1 class="text-4xl font-bold text-foreground md:text-5xl">Esta página se perdió en el deploy</h1>
+    <p class="max-w-xl text-foreground/80">No encontramos lo que buscabas. Volvé al inicio y seguimos desde ahí.</p>
+    <Button href="/" variant="default" size="lg">Volver al inicio</Button>
+  </main>
+</Layout>

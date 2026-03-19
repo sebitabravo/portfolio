@@ -3,7 +3,7 @@
  */
 
 // Importar todos los iconos de tecnologías
-import Astro from '@/components/icons/Astro.astro';
+import AstroIcon from '@/components/icons/AstroIcon.astro';
 import Docker from '@/components/icons/Docker.astro';
 import Git from '@/components/icons/Git.astro';
 import Nextjs from '@/components/icons/Nextjs.astro';
@@ -31,7 +31,7 @@ export const techIconsMap = {
 	Git: Git,
 	GitHub: GitHub,
 	Docker: Docker,
-	Astro: Astro,
+	Astro: AstroIcon,
 	'Tailwind CSS': TailwindCSS,
 	Bootstrap: Bootstrap,
 	Cloudflare: Cloudflare,

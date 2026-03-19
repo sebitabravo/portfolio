@@ -18,16 +18,19 @@ interface Props {
 
 const { locale = 'es' } = Astro.props
 const t = getTranslations(locale)
+const contactUrl = locale === 'es' ? '#contacto' : '/en#contact'
 ---
 
 <div class="max-w-xl">
   <div class="flex gap-4 mb-4">
     <Image
-      class="rounded-full shadow-lg size-16"
       src={profileImage}
-      width={64}
-      height={64}
       alt={personalInfo.name}
+      width={128}
+      height={128}
+      format="webp"
+      quality={90}
+      class="size-16 rounded-full object-cover shadow-lg"
     />
     {personalInfo.available && (
       <a
@@ -50,7 +53,7 @@ const t = getTranslations(locale)
   </p>
 
   <nav class="flex flex-wrap gap-4 mt-8">
-    <SocialPill href={`mailto:${personalInfo.email}`}>
+    <SocialPill href={contactUrl}>
       <MailIcon class="size-4" />
       {t.hero.contact}
     </SocialPill>

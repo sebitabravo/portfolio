@@ -1,6 +1,7 @@
 {
   "nav": {
     "home": "Inicio",
+    "menu": "Menú",
     "experience": "Experiencia",
     "projects": "Proyectos",
     "education": "Educación",
@@ -24,7 +25,10 @@
     "viewAll": "Ver todos los proyectos",
     "viewProject": "Ver proyecto",
     "viewCode": "Ver código",
+    "viewDetails": "Ver detalles",
     "viewMoreGithub": "Ver más proyectos en GitHub",
+    "filterAll": "Todas",
+    "technologyLabel": "Tecnología",
     "technologies": "Tecnologías",
     "featured": "Destacado",
     "noProjects": "Aún no hay proyectos. ¡Vuelve pronto!",
@@ -74,10 +78,26 @@
     "madeWith": "Hecho con",
     "in": "en"
   },
+  "contactForm": {
+    "title": "Contacto",
+    "subtitle": "Mandame un mensaje directo. Te respondo por correo lo antes posible.",
+    "nameLabel": "Nombre",
+    "namePlaceholder": "Tu nombre",
+    "emailLabel": "Email",
+    "emailPlaceholder": "tu@email.com",
+    "messageLabel": "Mensaje",
+    "messagePlaceholder": "Contame sobre tu proyecto o consulta.",
+    "submit": "Enviar mensaje",
+    "sendingMessage": "Enviando...",
+    "successMessage": "Mensaje enviado correctamente. Gracias por contactarme.",
+    "errorMessage": "No se pudo enviar el mensaje. Probá de nuevo en unos minutos.",
+    "privacyNote": "No comparto tu correo ni tus datos con terceros."
+  },
   "common": {
     "readMore": "Leer más",
     "learnMore": "Aprender más",
     "viewMore": "Ver más",
-    "backToHome": "Volver al inicio"
+    "backToHome": "Volver al inicio",
+    "close": "Cerrar"
   }
 }

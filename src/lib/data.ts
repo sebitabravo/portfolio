@@ -73,6 +73,7 @@ export const workExperience = workExperienceData.es
 const projectsData = {
   es: [
     {
+      slug: "camport",
       title: "CAMPORT - Sistema de Gestión Ganadera",
       description: "Un sistema de gestión ganadera con integración IoT.",
       fullDescription: `Una solución integral para la gestión ganadera, aprovechando IoT para el seguimiento de animales y la recopilación de datos en tiempo real.
@@ -92,12 +93,13 @@ const projectsData = {
       tags: ["JavaScript", "IoT"],
       featured: true,
       publishDate: new Date("2025-10-16"),
-      image: "https://images.unsplash.com/photo-1585707995234-2613840417c7?w=800&h=600&fit=crop",
-      githubUrl: "https://github.com/sebitabravo/PROYECTO-CAMPORT",
+      image: "camport",
+      githubUrl: "https://github.com/sebitabravo/iotlights",
       liveUrl: undefined,
       order: 1,
     },
     {
+      slug: "banking-client-management",
       title: "Sistema de Gestión de Clientes Bancarios",
       description: "Sistema bancario full-stack con API REST, dashboard interactivo, autenticación JWT y despliegue en Docker",
     fullDescription: `Un sistema completo de gestión de clientes bancarios con API REST, dashboard interactivo, autenticación JWT y despliegue en Docker. Cuenta con un frontend moderno en React con estadísticas completas y análisis de riesgo de clientes.
@@ -122,12 +124,13 @@ const projectsData = {
     tags: ["Django", "React", "PostgreSQL", "Docker"],
     featured: true,
     publishDate: new Date("2025-10-16"),
-    image: "https://images.unsplash.com/photo-1553729459-efe14ef6055d?w=800&h=600&fit=crop",
-    githubUrl: "https://github.com/sebitabravo/EVA3-BACKEND",
-    liveUrl: "https://banco.sbravo.app/",
+    image: "banking",
+    githubUrl: "https://github.com/sebitabravo/eva3-backend",
+    liveUrl: "https://eva3-backend.vercel.app/",
     order: 2,
   },
   {
+    slug: "restaurant-booking-api",
     title: "API de Gestión de Reservas de Restaurante",
     description: "API REST profesional para gestión de reservas de restaurante construida con Django y PostgreSQL",
     fullDescription: `Una API REST profesional para la gestión de reservas de restaurante, construida con Django y Django Rest Framework. Cuenta con autenticación completa, limitación de tasa y estadísticas avanzadas para sistemas de reservas escalables.
@@ -161,12 +164,13 @@ const projectsData = {
     tags: ["Django", "PostgreSQL", "Docker"],
     featured: false,
     publishDate: new Date("2025-10-16"),
-    image: "https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=800&h=600&fit=crop",
+    image: "restaurant",
     githubUrl: "https://github.com/sebitabravo/eva2-backend",
     liveUrl: undefined,
     order: 3,
   },
     {
+      slug: "crm-small-business",
       title: "CRM para Pequeñas Empresas",
       description: "Aplicación web de CRM para gestionar clientes, productos y pedidos de manera eficiente",
       fullDescription: `Una aplicación web de Customer Relationship Management (CRM) diseñada para pequeñas empresas, donde se pueden gestionar clientes, productos y pedidos de manera sencilla y eficiente. Migrado de JavaScript vanilla a React para mejorar la experiencia de usuario.
@@ -186,14 +190,15 @@ const projectsData = {
       tags: ["React", "JavaScript", "Bootstrap"],
       featured: false,
       publishDate: new Date("2025-10-16"),
-      image: "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=800&h=600&fit=crop",
-      githubUrl: "https://github.com/sebitabravo/CRM-REACT",
-      liveUrl: "https://crm-react-virid-nine.vercel.app",
+      image: "crm",
+      githubUrl: "https://github.com/sebitabravo/crm-react",
+      liveUrl: undefined,
       order: 8,
     },
   ],
   en: [
     {
+      slug: "camport",
       title: "CAMPORT - Livestock Management System",
       description: "A livestock management system with IoT integration.",
       fullDescription: `A comprehensive solution for livestock management, leveraging IoT for animal tracking and real-time data collection.
@@ -213,12 +218,13 @@ const projectsData = {
       tags: ["JavaScript", "IoT"],
       featured: true,
       publishDate: new Date("2025-10-16"),
-      image: "https://images.unsplash.com/photo-1585707995234-2613840417c7?w=800&h=600&fit=crop",
-      githubUrl: "https://github.com/sebitabravo/PROYECTO-CAMPORT",
+      image: "camport",
+      githubUrl: "https://github.com/sebitabravo/iotlights",
       liveUrl: undefined,
       order: 1,
     },
     {
+      slug: "banking-client-management",
       title: "Banking Client Management System",
       description: "Full-stack banking system with REST API, interactive dashboard, JWT authentication and Docker deployment",
       fullDescription: `A complete banking client management system with REST API, interactive dashboard, JWT authentication and Docker deployment. Features a modern React frontend with comprehensive statistics and client risk analysis.
@@ -243,12 +249,13 @@ const projectsData = {
       tags: ["Django", "React", "PostgreSQL", "Docker"],
       featured: true,
       publishDate: new Date("2025-10-16"),
-      image: "https://images.unsplash.com/photo-1553729459-efe14ef6055d?w=800&h=600&fit=crop",
-      githubUrl: "https://github.com/sebitabravo/EVA3-BACKEND",
-      liveUrl: "https://banco.sbravo.app/",
+      image: "banking",
+      githubUrl: "https://github.com/sebitabravo/eva3-backend",
+      liveUrl: "https://eva3-backend.vercel.app/",
       order: 2,
     },
     {
+      slug: "restaurant-booking-api",
       title: "Restaurant Booking Management API",
       description: "Professional REST API for restaurant reservation management built with Django and PostgreSQL",
       fullDescription: `A professional REST API for restaurant reservation management, built with Django and Django Rest Framework. Features complete authentication, rate limiting and advanced statistics for scalable booking systems.
@@ -282,12 +289,13 @@ const projectsData = {
       tags: ["Django", "PostgreSQL", "Docker"],
       featured: false,
       publishDate: new Date("2025-10-16"),
-      image: "https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=800&h=600&fit=crop",
+      image: "restaurant",
       githubUrl: "https://github.com/sebitabravo/eva2-backend",
       liveUrl: undefined,
       order: 3,
     },
     {
+      slug: "crm-small-business",
       title: "CRM for Small Businesses",
       description: "Web CRM application to efficiently manage clients, products and orders",
       fullDescription: `A Customer Relationship Management (CRM) web application designed for small businesses, where clients, products and orders can be managed simply and efficiently. Migrated from vanilla JavaScript to React to improve user experience.
@@ -307,9 +315,9 @@ const projectsData = {
       tags: ["React", "JavaScript", "Bootstrap"],
       featured: false,
       publishDate: new Date("2025-10-16"),
-      image: "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=800&h=600&fit=crop",
-      githubUrl: "https://github.com/sebitabravo/CRM-REACT",
-      liveUrl: "https://crm-react-virid-nine.vercel.app",
+      image: "crm",
+      githubUrl: "https://github.com/sebitabravo/crm-react",
+      liveUrl: undefined,
       order: 8,
     },
   ]
@@ -625,4 +633,3 @@ export function getAboutMe(locale: Locale = 'es') {
 
 // Mantener exportación por defecto para compatibilidad
 export const aboutMe = aboutMeData.es
-

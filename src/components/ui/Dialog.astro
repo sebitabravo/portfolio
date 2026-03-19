@@ -1,0 +1,113 @@
+---
+import Button from "@/components/ui/Button.astro"
+import ScrollArea from "@/components/ui/ScrollArea.astro"
+import { cn } from "@/lib/utils"
+
+interface Props {
+  id: string
+  title: string
+  description?: string
+  triggerText: string
+  closeText: string
+  class?: string
+}
+
+const {
+  id,
+  title,
+  description,
+  triggerText,
+  closeText,
+  class: className,
+} = Astro.props
+---
+
+<div class="inline-flex">
+  <button
+    type="button"
+    class={cn(
+      "inline-flex items-center gap-2 rounded-md border border-input bg-background px-3 py-2 text-xs font-medium text-foreground shadow-sm transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring",
+      className,
+    )}
+    data-dialog-trigger={id}
+    aria-controls={id}
+    aria-haspopup="dialog"
+  >
+    <slot name="triggerIcon" />
+    {triggerText}
+  </button>
+
+  <dialog
+    id={id}
+    class="w-[min(90vw,48rem)] rounded-xl border border-border bg-card p-0 text-card-foreground shadow-2xl backdrop:bg-black/55"
+    aria-labelledby={`${id}-title`}
+    aria-describedby={description ? `${id}-description` : undefined}
+  >
+    <article class="p-6 md:p-8">
+      <header class="mb-4 flex items-start justify-between gap-4">
+        <div class="space-y-2">
+          <h3 id={`${id}-title`} class="text-xl font-semibold text-foreground md:text-2xl">{title}</h3>
+          {description && (
+            <p id={`${id}-description`} class="text-sm text-muted-foreground">{description}</p>
+          )}
+        </div>
+        <Button variant="ghost" size="icon" type="button" ariaLabel={closeText} data-dialog-close>
+          <span aria-hidden="true">×</span>
+        </Button>
+      </header>
+
+      <ScrollArea class="max-h-[52vh] border-0 bg-transparent p-0">
+        <div class="space-y-4 text-sm leading-relaxed text-foreground/85 pr-2">
+          <slot />
+        </div>
+      </ScrollArea>
+
+      <footer class="mt-6 flex justify-end">
+        <Button variant="outline" size="sm" type="button" data-dialog-close>{closeText}</Button>
+      </footer>
+    </article>
+  </dialog>
+</div>
+
+<script>
+  if (!window.__portfolioDialogBound) {
+    window.__portfolioDialogBound = true
+
+    document.addEventListener("click", (event) => {
+      const target = event.target
+      if (!(target instanceof Element)) return
+
+      const openTrigger = target.closest("[data-dialog-trigger]")
+      if (openTrigger instanceof HTMLElement) {
+        const dialogId = openTrigger.dataset.dialogTrigger
+        const dialogElement = dialogId ? document.getElementById(dialogId) : null
+        if (dialogElement instanceof HTMLDialogElement) {
+          dialogElement.showModal()
+        }
+        return
+      }
+
+      const closeTrigger = target.closest("[data-dialog-close]")
+      if (closeTrigger instanceof HTMLElement) {
+        const dialogElement = closeTrigger.closest("dialog")
+        if (dialogElement instanceof HTMLDialogElement) {
+          dialogElement.close()
+        }
+        return
+      }
+
+      if (target instanceof HTMLDialogElement) {
+        const { left, right, top, bottom } = target.getBoundingClientRect()
+        const clickOutside =
+          event.clientX < left ||
+          event.clientX > right ||
+          event.clientY < top ||
+          event.clientY > bottom
+
+        if (clickOutside) {
+          target.close()
+        }
+      }
+    })
+  }
+</script>

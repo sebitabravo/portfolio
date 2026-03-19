@@ -9,7 +9,7 @@ import MonitorIcon from "./icons/Monitor.astro"
   <button
     id="theme-toggle"
     type="button"
-    class="inline-flex items-center justify-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-foreground/80 hover:bg-muted/50 transition-colors"
+    class="inline-flex h-11 min-w-11 items-center justify-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-foreground/80 transition-colors hover:bg-muted/50"
     aria-label="Toggle theme"
   >
     <SunIcon class="size-4 theme-icon-light hidden" />
@@ -63,27 +63,39 @@ import MonitorIcon from "./icons/Monitor.astro"
 
 <script>
   function initThemeToggle() {
+    type ThemePreference = 'light' | 'dark' | 'system'
     const THEME_KEY = 'theme'
     
-    const toggle = document.getElementById('theme-toggle')
-    const menu = document.getElementById('theme-menu')
-    const wrapper = document.getElementById('theme-toggle-wrapper')
-    
-    if (!toggle || !menu || !wrapper) return
+    const toggleElement = document.getElementById('theme-toggle')
+    const menuElement = document.getElementById('theme-menu')
+    const wrapperElement = document.getElementById('theme-toggle-wrapper')
 
-    function getThemePreference() {
-      return localStorage.getItem(THEME_KEY) || 'system'
+    if (!(toggleElement instanceof HTMLButtonElement)) return
+    if (!(menuElement instanceof HTMLElement)) return
+    if (!(wrapperElement instanceof HTMLElement)) return
+
+    const toggle = toggleElement
+    const menu = menuElement
+    const wrapper = wrapperElement
+
+    function getThemePreference(): ThemePreference {
+      const value = localStorage.getItem(THEME_KEY)
+      if (value === 'light' || value === 'dark' || value === 'system') {
+        return value
+      }
+
+      return 'system'
     }
 
-    function setThemePreference(theme) {
+    function setThemePreference(theme: ThemePreference) {
       localStorage.setItem(THEME_KEY, theme)
     }
 
-    function getSystemTheme() {
+    function getSystemTheme(): 'light' | 'dark' {
       return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
     }
 
-    function updateThemeIcon(theme) {
+    function updateThemeIcon(theme: ThemePreference) {
       const lightIcon = wrapper.querySelector('.theme-icon-light')
       const darkIcon = wrapper.querySelector('.theme-icon-dark')
       const systemIcon = wrapper.querySelector('.theme-icon-system')
@@ -119,7 +131,7 @@ import MonitorIcon from "./icons/Monitor.astro"
       }
     }
 
-    function applyTheme(theme) {
+    function applyTheme(theme: ThemePreference) {
       const effectiveTheme = theme === 'system' ? getSystemTheme() : theme
       const html = document.documentElement
       
@@ -156,7 +168,7 @@ import MonitorIcon from "./icons/Monitor.astro"
       button.addEventListener('click', (e) => {
         e.preventDefault()
         const theme = (e.currentTarget as HTMLElement).dataset.theme
-        if (theme) {
+        if (theme === 'light' || theme === 'dark' || theme === 'system') {
           setThemePreference(theme)
           applyTheme(theme)
           menu.classList.add('hidden')

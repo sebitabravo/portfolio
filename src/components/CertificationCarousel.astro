@@ -37,6 +37,7 @@ const duplicatedCerts = [...certifications, ...certifications]
             style={`animation-delay: ${(index % certifications.length) * 0.15}s`}
             title={`${name} - ${organization}`}
             aria-hidden={isDuplicate ? "true" : undefined}
+            tabindex={isDuplicate ? "-1" : undefined}
             data-duplicate={isDuplicate ? "true" : undefined}
           >
             {logo ? (

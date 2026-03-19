@@ -33,9 +33,9 @@ const dateText = current
 <div class="relative mx-12 pb-12 grid before:absolute before:left-[-35px] before:block before:h-full before:border-l-2 before:border-black/20 dark:before:border-white/15 before:content-[''] md:grid-cols-5 md:gap-10 md:space-x-4]">
   <div class="relative pb-12 md:col-span-2">
     <div class="sticky top-0">
-      <span class="text-yellow-500 -left-[42px] absolute rounded-full text-5xl">&bull;</span>
+      <span class="text-yellow-800 dark:text-yellow-300 -left-[42px] absolute rounded-full text-5xl">&bull;</span>
 
-      <h3 class="text-xl font-bold text-yellow-500">{position}</h3>
+      <h3 class="text-xl font-bold text-yellow-800 dark:text-yellow-300">{position}</h3>
       <h4 class="font-semibold text-xl text-foreground">{company}</h4>
       <time class="p-0 m-0 text-sm text-foreground/80">{dateText}</time>
       {location && <p class="text-sm text-foreground/80">{location}</p>}
@@ -59,7 +59,7 @@ const dateText = current
     )}
 
     {url && (
-      <Button variant="link" size="sm" href={url} target="_blank" rel="noopener" class="justify-start p-0 mt-2 text-yellow-500 hover:text-yellow-600">
+      <Button variant="link" size="sm" href={url} target="_blank" rel="noopener" class="justify-start p-0 mt-2 text-yellow-800 dark:text-yellow-300 hover:text-yellow-900 dark:hover:text-yellow-200">
         {t.work.viewMore}
       </Button>
     )}

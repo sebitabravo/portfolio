@@ -1,93 +1,164 @@
 ---
-// Projects Component
+import { Picture } from "astro:assets"
 import { getProjects } from "@/lib/data"
 import { getTranslations, type Locale } from "@/lib/i18n"
 import { getTechStyle } from "@/lib/tech-colors"
 import { getTechIcon } from "@/lib/tech-icons-map"
+import camportImage from "@/assets/projects/camport.jpg"
+import bankingImage from "@/assets/projects/banking.jpg"
+import restaurantImage from "@/assets/projects/restaurant.jpg"
+import crmImage from "@/assets/projects/crm.jpg"
 import GitHubIcon from "./icons/GitHub.astro"
 import LinkIcon from "./icons/Link.astro"
 import Card from "./ui/Card.astro"
 import Button from "./ui/Button.astro"
 import Badge from "./ui/Badge.astro"
+import Dialog from "./ui/Dialog.astro"
+import Skeleton from "./ui/Skeleton.astro"
 
 interface Props {
   locale?: Locale
 }
 
-const { locale = 'es' } = Astro.props
+const { locale = "es" } = Astro.props
 const t = getTranslations(locale)
-const projects = getProjects(locale)
 
-// Solo mostrar proyectos que tienen vista previa (liveUrl)
-const featuredProjects = projects.filter(project => project.liveUrl).slice(0, 3)
+const projects = getProjects(locale)
+  .slice()
+  .sort((projectA, projectB) => projectA.order - projectB.order)
+
+const imageMap = {
+  camport: camportImage,
+  banking: bankingImage,
+  restaurant: restaurantImage,
+  crm: crmImage,
+} as const
+
 ---
 
-<div class="flex flex-col gap-y-16">
-  {featuredProjects.map(({ image, title, description, tags, liveUrl, githubUrl }) => (
-    <article class="flex flex-col space-x-0 space-y-8 group md:flex-row md:space-x-8 md:space-y-0">
-      <div class="w-full md:w-1/2">
-        <Card class="overflow-hidden border-border/40 hover:border-primary/20">
-          <img
-            alt={title}
-            class="object-cover object-top w-full h-56 transition duration-500 sm:h-full md:scale-110 md:group-hover:scale-105"
-            loading="lazy"
-            src={image}
-            width={800}
-            height={600}
-          />
-        </Card>
-      </div>
+<div class="space-y-10">
+  <div class="flex flex-col gap-y-16" data-projects-list>
+    {projects.map(({ slug, image, title, description, fullDescription, tags, liveUrl, githubUrl, featured }) => {
+      const imageSource = imageMap[image as keyof typeof imageMap] ?? camportImage
+      const dialogId = `project-details-${locale}-${slug}`
 
-      <div class="w-full md:w-1/2 md:max-w-lg">
-        <h3 class="text-2xl font-bold text-foreground">
-          {title}
-        </h3>
+      return (
+        <article
+          class="group flex flex-col space-x-0 space-y-8 md:flex-row md:space-x-8 md:space-y-0"
+          data-project-card
+          data-project-tags={tags.join(",")}
+        >
+          <div class="w-full md:w-1/2">
+            <Card class="overflow-hidden border-border/40 hover:border-primary/20">
+              <div class="relative">
+                <Skeleton class="absolute inset-0 rounded-xl" data-project-skeleton />
+                <Picture
+                  src={imageSource}
+                  alt={title}
+                  width={800}
+                  height={600}
+                  formats={["avif", "webp"]}
+                  quality={85}
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  loading="lazy"
+                  class="h-56 w-full object-cover object-top opacity-0 transition duration-500 sm:h-full md:scale-110 md:group-hover:scale-105"
+                  onload="this.classList.remove('opacity-0'); this.previousElementSibling?.classList.add('hidden')"
+                />
+              </div>
+            </Card>
+          </div>
 
-        <div class="flex flex-wrap mt-2">
-          <ul class="flex flex-row mb-2 gap-x-2 flex-wrap gap-y-2">
-            {tags.map((tag) => {
-              const style = getTechStyle(tag)
-              const Icon = getTechIcon(tag)
-              return (
-                <li>
+          <div class="w-full md:w-1/2 md:max-w-lg">
+            <div class="flex flex-wrap items-center gap-2">
+              <h3 class="text-2xl font-bold text-foreground">{title}</h3>
+              {featured && (
+                <Badge variant="secondary" size="sm">{t.projects.featured}</Badge>
+              )}
+            </div>
+
+            <div class="mt-4 flex flex-wrap gap-2">
+              {tags.map((tag) => {
+                const style = getTechStyle(tag)
+                const Icon = getTechIcon(tag)
+
+                return (
                   <Badge variant="tech" class={`${style.bg} ${style.text} ${style.border} flex items-center gap-1.5`}>
                     {Icon && <Icon class="size-4" />}
                     {tag}
                   </Badge>
-                </li>
-              )
-            })}
-          </ul>
+                )
+              })}
+            </div>
 
-          <div class="mt-2 text-foreground/80">{description}</div>
+            <p class="mt-4 text-foreground/80">{description}</p>
 
-          <footer class="flex items-end justify-start mt-4 gap-x-4">
-            {githubUrl && (
-              <Button variant="outline" size="sm" href={githubUrl} target="_blank" rel="noopener">
-                <GitHubIcon class="size-4" />
-                {t.projects.viewCode}
-              </Button>
-            )}
-            {liveUrl && (
-              <Button variant="default" size="sm" href={liveUrl} target="_blank" rel="noopener">
-                <LinkIcon class="size-4" />
-                {t.projects.viewProject}
-              </Button>
-            )}
-          </footer>
-        </div>
-      </div>
-    </article>
-  ))}
+            <footer class="mt-6 flex flex-wrap items-center gap-3">
+              {githubUrl && (
+                <Button variant="outline" size="sm" href={githubUrl} target="_blank" rel="noopener"
+                  data-track-project={slug} data-track-action="code">
+                  <GitHubIcon class="size-4" />
+                  {t.projects.viewCode}
+                </Button>
+              )}
 
-  <!-- Ver más proyectos -->
-  <div class="flex justify-center mt-8">
-    <Button variant="outline" size="lg" href="https://github.com/sebitabravo?tab=repositories" target="_blank" rel="noopener">
+              {liveUrl && (
+                <Button variant="default" size="sm" href={liveUrl} target="_blank" rel="noopener"
+                  data-track-project={slug} data-track-action="live">
+                  <LinkIcon class="size-4" />
+                  {t.projects.viewProject}
+                </Button>
+              )}
+
+              <Dialog
+                id={dialogId}
+                title={title}
+                description={description}
+                triggerText={t.projects.viewDetails}
+                closeText={t.common.close}
+              >
+                <p class="whitespace-pre-wrap text-sm text-foreground/85">{fullDescription}</p>
+              </Dialog>
+            </footer>
+          </div>
+        </article>
+      )
+    })}
+  </div>
+
+  <div class="mt-8 flex justify-center">
+    <Button
+      variant="outline"
+      size="lg"
+      href="https://github.com/sebitabravo?tab=repositories"
+      target="_blank"
+      rel="noopener"
+    >
       <GitHubIcon class="size-5" />
       {t.projects.viewMoreGithub}
-      <svg class="size-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+      <svg class="ml-1 size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
       </svg>
     </Button>
   </div>
 </div>
+
+<script>
+  import { trackEvent } from "@/lib/analytics"
+
+  const setupProjects = () => {
+    // --- Tracking de clicks en botones de proyecto ---
+    const trackButtons = document.querySelectorAll<HTMLElement>("[data-track-project]")
+    trackButtons.forEach((btn) => {
+      if (btn.dataset.trackBound === "true") return
+      btn.dataset.trackBound = "true"
+      btn.addEventListener("click", () => {
+        const project = btn.dataset.trackProject ?? ""
+        const action = (btn.dataset.trackAction ?? "details") as "live" | "code" | "details"
+        trackEvent({ name: "project_view", props: { project, action } })
+      })
+    })
+  }
+
+  document.addEventListener("astro:page-load", setupProjects)
+  setupProjects()
+</script>

@@ -236,5 +236,16 @@ export function getTechStyle(tech: string): TechStyle {
     hoverBg: 'hover:bg-neutral-200 dark:hover:bg-neutral-700'
   }
 
-  return techColors[tech] || fallbackStyle
+  const style = techColors[tech] || fallbackStyle
+
+  // En light mode los colores de marca sobre fondo pastel no pasan WCAG AA (ratio < 4.5:1).
+  // Forzamos text-foreground en light y preservamos el color de marca solo en dark.
+  const existingDark = style.text.split(' ').find(c => c.startsWith('dark:text-'))
+  const lightText = style.text.split(' ').find(c => c.startsWith('text-')) ?? 'text-foreground'
+  const darkText = existingDark ?? `dark:${lightText}`
+
+  return {
+    ...style,
+    text: `text-foreground ${darkText}`,
+  }
 }

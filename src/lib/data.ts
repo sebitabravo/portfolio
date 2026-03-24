@@ -7,6 +7,12 @@
 
 import type { Locale } from "@/lib/i18n"
 
+export interface ExperienceLogo {
+  src: string
+  alt: string
+  url: string
+}
+
 // ============================================
 // INFORMACIÓN PERSONAL Y CONFIGURACIÓN
 // ============================================
@@ -35,26 +41,34 @@ const workExperienceData = {
     {
       company: "Temutel",
       position: "Técnico en Redes y Telecomunicaciones",
-      description: `Instalación, configuración y mantenimiento de equipos de telecomunicaciones (routers, decodificadores, sistemas telefónicos) para clientes residenciales y comerciales. Soporte técnico en sitio y configuración de redes.`,
+      description: `Trabajé en Temutel, empresa proveedora de servicios para Telsur. Realicé instalación, configuración y mantenimiento de equipos de telecomunicaciones (routers, decodificadores, sistemas telefónicos) para clientes residenciales y comerciales. Soporte técnico en sitio y configuración de redes.`,
       startDate: new Date("2022-12-01"),
       endDate: new Date("2023-02-28"),
       current: false,
       location: "Temuco, Araucanía, Chile",
       employmentType: "Contrato temporal",
       skills: ["Mantenimiento de Redes", "Instalación de Equipos", "Configuración de Routers", "Soporte Técnico"],
+      logos: [
+        { src: "/experience/temutel.png", alt: "Temutel Telecomunicaciones", url: "https://www.temutel.cl" },
+        { src: "/experience/telsur.png", alt: "Telsur GTD", url: "https://www.telsur.cl" },
+      ],
     }
   ],
   en: [
     {
       company: "Temutel",
       position: "Network and Telecommunications Technician",
-      description: `Installation, configuration and maintenance of telecommunications equipment (routers, decoders, telephone systems) for residential and commercial clients. On-site technical support and network configuration.`,
+      description: `Worked at Temutel, a service provider for Telsur. Performed installation, configuration and maintenance of telecommunications equipment (routers, decoders, telephone systems) for residential and commercial clients. On-site technical support and network configuration.`,
       startDate: new Date("2022-12-01"),
       endDate: new Date("2023-02-28"),
       current: false,
       location: "Temuco, Araucanía, Chile",
       employmentType: "Temporary contract",
       skills: ["Network Maintenance", "Equipment Installation", "Router Configuration", "Technical Support"],
+      logos: [
+        { src: "/experience/temutel.png", alt: "Temutel Telecomunicaciones", url: "https://www.temutel.cl" },
+        { src: "/experience/telsur.png", alt: "Telsur GTD", url: "https://www.telsur.cl" },
+      ],
     }
   ]
 }
@@ -582,7 +596,7 @@ export const skills = {
   frontend: ["React", "Next.js", "TypeScript", "JavaScript", "HTML", "CSS", "Tailwind CSS", "Bootstrap"],
   backend: ["Django", "Python", "Node.js", "REST API", "GraphQL"],
   databases: ["PostgreSQL", "MySQL", "MongoDB", "SQLite"],
-  tools: ["Git", "Docker", "Linux", "Windows", "AWS", "Vercel"],
+  tools: ["Git", "Docker", "Linux", "Windows", "AWS", "Vercel", "Linear"],
   methodologies: ["Scrum", "Agile", "Git Flow"],
 }
 

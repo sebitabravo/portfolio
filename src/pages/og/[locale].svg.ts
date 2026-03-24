@@ -1,4 +1,4 @@
-import type { APIRoute } from "astro"
+import type { APIRoute, GetStaticPaths } from "astro"
 
 export const prerender = true
 

@@ -2,8 +2,11 @@
 /**
  * Portfolio de Sebastian Bravo - Full Stack Developer (English Version)
  *
- * English home page with simple and maintainable architecture.
- * Inspired by midudev's portfolio with centralized data.
+ * Home reestructurada como landing de conversión:
+ * Hero → Proyectos → Experiencia → Educación → Certs → Sobre mí → Contacto
+ *
+ * Issues resueltas: #11 (estructura landing), #14 (interactividad conversión)
+ * Pendiente: #13 (logos clientes — requiere assets reales de empresas)
  */
 import Layout from "@/layouts/Layout.astro"
 import { personalInfo } from "@/lib/data"
@@ -37,22 +40,13 @@ import MailIcon from "@/components/icons/Mail.astro"
   locale="en"
 >
   <main class="px-4">
-    <!-- Hero Section -->
+    <!-- Hero: value proposition + main CTA -->
     <SectionContainer class="py-16 md:py-36">
       <Hero locale="en" />
     </SectionContainer>
 
     <div class="space-y-24">
-      <!-- Experience Section -->
-      <SectionContainer id="experience">
-        <TitleSection>
-          <BriefcaseIcon class="size-8" />
-          {t.work.title}
-        </TitleSection>
-        <Experience locale="en" />
-      </SectionContainer>
-
-      <!-- Projects Section -->
+      <!-- Projects: concrete evidence of work — first scroll -->
       <SectionContainer id="projects">
         <TitleSection>
           <CodeIcon class="size-7" />
@@ -61,7 +55,15 @@ import MailIcon from "@/components/icons/Mail.astro"
         <Projects locale="en" />
       </SectionContainer>
 
-      <!-- Education Section -->
+      <!-- Curriculum content: reinforces credibility -->
+      <SectionContainer id="experience">
+        <TitleSection>
+          <BriefcaseIcon class="size-8" />
+          {t.work.title}
+        </TitleSection>
+        <Experience locale="en" />
+      </SectionContainer>
+
       <SectionContainer id="education">
         <TitleSection>
           <GraduationCapIcon class="size-8" />
@@ -70,7 +72,6 @@ import MailIcon from "@/components/icons/Mail.astro"
         <Education locale="en" />
       </SectionContainer>
 
-      <!-- Certifications Section -->
       <SectionContainer id="certifications">
         <TitleSection>
           <CertificateIcon class="size-8" />
@@ -79,7 +80,6 @@ import MailIcon from "@/components/icons/Mail.astro"
         <Certifications locale="en" />
       </SectionContainer>
 
-      <!-- About Me Section -->
       <SectionContainer id="about">
         <TitleSection>
           <ProfileCheckIcon class="size-8" />
@@ -88,7 +88,7 @@ import MailIcon from "@/components/icons/Mail.astro"
         <AboutMe locale="en" />
       </SectionContainer>
 
-      <!-- Contact Section -->
+      <!-- Contact: at the end, after all credibility content -->
       <SectionContainer id="contact">
         <TitleSection>
           <MailIcon class="size-8" />

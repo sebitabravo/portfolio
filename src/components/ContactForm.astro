@@ -112,7 +112,7 @@ const endpoint = `https://formsubmit.co/ajax/${personalInfo.email}`
         submitButton.dataset.defaultLabel = submitButton.textContent || ""
       }
 
-      const showFeedback = (message, type) => {
+      const showFeedback = (message: string, type: "error" | "success") => {
         if (feedback instanceof HTMLElement) {
           feedback.textContent = message
           feedback.classList.remove("hidden", "text-emerald-600", "text-red-600")

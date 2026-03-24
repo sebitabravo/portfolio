@@ -3,6 +3,7 @@
 import { getTechStyle } from "@/lib/tech-colors"
 import { formatDate } from "@/lib/utils"
 import { getTranslations, type Locale } from "@/lib/i18n"
+import type { ExperienceLogo } from "@/lib/data"
 import Badge from "./ui/Badge.astro"
 import Button from "./ui/Button.astro"
 
@@ -15,11 +16,12 @@ interface Props {
   current: boolean
   location?: string
   skills: string[]
+  logos?: ExperienceLogo[]
   url?: string
   locale?: Locale
 }
 
-const { company, position, description, startDate, endDate, current, location, skills, url, locale = 'es' } = Astro.props
+const { company, position, description, startDate, endDate, current, location, skills, logos, url, locale = 'es' } = Astro.props
 
 const t = getTranslations(locale)
 
@@ -30,38 +32,70 @@ const dateText = current
     : formatDate(startDate, locale)
 ---
 
-<div class="relative mx-12 pb-12 grid before:absolute before:left-[-35px] before:block before:h-full before:border-l-2 before:border-black/20 dark:before:border-white/15 before:content-[''] md:grid-cols-5 md:gap-10 md:space-x-4]">
-  <div class="relative pb-12 md:col-span-2">
-    <div class="sticky top-0">
-      <span class="text-yellow-800 dark:text-yellow-300 -left-[42px] absolute rounded-full text-5xl">&bull;</span>
+<div class="relative pb-12 before:absolute before:left-0 before:block before:h-full before:border-l-2 before:border-black/20 dark:before:border-white/15 before:content-['']">
+  <span class="text-yellow-800 dark:text-yellow-300 -left-[9px] absolute top-1 size-4 rounded-full bg-yellow-800 dark:bg-yellow-300 ring-4 ring-background"></span>
 
-      <h3 class="text-xl font-bold text-yellow-800 dark:text-yellow-300">{position}</h3>
-      <h4 class="font-semibold text-xl text-foreground">{company}</h4>
-      <time class="p-0 m-0 text-sm text-foreground/80">{dateText}</time>
-      {location && <p class="text-sm text-foreground/80">{location}</p>}
-    </div>
-  </div>
+  <div class="ml-8 rounded-2xl border border-border/50 bg-card p-5 shadow-sm">
+    <div class="grid md:grid-cols-5 md:gap-8">
 
-  <div class="relative flex flex-col gap-2 pb-4 text-foreground dark:text-gray-300 md:col-span-3">
-    <p>{description}</p>
+      <!-- Columna izquierda: meta info + logos -->
+      <div class="md:col-span-2 mb-4 md:mb-0">
+        <h3 class="text-lg font-bold text-yellow-800 dark:text-yellow-300 leading-snug">{position}</h3>
+        {(!logos || logos.length === 0) && (
+          <h4 class="font-semibold text-foreground mt-0.5">{company}</h4>
+        )}
+        <time class="text-sm text-foreground/60 mt-1 block">{dateText}</time>
+        {location && <p class="text-sm text-foreground/60">{location}</p>}
 
-    {skills.length > 0 && (
-      <div class="flex flex-wrap gap-2 mt-2">
-        {skills.map((skill) => {
-          const style = getTechStyle(skill)
-          return (
-            <Badge variant="tech" size="sm" class={`${style.bg} ${style.text} ${style.border}`}>
-              {skill}
-            </Badge>
-          )
-        })}
+        {logos && logos.length > 0 && (
+          <div class="flex flex-wrap items-center gap-3 mt-4">
+            {logos.map((logo) => (
+              <a
+                href={logo.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                title={logo.alt}
+                class="group flex size-16 items-center justify-center rounded-xl border border-border/50 bg-white p-2.5 shadow-sm transition-all duration-200 motion-safe:hover:-translate-y-0.5 hover:border-border hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 dark:bg-white/5 dark:hover:bg-white/10"
+              >
+                <img
+                  src={logo.src}
+                  alt={logo.alt}
+                  width={64}
+                  height={64}
+                  loading="lazy"
+                  decoding="async"
+                  class="size-full object-contain opacity-75 transition-opacity duration-200 group-hover:opacity-100 dark:brightness-95"
+                />
+              </a>
+            ))}
+          </div>
+        )}
       </div>
-    )}
 
-    {url && (
-      <Button variant="link" size="sm" href={url} target="_blank" rel="noopener" class="justify-start p-0 mt-2 text-yellow-800 dark:text-yellow-300 hover:text-yellow-900 dark:hover:text-yellow-200">
-        {t.work.viewMore}
-      </Button>
-    )}
+      <!-- Columna derecha: descripción + skills + link -->
+      <div class="flex flex-col gap-2 text-foreground/80 md:col-span-3">
+        <p class="text-sm leading-relaxed">{description}</p>
+
+        {skills.length > 0 && (
+          <div class="flex flex-wrap gap-2 mt-2">
+            {skills.map((skill) => {
+              const style = getTechStyle(skill)
+              return (
+                <Badge variant="tech" size="sm" class={`${style.bg} ${style.text} ${style.border}`}>
+                  {skill}
+                </Badge>
+              )
+            })}
+          </div>
+        )}
+
+        {url && (
+          <Button variant="link" size="sm" href={url} target="_blank" rel="noopener" class="justify-start p-0 mt-2 text-yellow-800 dark:text-yellow-300 hover:text-yellow-900 dark:hover:text-yellow-200">
+            {t.work.viewMore}
+          </Button>
+        )}
+      </div>
+
+    </div>
   </div>
 </div>

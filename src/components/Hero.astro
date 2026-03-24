@@ -52,11 +52,17 @@ const contactUrl = locale === 'es' ? '#contacto' : '/en#contact'
     {t.hero.intro}
   </p>
 
-  <nav class="flex flex-wrap gap-4 mt-8">
-    <SocialPill href={contactUrl}>
+  <nav class="flex flex-wrap gap-3 mt-8">
+    <!-- CTA principal: mayor peso visual para guiar la conversión -->
+    <a
+      href={contactUrl}
+      class="cta-primary inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm motion-safe:transition-all motion-safe:duration-200 hover:bg-primary/90 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 motion-safe:active:scale-95"
+    >
       <MailIcon class="size-4" />
       {t.hero.contact}
-    </SocialPill>
+    </a>
+
+    <!-- CTAs secundarios: menor peso visual -->
     <SocialPill href={social.linkedin} target="_blank" rel="noopener" data-track-social="linkedin">
       <LinkedInIcon class="size-4" />
       LinkedIn

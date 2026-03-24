@@ -5,14 +5,10 @@
  * Inspirado en la arquitectura simple del portfolio de referencia.
  */
 
-import type { ImageMetadata } from "astro"
 import type { Locale } from "@/lib/i18n"
 
-import temutelLogo from "@/assets/experience/temutel.png"
-import telsurLogo from "@/assets/experience/telsur.png"
-
 export interface ExperienceLogo {
-  src: ImageMetadata
+  src: string
   alt: string
   url: string
 }
@@ -53,8 +49,8 @@ const workExperienceData = {
       employmentType: "Contrato temporal",
       skills: ["Mantenimiento de Redes", "Instalación de Equipos", "Configuración de Routers", "Soporte Técnico"],
       logos: [
-        { src: temutelLogo, alt: "Temutel Telecomunicaciones", url: "https://www.temutel.cl" },
-        { src: telsurLogo, alt: "Telsur GTD", url: "https://www.telsur.cl" },
+        { src: "/experience/temutel.png", alt: "Temutel Telecomunicaciones", url: "https://www.temutel.cl" },
+        { src: "/experience/telsur.png", alt: "Telsur GTD", url: "https://www.telsur.cl" },
       ],
     }
   ],
@@ -70,8 +66,8 @@ const workExperienceData = {
       employmentType: "Temporary contract",
       skills: ["Network Maintenance", "Equipment Installation", "Router Configuration", "Technical Support"],
       logos: [
-        { src: temutelLogo, alt: "Temutel Telecomunicaciones", url: "https://www.temutel.cl" },
-        { src: telsurLogo, alt: "Telsur GTD", url: "https://www.telsur.cl" },
+        { src: "/experience/temutel.png", alt: "Temutel Telecomunicaciones", url: "https://www.temutel.cl" },
+        { src: "/experience/telsur.png", alt: "Telsur GTD", url: "https://www.telsur.cl" },
       ],
     }
   ]

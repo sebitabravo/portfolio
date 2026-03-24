@@ -5,7 +5,17 @@
  * Inspirado en la arquitectura simple del portfolio de referencia.
  */
 
+import type { ImageMetadata } from "astro"
 import type { Locale } from "@/lib/i18n"
+
+import temutelLogo from "@/assets/experience/temutel.png"
+import telsurLogo from "@/assets/experience/telsur.png"
+
+export interface ExperienceLogo {
+  src: ImageMetadata
+  alt: string
+  url: string
+}
 
 // ============================================
 // INFORMACIÓN PERSONAL Y CONFIGURACIÓN
@@ -35,26 +45,34 @@ const workExperienceData = {
     {
       company: "Temutel",
       position: "Técnico en Redes y Telecomunicaciones",
-      description: `Instalación, configuración y mantenimiento de equipos de telecomunicaciones (routers, decodificadores, sistemas telefónicos) para clientes residenciales y comerciales. Soporte técnico en sitio y configuración de redes.`,
+      description: `Trabajé en Temutel, empresa proveedora de servicios para Telsur. Realicé instalación, configuración y mantenimiento de equipos de telecomunicaciones (routers, decodificadores, sistemas telefónicos) para clientes residenciales y comerciales. Soporte técnico en sitio y configuración de redes.`,
       startDate: new Date("2022-12-01"),
       endDate: new Date("2023-02-28"),
       current: false,
       location: "Temuco, Araucanía, Chile",
       employmentType: "Contrato temporal",
       skills: ["Mantenimiento de Redes", "Instalación de Equipos", "Configuración de Routers", "Soporte Técnico"],
+      logos: [
+        { src: temutelLogo, alt: "Temutel Telecomunicaciones", url: "https://www.temutel.cl" },
+        { src: telsurLogo, alt: "Telsur GTD", url: "https://www.telsur.cl" },
+      ],
     }
   ],
   en: [
     {
       company: "Temutel",
       position: "Network and Telecommunications Technician",
-      description: `Installation, configuration and maintenance of telecommunications equipment (routers, decoders, telephone systems) for residential and commercial clients. On-site technical support and network configuration.`,
+      description: `Worked at Temutel, a service provider for Telsur. Performed installation, configuration and maintenance of telecommunications equipment (routers, decoders, telephone systems) for residential and commercial clients. On-site technical support and network configuration.`,
       startDate: new Date("2022-12-01"),
       endDate: new Date("2023-02-28"),
       current: false,
       location: "Temuco, Araucanía, Chile",
       employmentType: "Temporary contract",
       skills: ["Network Maintenance", "Equipment Installation", "Router Configuration", "Technical Support"],
+      logos: [
+        { src: temutelLogo, alt: "Temutel Telecomunicaciones", url: "https://www.temutel.cl" },
+        { src: telsurLogo, alt: "Telsur GTD", url: "https://www.telsur.cl" },
+      ],
     }
   ]
 }

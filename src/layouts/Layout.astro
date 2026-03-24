@@ -1,5 +1,5 @@
 ---
-import { ViewTransitions } from "astro:transitions"
+import { ClientRouter } from "astro:transitions"
 import { SEO } from "astro-seo"
 import Analytics from "@vercel/analytics/astro"
 
@@ -102,7 +102,7 @@ const jsonLd = {
       }}
     />
 
-    <ViewTransitions fallback="none" />
+    <ClientRouter fallback="none" />
 
     <script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd)}></script>
 

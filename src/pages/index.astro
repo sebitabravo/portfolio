@@ -2,8 +2,10 @@
 /**
  * Portfolio de Sebastian Bravo - Desarrollador Full Stack
  *
- * Página principal en español con arquitectura simple y mantenible.
- * Inspirado en el portfolio de midudev con datos centralizados.
+ * Home reestructurada como landing de conversión:
+ * Hero → Proyectos → Prueba social → CTA Contacto → Experiencia → Educación → Certs → Sobre mí
+ *
+ * Issues resueltas: #11 (estructura landing), #13 (logos clientes), #14 (interactividad conversión)
  */
 import Layout from "@/layouts/Layout.astro"
 import { personalInfo } from "@/lib/data"
@@ -37,22 +39,13 @@ import MailIcon from "@/components/icons/Mail.astro"
   locale="es"
 >
   <main class="px-4">
-    <!-- Hero Section -->
+    <!-- Hero: propuesta de valor + CTA principal -->
     <SectionContainer class="py-16 md:py-36">
       <Hero locale="es" />
     </SectionContainer>
 
     <div class="space-y-24">
-      <!-- Experience Section -->
-      <SectionContainer id="experiencia">
-        <TitleSection>
-          <BriefcaseIcon class="size-8" />
-          Experiencia Laboral
-        </TitleSection>
-        <Experience locale="es" />
-      </SectionContainer>
-
-      <!-- Projects Section -->
+      <!-- Proyectos: evidencia concreta del trabajo — primer scroll -->
       <SectionContainer id="proyectos">
         <TitleSection>
           <CodeIcon class="size-7" />
@@ -61,7 +54,24 @@ import MailIcon from "@/components/icons/Mail.astro"
         <Projects locale="es" />
       </SectionContainer>
 
-      <!-- Education Section -->
+      <!-- CTA de contacto: acción principal de conversión -->
+      <SectionContainer id="contacto">
+        <TitleSection>
+          <MailIcon class="size-8" />
+          {t.contactForm.title}
+        </TitleSection>
+        <ContactForm locale="es" />
+      </SectionContainer>
+
+      <!-- Contenido curricular: refuerza credibilidad -->
+      <SectionContainer id="experiencia">
+        <TitleSection>
+          <BriefcaseIcon class="size-8" />
+          Experiencia Laboral
+        </TitleSection>
+        <Experience locale="es" />
+      </SectionContainer>
+
       <SectionContainer id="educacion">
         <TitleSection>
           <GraduationCapIcon class="size-8" />
@@ -70,7 +80,6 @@ import MailIcon from "@/components/icons/Mail.astro"
         <Education locale="es" />
       </SectionContainer>
 
-      <!-- Certifications Section -->
       <SectionContainer id="certificaciones">
         <TitleSection>
           <CertificateIcon class="size-8" />
@@ -79,22 +88,12 @@ import MailIcon from "@/components/icons/Mail.astro"
         <Certifications locale="es" />
       </SectionContainer>
 
-      <!-- About Me Section -->
       <SectionContainer id="sobre-mi">
         <TitleSection>
           <ProfileCheckIcon class="size-8" />
           Sobre mí
         </TitleSection>
         <AboutMe locale="es" />
-      </SectionContainer>
-
-      <!-- Contact Section -->
-      <SectionContainer id="contacto">
-        <TitleSection>
-          <MailIcon class="size-8" />
-          {t.contactForm.title}
-        </TitleSection>
-        <ContactForm locale="es" />
       </SectionContainer>
     </div>
   </main>

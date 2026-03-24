@@ -21,13 +21,14 @@ const sectionIds = {
 const ids = sectionIds[locale]
 const mobileMenuId = `mobile-nav-${locale}`
 
+// Orden alineado con la estructura de landing de conversión (#11)
 const navItems = [
-  { title: t.nav.experience, label: ids.experience, url: `${prefix}#${ids.experience}` },
   { title: t.nav.projects, label: ids.projects, url: `${prefix}#${ids.projects}` },
+  { title: t.nav.contact, label: ids.contact, url: `${prefix}#${ids.contact}` },
+  { title: t.nav.experience, label: ids.experience, url: `${prefix}#${ids.experience}` },
   { title: t.nav.education, label: ids.education, url: `${prefix}#${ids.education}` },
   { title: t.nav.certifications, label: ids.certifications, url: `${prefix}#${ids.certifications}` },
   { title: t.nav.about, label: ids.about, url: `${prefix}#${ids.about}` },
-  { title: t.nav.contact, label: ids.contact, url: `${prefix}#${ids.contact}` },
 ]
 ---
 

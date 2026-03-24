@@ -21,6 +21,9 @@ import RestAPI from '@/components/icons/RestAPI.astro';
 import JWT from '@/components/icons/JWT.astro';
 import IoT from '@/components/icons/IoT.astro';
 import Axios from '@/components/icons/Axios.astro';
+import PHP from '@/components/icons/PHP.astro';
+import Laravel from '@/components/icons/Laravel.astro';
+import Inertia from '@/components/icons/Inertia.astro';
 
 export const techIconsMap = {
 	React: React,
@@ -40,7 +43,10 @@ export const techIconsMap = {
 	'REST API': RestAPI,
 	JWT: JWT,
 	IoT: IoT,
-	Axios: Axios
+	Axios: Axios,
+	PHP: PHP,
+	Laravel: Laravel,
+	'Inertia.js': Inertia,
 } as const;
 
 export type TechName = keyof typeof techIconsMap;

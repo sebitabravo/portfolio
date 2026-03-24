@@ -17,5 +17,15 @@ export const technologies: Technology[] = [
 	{ name: 'Bootstrap', icon: '🎨' },
 	{ name: 'Cloudflare', icon: '☁️' },
 	{ name: 'Django', icon: '🌿' },
-	{ name: 'JavaScript', icon: '🟨' }
+	{ name: 'JavaScript', icon: '🟨' },
+	{ name: 'REST API', icon: '🔌' },
+	{ name: 'JWT', icon: '🔑' },
+	{ name: 'IoT', icon: '📡' },
+	{ name: 'Axios', icon: '🌐' },
+	{ name: 'AWS', icon: '☁️' },
+	{ name: 'Python', icon: '🐍' },
+	{ name: 'Vercel', icon: '▲' },
+	{ name: 'PHP', icon: '🐘' },
+	{ name: 'Laravel', icon: '🔺' },
+	{ name: 'Inertia.js', icon: '⚡' },
 ];

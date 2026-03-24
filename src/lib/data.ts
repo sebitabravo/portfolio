@@ -582,7 +582,7 @@ export const skills = {
   frontend: ["React", "Next.js", "TypeScript", "JavaScript", "HTML", "CSS", "Tailwind CSS", "Bootstrap"],
   backend: ["Django", "Python", "Node.js", "REST API", "GraphQL"],
   databases: ["PostgreSQL", "MySQL", "MongoDB", "SQLite"],
-  tools: ["Git", "Docker", "Linux", "Windows", "AWS", "Vercel"],
+  tools: ["Git", "Docker", "Linux", "Windows", "AWS", "Vercel", "Linear"],
   methodologies: ["Scrum", "Agile", "Git Flow"],
 }
 

@@ -22,7 +22,7 @@ export const technologies: Technology[] = [
 	{ name: 'JWT', icon: '🔑' },
 	{ name: 'IoT', icon: '📡' },
 	{ name: 'Axios', icon: '🌐' },
-	{ name: 'AWS', icon: '☁️' },
+	{ name: 'AWS', icon: '🟠' },
 	{ name: 'Python', icon: '🐍' },
 	{ name: 'Vercel', icon: '▲' },
 	{ name: 'PHP', icon: '🐘' },

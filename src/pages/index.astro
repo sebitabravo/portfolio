@@ -3,9 +3,10 @@
  * Portfolio de Sebastian Bravo - Desarrollador Full Stack
  *
  * Home reestructurada como landing de conversión:
- * Hero → Proyectos → Prueba social → CTA Contacto → Experiencia → Educación → Certs → Sobre mí
+ * Hero → Proyectos → Experiencia → Educación → Certs → Sobre mí → Contacto
  *
- * Issues resueltas: #11 (estructura landing), #13 (logos clientes), #14 (interactividad conversión)
+ * Issues resueltas: #11 (estructura landing), #14 (interactividad conversión)
+ * Pendiente: #13 (logos clientes — requiere assets reales de empresas)
  */
 import Layout from "@/layouts/Layout.astro"
 import { personalInfo } from "@/lib/data"
@@ -54,15 +55,6 @@ import MailIcon from "@/components/icons/Mail.astro"
         <Projects locale="es" />
       </SectionContainer>
 
-      <!-- CTA de contacto: acción principal de conversión -->
-      <SectionContainer id="contacto">
-        <TitleSection>
-          <MailIcon class="size-8" />
-          {t.contactForm.title}
-        </TitleSection>
-        <ContactForm locale="es" />
-      </SectionContainer>
-
       <!-- Contenido curricular: refuerza credibilidad -->
       <SectionContainer id="experiencia">
         <TitleSection>
@@ -94,6 +86,15 @@ import MailIcon from "@/components/icons/Mail.astro"
           Sobre mí
         </TitleSection>
         <AboutMe locale="es" />
+      </SectionContainer>
+
+      <!-- Contacto: al final, después de toda la credibilidad -->
+      <SectionContainer id="contacto">
+        <TitleSection>
+          <MailIcon class="size-8" />
+          {t.contactForm.title}
+        </TitleSection>
+        <ContactForm locale="es" />
       </SectionContainer>
     </div>
   </main>

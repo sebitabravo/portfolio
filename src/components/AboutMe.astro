@@ -35,7 +35,7 @@ const specialties = locale === 'es'
 <div class="space-y-16">
   <article class="flex flex-col items-center gap-12 text-foreground/80 md:flex-row">
     <!-- Texto -->
-    <div class="order-2 md:order-1 max-w-xl space-y-4">
+    <div data-animate data-animate-delay="1" class="order-2 md:order-1 max-w-xl space-y-4">
       <p class="text-base leading-[1.60]">{aboutMe.intro}</p>
       <p class="text-base leading-[1.60]">{aboutMe.experience}</p>
       <p class="text-base leading-[1.60]">{aboutMe.personal}</p>
@@ -67,7 +67,7 @@ const specialties = locale === 'es'
     </div>
 
     <!-- Imagen -->
-    <div class="order-1 md:order-2 shrink-0">
+    <div data-animate data-animate-delay="2" class="order-1 md:order-2 shrink-0">
       <Image
         width={220}
         height={220}

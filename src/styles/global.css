@@ -120,6 +120,28 @@ body {
   background-color: hsl(var(--background));
 }
 
+/* Skip-to-content — visually hidden until focused */
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 16px;
+  z-index: 100;
+  padding: 0.5rem 1rem;
+  background: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+  border-radius: 0.5rem;
+  font-weight: 600;
+  font-size: 0.875rem;
+  text-decoration: none;
+  transition: top 0.2s ease;
+}
+
+.skip-link:focus {
+  top: 8px;
+  outline: 2px solid hsl(var(--primary));
+  outline-offset: 2px;
+}
+
 /* ============================================
    Typography — Syne display + Manrope body
    ============================================ */

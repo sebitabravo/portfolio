@@ -15,9 +15,9 @@ const workExperience = getWorkExperience(locale)
 
 {workExperience.length > 0 ? (
   <ol class="relative mt-16 pl-4">
-    {workExperience.map((experience) => (
+    {workExperience.map((experience, i) => (
       <li>
-        <ExperienceItem {...experience} locale={locale} />
+        <ExperienceItem {...experience} locale={locale} index={i} />
       </li>
     ))}
   </ol>

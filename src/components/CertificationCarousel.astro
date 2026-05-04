@@ -10,12 +10,14 @@
  * - Responsive design
  */
 import type { CarouselCertification } from "@/types"
+import type { Locale } from "@/lib/i18n"
 
 interface Props {
   certifications: CarouselCertification[]
+  locale?: Locale
 }
 
-const { certifications } = Astro.props
+const { certifications, locale = 'es' } = Astro.props
 
 // Duplicate the array for seamless infinite scroll
 const duplicatedCerts = [...certifications, ...certifications]
@@ -25,7 +27,7 @@ const duplicatedCerts = [...certifications, ...certifications]
   <div class="cert-carousel-wrapper">
     <div class="cert-carousel">
       {duplicatedCerts.map((cert, index) => {
-        const { name, organization, logo, pdfUrl } = cert.data
+        const { name, organization, logo, pdfUrl, category } = cert.data
         const isDuplicate = index >= certifications.length
 
         return (
@@ -53,6 +55,12 @@ const duplicatedCerts = [...certifications, ...certifications]
             )}
             <span class="cert-name">{name}</span>
             <span class="cert-org">{organization}</span>
+            {category === 'professional' && (
+              <span class="cert-badge cert-badge-pro">{locale === 'es' ? 'Profesional' : 'Professional'}</span>
+            )}
+            {category === 'academic' && (
+              <span class="cert-badge cert-badge-acad">{locale === 'es' ? 'Académico' : 'Academic'}</span>
+            )}
           </a>
         )
       })}
@@ -173,6 +181,27 @@ const duplicatedCerts = [...certifications, ...certifications]
     text-align: center;
     color: hsl(var(--muted-foreground));
     line-height: 1.2;
+  }
+
+  .cert-badge {
+    font-size: 0.65rem;
+    font-weight: 600;
+    padding: 0.15rem 0.5rem;
+    border-radius: 9999px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .cert-badge-pro {
+    background: hsl(144 37% 45% / 0.12);
+    color: hsl(144 37% 45%);
+    border: 1px solid hsl(144 37% 45% / 0.25);
+  }
+
+  .cert-badge-acad {
+    background: hsl(var(--muted));
+    color: hsl(var(--muted-foreground));
+    border: 1px solid hsl(var(--border));
   }
 
   /* Infinite scroll animation */

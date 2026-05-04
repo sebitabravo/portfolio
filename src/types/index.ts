@@ -61,6 +61,7 @@ export interface Certification {
   pdfUrl?: string
   skills: string[]
   order: number
+  category?: 'professional' | 'academic'
 }
 
 export interface CarouselCertification {
@@ -69,5 +70,6 @@ export interface CarouselCertification {
     organization: string
     logo?: string
     pdfUrl: string
+    category?: 'professional' | 'academic'
   }
 }

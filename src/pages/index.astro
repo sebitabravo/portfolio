@@ -39,7 +39,7 @@ import MailIcon from "@/components/icons/Mail.astro"
   <!-- Hero: midnight gradient, full-width -->
   <Hero locale="es" />
 
-  <main class="px-4 md:px-6">
+  <main id="main-content" class="px-4 md:px-6">
     <div class="space-y-20 md:space-y-28 pt-16 md:pt-24">
       <!-- Proyectos -->
       <SectionContainer id="proyectos">
@@ -52,24 +52,24 @@ import MailIcon from "@/components/icons/Mail.astro"
 
       <hr class="section-divider max-w-5xl mx-auto" />
 
-      <!-- Experiencia -->
-      <SectionContainer id="experiencia" data-animate>
-        <TitleSection>
-          <BriefcaseIcon class="size-6" />
-          Experiencia Laboral
-        </TitleSection>
-        <Experience locale="es" />
-      </SectionContainer>
-
-      <hr class="section-divider max-w-5xl mx-auto" />
-
       <!-- Educaci&oacute;n -->
-      <SectionContainer id="educacion" data-animate>
+      <SectionContainer id="educacion">
         <TitleSection>
           <GraduationCapIcon class="size-6" />
           Educaci&oacute;n
         </TitleSection>
         <Education locale="es" />
+      </SectionContainer>
+
+      <hr class="section-divider max-w-5xl mx-auto" />
+
+      <!-- Experiencia -->
+      <SectionContainer id="experiencia">
+        <TitleSection>
+          <BriefcaseIcon class="size-6" />
+          {t.work.title}
+        </TitleSection>
+        <Experience locale="es" />
       </SectionContainer>
 
       <hr class="section-divider max-w-5xl mx-auto" />
@@ -86,7 +86,7 @@ import MailIcon from "@/components/icons/Mail.astro"
       <hr class="section-divider max-w-5xl mx-auto" />
 
       <!-- Sobre m&iacute; -->
-      <SectionContainer id="sobre-mi" data-animate>
+      <SectionContainer id="sobre-mi">
         <TitleSection>
           <ProfileCheckIcon class="size-6" />
           Sobre m&iacute;
@@ -97,7 +97,7 @@ import MailIcon from "@/components/icons/Mail.astro"
       <hr class="section-divider max-w-5xl mx-auto" />
 
       <!-- Contacto -->
-      <SectionContainer id="contacto" data-animate>
+      <SectionContainer id="contacto">
         <TitleSection>
           <MailIcon class="size-6" />
           {t.contactForm.title}

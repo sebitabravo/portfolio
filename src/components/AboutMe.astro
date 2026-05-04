@@ -1,5 +1,5 @@
 ---
-// About Me Component
+// About Me — Superhuman clean layout
 import { Image } from "astro:assets"
 import { getAboutMe } from "@/lib/data"
 import type { Locale } from "@/lib/i18n"
@@ -12,43 +12,81 @@ interface Props {
 
 const { locale = 'es' } = Astro.props
 const aboutMe = getAboutMe(locale)
+
+const specialties = locale === 'es'
+  ? [
+      "Desarrollo de interfaces con React y TypeScript",
+      "Diseño e implementación de componentes accesibles (WCAG)",
+      "Optimización de performance web (Core Web Vitals)",
+      "Integración de APIs REST",
+      "Desarrollo con Astro y Next.js",
+      "Estilado con Tailwind CSS y CSS moderno",
+    ]
+  : [
+      "Interface development with React and TypeScript",
+      "Accessible component design (WCAG)",
+      "Web performance optimization (Core Web Vitals)",
+      "REST API integration",
+      "Development with Astro and Next.js",
+      "Styling with Tailwind CSS and modern CSS",
+    ]
 ---
 
-<div class="space-y-12">
-  <!-- About Me Content -->
-  <article class="flex flex-col items-center justify-center gap-8 text-foreground/80 md:flex-row">
-    <div class="[&>p]:mb-4 [&>p>strong]:text-yellow-800 dark:[&>p>strong]:text-yellow-300 [&>p>strong]:font-normal [&>p>strong]:font-mono text-pretty order-2 md:order-1">
-      <p>{aboutMe.intro}</p>
-      <p>{aboutMe.experience}</p>
-      <p>{aboutMe.personal}</p>
+<div class="space-y-16">
+  <article class="flex flex-col items-center gap-12 text-foreground/80 md:flex-row">
+    <!-- Texto -->
+    <div class="order-2 md:order-1 max-w-xl space-y-4">
+      <p class="text-base leading-[1.60]">{aboutMe.intro}</p>
+      <p class="text-base leading-[1.60]">{aboutMe.experience}</p>
+      <p class="text-base leading-[1.60]">{aboutMe.personal}</p>
 
-      <div class="mt-8">
-        <h3 class="text-xl font-semibold mb-4 text-foreground">{aboutMe.interestsTitle}</h3>
-        <ul class="list-disc list-inside space-y-2">
+      <div class="pt-6">
+        <h3 class="text-lg font-semibold mb-3 text-foreground">{aboutMe.interestsTitle}</h3>
+        <ul class="space-y-1.5">
           {aboutMe.interests.map((interest) => (
-            <li>{interest}</li>
+            <li class="flex items-center gap-2 text-sm text-foreground/70">
+              <span class="h-1 w-1 rounded-full bg-[hsl(var(--primary))]"></span>
+              {interest}
+            </li>
           ))}
         </ul>
       </div>
+
+      <!-- Semantic content for AI/SEO scanners -->
+      <section aria-label={locale === 'es' ? "Competencias técnicas" : "Technical competencies"} class="mt-6 opacity-60">
+        <h3 class="text-sm font-mono uppercase tracking-[0.1em] text-foreground/60 mb-3">{locale === 'es' ? "Especialidades" : "Specialties"}</h3>
+        <ul class="grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-xs text-[hsl(var(--caption-color))]">
+          {specialties.map((s) => (
+            <li class="flex items-center gap-1.5">
+              <span class="text-[hsl(var(--primary))]" aria-hidden="true">&rsaquo;</span>
+              {s}
+            </li>
+          ))}
+        </ul>
+      </section>
     </div>
 
-    <Image
-      width={256}
-      height={256}
-      src={profileImage}
-      alt="Sebastian Bravo"
-      class="order-1 object-cover w-64 h-full p-1 md:order-2 rotate-3 lg:p-2 lg:w-64 aspect-square rounded-2xl bg-black/20 dark:bg-yellow-500/5 ring-1 ring-black/70 dark:ring-white/20"
-      style="object-position: 50% 50%"
-    />
+    <!-- Imagen -->
+    <div class="order-1 md:order-2 shrink-0">
+      <Image
+        width={220}
+        height={220}
+        src={profileImage}
+        alt="Sebastian Bravo"
+        class="rounded-2xl object-cover aspect-square ring-1 ring-[hsl(var(--parchment))]"
+        style="object-position: 50% 50%"
+      />
+    </div>
   </article>
 
-  <!-- Tech Stack Carousel -->
-  <div class="mt-12">
-    <h3 class="text-2xl font-semibold mb-6 text-center text-foreground">
-      <span class="bg-gradient-to-r from-yellow-500 to-yellow-600 dark:from-yellow-400 dark:to-yellow-500 bg-clip-text text-transparent">
-        {aboutMe.techStackTitle}
-      </span>
+  <!-- Tech Stack Dashboard -->
+  <div class="mt-8">
+    <h3 class="text-lg font-semibold mb-2 text-center text-foreground">
+      {locale === 'es' ? "Mi Stack Tecnol&oacute;gico" : "My Tech Stack"}
     </h3>
+    <p class="text-sm text-center text-[hsl(var(--caption-color))] mb-6">
+      {locale === 'es' ? "Las herramientas con las que construyo d&iacute;a a d&iacute;a" : "The tools I build with day to day"}
+    </p>
     <TechCarousel />
   </div>
 </div>

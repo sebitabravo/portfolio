@@ -4,7 +4,6 @@ import { getCertifications } from "@/lib/data"
 import type { Locale } from "@/lib/i18n"
 import type { CarouselCertification } from "@/types"
 import CertificationCarousel from "@/components/CertificationCarousel.astro"
-import Accordion from "@/components/ui/Accordion.astro"
 
 interface Props {
   locale?: Locale
@@ -12,27 +11,17 @@ interface Props {
 
 const { locale = 'es' } = Astro.props
 const certifications = getCertifications(locale)
-const notesTitle = locale === 'es' ? 'Detalle de certificaciones' : 'Certification details'
-const notesBody = locale === 'es'
-  ? 'Cada tarjeta abre el certificado en PDF para validación directa. Se priorizan credenciales con respaldo institucional y sin vencimiento inmediato.'
-  : 'Each card opens the certificate PDF for direct validation. Credentials with institutional backing and long validity are prioritized.'
 
-// Convierte certificaciones al formato esperado por CertificationCarousel
 const certificationsForCarousel: CarouselCertification[] = certifications.map(cert => ({
   data: {
     name: cert.name,
     organization: cert.organization,
-    logo: undefined, // You can add logos later if needed
+    logo: undefined,
     pdfUrl: cert.pdfUrl || '#'
   }
 }))
 ---
 
 <div>
-  <CertificationCarousel certifications={certificationsForCarousel} />
-  <div class="mt-6">
-    <Accordion title={notesTitle}>
-      <p>{notesBody}</p>
-    </Accordion>
-  </div>
-</div>
+   <CertificationCarousel certifications={certificationsForCarousel} />
+ </div>

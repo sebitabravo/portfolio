@@ -1,12 +1,9 @@
 ---
 /**
- * Portfolio de Sebastian Bravo - Desarrollador Full Stack
+ * Portfolio de Sebastian Bravo - Frontend Developer
  *
- * Home reestructurada como landing de conversión:
+ * Landing de conversión con estética Superhuman:
  * Hero → Proyectos → Experiencia → Educación → Certs → Sobre mí → Contacto
- *
- * Issues resueltas: #11 (estructura landing), #14 (interactividad conversión)
- * Pendiente: #13 (logos clientes — requiere assets reales de empresas)
  */
 import Layout from "@/layouts/Layout.astro"
 import { personalInfo } from "@/lib/data"
@@ -21,7 +18,7 @@ import Projects from "@/components/Projects.astro"
 import Education from "@/components/Education.astro"
 import Certifications from "@/components/Certifications.astro"
 import AboutMe from "@/components/AboutMe.astro"
-import ContactForm from "@/components/ContactForm.astro"
+import Contact from "@/components/Contact.astro"
 import SectionContainer from "@/components/SectionContainer.astro"
 import TitleSection from "@/components/TitleSection.astro"
 
@@ -35,66 +32,77 @@ import MailIcon from "@/components/icons/Mail.astro"
 ---
 
 <Layout
-  title={`Portfolio - ${personalInfo.name} | ${personalInfo.title}`}
+  title={`${personalInfo.name} — ${personalInfo.title}`}
   description={personalInfo.description}
   locale="es"
 >
-  <main class="px-4">
-    <!-- Hero: propuesta de valor + CTA principal -->
-    <SectionContainer class="py-16 md:py-36">
-      <Hero locale="es" />
-    </SectionContainer>
+  <!-- Hero: midnight gradient, full-width -->
+  <Hero locale="es" />
 
-    <div class="space-y-24">
-      <!-- Proyectos: evidencia concreta del trabajo — primer scroll -->
+  <main class="px-4 md:px-6">
+    <div class="space-y-20 md:space-y-28 pt-16 md:pt-24">
+      <!-- Proyectos -->
       <SectionContainer id="proyectos">
         <TitleSection>
-          <CodeIcon class="size-7" />
+          <CodeIcon class="size-6" />
           Proyectos
         </TitleSection>
         <Projects locale="es" />
       </SectionContainer>
 
-      <!-- Contenido curricular: refuerza credibilidad -->
-      <SectionContainer id="experiencia">
+      <hr class="section-divider max-w-5xl mx-auto" />
+
+      <!-- Experiencia -->
+      <SectionContainer id="experiencia" data-animate>
         <TitleSection>
-          <BriefcaseIcon class="size-8" />
+          <BriefcaseIcon class="size-6" />
           Experiencia Laboral
         </TitleSection>
         <Experience locale="es" />
       </SectionContainer>
 
-      <SectionContainer id="educacion">
+      <hr class="section-divider max-w-5xl mx-auto" />
+
+      <!-- Educaci&oacute;n -->
+      <SectionContainer id="educacion" data-animate>
         <TitleSection>
-          <GraduationCapIcon class="size-8" />
-          Educación
+          <GraduationCapIcon class="size-6" />
+          Educaci&oacute;n
         </TitleSection>
         <Education locale="es" />
       </SectionContainer>
 
-      <SectionContainer id="certificaciones">
+      <hr class="section-divider max-w-5xl mx-auto" />
+
+      <!-- Certificaciones -->
+      <SectionContainer id="certificaciones" data-animate>
         <TitleSection>
-          <CertificateIcon class="size-8" />
+          <CertificateIcon class="size-6" />
           Certificaciones
         </TitleSection>
         <Certifications locale="es" />
       </SectionContainer>
 
-      <SectionContainer id="sobre-mi">
+      <hr class="section-divider max-w-5xl mx-auto" />
+
+      <!-- Sobre m&iacute; -->
+      <SectionContainer id="sobre-mi" data-animate>
         <TitleSection>
-          <ProfileCheckIcon class="size-8" />
-          Sobre mí
+          <ProfileCheckIcon class="size-6" />
+          Sobre m&iacute;
         </TitleSection>
         <AboutMe locale="es" />
       </SectionContainer>
 
-      <!-- Contacto: al final, después de toda la credibilidad -->
-      <SectionContainer id="contacto">
+      <hr class="section-divider max-w-5xl mx-auto" />
+
+      <!-- Contacto -->
+      <SectionContainer id="contacto" data-animate>
         <TitleSection>
-          <MailIcon class="size-8" />
+          <MailIcon class="size-6" />
           {t.contactForm.title}
         </TitleSection>
-        <ContactForm locale="es" />
+        <Contact locale="es" />
       </SectionContainer>
     </div>
   </main>

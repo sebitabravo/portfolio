@@ -47,3 +47,10 @@ Thumbs.db
 playwright-report/
 test-results/
 .tmp-lighthouse.json
+
+# QA/debug snapshots
+qa-*.png
+*-snapshot.md
+*-postpolish.md
+*-menu-open.md
+lighthouse-scores.png

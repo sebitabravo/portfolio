@@ -42,7 +42,7 @@ const jsonLd = {
       "@type": "Person",
       name: personalInfo.name,
       url: profileUrl,
-      jobTitle: personalInfo.title,
+      jobTitle: "Frontend Developer",
       email: `mailto:${personalInfo.email}`,
       sameAs: sameAsProfiles,
       knowsAbout: ["React", "TypeScript", "Astro", "Django", "PostgreSQL"],
@@ -61,9 +61,11 @@ const jsonLd = {
 <html lang={locale} class="scroll-smooth">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href={profileUrl} />
 
     <SEO
       title={title}
@@ -84,19 +86,33 @@ const jsonLd = {
         image: seoImage,
       }}
       extend={{
-        // Overrides the default meta tags
         meta: [
           {
             name: "twitter:image:alt",
             content: title,
           },
           {
-            name: "og:image:alt",
+            property: "og:image:alt",
             content: title,
           },
           {
-            property: "og:description",
-            content: description,
+            property: "og:url",
+            content: profileUrl,
+          },
+          {
+            property: "og:locale",
+            content: locale === "es" ? "es_CL" : "en_US",
+          },
+        ],
+        link: [
+          {
+            rel: "preconnect",
+            href: "https://fonts.googleapis.com",
+          },
+          {
+            rel: "preconnect",
+            href: "https://fonts.gstatic.com",
+            crossorigin: "",
           },
         ],
       }}
@@ -107,6 +123,26 @@ const jsonLd = {
     <script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd)}></script>
 
     <script is:inline src="/theme-init.js"></script>
+
+    <script is:inline>
+      document.addEventListener('DOMContentLoaded', () => {
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add('animate-in')
+                observer.unobserve(entry.target)
+              }
+            })
+          },
+          { threshold: 0.1, rootMargin: '0px 0px -50px 0px' }
+        )
+
+        document.querySelectorAll('[data-animate]').forEach((el) => {
+          observer.observe(el)
+        })
+      })
+    </script>
   </head>
   <body class="bg-background text-foreground">
     <Header locale={locale} />

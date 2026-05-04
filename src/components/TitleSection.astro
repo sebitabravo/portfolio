@@ -1,7 +1,11 @@
 ---
-// Title Section component - For section titles with icons
+// Title Section — Superhuman compressed display headings
+// Tight tracking, confident section labels with lavender accent
 ---
 
-<h2 class="flex items-center mb-6 text-3xl font-semibold gap-x-3 text-foreground">
-  <slot />
-</h2>
+<div class="mb-10">
+  <h2 class="flex items-center gap-x-3 text-foreground [&>svg]:text-[hsl(var(--primary))]">
+    <slot />
+  </h2>
+  <div class="mt-3 h-[1px] w-16 bg-[hsl(var(--parchment))]"></div>
+</div>

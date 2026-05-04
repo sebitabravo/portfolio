@@ -1,0 +1,70 @@
+---
+// Contact — Direct links (no form)
+import { personalInfo, social } from "@/lib/data"
+import { getTranslations, type Locale } from "@/lib/i18n"
+import AvailableBadge from "./AvailableBadge.astro"
+import MailIcon from "./icons/Mail.astro"
+import LinkedInIcon from "./icons/LinkedIn.astro"
+import GitHubIcon from "./icons/GitHub.astro"
+
+interface Props {
+  locale?: Locale
+}
+
+const { locale = 'es' } = Astro.props
+const t = getTranslations(locale)
+
+const mailSubject = locale === 'es'
+  ? 'Contacto desde tu portfolio'
+  : 'Contact from your portfolio'
+
+const contactLinks = [
+  {
+    href: `mailto:${personalInfo.email}?subject=${encodeURIComponent(mailSubject)}`,
+    label: personalInfo.email,
+    icon: 'mail',
+    description: locale === 'es' ? 'Te respondo en menos de 24h' : "I'll reply within 24h",
+  },
+  {
+    href: social.linkedin,
+    label: 'LinkedIn',
+    icon: 'linkedin',
+    description: locale === 'es' ? 'Conectemos profesionalmente' : "Let's connect professionally",
+  },
+  {
+    href: social.github,
+    label: 'GitHub',
+    icon: 'github',
+    description: locale === 'es' ? 'Mirá mi código abierto' : 'Check my open source code',
+  },
+]
+---
+
+<div class="space-y-8">
+  <!-- Disponibilidad -->
+  {personalInfo.available && (
+    <div class="flex items-center justify-center gap-3">
+      <AvailableBadge>{t.hero.available}</AvailableBadge>
+    </div>
+  )}
+
+  <!-- Contact cards grid -->
+  <div class="grid gap-4 sm:grid-cols-3">
+    {contactLinks.map(({ href, label, icon, description }) => (
+      <a
+        href={href}
+        target={icon !== 'mail' ? '_blank' : undefined}
+        rel={icon !== 'mail' ? 'noopener noreferrer' : undefined}
+        class="group flex flex-col items-center gap-3 rounded-2xl border border-[hsl(var(--parchment))] bg-[hsl(var(--card))] p-6 text-center transition-all duration-300 hover:-translate-y-1 hover:shadow-[var(--shadow-card-hover)]"
+      >
+        <div class="flex size-12 items-center justify-center rounded-xl bg-[hsl(var(--primary))]/10 text-[hsl(var(--primary))] transition-transform duration-200 group-hover:scale-110">
+          {icon === 'mail' && <MailIcon class="size-5" />}
+          {icon === 'linkedin' && <LinkedInIcon class="size-5" />}
+          {icon === 'github' && <GitHubIcon class="size-5" />}
+        </div>
+        <span class="text-sm font-semibold text-foreground">{label}</span>
+        <span class="text-xs text-[hsl(var(--caption-color))]">{description}</span>
+      </a>
+    ))}
+  </div>
+</div>

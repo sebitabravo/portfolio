@@ -1,8 +1,8 @@
 /**
  * Datos del Portfolio - Sebastian Bravo
  *
- * Archivo centralizado con todos los datos del portfolio en español.
- * Inspirado en la arquitectura simple del portfolio de referencia.
+ * Archivo centralizado con todos los datos del portfolio.
+ * Diseñado con la estética Superhuman: projects sell themselves.
  */
 
 import type { Locale } from "@/lib/i18n"
@@ -19,8 +19,8 @@ export interface ExperienceLogo {
 
 export const personalInfo = {
   name: "Sebastian Bravo",
-  title: "Desarrollador Full Stack",
-  description: "Desarrollador Full Stack apasionado por crear aplicaciones web modernas y eficientes. Especializado en React, Django y tecnologías cloud.",
+  title: "Frontend Developer",
+  description: "Frontend Developer especializado en React, TypeScript y la creación de interfaces rápidas, accesibles y con código que da gusto mantener.",
   email: "hello@sebastianbravo.dev",
   location: "Chile 🇨🇱",
   available: true,
@@ -77,170 +77,249 @@ export function getWorkExperience(locale: Locale = 'es') {
   return workExperienceData[locale]
 }
 
-// Mantener exportación por defecto para compatibilidad
 export const workExperience = workExperienceData.es
 
 // ============================================
-// PROYECTOS
+// PROYECTOS — Updated with new GitHub repos
 // ============================================
 
 const projectsData = {
   es: [
     {
-      slug: "camport",
-      title: "CAMPORT - Sistema de Gestión Ganadera",
-      description: "Un sistema de gestión ganadera con integración IoT.",
-      fullDescription: `Una solución integral para la gestión ganadera, aprovechando IoT para el seguimiento de animales y la recopilación de datos en tiempo real.
+      slug: "manttoai",
+      title: "ManttoAI",
+      description: "Plataforma de mantenimiento predictivo IoT con Machine Learning. Telemetría en tiempo real, modelo Random Forest (94.1% F1-Score) y dashboard interactivo.",
+      fullDescription: `ManttoAI es una plataforma open-source de mantenimiento predictivo que captura telemetría en tiempo real desde dispositivos IoT (ESP32) vía MQTT, evalúa umbrales operacionales y ejecuta un modelo de Machine Learning (Random Forest) para predecir fallas antes de que ocurran.
 
-## Características
+## Características Principales
 
-- Seguimiento de la ubicación de los animales en tiempo real
-- Monitoreo de la salud a través de sensores IoT
-- Panel de análisis y reportes de datos
-- Gestión de usuarios para el personal de la granja
+- **📡 Telemetría IoT en Tiempo Real** — Integración nativa con MQTT (Mosquitto) para temperatura, humedad y vibración
+- **🧠 Predicciones ML** — Modelo Random Forest (94.1% F1-Score) para evaluar riesgo de falla
+- **🚨 Alertas Inteligentes** — Evaluación automática de umbrales con notificaciones email
+- **📊 Dashboard React** — SPA con auto-refresh, tendencias históricas y gestión de equipos
+- **🛠️ Simulador IoT** — Simulador por software que genera datos realistas de sensores 24/7
+- **🤖 Asistente IA** — Chat híbrido (reglas + Ollama) para consultas técnicas
 
-## Tecnologías
+## Stack Tecnológico
 
-- **Frontend**: JavaScript
-- **Backend**: Node.js
-- **Hardware**: Dispositivos IoT`,
-      tags: ["JavaScript", "IoT"],
+- **Backend**: FastAPI, SQLAlchemy, Pydantic, MySQL 8
+- **Frontend**: React 18, Vite, Tailwind CSS
+- **IoT**: ESP32, Eclipse Mosquitte (MQTT)
+- **ML**: Scikit-learn, Pandas, NumPy
+- **Infra**: Docker, Docker Compose, Nginx`,
+      tags: ["FastAPI", "React", "Machine Learning", "Docker", "IoT"],
       featured: true,
-      publishDate: new Date("2025-10-16"),
-      image: "camport",
-      githubUrl: "https://github.com/sebitabravo/iotlights",
+      status: "production" as const,
+      metrics: [
+        { label: "F1-Score", value: "94.1%" },
+        { label: "Stack", value: "6 techs" },
+      ],
+      publishDate: new Date("2026-04-29"),
+      image: "manttoai",
+      githubUrl: "https://github.com/sebitabravo/ManttoAI",
       liveUrl: undefined,
       order: 1,
     },
     {
+      slug: "vulcania",
+      title: "Vulcania",
+      description: "Plataforma de monitoreo volcánico comunitario con mapa en tiempo real, chat, alertas y notificaciones push.",
+      fullDescription: `Vulcania es una plataforma web comunitaria para monitoreo volcánico en tiempo real. Muestra estados de alerta, mapa de puntos de encuentro, sistema de avisos comunitarios y chat entre usuarios con soporte de imágenes.
+
+## Características Principales
+
+- **Estado del volcán en tiempo real** — Niveles verde/amarillo/naranja/rojo
+- **Mapa interactivo** — Puntos de encuentro y zonas de seguridad
+- **Comunidad** — Sistema de avisos y publicaciones
+- **Chat en tiempo real** — Mensajes entre usuarios con imágenes
+- **Notificaciones push** — Alertas directas al navegador
+- **Panel admin** — Gestión de alertas y contenido
+
+## Stack Tecnológico
+
+- **Framework**: Next.js 15, TypeScript
+- **UI**: Tailwind CSS, shadcn/ui
+- **Backend**: Supabase (Auth, DB, Realtime, Storage)
+- **Deploy**: Vercel`,
+      tags: ["Next.js", "TypeScript", "Supabase", "shadcn/ui"],
+      featured: true,
+      status: "production" as const,
+      publishDate: new Date("2026-03-02"),
+      image: "vulcania",
+      githubUrl: "https://github.com/sebitabravo/vulcania-web",
+      liveUrl: "https://vulcania-web.vercel.app",
+      order: 2,
+    },
+    {
+      slug: "rapido-sur",
+      title: "Rápido Sur",
+      description: "Sistema enterprise de gestión de mantenimiento vehicular. NestJS + Next.js + PostgreSQL. Reduce fallas un 40%.",
+      fullDescription: `Sistema web completo para la gestión de mantenimiento de flota vehicular. Arquitectura enterprise con módulos de autenticación JWT, gestión de vehículos, planes preventivos, órdenes de trabajo, catálogo de repuestos, alertas y generación de reportes.
+
+## Características Principales
+
+- **Gestión de vehículos** — CRUD completo con historial de mantenimiento
+- **Planes preventivos** — Programación automática de mantenimientos
+- **Órdenes de trabajo** — Flujo completo con tareas y repuestos
+- **Alertas preventivas** — Notificaciones de mantenimiento próximo
+- **Reportes** — Generación de informes de mantenimiento
+- **Auth JWT** — Autenticación con roles y permisos
+
+## Stack Tecnológico
+
+- **Backend**: NestJS, TypeScript, PostgreSQL
+- **Frontend**: Next.js 15, React 18, Tailwind CSS
+- **Deploy**: Docker en Dokploy (Hostinger)`,
+      tags: ["NestJS", "Next.js", "TypeScript", "PostgreSQL", "Docker"],
+      featured: true,
+      status: "production" as const,
+      metrics: [
+        { label: "Reducción fallas", value: "40%" },
+      ],
+      publishDate: new Date("2026-03-02"),
+      image: "rapido-sur",
+      githubUrl: "https://github.com/sebitabravo/rapido-sur",
+      liveUrl: undefined,
+      order: 3,
+    },
+    {
       slug: "banking-client-management",
-      title: "Sistema de Gestión de Clientes Bancarios",
-      description: "Sistema bancario full-stack con API REST, dashboard interactivo, autenticación JWT y despliegue en Docker",
-    fullDescription: `Un sistema completo de gestión de clientes bancarios con API REST, dashboard interactivo, autenticación JWT y despliegue en Docker. Cuenta con un frontend moderno en React con estadísticas completas y análisis de riesgo de clientes.
+      title: "Banking Client Management",
+      description: "Sistema bancario full-stack con API REST, dashboard React, auth JWT, caché inteligente y despliegue Docker.",
+      fullDescription: `Un sistema completo de gestión de clientes bancarios con API REST, dashboard interactivo, autenticación JWT y despliegue en Docker. Cuenta con un frontend moderno en React con estadísticas completas y análisis de riesgo de clientes.
 
 ## Características Principales
 
 - **API REST completa** con autenticación JWT y tokens de actualización
-- **Dashboard interactivo** con 4 vistas: Dashboard, CRUD, Análisis y Monitoreo de salud
+- **Dashboard interactivo** con 4 vistas: Dashboard, CRUD, Análisis y Monitoreo
 - **5 gráficos Recharts** para visualización de datos
-- **90% de reducción en llamadas API** mediante caché inteligente
-- **Middleware de seguridad personalizado** con limitación de tasa
-- **Documentación Swagger/OpenAPI**
-- **18 casos de prueba pytest** para confiabilidad
-- **Modo demo** con restricciones de solo lectura
+- **90% reducción en llamadas API** mediante caché inteligente
+- **Middleware de seguridad** con limitación de tasa
+- **Swagger/OpenAPI** — Documentación interactiva
+- **18 pytest** — Casos de prueba para confiabilidad
 
 ## Tecnologías
 
-- **Frontend**: React 18.3.1, Tailwind CSS, shadcn/ui
-- **Backend**: Django 5.1.3, Django REST Framework 3.15.2
-- **Base de datos**: PostgreSQL 16
-- **Infraestructura**: Docker, Gunicorn`,
-    tags: ["Django", "React", "PostgreSQL", "Docker"],
-    featured: true,
-    publishDate: new Date("2025-10-16"),
-    image: "banking",
-    githubUrl: "https://github.com/sebitabravo/eva3-backend",
-    liveUrl: "https://eva3-backend.vercel.app/",
-    order: 2,
-  },
-  {
-    slug: "restaurant-booking-api",
-    title: "API de Gestión de Reservas de Restaurante",
-    description: "API REST profesional para gestión de reservas de restaurante construida con Django y PostgreSQL",
-    fullDescription: `Una API REST profesional para la gestión de reservas de restaurante, construida con Django y Django Rest Framework. Cuenta con autenticación completa, limitación de tasa y estadísticas avanzadas para sistemas de reservas escalables.
-
-## Características Principales
-
-- **API pública de lectura** (100 peticiones/hora) para ver reservas
-- **Acceso de escritura solo para administradores** (20 peticiones/hora) para gestionar recursos
-- **Gestión de recursos multiusuario** con autenticación segura
-- **Estadísticas y métricas avanzadas** para análisis de reservas
-- **Validación robusta** con manejo completo de errores
-- **Limitación de tasa** para protección de la API
-- **Documentación Swagger/OpenAPI** para fácil integración
-- **Autenticación JWT** con soporte de tokens de actualización
-
-## Tecnologías
-
-- **Backend**: Django 5.1.3, Django REST Framework 3.15.2
-- **Base de datos**: PostgreSQL 16
-- **Autenticación**: JWT con tokens de actualización
-- **Servidor**: Gunicorn
-- **Despliegue**: Docker
-
-## Aspectos Únicos
-
-- Opciones de despliegue flexibles (local y Docker)
-- Scripts de monitoreo de recursos
-- Limitación y throttling avanzado de tasa
-- Implementaciones de seguridad completas
-- Configuración basada en entorno`,
-    tags: ["Django", "PostgreSQL", "Docker"],
-    featured: false,
-    publishDate: new Date("2025-10-16"),
-    image: "restaurant",
-    githubUrl: "https://github.com/sebitabravo/eva2-backend",
-    liveUrl: undefined,
-    order: 3,
-  },
-    {
-      slug: "crm-small-business",
-      title: "CRM para Pequeñas Empresas",
-      description: "Aplicación web de CRM para gestionar clientes, productos y pedidos de manera eficiente",
-      fullDescription: `Una aplicación web de Customer Relationship Management (CRM) diseñada para pequeñas empresas, donde se pueden gestionar clientes, productos y pedidos de manera sencilla y eficiente. Migrado de JavaScript vanilla a React para mejorar la experiencia de usuario.
-
-## Características Principales
-
-- **Gestión de clientes** - Seguimiento y organización de información de clientes
-- **Catálogo de productos** - Administración de inventario y detalles de productos
-- **Procesamiento de pedidos** - Manejo de pedidos y seguimiento de su estado
-- **UX mejorada** - Interfaz moderna en React con navegación fluida
-
-## Tecnologías
-
-- **Frontend**: React, React Router, Bootstrap
-- **Cliente HTTP**: Axios para peticiones API
-- **Despliegue**: Vercel`,
-      tags: ["React", "JavaScript", "Bootstrap"],
+- **Frontend**: React 18, Tailwind CSS, shadcn/ui
+- **Backend**: Django 5.1, Django REST Framework
+- **Database**: PostgreSQL 16
+- **Infra**: Docker, Gunicorn`,
+      tags: ["Django", "React", "PostgreSQL", "Docker"],
       featured: false,
-      publishDate: new Date("2025-10-16"),
-      image: "crm",
-      githubUrl: "https://github.com/sebitabravo/crm-react",
-      liveUrl: undefined,
-      order: 8,
+      status: "demo" as const,
+      metrics: [
+        { label: "API cache hit", value: "90%" },
+        { label: "Tests", value: "18 pytest" },
+      ],
+      publishDate: new Date("2025-10-11"),
+      image: "banking",
+      githubUrl: "https://github.com/sebitabravo/eva3-backend",
+      liveUrl: "https://eva3-backend.vercel.app/",
+      order: 4,
     },
   ],
   en: [
     {
-      slug: "camport",
-      title: "CAMPORT - Livestock Management System",
-      description: "A livestock management system with IoT integration.",
-      fullDescription: `A comprehensive solution for livestock management, leveraging IoT for animal tracking and real-time data collection.
+      slug: "manttoai",
+      title: "ManttoAI",
+      description: "IoT predictive maintenance platform with Machine Learning. Real-time telemetry, Random Forest model (94.1% F1-Score) and interactive dashboard.",
+      fullDescription: `ManttoAI is an open-source predictive maintenance platform that captures real-time telemetry from IoT devices (ESP32) via MQTT, evaluates operational thresholds, and runs a Machine Learning model (Random Forest) to predict equipment failures before they occur.
 
-## Features
+## Key Features
 
-- Real-time animal location tracking
-- Health monitoring through IoT sensors
-- Data analysis and reporting dashboard
-- User management for farm staff
+- **📡 Real-Time IoT Telemetry** — Native MQTT integration (Mosquitto) for temperature, humidity, and vibration
+- **🧠 ML Predictions** — Random Forest model (94.1% F1-Score) for failure risk assessment
+- **🚨 Smart Alerts** — Automatic threshold evaluation with email notifications
+- **📊 React Dashboard** — SPA with auto-refresh, historical trends, and equipment management
+- **🛠️ IoT Simulator** — Software simulator generating realistic sensor data 24/7
+- **🤖 AI Assistant** — Hybrid chat (rules + Ollama) for technical operator queries
 
-## Technologies
+## Tech Stack
 
-- **Frontend**: JavaScript
-- **Backend**: Node.js
-- **Hardware**: IoT devices`,
-      tags: ["JavaScript", "IoT"],
+- **Backend**: FastAPI, SQLAlchemy, Pydantic, MySQL 8
+- **Frontend**: React 18, Vite, Tailwind CSS
+- **IoT**: ESP32, Eclipse Mosquitto (MQTT)
+- **ML**: Scikit-learn, Pandas, NumPy
+- **Infra**: Docker, Docker Compose, Nginx`,
+      tags: ["FastAPI", "React", "Machine Learning", "Docker", "IoT"],
       featured: true,
-      publishDate: new Date("2025-10-16"),
-      image: "camport",
-      githubUrl: "https://github.com/sebitabravo/iotlights",
+      status: "production" as const,
+      metrics: [
+        { label: "F1-Score", value: "94.1%" },
+        { label: "Stack", value: "6 techs" },
+      ],
+      publishDate: new Date("2026-04-29"),
+      image: "manttoai",
+      githubUrl: "https://github.com/sebitabravo/ManttoAI",
       liveUrl: undefined,
       order: 1,
     },
     {
+      slug: "vulcania",
+      title: "Vulcania",
+      description: "Community volcanic monitoring platform with real-time map, chat, alerts and push notifications.",
+      fullDescription: `Vulcania is a community web platform for real-time volcanic monitoring. Displays alert levels, meeting point maps, community notice board, and user chat with image support.
+
+## Key Features
+
+- **Real-time volcano status** — Green/yellow/orange/red alert levels
+- **Interactive map** — Meeting points and safety zones
+- **Community** — Notice board and publications
+- **Real-time chat** — Messages between users with image support
+- **Push notifications** — Direct browser alerts
+- **Admin panel** — Alert and content management
+
+## Tech Stack
+
+- **Framework**: Next.js 15, TypeScript
+- **UI**: Tailwind CSS, shadcn/ui
+- **Backend**: Supabase (Auth, DB, Realtime, Storage)
+- **Deploy**: Vercel`,
+      tags: ["Next.js", "TypeScript", "Supabase", "shadcn/ui"],
+      featured: true,
+      status: "production" as const,
+      publishDate: new Date("2026-03-02"),
+      image: "vulcania",
+      githubUrl: "https://github.com/sebitabravo/vulcania-web",
+      liveUrl: "https://vulcania-web.vercel.app",
+      order: 2,
+    },
+    {
+      slug: "rapido-sur",
+      title: "Rápido Sur",
+      description: "Enterprise fleet vehicle maintenance system. NestJS + Next.js + PostgreSQL. Reduces failures by 40%.",
+      fullDescription: `A complete web system for fleet vehicle maintenance management. Enterprise architecture with JWT auth modules, vehicle management, preventive plans, work orders, parts catalog, alerts, and report generation.
+
+## Key Features
+
+- **Vehicle management** — Full CRUD with maintenance history
+- **Preventive plans** — Automatic maintenance scheduling
+- **Work orders** — Complete flow with tasks and parts
+- **Preventive alerts** — Upcoming maintenance notifications
+- **Reports** — Maintenance report generation
+- **JWT Auth** — Role-based authentication and permissions
+
+## Tech Stack
+
+- **Backend**: NestJS, TypeScript, PostgreSQL
+- **Frontend**: Next.js 15, React 18, Tailwind CSS
+- **Deploy**: Docker on Dokploy (Hostinger)`,
+      tags: ["NestJS", "Next.js", "TypeScript", "PostgreSQL", "Docker"],
+      featured: true,
+      status: "production" as const,
+      metrics: [
+        { label: "Failure reduction", value: "40%" },
+      ],
+      publishDate: new Date("2026-03-02"),
+      image: "rapido-sur",
+      githubUrl: "https://github.com/sebitabravo/rapido-sur",
+      liveUrl: undefined,
+      order: 3,
+    },
+    {
       slug: "banking-client-management",
-      title: "Banking Client Management System",
-      description: "Full-stack banking system with REST API, interactive dashboard, JWT authentication and Docker deployment",
+      title: "Banking Client Management",
+      description: "Full-stack banking system with REST API, React dashboard, JWT auth, smart caching and Docker deployment.",
       fullDescription: `A complete banking client management system with REST API, interactive dashboard, JWT authentication and Docker deployment. Features a modern React frontend with comprehensive statistics and client risk analysis.
 
 ## Key Features
@@ -252,87 +331,25 @@ const projectsData = {
 - **Custom security middleware** with rate limiting
 - **Swagger/OpenAPI documentation**
 - **18 pytest test cases** for reliability
-- **Demo mode** with read-only restrictions
 
 ## Technologies
 
-- **Frontend**: React 18.3.1, Tailwind CSS, shadcn/ui
-- **Backend**: Django 5.1.3, Django REST Framework 3.15.2
+- **Frontend**: React 18, Tailwind CSS, shadcn/ui
+- **Backend**: Django 5.1, Django REST Framework
 - **Database**: PostgreSQL 16
-- **Infrastructure**: Docker, Gunicorn`,
+- **Infra**: Docker, Gunicorn`,
       tags: ["Django", "React", "PostgreSQL", "Docker"],
-      featured: true,
-      publishDate: new Date("2025-10-16"),
+      featured: false,
+      status: "demo" as const,
+      metrics: [
+        { label: "API cache hit", value: "90%" },
+        { label: "Tests", value: "18 pytest" },
+      ],
+      publishDate: new Date("2025-10-11"),
       image: "banking",
       githubUrl: "https://github.com/sebitabravo/eva3-backend",
       liveUrl: "https://eva3-backend.vercel.app/",
-      order: 2,
-    },
-    {
-      slug: "restaurant-booking-api",
-      title: "Restaurant Booking Management API",
-      description: "Professional REST API for restaurant reservation management built with Django and PostgreSQL",
-      fullDescription: `A professional REST API for restaurant reservation management, built with Django and Django Rest Framework. Features complete authentication, rate limiting and advanced statistics for scalable booking systems.
-
-## Key Features
-
-- **Public read API** (100 requests/hour) to view reservations
-- **Admin-only write access** (20 requests/hour) to manage resources
-- **Multi-user resource management** with secure authentication
-- **Advanced statistics and metrics** for reservation analysis
-- **Robust validation** with comprehensive error handling
-- **Rate limiting** for API protection
-- **Swagger/OpenAPI documentation** for easy integration
-- **JWT authentication** with refresh token support
-
-## Technologies
-
-- **Backend**: Django 5.1.3, Django REST Framework 3.15.2
-- **Database**: PostgreSQL 16
-- **Authentication**: JWT with refresh tokens
-- **Server**: Gunicorn
-- **Deployment**: Docker
-
-## Unique Features
-
-- Flexible deployment options (local and Docker)
-- Resource monitoring scripts
-- Advanced rate limiting and throttling
-- Comprehensive security implementations
-- Environment-based configuration`,
-      tags: ["Django", "PostgreSQL", "Docker"],
-      featured: false,
-      publishDate: new Date("2025-10-16"),
-      image: "restaurant",
-      githubUrl: "https://github.com/sebitabravo/eva2-backend",
-      liveUrl: undefined,
-      order: 3,
-    },
-    {
-      slug: "crm-small-business",
-      title: "CRM for Small Businesses",
-      description: "Web CRM application to efficiently manage clients, products and orders",
-      fullDescription: `A Customer Relationship Management (CRM) web application designed for small businesses, where clients, products and orders can be managed simply and efficiently. Migrated from vanilla JavaScript to React to improve user experience.
-
-## Key Features
-
-- **Client management** - Track and organize customer information
-- **Product catalog** - Inventory administration and product details
-- **Order processing** - Order handling and status tracking
-- **Improved UX** - Modern React interface with smooth navigation
-
-## Technologies
-
-- **Frontend**: React, React Router, Bootstrap
-- **HTTP Client**: Axios for API requests
-- **Deployment**: Vercel`,
-      tags: ["React", "JavaScript", "Bootstrap"],
-      featured: false,
-      publishDate: new Date("2025-10-16"),
-      image: "crm",
-      githubUrl: "https://github.com/sebitabravo/crm-react",
-      liveUrl: undefined,
-      order: 8,
+      order: 4,
     },
   ]
 }
@@ -341,7 +358,6 @@ export function getProjects(locale: Locale = 'es') {
   return projectsData[locale]
 }
 
-// Mantener exportación por defecto para compatibilidad
 export const projects = projectsData.es
 
 // ============================================
@@ -407,7 +423,6 @@ export function getEducation(locale: Locale = 'es') {
   return educationData[locale]
 }
 
-// Mantener exportación por defecto para compatibilidad
 export const education = educationData.es
 
 // ============================================
@@ -585,7 +600,6 @@ export function getCertifications(locale: Locale = 'es') {
   return certificationsData[locale]
 }
 
-// Mantener exportación por defecto para compatibilidad
 export const certifications = certificationsData.es
 
 // ============================================
@@ -593,10 +607,10 @@ export const certifications = certificationsData.es
 // ============================================
 
 export const skills = {
-  frontend: ["React", "Next.js", "TypeScript", "JavaScript", "HTML", "CSS", "Tailwind CSS", "Bootstrap"],
-  backend: ["Django", "Python", "Node.js", "REST API", "GraphQL"],
+  frontend: ["React", "Next.js", "TypeScript", "JavaScript", "Tailwind CSS"],
+  backend: ["Django", "FastAPI", "NestJS", "Python", "Node.js", "REST API"],
   databases: ["PostgreSQL", "MySQL", "MongoDB", "SQLite"],
-  tools: ["Git", "Docker", "Linux", "Windows", "AWS", "Vercel", "Linear"],
+  tools: ["Git", "Docker", "Linux", "AWS", "Vercel"],
   methodologies: ["Scrum", "Agile", "Git Flow"],
 }
 
@@ -606,34 +620,28 @@ export const skills = {
 
 const aboutMeData = {
   es: {
-    intro: `Desarrollador Full Stack especializado en React, Django y tecnologías cloud. Apasionado por crear aplicaciones web modernas, eficientes y escalables.`,
-
-    experience: `Experiencia en desarrollo de sistemas de gestión empresarial, APIs REST y aplicaciones web completas. Me enfoco en escribir código limpio y resolver problemas complejos.`,
-
+    intro: `Frontend Developer especializado en React, TypeScript y la creación de interfaces rápidas, accesibles y con código que da gusto mantener.`,
+    experience: `Experiencia construyendo sistemas de gestión empresarial, plataformas IoT con ML predictivo, APIs REST y aplicaciones web completas. Me enfoco en escribir código limpio, arquitectura sólida y resolver problemas complejos.`,
     personal: `Constantemente aprendiendo nuevas tecnologías, explorando arquitectura de software y compartiendo conocimiento con la comunidad dev.`,
-
     interests: [
       "Desarrollo web moderno",
       "Arquitectura de software",
+      "Machine Learning aplicado",
       "Cloud computing & DevOps",
-      "Metodologías ágiles",
       "Clean code & testing",
     ],
     interestsTitle: "Intereses",
     techStackTitle: "Stack Tecnológico",
   },
   en: {
-    intro: `Full Stack Developer specialized in React, Django and cloud technologies. Passionate about creating modern, efficient and scalable web applications.`,
-
-    experience: `Experience in developing enterprise management systems, REST APIs and complete web applications. I focus on writing clean code and solving complex problems.`,
-
+    intro: `Frontend Developer specialized in React, TypeScript and building fast, accessible interfaces with code that's a pleasure to maintain.`,
+    experience: `Experience building enterprise management systems, IoT platforms with predictive ML, REST APIs and complete web applications. I focus on clean code, solid architecture and solving complex problems.`,
     personal: `Constantly learning new technologies, exploring software architecture and sharing knowledge with the dev community.`,
-
     interests: [
       "Modern web development",
       "Software architecture",
+      "Applied Machine Learning",
       "Cloud computing & DevOps",
-      "Agile methodologies",
       "Clean code & testing",
     ],
     interestsTitle: "Interests",
@@ -645,5 +653,4 @@ export function getAboutMe(locale: Locale = 'es') {
   return aboutMeData[locale]
 }
 
-// Mantener exportación por defecto para compatibilidad
 export const aboutMe = aboutMeData.es

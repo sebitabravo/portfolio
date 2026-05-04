@@ -11,7 +11,6 @@ import { techIconsMap } from '@/lib/tech-icons-map'
 
 // Group techs into pages (6-7 per page, 4 pages total)
 const itemsPerPage = 6
-const totalPages = Math.ceil(technologies.length / itemsPerPage)
 const pages: Array<Array<typeof technologies[number]>> = []
 for (let i = 0; i < technologies.length; i += itemsPerPage) {
   pages.push(technologies.slice(i, i + itemsPerPage))
@@ -65,7 +64,7 @@ for (let i = 0; i < technologies.length; i += itemsPerPage) {
   function initStackDashboard() {
     const dashboard = document.getElementById('stack-dashboard')
     const pages = Array.from(document.querySelectorAll('.stack-page'))
-    const dots = Array.from(document.querySelectorAll('.stack-dot'))
+    const dots = Array.from(document.querySelectorAll<HTMLElement>('.stack-dot'))
     const viewport = document.getElementById('stack-viewport')
 
     if (!dashboard || pages.length === 0 || !viewport) return

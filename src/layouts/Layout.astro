@@ -41,17 +41,52 @@ const jsonLd = {
     {
       "@type": "Person",
       name: personalInfo.name,
+      alternateName: "sebitabravo",
       url: profileUrl,
       jobTitle: "Frontend Developer",
       email: `mailto:${personalInfo.email}`,
       sameAs: sameAsProfiles,
-      knowsAbout: ["React", "TypeScript", "Astro", "Django", "PostgreSQL"],
+      nationality: {
+        "@type": "Country",
+        name: "Chile",
+      },
+      address: {
+        "@type": "PostalAddress",
+        addressCountry: "CL",
+      },
+      hasOccupation: {
+        "@type": "Occupation",
+        name: "Frontend Developer",
+        occupationLocation: {
+          "@type": "Country",
+          name: "Chile",
+        },
+      },
+      knowsAbout: [
+        "React",
+        "TypeScript",
+        "Astro",
+        "Next.js",
+        "Django",
+        "NestJS",
+        "FastAPI",
+        "PostgreSQL",
+        "Docker",
+        "Tailwind CSS",
+        "REST APIs",
+        "Frontend Development",
+        "Web Performance",
+        "Accessibility",
+        "WCAG",
+      ],
+      description: personalInfo.description,
     },
     {
       "@type": "WebSite",
       name: siteConfig.title,
       url: "https://sebita.dev",
       inLanguage: locale,
+      description: personalInfo.description,
     },
   ],
 }
@@ -103,6 +138,22 @@ const jsonLd = {
             property: "og:locale",
             content: locale === "es" ? "es_CL" : "en_US",
           },
+          {
+            name: "keywords",
+            content: "frontend developer, react, typescript, astro, next.js, portfolio, desarrollador frontend, chile",
+          },
+          {
+            name: "author",
+            content: personalInfo.name,
+          },
+          {
+            name: "category",
+            content: "technology",
+          },
+          {
+            name: "revisit-after",
+            content: "7 days",
+          },
         ],
         link: [
           {
@@ -113,6 +164,14 @@ const jsonLd = {
             rel: "preconnect",
             href: "https://fonts.gstatic.com",
             crossorigin: "",
+          },
+          {
+            rel: "dns-prefetch",
+            href: "https://github.com",
+          },
+          {
+            rel: "dns-prefetch",
+            href: "https://linkedin.com",
           },
         ],
       }}
@@ -125,7 +184,7 @@ const jsonLd = {
     <script is:inline src="/theme-init.js"></script>
 
     <script is:inline>
-      document.addEventListener('DOMContentLoaded', () => {
+      function initScrollReveal() {
         const observer = new IntersectionObserver(
           (entries) => {
             entries.forEach((entry) => {
@@ -141,10 +200,16 @@ const jsonLd = {
         document.querySelectorAll('[data-animate]').forEach((el) => {
           observer.observe(el)
         })
-      })
+      }
+
+      document.addEventListener('DOMContentLoaded', initScrollReveal)
+      document.addEventListener('astro:page-load', initScrollReveal)
     </script>
   </head>
   <body class="bg-background text-foreground">
+    <a href="#main-content" class="skip-link">
+      {locale === 'es' ? 'Saltar al contenido' : 'Skip to content'}
+    </a>
     <Header locale={locale} />
     <slot />
     <Footer locale={locale} />

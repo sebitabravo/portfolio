@@ -50,9 +50,11 @@ const contactLinks = [
 
   <!-- Contact cards grid -->
   <div class="grid gap-4 sm:grid-cols-3">
-    {contactLinks.map(({ href, label, icon, description }) => (
+    {contactLinks.map(({ href, label, icon, description }, i) => (
       <a
         href={href}
+        data-animate
+        data-animate-delay={String(i + 1)}
         target={icon !== 'mail' ? '_blank' : undefined}
         rel={icon !== 'mail' ? 'noopener noreferrer' : undefined}
         class="group flex flex-col items-center gap-3 rounded-2xl border border-[hsl(var(--parchment))] bg-[hsl(var(--card))] p-6 text-center transition-all duration-300 hover:-translate-y-1 hover:shadow-[var(--shadow-card-hover)]"

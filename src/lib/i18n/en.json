@@ -12,7 +12,7 @@
   "hero": {
     "greeting": "Hi, I'm",
     "description": "Frontend Developer",
-    "intro": "Specialized in React and TypeScript. I build fast, accessible interfaces with code that's a pleasure to maintain.",
+    "intro": "Computer Engineering student. I build interfaces with React and TypeScript, and complete web platforms with IoT, ML and enterprise architecture.",
     "cta": "View projects",
     "contact": "Contact",
     "available": "Available for work",
@@ -20,23 +20,23 @@
   },
   "projects": {
     "title": "Projects",
-    "subtitle": "Some of my recent work",
-    "allSubtitle": "A collection of my work, experiments, and side projects",
+    "subtitle": "What I built outside the classroom",
+    "allSubtitle": "Real projects, not tutorials",
     "viewAll": "View all projects",
-    "viewProject": "View project",
-    "viewCode": "View code",
-    "viewDetails": "View details",
-    "viewMoreGithub": "View more projects on GitHub",
+    "viewProject": "Demo",
+    "viewCode": "Code",
+    "viewDetails": "Details",
+    "viewMoreGithub": "More projects on GitHub",
     "filterAll": "All",
     "technologyLabel": "Technology",
     "technologies": "Technologies",
     "featured": "Featured",
     "noProjects": "No projects yet. Check back soon!",
-    "pageDescription": "Browse my portfolio of web development projects, from personal experiments to production applications."
+    "pageDescription": "Web development projects: from IoT with Machine Learning to enterprise systems and community platforms."
   },
   "work": {
     "title": "Experience",
-    "subtitle": "My professional journey",
+    "subtitle": "My journey",
     "current": "Current",
     "present": "Present",
     "currently": "Currently...",
@@ -52,7 +52,7 @@
   },
   "certifications": {
     "title": "Certifications",
-    "subtitle": "My professional certificates and achievements",
+    "subtitle": "Professional certifications and additional training",
     "viewCredential": "View credential",
     "skills": "Skills",
     "issuedBy": "Issued by",
@@ -61,13 +61,7 @@
   },
   "about": {
     "title": "About",
-    "subtitle": "Get to know more about my background and expertise",
-    "intro": "Hi! I'm Sebastian, a software developer passionate about creating beautiful, functional web applications. I specialize in frontend development with a strong focus on user experience and modern web technologies.",
-    "experience": "With several years of experience in the field, I've worked on a variety of projects ranging from small business websites to large-scale applications. I love solving complex problems and turning ideas into reality through code.",
-    "personal": "When I'm not coding, you can find me exploring new technologies, contributing to open source, or sharing my knowledge through blog posts and tutorials.",
-    "contactTitle": "Contact",
-    "findMeTitle": "Find Me",
-    "skillsTitle": "Skills & Technologies"
+    "subtitle": "Beyond the code"
   },
   "footer": {
     "quickLinks": "Quick Links",
@@ -80,18 +74,7 @@
   },
   "contactForm": {
     "title": "Contact",
-    "subtitle": "Send me a direct message and I will reply by email as soon as possible.",
-    "nameLabel": "Name",
-    "namePlaceholder": "Your name",
-    "emailLabel": "Email",
-    "emailPlaceholder": "your@email.com",
-    "messageLabel": "Message",
-    "messagePlaceholder": "Tell me about your project or question.",
-    "submit": "Send message",
-    "sendingMessage": "Sending...",
-    "successMessage": "Message sent successfully. Thanks for reaching out.",
-    "errorMessage": "Message could not be sent. Please try again in a few minutes.",
-    "privacyNote": "I never share your email or personal data with third parties."
+    "subtitle": "Choose how to reach me. I reply within 24h."
   },
   "common": {
     "readMore": "Read more",

@@ -20,7 +20,7 @@ export interface ExperienceLogo {
 export const personalInfo = {
   name: "Sebastian Bravo",
   title: "Frontend Developer",
-  description: "Frontend Developer especializado en React, TypeScript y la creación de interfaces rápidas, accesibles y con código que da gusto mantener.",
+  description: "Frontend Developer. Construyo interfaces con React y TypeScript. Estudiante de Ingeniería Informática. Proyectos reales con IoT, ML y arquitectura enterprise.",
   email: "hello@sebastianbravo.dev",
   location: "Chile 🇨🇱",
   available: true,
@@ -118,7 +118,7 @@ const projectsData = {
       image: "manttoai",
       githubUrl: "https://github.com/sebitabravo/ManttoAI",
       liveUrl: undefined,
-      order: 1,
+      order: 2,
     },
     {
       slug: "vulcania",
@@ -148,12 +148,12 @@ const projectsData = {
       image: "vulcania",
       githubUrl: "https://github.com/sebitabravo/vulcania-web",
       liveUrl: "https://vulcania-web.vercel.app",
-      order: 2,
+      order: 1,
     },
     {
       slug: "rapido-sur",
       title: "Rápido Sur",
-      description: "Sistema enterprise de gestión de mantenimiento vehicular. NestJS + Next.js + PostgreSQL. Reduce fallas un 40%.",
+      description: "Sistema enterprise de gestión de mantenimiento vehicular. NestJS + Next.js + PostgreSQL con auth JWT, planes preventivos y órdenes de trabajo.",
       fullDescription: `Sistema web completo para la gestión de mantenimiento de flota vehicular. Arquitectura enterprise con módulos de autenticación JWT, gestión de vehículos, planes preventivos, órdenes de trabajo, catálogo de repuestos, alertas y generación de reportes.
 
 ## Características Principales
@@ -173,9 +173,6 @@ const projectsData = {
       tags: ["NestJS", "Next.js", "TypeScript", "PostgreSQL", "Docker"],
       featured: true,
       status: "production" as const,
-      metrics: [
-        { label: "Reducción fallas", value: "40%" },
-      ],
       publishDate: new Date("2026-03-02"),
       image: "rapido-sur",
       githubUrl: "https://github.com/sebitabravo/rapido-sur",
@@ -183,39 +180,50 @@ const projectsData = {
       order: 3,
     },
     {
-      slug: "banking-client-management",
-      title: "Banking Client Management",
-      description: "Sistema bancario full-stack con API REST, dashboard React, auth JWT, caché inteligente y despliegue Docker.",
-      fullDescription: `Un sistema completo de gestión de clientes bancarios con API REST, dashboard interactivo, autenticación JWT y despliegue en Docker. Cuenta con un frontend moderno en React con estadísticas completas y análisis de riesgo de clientes.
+      slug: "wenuke",
+      title: "Wenuke",
+      description: "Asistente climático agrícola por WhatsApp para pequeños agricultores de Chile. IA conversacional con Groq Llama 3.1 70B, alertas de helada/lluvia y recomendaciones por cultivo.",
+      fullDescription: `Wenuke (Werken-mapu, "mensajero de la tierra" en mapudungún) es un asistente climático agrícola que llega donde el agricultor ya está: WhatsApp. Sin apps, sin sensores.
+
+## El problema
+
+Pequeños agricultores pierden hasta el 30% de su producción anual por decidir con pronósticos climáticos genéricos. Una helada sin aviso destruye meses de trabajo en una noche.
+
+## La solución
+
+El agricultor comparte su ubicación por WhatsApp, elige sus cultivos, y recibe alertas anticipadas de helada, lluvia y granizo con recomendaciones accionables generadas por IA.
 
 ## Características Principales
 
-- **API REST completa** con autenticación JWT y tokens de actualización
-- **Dashboard interactivo** con 4 vistas: Dashboard, CRUD, Análisis y Monitoreo
-- **5 gráficos Recharts** para visualización de datos
-- **90% reducción en llamadas API** mediante caché inteligente
-- **Middleware de seguridad** con limitación de tasa
-- **Swagger/OpenAPI** — Documentación interactiva
-- **18 pytest** — Casos de prueba para confiabilidad
+- **Alertas climáticas** — Pronóstico hiperlocal con OpenMeteo (gratis, sin API key)
+- **IA conversacional** — Groq Llama 3.1 70B con fallback offline para recomendaciones por cultivo
+- **Sin apps** — Todo por WhatsApp, zero fricción para el agricultor
+- **Costo operativo $0-10 USD/mes** — Sin APIs pagas obligatorias
+- **Mapa interactivo** — Leaflet + OpenStreetMap para ubicar parcelas
+- **Base de datos serverless** — Turso + aiosqlite (dual local/cloud)
 
-## Tecnologías
+## Stack Tecnológico
 
-- **Frontend**: React 18, Tailwind CSS, shadcn/ui
-- **Backend**: Django 5.1, Django REST Framework
-- **Database**: PostgreSQL 16
-- **Infra**: Docker, Gunicorn`,
-      tags: ["Django", "React", "PostgreSQL", "Docker"],
-      featured: false,
-      status: "demo" as const,
+- **API**: FastAPI (Python 3.12)
+- **IA**: Groq Llama 3.1 70B + fallback offline
+- **Clima**: OpenMeteo (gratis)
+- **BD**: Turso + aiosqlite
+- **Mapas**: Leaflet + OpenStreetMap
+- **Frontend**: HTML5 + Tailwind CSS + Vanilla JS
+- **Infra**: Vercel (Static + Serverless)
+- **CI/CD**: GitHub Actions (ruff + mypy + pytest)`,
+      tags: ["FastAPI", "Python", "Groq LLM", "WhatsApp API", "Turso"],
+      featured: true,
+      status: "production" as const,
       metrics: [
-        { label: "API cache hit", value: "90%" },
-        { label: "Tests", value: "18 pytest" },
+        { label: "CI/CD", value: "Activo" },
+        { label: "Docs", value: "Arquitectura + API" },
       ],
-      publishDate: new Date("2025-10-11"),
-      image: "banking",
-      githubUrl: "https://github.com/sebitabravo/eva3-backend",
-      liveUrl: "https://eva3-backend.vercel.app/",
-      order: 4,
+      publishDate: new Date("2026-05-03"),
+      image: "wenuke",
+      githubUrl: "https://github.com/sebitabravo/Wenuke",
+      liveUrl: "https://frontend-lac-eight-97.vercel.app",
+      order: 2,
     },
   ],
   en: [
@@ -246,13 +254,12 @@ const projectsData = {
       status: "production" as const,
       metrics: [
         { label: "F1-Score", value: "94.1%" },
-        { label: "Stack", value: "6 techs" },
       ],
       publishDate: new Date("2026-04-29"),
       image: "manttoai",
       githubUrl: "https://github.com/sebitabravo/ManttoAI",
       liveUrl: undefined,
-      order: 1,
+      order: 2,
     },
     {
       slug: "vulcania",
@@ -282,12 +289,12 @@ const projectsData = {
       image: "vulcania",
       githubUrl: "https://github.com/sebitabravo/vulcania-web",
       liveUrl: "https://vulcania-web.vercel.app",
-      order: 2,
+      order: 1,
     },
     {
       slug: "rapido-sur",
       title: "Rápido Sur",
-      description: "Enterprise fleet vehicle maintenance system. NestJS + Next.js + PostgreSQL. Reduces failures by 40%.",
+      description: "Enterprise fleet vehicle maintenance system. NestJS + Next.js + PostgreSQL with JWT auth, preventive maintenance plans and work orders.",
       fullDescription: `A complete web system for fleet vehicle maintenance management. Enterprise architecture with JWT auth modules, vehicle management, preventive plans, work orders, parts catalog, alerts, and report generation.
 
 ## Key Features
@@ -307,9 +314,6 @@ const projectsData = {
       tags: ["NestJS", "Next.js", "TypeScript", "PostgreSQL", "Docker"],
       featured: true,
       status: "production" as const,
-      metrics: [
-        { label: "Failure reduction", value: "40%" },
-      ],
       publishDate: new Date("2026-03-02"),
       image: "rapido-sur",
       githubUrl: "https://github.com/sebitabravo/rapido-sur",
@@ -317,39 +321,50 @@ const projectsData = {
       order: 3,
     },
     {
-      slug: "banking-client-management",
-      title: "Banking Client Management",
-      description: "Full-stack banking system with REST API, React dashboard, JWT auth, smart caching and Docker deployment.",
-      fullDescription: `A complete banking client management system with REST API, interactive dashboard, JWT authentication and Docker deployment. Features a modern React frontend with comprehensive statistics and client risk analysis.
+      slug: "wenuke",
+      title: "Wenuke",
+      description: "Agricultural climate assistant via WhatsApp for small farmers in Chile. Conversational AI with Groq Llama 3.1 70B, frost/rain alerts and crop-specific recommendations.",
+      fullDescription: `Wenuke (Werken-mapu, "messenger of the land" in Mapudungún) is an agricultural climate assistant that reaches farmers where they already are: WhatsApp. No apps, no sensors.
+
+## The Problem
+
+Small farmers lose up to 30% of their annual production by relying on generic weather forecasts made for cities. An unannounced frost destroys months of work overnight.
+
+## The Solution
+
+Farmers share their location via WhatsApp, choose their crops, and receive early frost, rain and hail alerts with actionable AI-generated recommendations.
 
 ## Key Features
 
-- **Complete REST API** with JWT authentication and refresh tokens
-- **Interactive dashboard** with 4 views: Dashboard, CRUD, Analytics and Health monitoring
-- **5 Recharts visualizations** for data display
-- **90% reduction in API calls** through smart caching
-- **Custom security middleware** with rate limiting
-- **Swagger/OpenAPI documentation**
-- **18 pytest test cases** for reliability
+- **Weather alerts** — Hyperlocal forecast with OpenMeteo (free, no API key)
+- **Conversational AI** — Groq Llama 3.1 70B with offline fallback for crop recommendations
+- **No apps** — Everything via WhatsApp, zero friction for farmers
+- **Operating cost $0-10 USD/month** — No paid APIs required
+- **Interactive map** — Leaflet + OpenStreetMap for plot location
+- **Serverless database** — Turso + aiosqlite (dual local/cloud)
 
-## Technologies
+## Tech Stack
 
-- **Frontend**: React 18, Tailwind CSS, shadcn/ui
-- **Backend**: Django 5.1, Django REST Framework
-- **Database**: PostgreSQL 16
-- **Infra**: Docker, Gunicorn`,
-      tags: ["Django", "React", "PostgreSQL", "Docker"],
-      featured: false,
-      status: "demo" as const,
+- **API**: FastAPI (Python 3.12)
+- **AI**: Groq Llama 3.1 70B + offline fallback
+- **Weather**: OpenMeteo (free)
+- **DB**: Turso + aiosqlite
+- **Maps**: Leaflet + OpenStreetMap
+- **Frontend**: HTML5 + Tailwind CSS + Vanilla JS
+- **Infra**: Vercel (Static + Serverless)
+- **CI/CD**: GitHub Actions (ruff + mypy + pytest)`,
+      tags: ["FastAPI", "Python", "Groq LLM", "WhatsApp API", "Turso"],
+      featured: true,
+      status: "production" as const,
       metrics: [
-        { label: "API cache hit", value: "90%" },
-        { label: "Tests", value: "18 pytest" },
+        { label: "CI/CD", value: "Active" },
+        { label: "Docs", value: "Architecture + API" },
       ],
-      publishDate: new Date("2025-10-11"),
-      image: "banking",
-      githubUrl: "https://github.com/sebitabravo/eva3-backend",
-      liveUrl: "https://eva3-backend.vercel.app/",
-      order: 4,
+      publishDate: new Date("2026-05-03"),
+      image: "wenuke",
+      githubUrl: "https://github.com/sebitabravo/Wenuke",
+      liveUrl: "https://frontend-lac-eight-97.vercel.app",
+      order: 2,
     },
   ]
 }
@@ -440,6 +455,7 @@ const certificationsData = {
       pdfUrl: "/certifications/aws-cloud-foundations.pdf",
       skills: ["AWS", "Cloud Computing", "EC2", "S3", "Cloud Architecture"],
       order: 1,
+      category: 'professional' as const,
     },
     {
       name: "Git de noob a pro",
@@ -450,6 +466,7 @@ const certificationsData = {
       pdfUrl: "/certifications/git-noob-pro.pdf",
       skills: ["Git", "GitHub", "Control de Versiones", "Git Flow"],
       order: 2,
+      category: 'academic' as const,
     },
     {
       name: "Desarrollador Full Stack",
@@ -460,6 +477,7 @@ const certificationsData = {
       pdfUrl: "/certifications/full-stack-developer.pdf",
       skills: ["Django", "Python", "JavaScript", "React.js", "REST API", "Full Stack"],
       order: 3,
+      category: 'academic' as const,
     },
     {
       name: "Desarrollo de Aplicaciones Básicas",
@@ -470,6 +488,7 @@ const certificationsData = {
       pdfUrl: "/certifications/basic-app-development.pdf",
       skills: ["POO", "Python", "Estructuras de Datos", "Algoritmos"],
       order: 4,
+      category: 'academic' as const,
     },
     {
       name: "Soporte Computacional",
@@ -480,6 +499,7 @@ const certificationsData = {
       pdfUrl: "/certifications/computer-support.pdf",
       skills: ["Linux", "Windows", "Soporte Técnico", "Packet Tracer", "Networking"],
       order: 5,
+      category: 'academic' as const,
     },
     {
       name: "Diseño y Gestión de Base de Datos",
@@ -490,6 +510,7 @@ const certificationsData = {
       pdfUrl: "/certifications/database-design.pdf",
       skills: ["MongoDB", "MySQL", "PostgreSQL", "SQL", "Database Design"],
       order: 6,
+      category: 'academic' as const,
     },
     {
       name: "Diseño Ágil de Sistemas",
@@ -500,6 +521,7 @@ const certificationsData = {
       pdfUrl: "/certifications/agile-systems-design.pdf",
       skills: ["Scrum", "Metodologías Ágiles", "Agile", "Sprint Planning"],
       order: 7,
+      category: 'academic' as const,
     },
     {
       name: "Instalación y Configuración de Windows",
@@ -510,6 +532,7 @@ const certificationsData = {
       pdfUrl: "/certifications/windows-installation.pdf",
       skills: ["Windows", "Windows Server", "Active Directory", "Group Policy"],
       order: 8,
+      category: 'academic' as const,
     },
   ],
   en: [
@@ -522,6 +545,7 @@ const certificationsData = {
       pdfUrl: "/certifications/aws-cloud-foundations.pdf",
       skills: ["AWS", "Cloud Computing", "EC2", "S3", "Cloud Architecture"],
       order: 1,
+      category: 'professional' as const,
     },
     {
       name: "Git from Noob to Pro",
@@ -532,6 +556,7 @@ const certificationsData = {
       pdfUrl: "/certifications/git-noob-pro.pdf",
       skills: ["Git", "GitHub", "Version Control", "Git Flow"],
       order: 2,
+      category: 'professional' as const,
     },
     {
       name: "Full Stack Developer",
@@ -542,6 +567,7 @@ const certificationsData = {
       pdfUrl: "/certifications/full-stack-developer.pdf",
       skills: ["Django", "Python", "JavaScript", "React.js", "REST API", "Full Stack"],
       order: 3,
+      category: 'academic' as const,
     },
     {
       name: "Basic Application Development",
@@ -552,6 +578,7 @@ const certificationsData = {
       pdfUrl: "/certifications/basic-app-development.pdf",
       skills: ["OOP", "Python", "Data Structures", "Algorithms"],
       order: 4,
+      category: 'academic' as const,
     },
     {
       name: "Computer Support",
@@ -562,6 +589,7 @@ const certificationsData = {
       pdfUrl: "/certifications/computer-support.pdf",
       skills: ["Linux", "Windows", "Technical Support", "Packet Tracer", "Networking"],
       order: 5,
+      category: 'academic' as const,
     },
     {
       name: "Database Design and Management",
@@ -572,6 +600,7 @@ const certificationsData = {
       pdfUrl: "/certifications/database-design.pdf",
       skills: ["MongoDB", "MySQL", "PostgreSQL", "SQL", "Database Design"],
       order: 6,
+      category: 'academic' as const,
     },
     {
       name: "Agile Systems Design",
@@ -582,6 +611,7 @@ const certificationsData = {
       pdfUrl: "/certifications/agile-systems-design.pdf",
       skills: ["Scrum", "Agile Methodologies", "Agile", "Sprint Planning"],
       order: 7,
+      category: 'academic' as const,
     },
     {
       name: "Windows Installation and Configuration",
@@ -592,6 +622,7 @@ const certificationsData = {
       pdfUrl: "/certifications/windows-installation.pdf",
       skills: ["Windows", "Windows Server", "Active Directory", "Group Policy"],
       order: 8,
+      category: 'academic' as const,
     },
   ]
 }
@@ -620,29 +651,29 @@ export const skills = {
 
 const aboutMeData = {
   es: {
-    intro: `Frontend Developer especializado en React, TypeScript y la creación de interfaces rápidas, accesibles y con código que da gusto mantener.`,
-    experience: `Experiencia construyendo sistemas de gestión empresarial, plataformas IoT con ML predictivo, APIs REST y aplicaciones web completas. Me enfoco en escribir código limpio, arquitectura sólida y resolver problemas complejos.`,
-    personal: `Constantemente aprendiendo nuevas tecnologías, explorando arquitectura de software y compartiendo conocimiento con la comunidad dev.`,
+    intro: `Frontend Developer. Armo interfaces con React y TypeScript — el tipo de código que no te da vergüenza mostrar en una code review y que no se rompe con el primer edge case.`,
+    experience: `Construí ManttoAI, una plataforma de mantenimiento predictivo con IoT y Machine Learning. Desarrollé Vulcania, un sistema comunitario de monitoreo volcánico con mapa en tiempo real usado por personas reales. Armé Rápido Sur, un ERP de gestión de flotas vehiculares con arquitectura enterprise. No hago tutoriales de Todo List.`,
+    personal: `Estudio Ingeniería Informática en INACAP. Me gusta entender cómo funcionan las cosas por debajo — desde cómo un ESP32 transmite telemetría hasta cómo Vercel compila tus rutas. Si tu equipo valora gente que se ensucia las manos y no solo mueve componentes, hablemos.`,
     interests: [
-      "Desarrollo web moderno",
-      "Arquitectura de software",
-      "Machine Learning aplicado",
-      "Cloud computing & DevOps",
-      "Clean code & testing",
+      "Arquitectura de software a escala real",
+      "Machine Learning aplicado a problemas concretos",
+      "TypeScript avanzado y type-safety",
+      "Cloud computing & DevOps (Docker, AWS, Vercel)",
+      "Clean code & testing automatizado",
     ],
     interestsTitle: "Intereses",
     techStackTitle: "Stack Tecnológico",
   },
   en: {
-    intro: `Frontend Developer specialized in React, TypeScript and building fast, accessible interfaces with code that's a pleasure to maintain.`,
-    experience: `Experience building enterprise management systems, IoT platforms with predictive ML, REST APIs and complete web applications. I focus on clean code, solid architecture and solving complex problems.`,
-    personal: `Constantly learning new technologies, exploring software architecture and sharing knowledge with the dev community.`,
+    intro: `Frontend Developer. I build interfaces with React and TypeScript — the kind of code you wouldn't be ashamed to show in a code review and that doesn't break on the first edge case.`,
+    experience: `I built ManttoAI, a predictive maintenance platform with IoT and Machine Learning. Developed Vulcania, a community volcanic monitoring system with real-time maps used by real people. Shipped Rápido Sur, an ERP for fleet maintenance with enterprise architecture. I don't do Todo List tutorials.`,
+    personal: `I'm a Computer Engineering student at INACAP. I like understanding how things work under the hood — from how an ESP32 transmits telemetry to how Vercel compiles your routes. If your team values people who get their hands dirty instead of just moving components around, let's talk.`,
     interests: [
-      "Modern web development",
-      "Software architecture",
+      "Real-world software architecture",
       "Applied Machine Learning",
-      "Cloud computing & DevOps",
-      "Clean code & testing",
+      "Advanced TypeScript & type-safety",
+      "Cloud computing & DevOps (Docker, AWS, Vercel)",
+      "Clean code & automated testing",
     ],
     interestsTitle: "Interests",
     techStackTitle: "Tech Stack",

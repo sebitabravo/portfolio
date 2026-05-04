@@ -40,7 +40,7 @@ const visualGradients: Record<string, string> = {
 
 <div class="space-y-12">
   <div class="grid gap-6 sm:gap-8 md:grid-cols-2" data-projects-list>
-    {projects.map(({ slug, title, description, fullDescription, tags, liveUrl, githubUrl, featured, status, metrics }) => {
+    {projects.map(({ slug, title, description, fullDescription, tags, liveUrl, githubUrl, featured, status, metrics }, i) => {
       const dialogId = `project-details-${locale}-${slug}`
       const statusLabel = status ? statusLabels[locale]?.[status] : undefined
       const statusColor = status ? statusColors[status] : ""
@@ -48,6 +48,8 @@ const visualGradients: Record<string, string> = {
 
       return (
         <article
+          data-animate
+          data-animate-delay={String((i % 4) + 1)}
           class="group flex h-full flex-col overflow-hidden rounded-2xl border border-[hsl(var(--parchment))] bg-[hsl(var(--card))] transition-all duration-300 hover:-translate-y-[2px] hover:shadow-[var(--shadow-card-hover)]"
           data-project-card
           data-project={slug}

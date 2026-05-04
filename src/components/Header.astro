@@ -1,5 +1,5 @@
 ---
-// Header Component - Navigation
+// Header Component - Navigation (Superhuman-inspired)
 import { getTranslations, type Locale } from "@/lib/i18n"
 import ThemeToggle from "./ThemeToggle.astro"
 import LanguageToggle from "./LanguageToggle.astro"
@@ -21,125 +21,179 @@ const sectionIds = {
 const ids = sectionIds[locale]
 const mobileMenuId = `mobile-nav-${locale}`
 
-// Orden alineado con la estructura de landing de conversión (#11)
 const navItems = [
   { title: t.nav.projects, label: ids.projects, url: `${prefix}#${ids.projects}` },
-  { title: t.nav.contact, label: ids.contact, url: `${prefix}#${ids.contact}` },
   { title: t.nav.experience, label: ids.experience, url: `${prefix}#${ids.experience}` },
   { title: t.nav.education, label: ids.education, url: `${prefix}#${ids.education}` },
   { title: t.nav.certifications, label: ids.certifications, url: `${prefix}#${ids.certifications}` },
   { title: t.nav.about, label: ids.about, url: `${prefix}#${ids.about}` },
+  { title: t.nav.contact, label: ids.contact, url: `${prefix}#${ids.contact}` },
 ]
 ---
 
-<header
-  class="fixed top-0 z-50 flex items-center justify-center w-full mx-auto mt-2"
->
-  <nav
-    aria-label={locale === 'es' ? 'Navegación principal' : 'Main navigation'}
-    class="flex px-3 text-sm font-medium rounded-full text-foreground/80 justify-center items-center gap-x-1 glass"
-  >
-    <DropdownMenu id={mobileMenuId} triggerLabel={t.nav.menu} class="md:hidden">
-      <div class="flex flex-col gap-1">
+<header class="fixed inset-x-0 top-0 z-50">
+  <div class="mx-auto max-w-[1200px] px-4">
+    <nav
+      aria-label={locale === 'es' ? 'Navegación principal' : 'Main navigation'}
+      class="site-nav mx-auto flex h-14 items-center justify-between gap-6 px-4 text-sm font-medium transition-colors duration-300"
+    >
+      <div class="flex items-center gap-4">
+        <a href={prefix || '/'} class="text-base font-semibold tracking-tight">Sebastian Bravo</a>
+      </div>
+
+      <div class="hidden md:flex items-center gap-1">
         {navItems.map((link) => (
           <a
-            href={link.url}
+            class="nav-link relative px-3 py-2 rounded-[8px] transition-colors duration-150"
             aria-label={link.label}
-            class="rounded-md px-3 py-2 text-sm text-foreground/85 transition hover:bg-accent hover:text-accent-foreground"
-            role="menuitem"
+            href={link.url}
           >
             {link.title}
           </a>
         ))}
       </div>
-    </DropdownMenu>
 
-    {
-      navItems.map((link) => (
-        <a
-          class="relative hidden md:block rounded-md px-3 py-2 transition hover:bg-accent hover:text-accent-foreground"
-          aria-label={link.label}
-          href={link.url}
-        >
-          {link.title}
-        </a>
-      ))
-    }
+      <div class="flex items-center gap-3">
+        <div class="flex items-center gap-2 border-l border-transparent pl-3">
+          <ThemeToggle />
+          <LanguageToggle />
+        </div>
 
-    <div class="flex items-center gap-1 border-l border-border/50 pl-2 md:ml-2">
-      <ThemeToggle />
-      <LanguageToggle />
-    </div>
-  </nav>
+        <div class="md:hidden">
+          <DropdownMenu id={mobileMenuId} triggerLabel={t.nav.menu}>
+            <div class="flex flex-col gap-1 p-2">
+              {navItems.map((link) => (
+                <a
+                  href={link.url}
+                  aria-label={link.label}
+                  class="rounded-[8px] px-3 py-2 text-sm text-foreground/90 transition-colors hover:bg-muted/50"
+                  role="menuitem"
+                >
+                  {link.title}
+                </a>
+              ))}
+            </div>
+          </DropdownMenu>
+        </div>
+      </div>
+    </nav>
+  </div>
 </header>
 
 <script>
   document.addEventListener("astro:page-load", () => {
-    const sections = document.querySelectorAll("section")
-    const navItems = document.querySelectorAll("header nav a")
+    const sections = Array.from(document.querySelectorAll("section[id]"))
+    const navLinks = Array.from(document.querySelectorAll(".site-nav .nav-link"))
+    const siteNav = document.querySelector('.site-nav')
 
-    const callback = (entries: any[]) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          navItems.forEach((item) => {
-            if (item.getAttribute("aria-label") == entry.target.id) {
-              item.classList.add("nav-active")
-            } else {
-              item.classList.remove("nav-active")
-            }
-          })
-        }
-      })
-    }
-
-    const observer = new IntersectionObserver(callback, {
-      root: null,
-      rootMargin: "0px",
-      threshold: 0.3,
-    })
-
-    sections.forEach((section) => {
-      observer.observe(section)
-    })
-
-    // Cleanup function
-    document.onvisibilitychange = () => {
-      if (document.visibilityState === "hidden") {
-        observer.disconnect()
-      } else {
-        sections.forEach((section) => {
-          observer.observe(section)
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            navLinks.forEach((link) => {
+              const aria = link.getAttribute('aria-label')
+              if (aria === entry.target.id) link.classList.add('nav-active')
+              else link.classList.remove('nav-active')
+            })
+          }
         })
-      }
+      },
+      { threshold: 0.35 }
+    )
+
+    sections.forEach((s) => io.observe(s))
+
+    const onScroll = () => {
+      if (!siteNav) return
+      if (window.scrollY > 40) siteNav.classList.add('scrolled')
+      else siteNav.classList.remove('scrolled')
     }
+
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'hidden') {
+        io.disconnect()
+      } else {
+        sections.forEach((s) => io.observe(s))
+      }
+    })
   })
 </script>
 
 <style>
-  /* Estado activo del ítem de nav — contraste WCAG AA en ambos modos */
-  .nav-active {
-    color: #92400e; /* yellow-800: ratio ~7:1 sobre fondo claro */
+  .nav-link {
+    color: inherit;
   }
 
-  :global(.dark) .nav-active {
-    color: #fde047; /* yellow-300: ratio ~9:1 sobre fondo oscuro */
+  .nav-link.nav-active::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: -6px;
+    width: 36%;
+    height: 3px;
+    border-radius: 8px;
+    background: hsl(var(--primary));
+    box-shadow: 0 4px 18px hsl(var(--primary) / 0.35);
   }
 
-  nav {
-    animation: nav-shadown 1s linear both;
-    animation-timeline: scroll();
-    animation-range: 0 100px;
-    background-color: transparent;
+  /* Default: transparent nav — light text in dark, dark text in light */
+  .site-nav {
+    background: transparent;
+    border-bottom: 1px solid transparent;
+    color: hsl(var(--foreground));
   }
 
-  @keyframes nav-shadown {
-    to {
-      background-color: hsl(var(--card) / 0.8);
-      box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-      backdrop-filter: blur(8px);
-      --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
-      --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(1px + var(--tw-ring-offset-width)) hsl(var(--border));
-      box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
-    }
+  :global(.dark) .site-nav {
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  .site-nav .nav-link:hover {
+    background: hsl(var(--muted));
+  }
+
+  :global(.dark) .site-nav .nav-link:hover {
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  /* Scrolled: solid background */
+  .site-nav.scrolled {
+    background: rgba(248, 248, 252, 0.96);
+    border-bottom: 1px solid hsl(var(--border));
+    color: hsl(var(--foreground));
+    backdrop-filter: saturate(1.25) blur(8px);
+    -webkit-backdrop-filter: saturate(1.25) blur(8px);
+  }
+
+  .site-nav.scrolled .nav-link:hover {
+    background: hsl(var(--muted));
+  }
+
+  .site-nav.scrolled :global(#theme-toggle),
+  .site-nav.scrolled :global(#language-toggle) {
+    color: hsl(var(--foreground));
+  }
+
+  .site-nav.scrolled :global(#theme-toggle:hover),
+  .site-nav.scrolled :global(#language-toggle:hover) {
+    background: hsl(var(--muted));
+  }
+
+  /* Dark scrolled */
+  :global(.dark) .site-nav.scrolled {
+    background: rgba(15, 15, 20, 0.92);
+    border-bottom: 1px solid rgba(42, 42, 53, 0.7);
+    color: hsl(var(--foreground));
+  }
+
+  :global(.dark) .site-nav.scrolled .nav-link:hover {
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  .dropdown:focus {
+    outline: none;
   }
 </style>

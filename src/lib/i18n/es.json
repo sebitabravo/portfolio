@@ -11,8 +11,8 @@
   },
   "hero": {
     "greeting": "Hola, soy",
-    "description": "Desarrollador Full Stack",
-    "intro": "Construyo aplicaciones web modernas y eficientes con enfoque en la experiencia de usuario y código limpio. Apasionado por React, TypeScript y la creación de interfaces atractivas.",
+    "description": "Frontend Developer",
+    "intro": "Especializado en React y TypeScript. Construyo interfaces rápidas, accesibles y con código que da gusto mantener.",
     "cta": "Ver proyectos",
     "contact": "Contactar",
     "available": "Disponible para trabajar",

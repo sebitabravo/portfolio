@@ -1,5 +1,5 @@
 ---
-// Footer Component
+// Footer Component (Superhuman-inspired)
 import { personalInfo } from "@/lib/data"
 import { getTranslations, type Locale } from "@/lib/i18n"
 
@@ -14,28 +14,35 @@ const aboutUrl = locale === 'es' ? '#sobre-mi' : '/en#about'
 const contactUrl = locale === 'es' ? '#contacto' : '/en#contact'
 ---
 
-<footer
-  class="m-4 min-[375px]:pl-4 md:pl-0 mt-16 w-full mx-auto container lg:max-w-4xl md:max-w-2xl mb-10 flex justify-center"
->
-  <div
-    class="rounded-lg w-full max-w-screen-xl mx-auto md:flex md:items-center md:justify-between py-4"
-  >
-    <span class="text-sm sm:text-center text-foreground/90">
-      &copy; {currentYear}
-      <a href="/">{personalInfo.name}</a>.
-      {t.footer.madeWith} ❤️ {t.footer.in} Astro
-    </span>
-    <ul
-      class="flex flex-wrap items-center mt-3 text-sm font-medium sm:mt-0"
-    >
-      <li>
-        <a href={aboutUrl} class="me-4 md:me-6">{t.nav.about}</a>
-      </li>
-      <li>
-        <a href={contactUrl}>
-          {t.nav.contact}
-        </a>
-      </li>
-    </ul>
+<footer class="mx-auto mt-16 w-full max-w-[1200px] px-4">
+  <hr class="section-divider opacity-60" />
+
+  <div class="flex flex-col gap-3 py-6 text-sm md:flex-row md:items-center md:justify-between">
+   <div class="text-[hsl(var(--caption-color))]">
+       <span>&copy; {currentYear} &middot; </span>
+       <a href="/" class="font-medium text-foreground hover:text-[hsl(var(--primary))] transition-colors">{personalInfo.name}</a>
+     </div>
+
+    <div class="flex items-center gap-4">
+      <span class="text-xs text-[hsl(var(--caption-color))]">
+        Hecho con
+        <a href="https://astro.build" target="_blank" rel="noopener noreferrer" class="text-[hsl(var(--primary))] hover:underline">Astro</a>
+        +
+        <a href="https://tailwindcss.com" target="_blank" rel="noopener noreferrer" class="text-[hsl(var(--primary))] hover:underline">Tailwind</a>
+      </span>
+
+      <span class="text-[hsl(var(--caption-color))]/30" aria-hidden="true">&middot;</span>
+
+      <nav aria-label={locale === 'es' ? 'Enlaces del pie' : 'Footer links'}>
+        <ul class="flex items-center gap-4">
+          <li>
+            <a href={aboutUrl} class="text-[hsl(var(--caption-color))] hover:text-foreground transition-colors">{t.nav.about}</a>
+          </li>
+          <li>
+            <a href={contactUrl} class="text-[hsl(var(--caption-color))] hover:text-foreground transition-colors">{t.nav.contact}</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
   </div>
 </footer>

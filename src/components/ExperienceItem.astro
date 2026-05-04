@@ -1,11 +1,8 @@
 ---
-// Experience Item Component
-import { getTechStyle } from "@/lib/tech-colors"
+// Experience Item — Superhuman clean timeline with lavender accent
 import { formatDate } from "@/lib/utils"
 import { getTranslations, type Locale } from "@/lib/i18n"
 import type { ExperienceLogo } from "@/lib/data"
-import Badge from "./ui/Badge.astro"
-import Button from "./ui/Button.astro"
 
 interface Props {
   company: string
@@ -22,7 +19,6 @@ interface Props {
 }
 
 const { company, position, description, startDate, endDate, current, location, skills, logos, url, locale = 'es' } = Astro.props
-
 const t = getTranslations(locale)
 
 const dateText = current
@@ -32,20 +28,18 @@ const dateText = current
     : formatDate(startDate, locale)
 ---
 
-<div class="relative pb-12 before:absolute before:left-0 before:block before:h-full before:border-l-2 before:border-black/20 dark:before:border-white/15 before:content-['']">
-  <span class="text-yellow-800 dark:text-yellow-300 -left-[9px] absolute top-1 size-4 rounded-full bg-yellow-800 dark:bg-yellow-300 ring-4 ring-background"></span>
+<div class="relative pl-8 pb-12 before:absolute before:left-0 before:block before:h-full before:border-l before:border-[hsl(var(--parchment))] before:content-['']">
+  <!-- Timeline dot — Lavender glow -->
+  <span class="absolute -left-[5px] top-1 size-[10px] rounded-full bg-[hsl(var(--primary))] ring-4 ring-[hsl(var(--background))]"></span>
 
-  <div class="ml-8 rounded-2xl border border-border/50 bg-card p-5 shadow-sm">
+  <div class="rounded-2xl border border-[hsl(var(--parchment))] bg-[hsl(var(--card))] p-6">
     <div class="grid md:grid-cols-5 md:gap-8">
-
-      <!-- Columna izquierda: meta info + logos -->
+      <!-- Meta info -->
       <div class="md:col-span-2 mb-4 md:mb-0">
-        <h3 class="text-lg font-bold text-yellow-800 dark:text-yellow-300 leading-snug">{position}</h3>
-        {(!logos || logos.length === 0) && (
-          <h4 class="font-semibold text-foreground mt-0.5">{company}</h4>
-        )}
-        <time class="text-sm text-foreground/60 mt-1 block">{dateText}</time>
-        {location && <p class="text-sm text-foreground/60">{location}</p>}
+        <h3 class="text-base font-semibold text-foreground leading-snug">{position}</h3>
+        <h4 class="text-sm text-[hsl(var(--caption-color))] mt-0.5">{company}</h4>
+        <time class="text-xs text-[hsl(var(--caption-color))] mt-2 block">{dateText}</time>
+        {location && <p class="text-xs text-[hsl(var(--caption-color))]">{location}</p>}
 
         {logos && logos.length > 0 && (
           <div class="flex flex-wrap items-center gap-3 mt-4">
@@ -55,16 +49,16 @@ const dateText = current
                 target="_blank"
                 rel="noopener noreferrer"
                 title={logo.alt}
-                class="group flex size-16 items-center justify-center rounded-xl border border-border/50 bg-white p-2.5 shadow-sm transition-all duration-200 motion-safe:hover:-translate-y-0.5 hover:border-border hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 dark:bg-white/5 dark:hover:bg-white/10"
+                class="group flex size-14 items-center justify-center rounded-lg border border-[hsl(var(--parchment))] bg-[hsl(var(--card))] p-2 transition-opacity duration-200 hover:opacity-100 opacity-75"
               >
                 <img
                   src={logo.src}
                   alt={logo.alt}
-                  width={64}
-                  height={64}
+                  width={48}
+                  height={48}
                   loading="lazy"
                   decoding="async"
-                  class="size-full object-contain opacity-75 transition-opacity duration-200 group-hover:opacity-100 dark:brightness-95"
+                  class="size-full object-contain"
                 />
               </a>
             ))}
@@ -72,30 +66,30 @@ const dateText = current
         )}
       </div>
 
-      <!-- Columna derecha: descripción + skills + link -->
-      <div class="flex flex-col gap-2 text-foreground/80 md:col-span-3">
-        <p class="text-sm leading-relaxed">{description}</p>
+      <!-- Description -->
+      <div class="flex flex-col gap-2 text-foreground/70 md:col-span-3">
+        <p class="text-sm leading-[1.60]">{description}</p>
 
         {skills.length > 0 && (
           <div class="flex flex-wrap gap-2 mt-2">
-            {skills.map((skill) => {
-              const style = getTechStyle(skill)
-              return (
-                <Badge variant="tech" size="sm" class={`${style.bg} ${style.text} ${style.border}`}>
-                  {skill}
-                </Badge>
-              )
-            })}
+            {skills.map((skill) => (
+              <span class="tech-badge">{skill}</span>
+            ))}
           </div>
         )}
 
         {url && (
-          <Button variant="link" size="sm" href={url} target="_blank" rel="noopener" class="justify-start p-0 mt-2 text-yellow-800 dark:text-yellow-300 hover:text-yellow-900 dark:hover:text-yellow-200">
+          <a
+            href={url}
+            target="_blank"
+            rel="noopener"
+            class="inline-flex items-center gap-1 text-sm text-[hsl(var(--accent))] hover:underline mt-2"
+          >
             {t.work.viewMore}
-          </Button>
+            <svg class="size-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+          </a>
         )}
       </div>
-
     </div>
   </div>
 </div>

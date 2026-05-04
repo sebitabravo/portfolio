@@ -11,8 +11,8 @@
   },
   "hero": {
     "greeting": "Hi, I'm",
-    "description": "Full Stack Developer",
-    "intro": "I build modern, performant web applications with a focus on user experience and clean code. Passionate about React, TypeScript, and creating delightful interfaces.",
+    "description": "Frontend Developer",
+    "intro": "Specialized in React and TypeScript. I build fast, accessible interfaces with code that's a pleasure to maintain.",
     "cta": "View projects",
     "contact": "Contact",
     "available": "Available for work",

@@ -1,8 +1,9 @@
 ---
-// Section Container - Main container for sections
+// Section Container — Superhuman generous spacing
+// Max-width 1200px, clean sections
 const { class: className, ...rest } = Astro.props
 ---
 
-<section {...rest} class:list={["w-full mx-auto lg:max-w-4xl md:max-w-2xl", className]}>
+<section {...rest} class:list={["w-full mx-auto max-w-5xl", className]}>
   <slot />
 </section>

@@ -1,5 +1,5 @@
 ---
-// Hero Component - Main hero section
+// Hero Component — Superhuman-inspired full-width hero
 import { Image } from "astro:assets"
 import { personalInfo, social } from "@/lib/data"
 import { getTranslations, type Locale } from "@/lib/i18n"
@@ -21,86 +21,125 @@ const t = getTranslations(locale)
 const contactUrl = locale === 'es' ? '#contacto' : '/en#contact'
 ---
 
-<div class="max-w-xl">
-  <div class="flex gap-4 mb-4">
-    <Image
-      src={profileImage}
-      alt={personalInfo.name}
-      width={128}
-      height={128}
-      format="webp"
-      quality={90}
-      class="size-16 rounded-full object-cover shadow-lg"
-    />
-    {personalInfo.available && (
-      <a
-        href={social.linkedin}
-        target="_blank"
-        rel="noopener"
-        class="flex items-center transition md:justify-center md:hover:scale-105"
-      >
-        <AvailableBadge>{t.hero.available}</AvailableBadge>
-      </a>
-    )}
+<section class="hero-gradient w-full">
+   <div class="container-custom section">
+     <div class="grid grid-cols-1 gap-8 sm:gap-12 lg:gap-16 md:grid-cols-2 items-center">
+
+      <!-- Left: Textual content -->
+      <div class="order-2 md:order-1">
+        <!-- Greeting -->
+        <p class="animate-slide-up hero-text-muted text-sm md:text-base font-mono uppercase tracking-[0.16em] mb-3">
+          {t.hero.greeting}
+        </p>
+
+        <!-- Name with gradient -->
+        <h1 class="animate-slide-up animation-delay-100 font-bold tracking-tight leading-[0.92]">
+          <span class="block text-3xl md:text-4xl lg:text-[56px] bg-gradient-to-r from-[hsl(var(--foreground))] via-[hsl(var(--foreground))] to-[hsl(var(--primary))] bg-clip-text text-transparent">{personalInfo.name}</span>
+        </h1>
+
+        <!-- Role -->
+        <div class="animate-slide-up animation-delay-200 mt-4">
+          <span class="hero-text-accent font-mono text-xs uppercase tracking-[0.16em] text-[hsl(var(--primary))]">
+            {personalInfo.title}
+          </span>
+        </div>
+
+        <!-- Subtitle -->
+        <p class="animate-slide-up animation-delay-300 hero-text-primary mt-6 text-base md:text-lg max-w-xl">{t.hero.intro}</p>
+
+        <!-- CTAs + Social -->
+        <div class="animate-slide-up animation-delay-400 mt-8 flex flex-wrap items-center gap-4">
+          <a
+            href={contactUrl}
+            class="btn-primary focus-ring"
+            aria-label={t.hero.contact}
+          >
+            <MailIcon class="size-4" />
+            <span>{t.hero.contact}</span>
+          </a>
+
+          <a
+            href={cvPdf}
+            class="btn-ghost hero-btn-ghost focus-ring"
+            target="_blank"
+            rel="noopener noreferrer"
+            data-track-cv={locale}
+          >
+            <DownloadIcon class="size-4" />
+            <span>{t.hero.downloadCv}</span>
+          </a>
+
+          <div class="flex items-center gap-2">
+            <SocialPill href={social.linkedin} target="_blank" rel="noopener noreferrer" data-track-social="linkedin">
+              <LinkedInIcon class="size-4" />
+              <span class="sr-only">LinkedIn</span>
+            </SocialPill>
+            <SocialPill href={social.github} target="_blank" rel="noopener noreferrer" data-track-social="github">
+              <GitHubIcon class="size-4" />
+              <span class="sr-only">GitHub</span>
+            </SocialPill>
+          </div>
+        </div>
+
+        <!-- Meta -->
+        <div class="animate-slide-up animation-delay-500 hero-meta-text mt-6 text-sm flex flex-wrap items-center gap-4">
+          <span class="flex items-center gap-2" aria-label="Location">
+            <svg width="8" height="8" viewBox="0 0 8 8" fill="currentColor" class="opacity-70" aria-hidden="true"><circle cx="4" cy="4" r="4" /></svg>
+            <span>{personalInfo.location}</span>
+          </span>
+
+          <span class="opacity-30" aria-hidden="true">&middot;</span>
+          <a href={`mailto:${personalInfo.email}`} class="hero-meta-link hover:underline">{personalInfo.email}</a>
+        </div>
+      </div>
+
+      <!-- Right: Profile image -->
+      <div class="order-1 md:order-2 flex justify-center md:justify-end">
+        <div class="relative">
+          <Image
+            src={profileImage}
+            alt={personalInfo.name}
+            width={192}
+            height={192}
+            format="webp"
+            quality={90}
+            class="w-28 h-28 md:w-36 md:h-36 lg:w-44 lg:h-44 rounded-full object-cover shadow-lg"
+          />
+
+          {personalInfo.available && (
+            <div class="absolute -bottom-2 -right-2">
+              <a href={social.linkedin} target="_blank" rel="noopener noreferrer" aria-label={t.hero.available}>
+                <AvailableBadge>{t.hero.available}</AvailableBadge>
+              </a>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
   </div>
-
-  <h1 class="text-4xl font-bold tracking-tight sm:text-5xl text-foreground">
-    {t.hero.greeting} {personalInfo.name}
-  </h1>
-
-  <p class="mt-6 text-xl text-foreground/80">
-    {t.hero.intro}
-  </p>
-
-  <nav class="flex flex-wrap gap-3 mt-8">
-    <!-- CTA principal: mayor peso visual para guiar la conversión -->
-    <a
-      href={contactUrl}
-      class="cta-primary inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm motion-safe:transition-all motion-safe:duration-200 hover:bg-primary/90 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 motion-safe:active:scale-95"
-    >
-      <MailIcon class="size-4" />
-      {t.hero.contact}
-    </a>
-
-    <!-- CTAs secundarios: menor peso visual -->
-    <SocialPill href={social.linkedin} target="_blank" rel="noopener" data-track-social="linkedin">
-      <LinkedInIcon class="size-4" />
-      LinkedIn
-    </SocialPill>
-    <SocialPill href={social.github} target="_blank" rel="noopener" data-track-social="github">
-      <GitHubIcon class="size-4" />
-      GitHub
-    </SocialPill>
-    <SocialPill href={cvPdf} target="_blank" rel="noopener" data-track-cv={locale}>
-      <DownloadIcon class="size-4" />
-      {t.hero.downloadCv}
-    </SocialPill>
-  </nav>
-</div>
+</section>
 
 <script>
   import { trackEvent } from "@/lib/analytics"
 
   const setupHeroTracking = () => {
-    // Tracking de social pills
-    document.querySelectorAll<HTMLElement>("[data-track-social]").forEach((el) => {
-      if (el.dataset.trackBound === "true") return
-      el.dataset.trackBound = "true"
-      el.addEventListener("click", () => {
-        trackEvent({ name: "social_click", props: { platform: el.dataset.trackSocial ?? "" } })
+    document.querySelectorAll<HTMLElement>('[data-track-social]').forEach((el) => {
+      if (el.dataset.trackBound === 'true') return
+      el.dataset.trackBound = 'true'
+      el.addEventListener('click', () => {
+        trackEvent({ name: 'social_click', props: { platform: el.dataset.trackSocial ?? '' } })
       })
     })
 
-    // Tracking de descarga de CV
-    document.querySelectorAll<HTMLElement>("[data-track-cv]").forEach((el) => {
-      if (el.dataset.trackBound === "true") return
-      el.dataset.trackBound = "true"
-      el.addEventListener("click", () => {
-        trackEvent({ name: "cv_download", props: { locale: el.dataset.trackCv ?? "" } })
+    document.querySelectorAll<HTMLElement>('[data-track-cv]').forEach((el) => {
+      if (el.dataset.trackBound === 'true') return
+      el.dataset.trackBound = 'true'
+      el.addEventListener('click', () => {
+        trackEvent({ name: 'cv_download', props: { locale: el.dataset.trackCv ?? '' } })
       })
     })
   }
 
-  document.addEventListener("astro:page-load", setupHeroTracking)
+  document.addEventListener('astro:page-load', setupHeroTracking)
   setupHeroTracking()
 </script>

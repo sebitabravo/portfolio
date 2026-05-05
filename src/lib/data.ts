@@ -118,7 +118,7 @@ const projectsData = {
       image: "manttoai",
       githubUrl: "https://github.com/sebitabravo/ManttoAI",
       liveUrl: undefined,
-      order: 2,
+      order: 3,
     },
     {
       slug: "vulcania",
@@ -154,6 +154,7 @@ const projectsData = {
       slug: "rapido-sur",
       title: "Rápido Sur",
       description: "Sistema enterprise de gestión de mantenimiento vehicular. NestJS + Next.js + PostgreSQL con auth JWT, planes preventivos y órdenes de trabajo.",
+      order: 4,
       fullDescription: `Sistema web completo para la gestión de mantenimiento de flota vehicular. Arquitectura enterprise con módulos de autenticación JWT, gestión de vehículos, planes preventivos, órdenes de trabajo, catálogo de repuestos, alertas y generación de reportes.
 
 ## Características Principales
@@ -177,7 +178,6 @@ const projectsData = {
       image: "rapido-sur",
       githubUrl: "https://github.com/sebitabravo/rapido-sur",
       liveUrl: undefined,
-      order: 3,
     },
     {
       slug: "wenuke",
@@ -231,6 +231,7 @@ El agricultor comparte su ubicación por WhatsApp, elige sus cultivos, y recibe 
       slug: "manttoai",
       title: "ManttoAI",
       description: "IoT predictive maintenance platform with Machine Learning. Real-time telemetry, Random Forest model (94.1% F1-Score) and interactive dashboard.",
+      order: 3,
       fullDescription: `ManttoAI is an open-source predictive maintenance platform that captures real-time telemetry from IoT devices (ESP32) via MQTT, evaluates operational thresholds, and runs a Machine Learning model (Random Forest) to predict equipment failures before they occur.
 
 ## Key Features
@@ -259,7 +260,6 @@ El agricultor comparte su ubicación por WhatsApp, elige sus cultivos, y recibe 
       image: "manttoai",
       githubUrl: "https://github.com/sebitabravo/ManttoAI",
       liveUrl: undefined,
-      order: 2,
     },
     {
       slug: "vulcania",
@@ -295,6 +295,7 @@ El agricultor comparte su ubicación por WhatsApp, elige sus cultivos, y recibe 
       slug: "rapido-sur",
       title: "Rápido Sur",
       description: "Enterprise fleet vehicle maintenance system. NestJS + Next.js + PostgreSQL with JWT auth, preventive maintenance plans and work orders.",
+      order: 4,
       fullDescription: `A complete web system for fleet vehicle maintenance management. Enterprise architecture with JWT auth modules, vehicle management, preventive plans, work orders, parts catalog, alerts, and report generation.
 
 ## Key Features
@@ -318,7 +319,6 @@ El agricultor comparte su ubicación por WhatsApp, elige sus cultivos, y recibe 
       image: "rapido-sur",
       githubUrl: "https://github.com/sebitabravo/rapido-sur",
       liveUrl: undefined,
-      order: 3,
     },
     {
       slug: "wenuke",

@@ -23,9 +23,13 @@ const { certifications, locale = 'es' } = Astro.props
 const duplicatedCerts = [...certifications, ...certifications]
 ---
 
-<div class="cert-carousel-container">
-  <div class="cert-carousel-wrapper">
-    <div class="cert-carousel">
+<div class="cert-carousel-container" id="certCarouselContainer">
+  <button class="cert-nav-btn cert-nav-prev" id="certNavPrev" aria-label={locale === 'es' ? "Anterior" : "Previous"} type="button">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+  </button>
+
+  <div class="cert-carousel-wrapper" id="certCarouselWrapper">
+    <div class="cert-carousel" id="certCarousel">
       {duplicatedCerts.map((cert, index) => {
         const { name, organization, logo, pdfUrl, category } = cert.data
         const isDuplicate = index >= certifications.length
@@ -66,6 +70,10 @@ const duplicatedCerts = [...certifications, ...certifications]
       })}
     </div>
   </div>
+
+  <button class="cert-nav-btn cert-nav-next" id="certNavNext" aria-label={locale === 'es' ? "Siguiente" : "Next"} type="button">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+  </button>
 </div>
 
 <style>
@@ -93,15 +101,19 @@ const duplicatedCerts = [...certifications, ...certifications]
   }
 
   .cert-carousel-wrapper {
-    display: flex;
-    width: fit-content;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .cert-carousel-wrapper::-webkit-scrollbar {
+    display: none;
   }
 
   .cert-carousel {
     display: flex;
     gap: 2rem;
-    animation: scroll 60s linear infinite;
-    will-change: transform;
+    width: fit-content;
   }
 
   .cert-item {
@@ -204,16 +216,6 @@ const duplicatedCerts = [...certifications, ...certifications]
     border: 1px solid hsl(var(--border));
   }
 
-  /* Infinite scroll animation */
-  @keyframes scroll {
-    0% {
-      transform: translateX(0);
-    }
-    100% {
-      transform: translateX(-50%);
-    }
-  }
-
   /* Floating animation */
   @keyframes float {
     0%, 100% {
@@ -224,16 +226,56 @@ const duplicatedCerts = [...certifications, ...certifications]
     }
   }
 
-  /* Pause animation on hover */
-  .cert-carousel-container:hover .cert-carousel {
-    animation-play-state: paused;
+  /* Navigation buttons — hidden until hover */
+  .cert-nav-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid hsl(var(--border));
+    background: hsl(var(--card) / 0.92);
+    color: hsl(var(--foreground));
+    cursor: pointer;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease, background 0.2s ease, transform 0.2s ease;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+  }
+
+  .cert-nav-btn:hover {
+    background: hsl(var(--card));
+    border-color: hsl(var(--primary));
+    color: hsl(var(--primary));
+  }
+
+  .cert-nav-prev {
+    left: 8px;
+  }
+
+  .cert-nav-next {
+    right: 8px;
+  }
+
+  .cert-carousel-container:hover .cert-nav-btn {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .cert-nav-btn:active {
+    transform: translateY(-50%) scale(0.92);
   }
 
   /* Responsive adjustments */
   @media (max-width: 768px) {
     .cert-carousel {
       gap: 1.5rem;
-      animation-duration: 45s;
     }
 
     .cert-item {
@@ -262,7 +304,7 @@ const duplicatedCerts = [...certifications, ...certifications]
     }
   }
 
-  /* Reduced motion: muestra todas las certificaciones en grilla en lugar de carrusel oculto */
+  /* Reduced motion: grid estático con todas las certificaciones */
   @media (prefers-reduced-motion: reduce) {
     .cert-carousel-container {
       overflow: visible;
@@ -271,11 +313,11 @@ const duplicatedCerts = [...certifications, ...certifications]
     }
 
     .cert-carousel-wrapper {
+      overflow: visible;
       width: 100%;
     }
 
     .cert-carousel {
-      animation: none;
       flex-wrap: wrap;
       justify-content: center;
       gap: 1rem;
@@ -286,9 +328,82 @@ const duplicatedCerts = [...certifications, ...certifications]
       min-width: 140px;
     }
 
-    /* Oculta los items duplicados — solo necesarios para el loop de animación */
     .cert-item[data-duplicate="true"] {
+      display: none;
+    }
+
+    .cert-nav-btn {
       display: none;
     }
   }
 </style>
+
+<script>
+  function initCertCarousel() {
+    const container = document.getElementById('certCarouselContainer')
+    const wrapper = document.getElementById('certCarouselWrapper')
+    const carousel = document.getElementById('certCarousel')
+    const prevBtn = document.getElementById('certNavPrev')
+    const nextBtn = document.getElementById('certNavNext')
+
+    if (!container || !wrapper || !carousel || !prevBtn || !nextBtn) return
+
+    // Check reduced motion
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+
+    let scrollInterval: ReturnType<typeof setInterval> | null = null
+    const scrollSpeed = 1 // px per tick
+    const tickMs = 25 // ~40fps smooth
+    const navScrollAmount = 350 // px per arrow click
+
+    function isHovered() {
+      return container!.matches(':hover')
+    }
+
+    function startAutoScroll() {
+      if (scrollInterval) return
+      scrollInterval = setInterval(() => {
+        if (isHovered()) return
+        const w = wrapper!
+        w.scrollLeft += scrollSpeed
+        const halfWidth = w.scrollWidth / 2
+        if (w.scrollLeft >= halfWidth) {
+          w.scrollLeft = 0
+        }
+      }, tickMs)
+    }
+
+    function stopAutoScroll() {
+      if (scrollInterval) {
+        clearInterval(scrollInterval)
+        scrollInterval = null
+      }
+    }
+
+    // Arrow navigation
+    prevBtn.addEventListener('click', () => {
+      wrapper!.scrollBy({ left: -navScrollAmount, behavior: 'smooth' })
+    })
+
+    nextBtn.addEventListener('click', () => {
+      const w = wrapper!
+      w.scrollBy({ left: navScrollAmount, behavior: 'smooth' })
+      const halfWidth = w.scrollWidth / 2
+      if (w.scrollLeft + navScrollAmount >= halfWidth) {
+        setTimeout(() => {
+          w.scrollLeft = w.scrollLeft - halfWidth
+        }, 350)
+      }
+    })
+
+    // Pause on hover, resume on leave
+    container.addEventListener('mouseenter', stopAutoScroll)
+    container.addEventListener('mouseleave', startAutoScroll)
+
+    // Start
+    startAutoScroll()
+  }
+
+  document.addEventListener('DOMContentLoaded', initCertCarousel)
+  document.addEventListener('astro:page-load', initCertCarousel)
+</script>

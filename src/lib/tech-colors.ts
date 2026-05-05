@@ -221,6 +221,66 @@ export const techColors: Record<string, TechStyle> = {
     text: 'text-[#F05032] dark:text-[#F05032]',
     border: 'border-[#F05032]/30',
     hoverBg: 'hover:bg-[#F05032]/20 dark:hover:bg-[#F05032]/30'
+  },
+  'FastAPI': {
+    bg: 'bg-[#009688]/10 dark:bg-[#009688]/20',
+    text: 'text-[#009688] dark:text-[#009688]',
+    border: 'border-[#009688]/30',
+    hoverBg: 'hover:bg-[#009688]/20 dark:hover:bg-[#009688]/30'
+  },
+  'Supabase': {
+    bg: 'bg-[#3ECF8E]/10 dark:bg-[#3ECF8E]/20',
+    text: 'text-[#1FA86A] dark:text-[#3ECF8E]',
+    border: 'border-[#3ECF8E]/30',
+    hoverBg: 'hover:bg-[#3ECF8E]/20 dark:hover:bg-[#3ECF8E]/30'
+  },
+  'NestJS': {
+    bg: 'bg-[#E0234E]/10 dark:bg-[#E0234E]/20',
+    text: 'text-[#E0234E] dark:text-[#E0234E]',
+    border: 'border-[#E0234E]/30',
+    hoverBg: 'hover:bg-[#E0234E]/20 dark:hover:bg-[#E0234E]/30'
+  },
+  'Turso': {
+    bg: 'bg-[#4FF8D2]/10 dark:bg-[#4FF8D2]/20',
+    text: 'text-[#1B8A6E] dark:text-[#4FF8D2]',
+    border: 'border-[#4FF8D2]/30',
+    hoverBg: 'hover:bg-[#4FF8D2]/20 dark:hover:bg-[#4FF8D2]/30'
+  },
+  'Groq LLM': {
+    bg: 'bg-[#F97316]/10 dark:bg-[#F97316]/20',
+    text: 'text-[#D46213] dark:text-[#F97316]',
+    border: 'border-[#F97316]/30',
+    hoverBg: 'hover:bg-[#F97316]/20 dark:hover:bg-[#F97316]/30'
+  },
+  'WhatsApp API': {
+    bg: 'bg-[#25D366]/10 dark:bg-[#25D366]/20',
+    text: 'text-[#1EA84F] dark:text-[#25D366]',
+    border: 'border-[#25D366]/30',
+    hoverBg: 'hover:bg-[#25D366]/20 dark:hover:bg-[#25D366]/30'
+  },
+  'shadcn/ui': {
+    bg: 'bg-black/10 dark:bg-white/10',
+    text: 'text-black dark:text-white',
+    border: 'border-black/20 dark:border-white/20',
+    hoverBg: 'hover:bg-black/20 dark:hover:bg-white/20'
+  },
+  'Machine Learning': {
+    bg: 'bg-[#8E44AD]/10 dark:bg-[#8E44AD]/20',
+    text: 'text-[#8E44AD] dark:text-[#A569BD]',
+    border: 'border-[#8E44AD]/30',
+    hoverBg: 'hover:bg-[#8E44AD]/20 dark:hover:bg-[#8E44AD]/30'
+  },
+  'AWS': {
+    bg: 'bg-[#FF9900]/10 dark:bg-[#FF9900]/20',
+    text: 'text-[#D98200] dark:text-[#FF9900]',
+    border: 'border-[#FF9900]/30',
+    hoverBg: 'hover:bg-[#FF9900]/20 dark:hover:bg-[#FF9900]/30'
+  },
+  'Vercel': {
+    bg: 'bg-black/10 dark:bg-white/10',
+    text: 'text-black dark:text-white',
+    border: 'border-black/20 dark:border-white/20',
+    hoverBg: 'hover:bg-black/20 dark:hover:bg-white/20'
   }
 }
 

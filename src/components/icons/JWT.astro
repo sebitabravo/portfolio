@@ -1,15 +1,15 @@
----
-interface Props {
-  class?: string
-}
-
-const { class: className } = Astro.props
----
-
-<svg class={className} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" stroke-width="2"/>
-  <path d="M3 10H21" stroke="currentColor" stroke-width="2"/>
-  <circle cx="7" cy="14.5" r="1" fill="currentColor"/>
-  <circle cx="12" cy="14.5" r="1" fill="currentColor"/>
-  <circle cx="17" cy="14.5" r="1" fill="currentColor"/>
+<svg viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg" {...Astro.props}>
+  <!-- JWT.io style token -->
+  <rect x="28" y="78" width="200" height="100" rx="16" fill="#000000"/>
+  <rect x="44" y="94" width="168" height="68" rx="8" fill="#FB015B"/>
+  <!-- Header -->
+  <rect x="60" y="106" width="80" height="8" rx="4" fill="white" opacity="0.9"/>
+  <!-- Payload -->
+  <rect x="60" y="122" width="120" height="8" rx="4" fill="white" opacity="0.6"/>
+  <rect x="60" y="136" width="100" height="8" rx="4" fill="white" opacity="0.6"/>
+  <!-- Signature -->
+  <rect x="60" y="150" width="136" height="8" rx="4" fill="#00B4D8" opacity="0.8"/>
+  <!-- Period dot -->
+  <circle cx="148" cy="110" r="3" fill="white" opacity="0.9"/>
+  <circle cx="148" cy="126" r="3" fill="white" opacity="0.6"/>
 </svg>

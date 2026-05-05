@@ -24,6 +24,17 @@ import Axios from '@/components/icons/Axios.astro';
 import PHP from '@/components/icons/PHP.astro';
 import Laravel from '@/components/icons/Laravel.astro';
 import Inertia from '@/components/icons/Inertia.astro';
+import Python from '@/components/icons/Python.astro';
+import FastAPI from '@/components/icons/FastAPI.astro';
+import Supabase from '@/components/icons/Supabase.astro';
+import NestJS from '@/components/icons/NestJS.astro';
+import Turso from '@/components/icons/Turso.astro';
+import Groq from '@/components/icons/Groq.astro';
+import WhatsApp from '@/components/icons/WhatsApp.astro';
+import ShadcnUI from '@/components/icons/ShadcnUI.astro';
+import MachineLearning from '@/components/icons/MachineLearning.astro';
+import AWS from '@/components/icons/AWS.astro';
+import Vercel from '@/components/icons/Vercel.astro';
 
 export const techIconsMap = {
 	React: React,
@@ -47,6 +58,17 @@ export const techIconsMap = {
 	PHP: PHP,
 	Laravel: Laravel,
 	'Inertia.js': Inertia,
+	Python: Python,
+	FastAPI: FastAPI,
+	Supabase: Supabase,
+	NestJS: NestJS,
+	Turso: Turso,
+	'Groq LLM': Groq,
+	'WhatsApp API': WhatsApp,
+	'shadcn/ui': ShadcnUI,
+	'Machine Learning': MachineLearning,
+	AWS: AWS,
+	Vercel: Vercel,
 } as const;
 
 export type TechName = keyof typeof techIconsMap;

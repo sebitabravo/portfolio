@@ -52,13 +52,12 @@ const specialties = locale === 'es'
         </ul>
       </div>
 
-      <!-- Semantic content for AI/SEO scanners -->
-      <section aria-label={locale === 'es' ? "Competencias técnicas" : "Technical competencies"} class="mt-6 opacity-60">
-        <h3 class="text-sm font-mono uppercase tracking-[0.1em] text-foreground/60 mb-3">{locale === 'es' ? "Especialidades" : "Specialties"}</h3>
-        <ul class="grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-xs text-[hsl(var(--caption-color))]">
+      <section aria-label={locale === 'es' ? "Competencias técnicas" : "Technical competencies"} class="mt-6 pt-6 border-t border-[hsl(var(--parchment))]">
+        <h3 class="text-sm font-semibold text-foreground mb-3">{locale === 'es' ? "Especialidades" : "Specialties"}</h3>
+        <ul class="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
           {specialties.map((s) => (
-            <li class="flex items-center gap-1.5">
-              <span class="text-[hsl(var(--primary))]" aria-hidden="true">&rsaquo;</span>
+            <li class="flex items-center gap-2 text-sm text-foreground/70">
+              <span class="h-1.5 w-1.5 rounded-full bg-[hsl(var(--primary))] shrink-0" aria-hidden="true"></span>
               {s}
             </li>
           ))}
@@ -82,10 +81,10 @@ const specialties = locale === 'es'
   <!-- Tech Stack Dashboard -->
   <div class="mt-8">
     <h3 class="text-lg font-semibold mb-2 text-center text-foreground">
-      {locale === 'es' ? "Mi Stack Tecnol&oacute;gico" : "My Tech Stack"}
+      {locale === 'es' ? "Mi Stack Tecnológico" : "My Tech Stack"}
     </h3>
     <p class="text-sm text-center text-[hsl(var(--caption-color))] mb-6">
-      {locale === 'es' ? "Las herramientas con las que construyo d&iacute;a a d&iacute;a" : "The tools I build with day to day"}
+      {locale === 'es' ? "Las herramientas con las que construyo día a día" : "The tools I build with day to day"}
     </p>
     <TechCarousel />
   </div>

@@ -20,14 +20,14 @@ import MonitorIcon from "./icons/Monitor.astro"
 
   <div
     id="theme-menu"
-    class="hidden absolute left-1/2 -translate-x-1/2 mt-2 w-48 rounded-md shadow-lg bg-card ring-1 ring-black ring-opacity-5 z-[9999]"
+    class="hidden absolute left-1/2 -translate-x-1/2 mt-2 w-48 rounded-md shadow-lg bg-[hsl(var(--card))] ring-1 ring-black/5 dark:ring-white/10 z-[9999]"
     role="menu"
   >
     <div class="py-1">
       <button
         type="button"
         data-theme="light"
-        class="theme-option flex items-center justify-between w-full px-4 py-2 text-sm text-foreground/80 hover:bg-muted/50 text-left"
+        class="theme-option flex items-center justify-between w-full px-4 py-2 text-sm text-[hsl(var(--foreground)/0.8)] hover:bg-[hsl(var(--muted)/0.5)] text-left"
       >
         <span class="flex items-center gap-3">
           <SunIcon class="size-4" />
@@ -38,7 +38,7 @@ import MonitorIcon from "./icons/Monitor.astro"
       <button
         type="button"
         data-theme="dark"
-        class="theme-option flex items-center justify-between w-full px-4 py-2 text-sm text-foreground/80 hover:bg-muted/50 text-left"
+        class="theme-option flex items-center justify-between w-full px-4 py-2 text-sm text-[hsl(var(--foreground)/0.8)] hover:bg-[hsl(var(--muted)/0.5)] text-left"
       >
         <span class="flex items-center gap-3">
           <MoonIcon class="size-4" />
@@ -49,7 +49,7 @@ import MonitorIcon from "./icons/Monitor.astro"
       <button
         type="button"
         data-theme="system"
-        class="theme-option flex items-center justify-between w-full px-4 py-2 text-sm text-foreground/80 hover:bg-muted/50 text-left"
+        class="theme-option flex items-center justify-between w-full px-4 py-2 text-sm text-[hsl(var(--foreground)/0.8)] hover:bg-[hsl(var(--muted)/0.5)] text-left"
       >
         <span class="flex items-center gap-3">
           <MonitorIcon class="size-4" />

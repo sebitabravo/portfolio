@@ -140,14 +140,18 @@ const navItems = [
     box-shadow: 0 4px 18px hsl(var(--primary) / 0.35);
   }
 
-  /* Default: transparent nav — light text in dark, dark text in light */
+  /* Default: semi-transparent nav with blur */
   .site-nav {
-    background: transparent;
-    border-bottom: 1px solid transparent;
+    background: rgba(248, 248, 252, 0.72);
+    border-bottom: 1px solid hsl(var(--parchment) / 0.5);
     color: hsl(var(--foreground));
+    backdrop-filter: saturate(1.25) blur(12px);
+    -webkit-backdrop-filter: saturate(1.25) blur(12px);
   }
 
   :global(.dark) .site-nav {
+    background: rgba(15, 15, 20, 0.72);
+    border-bottom: 1px solid rgba(42, 42, 53, 0.4);
     color: rgba(255, 255, 255, 0.9);
   }
 
@@ -159,13 +163,11 @@ const navItems = [
     background: rgba(255, 255, 255, 0.08);
   }
 
-  /* Scrolled: solid background */
+  /* Scrolled: more opaque background */
   .site-nav.scrolled {
     background: rgba(248, 248, 252, 0.96);
     border-bottom: 1px solid hsl(var(--border));
     color: hsl(var(--foreground));
-    backdrop-filter: saturate(1.25) blur(8px);
-    -webkit-backdrop-filter: saturate(1.25) blur(8px);
   }
 
   .site-nav.scrolled .nav-link:hover {

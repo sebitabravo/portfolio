@@ -24,16 +24,16 @@ const statusLabels: Record<string, Record<string, string>> = {
 }
 
 const statusColors: Record<string, string> = {
-  production: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20",
-  development: "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20",
-  demo: "bg-sky-500/10 text-sky-600 dark:text-sky-400 border-sky-500/20",
+  production: "bg-emerald-500/85 text-white border-emerald-400/30",
+  development: "bg-amber-500/85 text-white border-amber-400/30",
+  demo: "bg-sky-500/85 text-white border-sky-400/30",
 }
 
 const visualGradients: Record<string, string> = {
   manttoai: "linear-gradient(140deg, #0e5f66 0%, #3d9f7a 100%)",
   vulcania: "linear-gradient(140deg, #7a2a0a 0%, #e35b25 45%, #f3aa3a 100%)",
   "rapido-sur": "linear-gradient(140deg, #1e3a8a 0%, #3730a3 50%, #6d28d9 100%)",
-  banking: "linear-gradient(140deg, #1e3a5f 0%, #2563eb 50%, #0ea5e9 100%)",
+  wenuke: "linear-gradient(140deg, #075e54 0%, #128c7e 50%, #25d366 100%)",
 }
 
 ---
@@ -64,20 +64,19 @@ const visualGradients: Record<string, string> = {
                     {statusLabel}
                   </span>
                 )}
-                <h4 class="mt-1 font-mono text-lg font-semibold text-white sm:text-xl lg:text-2xl">{title}</h4>
+                <div class="flex flex-wrap items-end justify-between gap-2">
+                  <h4 class="mt-1 font-mono text-lg font-semibold text-white sm:text-xl lg:text-2xl">{title}</h4>
+                  {featured && (
+                    <span class="rounded-md border border-white/30 bg-white/15 px-2 py-0.5 text-[10px] font-mono uppercase tracking-[0.12em] text-white/90">
+                      {t.projects.featured}
+                    </span>
+                  )}
+                </div>
               </div>
             </div>
           </div>
 
           <div class="flex grow flex-col p-4 sm:p-5 lg:p-6">
-            <div class="flex flex-wrap items-start justify-between gap-2">
-              <h3 class="text-lg font-semibold text-foreground sm:text-xl">{title}</h3>
-              {featured && (
-                <span class="rounded-lg border border-[hsl(var(--primary))]/60 bg-[hsl(var(--primary))]/15 px-2.5 py-1 text-[11px] font-medium uppercase tracking-[0.08em] text-[hsl(var(--primary-foreground))] dark:text-[hsl(var(--primary))]">
-                  {t.projects.featured}
-                </span>
-              )}
-            </div>
 
             <p class="mt-3 text-sm leading-[1.60] text-foreground/75 sm:text-base">{description}</p>
 

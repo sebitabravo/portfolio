@@ -1,15 +1,10 @@
----
-interface Props {
-  class?: string
-}
-
-const { class: className } = Astro.props
----
-
-<svg class={className} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M2 12L12 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M12 22V17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M17 9.5L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<svg viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg" {...Astro.props}>
+  <!-- Axios HTTP client style -->
+  <rect width="256" height="256" rx="32" fill="#5A29E4"/>
+  <!-- Stylized "Ax" monogram -->
+  <path d="M68 180V76L92 76L92 120L128 76H156L122 120L156 180H128L104 132L92 156V180H68Z" fill="white"/>
+  <!-- HTTP method dots -->
+  <circle cx="188" cy="92" r="8" fill="#FF9F43" />
+  <circle cx="188" cy="120" r="8" fill="#00D2D3" />
+  <circle cx="188" cy="148" r="8" fill="#FECA57" />
 </svg>

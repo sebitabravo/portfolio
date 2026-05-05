@@ -16,14 +16,14 @@ import LanguagesIcon from "./icons/Languages.astro"
 
   <div
     id="language-menu"
-    class="hidden absolute left-1/2 -translate-x-1/2 mt-2 w-32 rounded-md shadow-lg bg-card ring-1 ring-black ring-opacity-5 z-[9999]"
+    class="hidden absolute left-1/2 -translate-x-1/2 mt-2 w-32 rounded-md shadow-lg bg-[hsl(var(--card))] ring-1 ring-black/5 dark:ring-white/10 z-[9999]"
     role="menu"
   >
     <div class="py-1">
       <button
         type="button"
         data-lang="es"
-        class="language-option flex items-center justify-between w-full px-4 py-2 text-sm text-foreground/80 hover:bg-muted/50 text-left"
+        class="language-option flex items-center justify-between w-full px-4 py-2 text-sm text-[hsl(var(--foreground)/0.8)] hover:bg-[hsl(var(--muted)/0.5)] text-left"
       >
         <span>Español</span>
         <span class="check-es hidden">✓</span>
@@ -31,7 +31,7 @@ import LanguagesIcon from "./icons/Languages.astro"
       <button
         type="button"
         data-lang="en"
-        class="language-option flex items-center justify-between w-full px-4 py-2 text-sm text-foreground/80 hover:bg-muted/50 text-left"
+        class="language-option flex items-center justify-between w-full px-4 py-2 text-sm text-[hsl(var(--foreground)/0.8)] hover:bg-[hsl(var(--muted)/0.5)] text-left"
       >
         <span>English</span>
         <span class="check-en hidden">✓</span>

@@ -25,7 +25,7 @@ const { id, triggerLabel, class: className } = Astro.props
   <div
     id={`${id}-menu`}
     role="menu"
-    class="invisible absolute right-0 top-12 z-[60] min-w-56 rounded-lg border border-border bg-card p-2 opacity-0 shadow-lg transition duration-150"
+    class="invisible absolute right-0 top-12 z-[60] min-w-56 rounded-lg border border-[hsl(var(--border))] bg-[hsl(var(--card))] p-2 opacity-0 shadow-lg transition duration-150"
     data-dropdown-menu={id}
   >
     <slot />

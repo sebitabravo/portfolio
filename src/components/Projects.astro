@@ -67,7 +67,7 @@ const visualGradients: Record<string, string> = {
                   </span>
                 )}
                 <div class="flex flex-wrap items-end justify-between gap-2">
-                  <h4 class="mt-1 font-mono text-lg font-semibold text-white sm:text-xl lg:text-2xl">{title}</h4>
+                  <h3 class="mt-1 font-mono text-lg font-semibold text-white sm:text-xl lg:text-2xl">{title}</h3>
                   {featured && (
                     <span class="rounded-md border border-white/30 bg-white/15 px-2 py-0.5 text-[10px] font-mono uppercase tracking-[0.12em] text-white/90">
                       {t.projects.featured}
@@ -107,7 +107,7 @@ const visualGradients: Record<string, string> = {
                     rel="noopener noreferrer"
                     data-track-project={slug}
                     data-track-action="code"
-                    class="inline-flex h-9 sm:h-10 items-center gap-1.5 sm:gap-2 rounded-lg border border-[hsl(var(--parchment))] bg-transparent px-3 sm:px-3.5 text-sm font-medium text-foreground/85 transition hover:bg-[hsl(var(--muted))]"
+                    class="inline-flex h-11 items-center gap-1.5 sm:gap-2 rounded-lg border border-[hsl(var(--parchment))] bg-transparent px-3 sm:px-3.5 text-sm font-medium text-foreground/85 transition hover:bg-[hsl(var(--muted))]"
                   >
                     <GitHubIcon class="size-3 sm:size-4" />
                     {t.projects.viewCode}
@@ -121,7 +121,7 @@ const visualGradients: Record<string, string> = {
                     rel="noopener noreferrer"
                     data-track-project={slug}
                     data-track-action="live"
-                    class="btn-cream !h-9 sm:!h-10 !px-3 sm:!px-3.5 !text-sm"
+                    class="btn-cream !h-11 !px-3 sm:!px-3.5 !text-sm"
                   >
                     <LinkIcon class="size-3 sm:size-4" />
                     {t.projects.viewProject}
@@ -142,7 +142,7 @@ const visualGradients: Record<string, string> = {
       rel="noopener noreferrer"
       class="inline-flex h-11 items-center gap-2 rounded-lg border border-[hsl(var(--parchment))] bg-transparent px-4 text-sm font-medium text-foreground/85 transition hover:bg-[hsl(var(--muted))]"
     >
-      <GitHubIcon class="size-5" />
+      <GitHubIcon class="size-4" />
       {t.projects.viewMoreGithub}
       <svg class="ml-1 size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>

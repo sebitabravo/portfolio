@@ -20,15 +20,15 @@ const contactUrl = locale === 'es' ? '#contacto' : '/en#contact'
   <div class="flex flex-col gap-3 py-6 text-sm md:flex-row md:items-center md:justify-between">
    <div class="text-[hsl(var(--caption-color))]">
        <span>&copy; {currentYear} &middot; </span>
-       <a href="/" class="font-medium text-foreground hover:text-[hsl(var(--primary))] transition-colors">{personalInfo.name}</a>
+       <a href="/" class="font-medium text-foreground hover:text-[hsl(var(--primary))] transition-colors focus-ring rounded">{personalInfo.name}</a>
      </div>
 
     <div class="flex items-center gap-4">
       <span class="text-xs text-[hsl(var(--caption-color))]">
         {t.footer.madeWith}
-        <a href="https://astro.build" target="_blank" rel="noopener noreferrer" class="text-[hsl(var(--primary))] hover:underline">Astro</a>
+        <a href="https://astro.build" target="_blank" rel="noopener noreferrer" class="text-[hsl(var(--primary))] hover:underline focus-ring rounded">Astro</a>
         +
-        <a href="https://tailwindcss.com" target="_blank" rel="noopener noreferrer" class="text-[hsl(var(--primary))] hover:underline">Tailwind</a>
+        <a href="https://tailwindcss.com" target="_blank" rel="noopener noreferrer" class="text-[hsl(var(--primary))] hover:underline focus-ring rounded">Tailwind</a>
       </span>
 
       <span class="text-[hsl(var(--caption-color))]/30" aria-hidden="true">&middot;</span>
@@ -36,10 +36,10 @@ const contactUrl = locale === 'es' ? '#contacto' : '/en#contact'
       <nav aria-label={locale === 'es' ? 'Enlaces del pie' : 'Footer links'}>
         <ul class="flex items-center gap-4">
           <li>
-            <a href={aboutUrl} class="text-[hsl(var(--caption-color))] hover:text-foreground transition-colors">{t.nav.about}</a>
+            <a href={aboutUrl} class="text-[hsl(var(--caption-color))] hover:text-foreground transition-colors focus-ring rounded">{t.nav.about}</a>
           </li>
           <li>
-            <a href={contactUrl} class="text-[hsl(var(--caption-color))] hover:text-foreground transition-colors">{t.nav.contact}</a>
+            <a href={contactUrl} class="text-[hsl(var(--caption-color))] hover:text-foreground transition-colors focus-ring rounded">{t.nav.contact}</a>
           </li>
         </ul>
       </nav>

@@ -29,7 +29,7 @@ const dateText = current
     : formatDate(startDate, locale)
 ---
 
-<div data-animate data-animate-delay={String(index + 1)} class="relative pl-8 pb-12 before:absolute before:left-0 before:block before:h-full before:border-l before:border-[hsl(var(--parchment))] before:content-['']">
+<div data-animate data-animate-delay={String(index + 1)} class="relative pl-8 pb-8 before:absolute before:left-0 before:block before:h-full before:border-l before:border-[hsl(var(--parchment))] before:content-['']">
   <!-- Timeline dot — Lavender glow -->
   <span class="absolute -left-[5px] top-1 size-[10px] rounded-full bg-[hsl(var(--primary))] ring-4 ring-[hsl(var(--background))]"></span>
 
@@ -37,7 +37,7 @@ const dateText = current
     <div class="grid md:grid-cols-5 md:gap-8">
       <!-- Meta info -->
       <div class="md:col-span-2 mb-4 md:mb-0">
-        <h3 class="text-base font-semibold text-foreground leading-snug">{position}</h3>
+        <h3 class="font-semibold text-foreground leading-snug">{position}</h3>
         <h4 class="text-sm text-[hsl(var(--caption-color))] mt-0.5">{company}</h4>
         <time class="text-xs text-[hsl(var(--caption-color))] mt-2 block">{dateText}</time>
         {location && <p class="text-xs text-[hsl(var(--caption-color))]">{location}</p>}
@@ -84,10 +84,10 @@ const dateText = current
             href={url}
             target="_blank"
             rel="noopener"
-            class="inline-flex items-center gap-1 text-sm text-[hsl(var(--accent))] hover:underline mt-2"
+            class="inline-flex items-center gap-1 text-sm text-[hsl(var(--accent))] hover:underline mt-2 focus-ring rounded px-1"
           >
             {t.work.viewMore}
-            <svg class="size-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+            <svg class="size-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
           </a>
         )}
       </div>

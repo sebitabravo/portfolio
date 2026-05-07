@@ -13,7 +13,7 @@ const { id, triggerLabel, class: className } = Astro.props
 <div class={cn("relative inline-flex", className)} data-dropdown-root={id}>
   <button
     type="button"
-    class="inline-flex h-11 min-w-11 items-center justify-center rounded-md border border-input bg-background px-3 text-sm font-medium text-foreground shadow-sm transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+    class="inline-flex h-11 min-w-11 items-center justify-center rounded-md border border-[hsl(var(--parchment))] bg-transparent px-3 text-sm font-medium text-foreground transition-colors hover:bg-[hsl(var(--muted))] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--ring))]"
     data-dropdown-trigger={id}
     aria-haspopup="menu"
     aria-expanded="false"

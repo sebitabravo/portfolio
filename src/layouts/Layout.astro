@@ -20,10 +20,16 @@ interface Props {
 
 const {
   title = siteConfig.title,
-  description = siteConfig.description,
+  description: rawDescription = siteConfig.description,
   image,
   locale = 'es',
 } = Astro.props
+
+const localeDescriptions: Record<string, string> = {
+  es: 'Frontend Developer especializado en React, TypeScript y la creación de interfaces rápidas, accesibles y con código que da gusto mantener.',
+  en: 'Frontend Developer specializing in React, TypeScript and building fast, accessible interfaces with code worth maintaining.',
+}
+const description = localeDescriptions[locale] ?? rawDescription
 
 const profileUrl = locale === "es" ? "https://sebita.dev/" : "https://sebita.dev/en"
 const dynamicOgImage = new URL(
@@ -31,6 +37,8 @@ const dynamicOgImage = new URL(
   "https://sebita.dev",
 ).toString()
 const seoImage = image ?? dynamicOgImage
+const altLocale = locale === "es" ? "en" : "es"
+const altUrl = locale === "es" ? "https://sebita.dev/en" : "https://sebita.dev/"
 const sameAsProfiles = [social.github, social.linkedin].filter(
   (url): url is string => Boolean(url),
 )
@@ -79,14 +87,14 @@ const jsonLd = {
         "Accessibility",
         "WCAG",
       ],
-      description: personalInfo.description,
+      description: description,
     },
     {
       "@type": "WebSite",
       name: siteConfig.title,
       url: "https://sebita.dev",
       inLanguage: locale,
-      description: personalInfo.description,
+      description: description,
     },
   ],
 }
@@ -101,6 +109,9 @@ const jsonLd = {
     <meta name="generator" content={Astro.generator} />
     <meta name="robots" content="index, follow" />
     <link rel="canonical" href={profileUrl} />
+    <link rel="alternate" hreflang="es" href="https://sebita.dev/" />
+    <link rel="alternate" hreflang="en" href="https://sebita.dev/en" />
+    <link rel="alternate" hreflang="x-default" href="https://sebita.dev/" />
 
     <SEO
       title={title}

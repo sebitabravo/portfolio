@@ -12,28 +12,10 @@ interface Props {
 
 const { locale = 'es' } = Astro.props
 const aboutMe = getAboutMe(locale)
-
-const specialties = locale === 'es'
-  ? [
-      "Desarrollo de interfaces con React y TypeScript",
-      "Diseño e implementación de componentes accesibles (WCAG)",
-      "Optimización de performance web (Core Web Vitals)",
-      "Integración de APIs REST",
-      "Desarrollo con Astro y Next.js",
-      "Estilado con Tailwind CSS y CSS moderno",
-    ]
-  : [
-      "Interface development with React and TypeScript",
-      "Accessible component design (WCAG)",
-      "Web performance optimization (Core Web Vitals)",
-      "REST API integration",
-      "Development with Astro and Next.js",
-      "Styling with Tailwind CSS and modern CSS",
-    ]
 ---
 
 <div class="space-y-16">
-  <article class="flex flex-col items-center gap-12 text-foreground/80 md:flex-row">
+  <article class="grid grid-cols-1 gap-8 sm:gap-12 lg:gap-16 md:grid-cols-[1fr_auto] items-center">
     <!-- Texto -->
     <div data-animate data-animate-delay="1" class="order-2 md:order-1 max-w-xl space-y-4">
       <p class="text-base leading-[1.60]">{aboutMe.intro}</p>
@@ -41,7 +23,7 @@ const specialties = locale === 'es'
       <p class="text-base leading-[1.60]">{aboutMe.personal}</p>
 
       <div class="pt-6">
-        <h3 class="text-lg font-semibold mb-3 text-foreground">{aboutMe.interestsTitle}</h3>
+        <h3 class="font-semibold mb-3 text-foreground">{aboutMe.interestsTitle}</h3>
         <ul class="space-y-1.5">
           {aboutMe.interests.map((interest) => (
             <li class="flex items-center gap-2 text-sm text-foreground/70">
@@ -52,35 +34,27 @@ const specialties = locale === 'es'
         </ul>
       </div>
 
-      <section aria-label={locale === 'es' ? "Competencias técnicas" : "Technical competencies"} class="mt-6 pt-6 border-t border-[hsl(var(--parchment))]">
-        <h3 class="text-sm font-semibold text-foreground mb-3">{locale === 'es' ? "Especialidades" : "Specialties"}</h3>
-        <ul class="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
-          {specialties.map((s) => (
-            <li class="flex items-center gap-2 text-sm text-foreground/70">
-              <span class="h-1.5 w-1.5 rounded-full bg-[hsl(var(--primary))] shrink-0" aria-hidden="true"></span>
-              {s}
-            </li>
-          ))}
-        </ul>
-      </section>
     </div>
 
     <!-- Imagen -->
-    <div data-animate data-animate-delay="2" class="order-1 md:order-2 shrink-0">
-      <Image
-        width={220}
-        height={220}
-        src={profileImage}
-        alt="Sebastian Bravo"
-        class="rounded-2xl object-cover aspect-square ring-1 ring-[hsl(var(--parchment))]"
-        style="object-position: 50% 50%"
-      />
+    <div data-animate data-animate-delay="2" class="order-1 md:order-2 shrink-0 group md:pt-2">
+      <div class="relative">
+        <div class="absolute inset-0 rounded-full bg-gradient-to-br from-[hsl(var(--primary))/0.3] to-transparent blur-xl"></div>
+        <Image
+          width={320}
+          height={320}
+          src={profileImage}
+          alt="Sebastian Bravo"
+          class="relative w-48 h-48 sm:w-56 sm:h-56 md:w-64 md:h-64 lg:w-72 lg:h-72 rounded-full object-cover aspect-square ring-1 ring-black/10 dark:ring-white/15 shadow-lg transition-transform duration-500 ease-out group-hover:scale-[1.03]"
+          style="object-position: 50% 50%"
+        />
+      </div>
     </div>
   </article>
 
   <!-- Tech Stack Dashboard -->
   <div class="mt-8">
-    <h3 class="text-lg font-semibold mb-2 text-center text-foreground">
+    <h3 class="font-semibold mb-2 text-center text-foreground">
       {locale === 'es' ? "Mi Stack Tecnológico" : "My Tech Stack"}
     </h3>
     <p class="text-sm text-center text-[hsl(var(--caption-color))] mb-6">

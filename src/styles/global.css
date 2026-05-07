@@ -527,8 +527,12 @@ pre code {
 
 :root:not(.dark) .available-badge {
   background-color: #dcfce7;
-  color: #15803d;
+  color: #166534;
   border-color: #bbf7d0;
+}
+
+:root:not(.dark) .available-badge span {
+  color: #166534;
 }
 
 .dark .available-badge {

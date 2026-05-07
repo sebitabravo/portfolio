@@ -126,17 +126,24 @@ const duplicatedCerts = [...certifications, ...certifications]
     padding: 1.5rem 1rem;
     background: hsl(var(--card));
     border: 1px solid hsl(var(--border));
-    border-radius: 0.75rem;
+    border-radius: 1rem;
     transition: all 0.3s ease;
-    animation: float 3s ease-in-out infinite;
+    outline: none;
+    animation: float 4s ease-in-out infinite;
     text-decoration: none;
     cursor: pointer;
   }
 
   .cert-item:hover {
-    transform: translateY(-8px) scale(1.05);
+    transform: translateY(-6px) scale(1.03);
     border-color: hsl(var(--primary));
     box-shadow: 0 10px 30px -10px hsl(var(--primary) / 0.3);
+  }
+
+  .cert-item:focus-visible {
+    outline: 2px solid hsl(var(--primary));
+    outline-offset: 2px;
+    border-color: hsl(var(--primary));
   }
 
   .cert-logo-wrapper {
@@ -222,7 +229,7 @@ const duplicatedCerts = [...certifications, ...certifications]
       transform: translateY(0px);
     }
     50% {
-      transform: translateY(-10px);
+      transform: translateY(-6px);
     }
   }
 
@@ -235,8 +242,8 @@ const duplicatedCerts = [...certifications, ...certifications]
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 40px;
-    height: 40px;
+    width: 44px;
+    height: 44px;
     border-radius: 50%;
     border: 1px solid hsl(var(--border));
     background: hsl(var(--card) / 0.92);
@@ -247,6 +254,11 @@ const duplicatedCerts = [...certifications, ...certifications]
     transition: opacity 0.3s ease, background 0.2s ease, transform 0.2s ease;
     backdrop-filter: blur(6px);
     -webkit-backdrop-filter: blur(6px);
+  }
+
+  .cert-nav-btn:focus-visible {
+    outline: 2px solid hsl(var(--primary));
+    outline-offset: 2px;
   }
 
   .cert-nav-btn:hover {

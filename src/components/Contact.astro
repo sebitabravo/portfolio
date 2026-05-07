@@ -57,7 +57,7 @@ const contactLinks = [
         data-animate-delay={String(i + 1)}
         target={icon !== 'mail' ? '_blank' : undefined}
         rel={icon !== 'mail' ? 'noopener noreferrer' : undefined}
-        class="group flex flex-col items-center gap-3 rounded-2xl border border-[hsl(var(--parchment))] bg-[hsl(var(--card))] p-6 text-center transition-all duration-300 hover:-translate-y-1 hover:shadow-[var(--shadow-card-hover)]"
+        class="group flex flex-col items-center gap-3 rounded-2xl border border-[hsl(var(--parchment))] bg-[hsl(var(--card))] p-6 text-center transition-all duration-300 hover:-translate-y-1 hover:shadow-[var(--shadow-card-hover)] focus-ring"
       >
         <div class="flex size-12 items-center justify-center rounded-xl bg-[hsl(var(--primary))]/10 text-[hsl(var(--primary))] transition-transform duration-200 group-hover:scale-110">
           {icon === 'mail' && <MailIcon class="size-5" />}

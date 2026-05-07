@@ -36,9 +36,10 @@ import MailIcon from "@/components/icons/Mail.astro"
   description={personalInfo.description}
   locale="en"
 >
+  <main id="main-content">
   <Hero locale="en" />
 
-  <main id="main-content" class="px-4 md:px-6">
+  <div class="px-4 md:px-6">
     <div class="space-y-20 md:space-y-28 pt-16 md:pt-24">
       <!-- Projects -->
       <SectionContainer id="projects">
@@ -49,7 +50,7 @@ import MailIcon from "@/components/icons/Mail.astro"
         <Projects locale="en" />
       </SectionContainer>
 
-      <hr class="section-divider max-w-5xl mx-auto" />
+      <hr class="section-divider max-w-[1200px] mx-auto" />
 
       <!-- Education -->
       <SectionContainer id="education">
@@ -60,7 +61,7 @@ import MailIcon from "@/components/icons/Mail.astro"
         <Education locale="en" />
       </SectionContainer>
 
-      <hr class="section-divider max-w-5xl mx-auto" />
+      <hr class="section-divider max-w-[1200px] mx-auto" />
 
       <!-- Experience -->
       <SectionContainer id="experience">
@@ -71,7 +72,7 @@ import MailIcon from "@/components/icons/Mail.astro"
         <Experience locale="en" />
       </SectionContainer>
 
-      <hr class="section-divider max-w-5xl mx-auto" />
+      <hr class="section-divider max-w-[1200px] mx-auto" />
 
       <!-- Certifications -->
       <SectionContainer id="certifications" data-animate>
@@ -82,7 +83,7 @@ import MailIcon from "@/components/icons/Mail.astro"
         <Certifications locale="en" />
       </SectionContainer>
 
-      <hr class="section-divider max-w-5xl mx-auto" />
+      <hr class="section-divider max-w-[1200px] mx-auto" />
 
       <!-- About -->
       <SectionContainer id="about">
@@ -93,7 +94,7 @@ import MailIcon from "@/components/icons/Mail.astro"
         <AboutMe locale="en" />
       </SectionContainer>
 
-      <hr class="section-divider max-w-5xl mx-auto" />
+      <hr class="section-divider max-w-[1200px] mx-auto" />
 
       <!-- Contact -->
       <SectionContainer id="contact">
@@ -104,5 +105,6 @@ import MailIcon from "@/components/icons/Mail.astro"
         <Contact locale="en" />
       </SectionContainer>
     </div>
+  </div>
   </main>
 </Layout>

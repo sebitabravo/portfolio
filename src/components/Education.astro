@@ -15,10 +15,10 @@ const education = getEducation(locale)
 
 <div class="flex flex-col gap-6 mt-8">
   {education.map(({ institution, degree, description, startDate, endDate, current, location, grade, skills }, i) => (
-    <article data-animate data-animate-delay={String(i + 1)} class="rounded-2xl border border-[hsl(var(--parchment))] bg-[hsl(var(--card))] p-6 transition-all duration-300 hover:shadow-[var(--shadow-card-hover)]">
+    <article data-animate data-animate-delay={String(i + 1)} class="rounded-2xl border border-[hsl(var(--parchment))] bg-[hsl(var(--card))] p-6 transition-all duration-300 hover:-translate-y-[2px] hover:shadow-[var(--shadow-card-hover)]">
       <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3">
         <div>
-          <h3 class="text-lg font-semibold text-foreground">{degree}</h3>
+          <h3 class="font-semibold text-foreground">{degree}</h3>
           <p class="text-sm text-[hsl(var(--caption-color))] mt-0.5">{institution}</p>
         </div>
         <div class="text-xs text-[hsl(var(--caption-color))] text-right shrink-0">

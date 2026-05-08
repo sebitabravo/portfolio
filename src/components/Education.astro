@@ -21,7 +21,7 @@ const education = getEducation(locale)
           <h3 class="font-semibold text-foreground">{degree}</h3>
           <p class="text-sm text-[hsl(var(--caption-color))] mt-0.5">{institution}</p>
         </div>
-        <div class="text-xs text-[hsl(var(--caption-color))] text-right shrink-0">
+        <div class="text-xs text-[hsl(var(--caption-color))] text-left sm:text-right shrink-0">
           <time>{formatDate(startDate, locale)}</time>
           <span> — </span>
           <time>{current ? t.education.present : endDate ? formatDate(endDate, locale) : ""}</time>

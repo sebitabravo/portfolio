@@ -31,14 +31,16 @@ const navItems = [
 ]
 ---
 
-<header class="fixed inset-x-0 top-0 z-50">
+<header class="fixed inset-x-0 top-0 z-50 bg-[hsl(var(--background))]">
   <div class="mx-auto max-w-[1200px] px-4">
     <nav
       aria-label={locale === 'es' ? 'Navegación principal' : 'Main navigation'}
       class="site-nav mx-auto flex h-14 items-center justify-between gap-6 px-4 text-sm font-medium transition-colors duration-300"
     >
       <div class="flex items-center gap-4">
-        <a href={prefix || '/'} class="text-base font-semibold tracking-tight">Sebastian Bravo</a>
+        <a href={prefix || '/'} class="text-base font-semibold tracking-tight whitespace-nowrap">
+          Sebastian<span class="hidden sm:inline"> Bravo</span>
+        </a>
       </div>
 
       <div class="hidden md:flex items-center gap-1">
@@ -142,7 +144,7 @@ const navItems = [
 
   /* Default: semi-transparent nav with blur */
   .site-nav {
-    background: rgba(248, 248, 252, 0.72);
+    background: rgba(248, 248, 252, 1);
     border-bottom: 1px solid hsl(var(--parchment) / 0.5);
     color: hsl(var(--foreground));
     backdrop-filter: saturate(1.25) blur(12px);
@@ -150,7 +152,7 @@ const navItems = [
   }
 
   :global(.dark) .site-nav {
-    background: rgba(15, 15, 20, 0.72);
+    background: rgba(15, 15, 20, 0.96);
     border-bottom: 1px solid rgba(42, 42, 53, 0.4);
     color: rgba(255, 255, 255, 0.9);
   }

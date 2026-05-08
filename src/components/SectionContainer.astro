@@ -4,6 +4,6 @@
 const { class: className, ...rest } = Astro.props
 ---
 
-<section {...rest} class:list={["w-full mx-auto max-w-[1200px]", className]}>
+<section {...rest} class:list={["w-full mx-auto max-w-[1200px] scroll-mt-24 md:scroll-mt-28", className]}>
   <slot />
 </section>

@@ -8,6 +8,9 @@ import tailwindcss from '@tailwindcss/vite';
 export default defineConfig({
 	site: 'https://sebita.dev',
 	integrations: [sitemap()],
+	devToolbar: {
+		enabled: false,
+	},
 	// Enable View Transitions for faster page navigation
 	experimental: {
 		clientPrerender: true,

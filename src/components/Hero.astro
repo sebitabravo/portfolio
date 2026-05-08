@@ -95,7 +95,8 @@ const contactUrl = locale === 'es' ? '#contacto' : '/en#contact'
 
       <!-- Right: Profile image -->
       <div class="order-1 md:order-2 flex justify-center md:justify-end">
-        <div class="relative">
+        <div class="relative flex flex-col items-center">
+          <div class="absolute inset-0 -z-10 rounded-full bg-[hsl(var(--primary))]/20 blur-3xl"></div>
           <Image
             src={profileImage}
             alt={personalInfo.name}
@@ -103,12 +104,18 @@ const contactUrl = locale === 'es' ? '#contacto' : '/en#contact'
             height={192}
             format="webp"
             quality={90}
-            class="w-36 h-36 sm:w-44 sm:h-44 md:w-52 md:h-52 lg:w-56 lg:h-56 rounded-full object-cover shadow-lg ring-1 ring-black/5 dark:ring-white/10"
+            class="w-36 h-36 sm:w-44 sm:h-44 md:w-52 md:h-52 lg:w-56 lg:h-56 rounded-full object-cover shadow-2xl ring-4 ring-white/70 dark:ring-white/10"
           />
 
           {personalInfo.available && (
-            <div class="absolute -bottom-4 -right-2 sm:-bottom-5">
-              <a href={social.linkedin} target="_blank" rel="noopener noreferrer" aria-label={t.hero.available}>
+            <div class="mt-4">
+              <a
+                href={social.linkedin}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={t.hero.available}
+                class="block rounded-full focus-ring"
+              >
                 <AvailableBadge>{t.hero.available}</AvailableBadge>
               </a>
             </div>

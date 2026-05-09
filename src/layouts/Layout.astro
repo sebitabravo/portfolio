@@ -16,20 +16,17 @@ interface Props {
   description?: string
   image?: string
   locale?: Locale
+  noindex?: boolean
 }
 
 const {
   title = siteConfig.title,
-  description: rawDescription = siteConfig.description,
   image,
   locale = 'es',
+  noindex = false,
 } = Astro.props
 
-const localeDescriptions: Record<string, string> = {
-  es: 'Frontend Developer especializado en React, TypeScript y la creación de interfaces rápidas, accesibles y con código que da gusto mantener.',
-  en: 'Frontend Developer specializing in React, TypeScript and building fast, accessible interfaces with code worth maintaining.',
-}
-const description = localeDescriptions[locale] ?? rawDescription
+const description = locale === 'en' ? personalInfo.descriptionEn : personalInfo.description
 
 const profileUrl = locale === "es" ? "https://sebita.dev/" : "https://sebita.dev/en"
 const dynamicOgImage = new URL(
@@ -37,9 +34,7 @@ const dynamicOgImage = new URL(
   "https://sebita.dev",
 ).toString()
 const seoImage = image ?? dynamicOgImage
-const altLocale = locale === "es" ? "en" : "es"
-const altUrl = locale === "es" ? "https://sebita.dev/en" : "https://sebita.dev/"
-const sameAsProfiles = [social.github, social.linkedin].filter(
+const sameAsProfiles = [social.github, social.linkedin, social.twitter].filter(
   (url): url is string => Boolean(url),
 )
 
@@ -51,8 +46,9 @@ const jsonLd = {
       name: personalInfo.name,
       alternateName: "sebitabravo",
       url: profileUrl,
-      jobTitle: "Frontend Developer",
+      jobTitle: personalInfo.title,
       email: `mailto:${personalInfo.email}`,
+      image: "https://sebita.dev/perfil.jpeg",
       sameAs: sameAsProfiles,
       nationality: {
         "@type": "Country",
@@ -62,9 +58,30 @@ const jsonLd = {
         "@type": "PostalAddress",
         addressCountry: "CL",
       },
+      alumniOf: [
+        {
+          "@type": "CollegeOrUniversity",
+          name: "INACAP",
+        },
+        {
+          "@type": "HighSchool",
+          name: "Liceo Politécnico Pueblo Nuevo",
+        },
+      ],
+      hasCredential: [
+        {
+          "@type": "EducationalOccupationalCredential",
+          name: "AWS Academy Cloud Foundations",
+          credentialCategory: "Certification",
+          recognizedBy: {
+            "@type": "Organization",
+            name: "Amazon Web Services (AWS)",
+          },
+        },
+      ],
       hasOccupation: {
         "@type": "Occupation",
-        name: "Frontend Developer",
+        name: personalInfo.title,
         occupationLocation: {
           "@type": "Country",
           name: "Chile",
@@ -107,11 +124,17 @@ const jsonLd = {
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
-    <meta name="robots" content="index, follow" />
+    <meta name="robots" content={noindex ? "noindex, nofollow" : "index, follow"} />
     <link rel="canonical" href={profileUrl} />
     <link rel="alternate" hreflang="es" href="https://sebita.dev/" />
     <link rel="alternate" hreflang="en" href="https://sebita.dev/en" />
     <link rel="alternate" hreflang="x-default" href="https://sebita.dev/" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Syne:wght@500;600;700;800&display=swap" />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Syne:wght@500;600;700;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=optional" rel="stylesheet" />
 
     <SEO
       title={title}
@@ -157,25 +180,8 @@ const jsonLd = {
             name: "author",
             content: personalInfo.name,
           },
-          {
-            name: "category",
-            content: "technology",
-          },
-          {
-            name: "revisit-after",
-            content: "7 days",
-          },
         ],
         link: [
-          {
-            rel: "preconnect",
-            href: "https://fonts.googleapis.com",
-          },
-          {
-            rel: "preconnect",
-            href: "https://fonts.gstatic.com",
-            crossorigin: "",
-          },
           {
             rel: "dns-prefetch",
             href: "https://github.com",

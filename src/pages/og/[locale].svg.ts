@@ -23,7 +23,7 @@ export const GET: APIRoute = ({ params, url }) => {
     : fallbackTitle
 
   const subtitle = locale === "es"
-    ? "Frontend Developer"
+    ? "Desarrollador Frontend"
     : "Frontend Developer"
 
   const safeTitle = title

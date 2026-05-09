@@ -13,17 +13,70 @@ export interface ExperienceLogo {
   url: string
 }
 
+export interface WorkExperience {
+  company: string
+  position: string
+  description: string
+  startDate: Date
+  endDate?: Date | null
+  current: boolean
+  location?: string
+  employmentType?: string
+  skills: string[]
+  logos?: ExperienceLogo[]
+}
+
+export interface Project {
+  slug: string
+  title: string
+  description: string
+  tags: string[]
+  featured: boolean
+  status: "production" | "wip" | "archived"
+  metrics?: { label: string; value: string }[]
+  publishDate: Date
+  image: string
+  githubUrl?: string
+  liveUrl?: string
+  order: number
+}
+
+export interface Education {
+  institution: string
+  degree: string
+  description: string
+  startDate: Date
+  endDate?: Date | null
+  current: boolean
+  location?: string
+  grade?: string
+  skills: string[]
+  order: number
+}
+
+export interface Certification {
+  name: string
+  organization: string
+  description: string
+  issueDate: Date
+  expirationDate?: Date | null
+  pdfUrl?: string
+  skills: string[]
+}
+
 // ============================================
 // INFORMACIÓN PERSONAL Y CONFIGURACIÓN
 // ============================================
 
 export const personalInfo = {
   name: "Sebastian Bravo",
-  title: "Frontend Developer",
-  description: "Frontend Developer. Construyo interfaces con React y TypeScript. Estudiante de Ingeniería Informática. Proyectos reales con IoT, ML y arquitectura enterprise.",
-  email: "hello@sebastianbravo.dev",
+  title: "Full-Stack Developer",
+  description: "Full-Stack Developer. Construyo plataformas web completas con React, TypeScript, IoT y Machine Learning. Estudiante de Ingeniería Informática.",
+  descriptionEn: "Full-Stack Developer. I build production-grade web platforms with React, TypeScript, IoT and Machine Learning. Computer Engineering student.",
+  email: "sebitabravocontacto@gmail.com",
   location: "Chile 🇨🇱",
   available: true,
+  calendly: "", // Tu link de Cal.com o Calendly
 }
 
 export const social = {
@@ -39,9 +92,23 @@ export const social = {
 const workExperienceData = {
   es: [
     {
+      company: "MIMASOFT",
+      position: "Desarrollador Full Stack",
+      description: `Contribuí al desarrollo de una plataforma SaaS de huella de carbono en producción para el sector minero e industrial. Estandaricé la capa de datos migrando 43 módulos a TanStack Query, resolví bug crítico de autenticación CSRF, implementé sistema de permisos granulares (15 permisos/módulo con guards por tenant) y eliminé +10K líneas de dead code reduciendo bundle y superficie de ataque.`,
+      startDate: new Date("2026-02-01"),
+      endDate: new Date("2026-04-30"),
+      current: false,
+      location: "Santiago, Chile (Remoto)",
+      employmentType: "Contrato",
+      skills: ["React", "TypeScript", "Laravel", "TanStack Query", "Docker", "Git"],
+      logos: [
+        { src: "/experience/mimasoft.png", alt: "MIMASOFT", url: "https://www.mimasoft.com" },
+      ],
+    },
+    {
       company: "Temutel",
       position: "Técnico en Redes y Telecomunicaciones",
-      description: `Trabajé en Temutel, empresa proveedora de servicios para Telsur. Realicé instalación, configuración y mantenimiento de equipos de telecomunicaciones (routers, decodificadores, sistemas telefónicos) para clientes residenciales y comerciales. Soporte técnico en sitio y configuración de redes.`,
+      description: `Técnico en Temutel, proveedor de servicios para Telsur. Realicé ~30+ instalaciones y configuraciones semanales de equipos de telecomunicaciones (routers, decodificadores, sistemas telefónicos) para clientes residenciales y comerciales, con soporte técnico en sitio.`,
       startDate: new Date("2022-12-01"),
       endDate: new Date("2023-02-28"),
       current: false,
@@ -56,9 +123,23 @@ const workExperienceData = {
   ],
   en: [
     {
+      company: "MIMASOFT",
+      position: "Full Stack Developer",
+      description: `Contributed to a carbon footprint SaaS platform in production for the mining and industrial sector. Standardized the data layer by migrating 43 modules to TanStack Query, fixed a critical CSRF authentication bug, implemented granular permission system (15 permissions/module with tenant-based guards), and removed 10K+ lines of dead code reducing bundle size and attack surface.`,
+      startDate: new Date("2026-02-01"),
+      endDate: new Date("2026-04-30"),
+      current: false,
+      location: "Santiago, Chile (Remote)",
+      employmentType: "Contract",
+      skills: ["React", "TypeScript", "Laravel", "TanStack Query", "Docker", "Git"],
+      logos: [
+        { src: "/experience/mimasoft.png", alt: "MIMASOFT", url: "https://www.mimasoft.com" },
+      ],
+    },
+    {
       company: "Temutel",
       position: "Network and Telecommunications Technician",
-      description: `Worked at Temutel, a service provider for Telsur. Performed installation, configuration and maintenance of telecommunications equipment (routers, decoders, telephone systems) for residential and commercial clients. On-site technical support and network configuration.`,
+      description: `Technician at Temutel, a service provider for Telsur. Handled ~30+ weekly installations and configurations of telecommunications equipment (routers, decoders, telephone systems) for residential and commercial clients, with on-site technical support.`,
       startDate: new Date("2022-12-01"),
       endDate: new Date("2023-02-28"),
       current: false,
@@ -77,8 +158,6 @@ export function getWorkExperience(locale: Locale = 'es') {
   return workExperienceData[locale]
 }
 
-export const workExperience = workExperienceData.es
-
 // ============================================
 // PROYECTOS — Updated with new GitHub repos
 // ============================================
@@ -89,24 +168,6 @@ const projectsData = {
       slug: "manttoai",
       title: "ManttoAI",
       description: "Plataforma de mantenimiento predictivo IoT con Machine Learning. Telemetría en tiempo real, modelo Random Forest (94.1% F1-Score) y dashboard interactivo.",
-      fullDescription: `ManttoAI es una plataforma open-source de mantenimiento predictivo que captura telemetría en tiempo real desde dispositivos IoT (ESP32) vía MQTT, evalúa umbrales operacionales y ejecuta un modelo de Machine Learning (Random Forest) para predecir fallas antes de que ocurran.
-
-## Características Principales
-
-- **📡 Telemetría IoT en Tiempo Real** — Integración nativa con MQTT (Mosquitto) para temperatura, humedad y vibración
-- **🧠 Predicciones ML** — Modelo Random Forest (94.1% F1-Score) para evaluar riesgo de falla
-- **🚨 Alertas Inteligentes** — Evaluación automática de umbrales con notificaciones email
-- **📊 Dashboard React** — SPA con auto-refresh, tendencias históricas y gestión de equipos
-- **🛠️ Simulador IoT** — Simulador por software que genera datos realistas de sensores 24/7
-- **🤖 Asistente IA** — Chat híbrido (reglas + Ollama) para consultas técnicas
-
-## Stack Tecnológico
-
-- **Backend**: FastAPI, SQLAlchemy, Pydantic, MySQL 8
-- **Frontend**: React 18, Vite, Tailwind CSS
-- **IoT**: ESP32, Eclipse Mosquitte (MQTT)
-- **ML**: Scikit-learn, Pandas, NumPy
-- **Infra**: Docker, Docker Compose, Nginx`,
       tags: ["FastAPI", "React", "Machine Learning", "Docker", "IoT"],
       featured: true,
       status: "production" as const,
@@ -124,26 +185,13 @@ const projectsData = {
       slug: "vulcania",
       title: "Vulcania",
       description: "Plataforma de monitoreo volcánico comunitario con mapa en tiempo real, chat, alertas y notificaciones push.",
-      fullDescription: `Vulcania es una plataforma web comunitaria para monitoreo volcánico en tiempo real. Muestra estados de alerta, mapa de puntos de encuentro, sistema de avisos comunitarios y chat entre usuarios con soporte de imágenes.
-
-## Características Principales
-
-- **Estado del volcán en tiempo real** — Niveles verde/amarillo/naranja/rojo
-- **Mapa interactivo** — Puntos de encuentro y zonas de seguridad
-- **Comunidad** — Sistema de avisos y publicaciones
-- **Chat en tiempo real** — Mensajes entre usuarios con imágenes
-- **Notificaciones push** — Alertas directas al navegador
-- **Panel admin** — Gestión de alertas y contenido
-
-## Stack Tecnológico
-
-- **Framework**: Next.js 15, TypeScript
-- **UI**: Tailwind CSS, shadcn/ui
-- **Backend**: Supabase (Auth, DB, Realtime, Storage)
-- **Deploy**: Vercel`,
       tags: ["Next.js", "TypeScript", "Supabase", "shadcn/ui"],
       featured: true,
       status: "production" as const,
+      metrics: [
+        { label: "Demo", value: "Online" },
+        { label: "Stack", value: "4 techs" },
+      ],
       publishDate: new Date("2026-03-02"),
       image: "vulcania",
       githubUrl: "https://github.com/sebitabravo/vulcania-web",
@@ -155,25 +203,13 @@ const projectsData = {
       title: "Rápido Sur",
       description: "Sistema enterprise de gestión de mantenimiento vehicular. NestJS + Next.js + PostgreSQL con auth JWT, planes preventivos y órdenes de trabajo.",
       order: 4,
-      fullDescription: `Sistema web completo para la gestión de mantenimiento de flota vehicular. Arquitectura enterprise con módulos de autenticación JWT, gestión de vehículos, planes preventivos, órdenes de trabajo, catálogo de repuestos, alertas y generación de reportes.
-
-## Características Principales
-
-- **Gestión de vehículos** — CRUD completo con historial de mantenimiento
-- **Planes preventivos** — Programación automática de mantenimientos
-- **Órdenes de trabajo** — Flujo completo con tareas y repuestos
-- **Alertas preventivas** — Notificaciones de mantenimiento próximo
-- **Reportes** — Generación de informes de mantenimiento
-- **Auth JWT** — Autenticación con roles y permisos
-
-## Stack Tecnológico
-
-- **Backend**: NestJS, TypeScript, PostgreSQL
-- **Frontend**: Next.js 15, React 18, Tailwind CSS
-- **Deploy**: Docker en Dokploy (Hostinger)`,
       tags: ["NestJS", "Next.js", "TypeScript", "PostgreSQL", "Docker"],
       featured: true,
       status: "production" as const,
+      metrics: [
+        { label: "Arquitectura", value: "Enterprise" },
+        { label: "Stack", value: "5 techs" },
+      ],
       publishDate: new Date("2026-03-02"),
       image: "rapido-sur",
       githubUrl: "https://github.com/sebitabravo/rapido-sur",
@@ -183,41 +219,12 @@ const projectsData = {
       slug: "wenuke",
       title: "Wenuke",
       description: "Asistente climático agrícola por WhatsApp para pequeños agricultores de Chile. IA conversacional con Groq Llama 3.1 70B, alertas de helada/lluvia y recomendaciones por cultivo.",
-      fullDescription: `Wenuke (Werken-mapu, "mensajero de la tierra" en mapudungún) es un asistente climático agrícola que llega donde el agricultor ya está: WhatsApp. Sin apps, sin sensores.
-
-## El problema
-
-Pequeños agricultores pierden hasta el 30% de su producción anual por decidir con pronósticos climáticos genéricos. Una helada sin aviso destruye meses de trabajo en una noche.
-
-## La solución
-
-El agricultor comparte su ubicación por WhatsApp, elige sus cultivos, y recibe alertas anticipadas de helada, lluvia y granizo con recomendaciones accionables generadas por IA.
-
-## Características Principales
-
-- **Alertas climáticas** — Pronóstico hiperlocal con OpenMeteo (gratis, sin API key)
-- **IA conversacional** — Groq Llama 3.1 70B con fallback offline para recomendaciones por cultivo
-- **Sin apps** — Todo por WhatsApp, zero fricción para el agricultor
-- **Costo operativo $0-10 USD/mes** — Sin APIs pagas obligatorias
-- **Mapa interactivo** — Leaflet + OpenStreetMap para ubicar parcelas
-- **Base de datos serverless** — Turso + aiosqlite (dual local/cloud)
-
-## Stack Tecnológico
-
-- **API**: FastAPI (Python 3.12)
-- **IA**: Groq Llama 3.1 70B + fallback offline
-- **Clima**: OpenMeteo (gratis)
-- **BD**: Turso + aiosqlite
-- **Mapas**: Leaflet + OpenStreetMap
-- **Frontend**: HTML5 + Tailwind CSS + Vanilla JS
-- **Infra**: Vercel (Static + Serverless)
-- **CI/CD**: GitHub Actions (ruff + mypy + pytest)`,
       tags: ["FastAPI", "Python", "Groq LLM", "WhatsApp API", "Turso"],
       featured: true,
       status: "production" as const,
       metrics: [
-        { label: "CI/CD", value: "Activo" },
-        { label: "Docs", value: "Arquitectura + API" },
+        { label: "Modelo", value: "Llama 3.1 70B" },
+        { label: "Usuarios", value: "Agricultores" },
       ],
       publishDate: new Date("2026-05-03"),
       image: "wenuke",
@@ -232,29 +239,12 @@ El agricultor comparte su ubicación por WhatsApp, elige sus cultivos, y recibe 
       title: "ManttoAI",
       description: "IoT predictive maintenance platform with Machine Learning. Real-time telemetry, Random Forest model (94.1% F1-Score) and interactive dashboard.",
       order: 3,
-      fullDescription: `ManttoAI is an open-source predictive maintenance platform that captures real-time telemetry from IoT devices (ESP32) via MQTT, evaluates operational thresholds, and runs a Machine Learning model (Random Forest) to predict equipment failures before they occur.
-
-## Key Features
-
-- **📡 Real-Time IoT Telemetry** — Native MQTT integration (Mosquitto) for temperature, humidity, and vibration
-- **🧠 ML Predictions** — Random Forest model (94.1% F1-Score) for failure risk assessment
-- **🚨 Smart Alerts** — Automatic threshold evaluation with email notifications
-- **📊 React Dashboard** — SPA with auto-refresh, historical trends, and equipment management
-- **🛠️ IoT Simulator** — Software simulator generating realistic sensor data 24/7
-- **🤖 AI Assistant** — Hybrid chat (rules + Ollama) for technical operator queries
-
-## Tech Stack
-
-- **Backend**: FastAPI, SQLAlchemy, Pydantic, MySQL 8
-- **Frontend**: React 18, Vite, Tailwind CSS
-- **IoT**: ESP32, Eclipse Mosquitto (MQTT)
-- **ML**: Scikit-learn, Pandas, NumPy
-- **Infra**: Docker, Docker Compose, Nginx`,
       tags: ["FastAPI", "React", "Machine Learning", "Docker", "IoT"],
       featured: true,
       status: "production" as const,
       metrics: [
         { label: "F1-Score", value: "94.1%" },
+        { label: "Stack", value: "6 techs" },
       ],
       publishDate: new Date("2026-04-29"),
       image: "manttoai",
@@ -265,26 +255,13 @@ El agricultor comparte su ubicación por WhatsApp, elige sus cultivos, y recibe 
       slug: "vulcania",
       title: "Vulcania",
       description: "Community volcanic monitoring platform with real-time map, chat, alerts and push notifications.",
-      fullDescription: `Vulcania is a community web platform for real-time volcanic monitoring. Displays alert levels, meeting point maps, community notice board, and user chat with image support.
-
-## Key Features
-
-- **Real-time volcano status** — Green/yellow/orange/red alert levels
-- **Interactive map** — Meeting points and safety zones
-- **Community** — Notice board and publications
-- **Real-time chat** — Messages between users with image support
-- **Push notifications** — Direct browser alerts
-- **Admin panel** — Alert and content management
-
-## Tech Stack
-
-- **Framework**: Next.js 15, TypeScript
-- **UI**: Tailwind CSS, shadcn/ui
-- **Backend**: Supabase (Auth, DB, Realtime, Storage)
-- **Deploy**: Vercel`,
       tags: ["Next.js", "TypeScript", "Supabase", "shadcn/ui"],
       featured: true,
       status: "production" as const,
+      metrics: [
+        { label: "Demo", value: "Online" },
+        { label: "Stack", value: "4 techs" },
+      ],
       publishDate: new Date("2026-03-02"),
       image: "vulcania",
       githubUrl: "https://github.com/sebitabravo/vulcania-web",
@@ -296,25 +273,13 @@ El agricultor comparte su ubicación por WhatsApp, elige sus cultivos, y recibe 
       title: "Rápido Sur",
       description: "Enterprise fleet vehicle maintenance system. NestJS + Next.js + PostgreSQL with JWT auth, preventive maintenance plans and work orders.",
       order: 4,
-      fullDescription: `A complete web system for fleet vehicle maintenance management. Enterprise architecture with JWT auth modules, vehicle management, preventive plans, work orders, parts catalog, alerts, and report generation.
-
-## Key Features
-
-- **Vehicle management** — Full CRUD with maintenance history
-- **Preventive plans** — Automatic maintenance scheduling
-- **Work orders** — Complete flow with tasks and parts
-- **Preventive alerts** — Upcoming maintenance notifications
-- **Reports** — Maintenance report generation
-- **JWT Auth** — Role-based authentication and permissions
-
-## Tech Stack
-
-- **Backend**: NestJS, TypeScript, PostgreSQL
-- **Frontend**: Next.js 15, React 18, Tailwind CSS
-- **Deploy**: Docker on Dokploy (Hostinger)`,
       tags: ["NestJS", "Next.js", "TypeScript", "PostgreSQL", "Docker"],
       featured: true,
       status: "production" as const,
+      metrics: [
+        { label: "Architecture", value: "Enterprise" },
+        { label: "Stack", value: "5 techs" },
+      ],
       publishDate: new Date("2026-03-02"),
       image: "rapido-sur",
       githubUrl: "https://github.com/sebitabravo/rapido-sur",
@@ -324,41 +289,12 @@ El agricultor comparte su ubicación por WhatsApp, elige sus cultivos, y recibe 
       slug: "wenuke",
       title: "Wenuke",
       description: "Agricultural climate assistant via WhatsApp for small farmers in Chile. Conversational AI with Groq Llama 3.1 70B, frost/rain alerts and crop-specific recommendations.",
-      fullDescription: `Wenuke (Werken-mapu, "messenger of the land" in Mapudungún) is an agricultural climate assistant that reaches farmers where they already are: WhatsApp. No apps, no sensors.
-
-## The Problem
-
-Small farmers lose up to 30% of their annual production by relying on generic weather forecasts made for cities. An unannounced frost destroys months of work overnight.
-
-## The Solution
-
-Farmers share their location via WhatsApp, choose their crops, and receive early frost, rain and hail alerts with actionable AI-generated recommendations.
-
-## Key Features
-
-- **Weather alerts** — Hyperlocal forecast with OpenMeteo (free, no API key)
-- **Conversational AI** — Groq Llama 3.1 70B with offline fallback for crop recommendations
-- **No apps** — Everything via WhatsApp, zero friction for farmers
-- **Operating cost $0-10 USD/month** — No paid APIs required
-- **Interactive map** — Leaflet + OpenStreetMap for plot location
-- **Serverless database** — Turso + aiosqlite (dual local/cloud)
-
-## Tech Stack
-
-- **API**: FastAPI (Python 3.12)
-- **AI**: Groq Llama 3.1 70B + offline fallback
-- **Weather**: OpenMeteo (free)
-- **DB**: Turso + aiosqlite
-- **Maps**: Leaflet + OpenStreetMap
-- **Frontend**: HTML5 + Tailwind CSS + Vanilla JS
-- **Infra**: Vercel (Static + Serverless)
-- **CI/CD**: GitHub Actions (ruff + mypy + pytest)`,
       tags: ["FastAPI", "Python", "Groq LLM", "WhatsApp API", "Turso"],
       featured: true,
       status: "production" as const,
       metrics: [
-        { label: "CI/CD", value: "Active" },
-        { label: "Docs", value: "Architecture + API" },
+        { label: "Model", value: "Llama 3.1 70B" },
+        { label: "Users", value: "Small farmers" },
       ],
       publishDate: new Date("2026-05-03"),
       image: "wenuke",
@@ -372,8 +308,6 @@ Farmers share their location via WhatsApp, choose their crops, and receive early
 export function getProjects(locale: Locale = 'es') {
   return projectsData[locale]
 }
-
-export const projects = projectsData.es
 
 // ============================================
 // EDUCACIÓN
@@ -438,8 +372,6 @@ export function getEducation(locale: Locale = 'es') {
   return educationData[locale]
 }
 
-export const education = educationData.es
-
 // ============================================
 // CERTIFICACIONES
 // ============================================
@@ -466,7 +398,7 @@ const certificationsData = {
       pdfUrl: "/certifications/git-noob-pro.pdf",
       skills: ["Git", "GitHub", "Control de Versiones", "Git Flow"],
       order: 2,
-      category: 'academic' as const,
+      category: 'professional' as const,
     },
     {
       name: "Desarrollador Full Stack",
@@ -631,8 +563,6 @@ export function getCertifications(locale: Locale = 'es') {
   return certificationsData[locale]
 }
 
-export const certifications = certificationsData.es
-
 // ============================================
 // HABILIDADES TÉCNICAS
 // ============================================
@@ -651,7 +581,7 @@ export const skills = {
 
 const aboutMeData = {
   es: {
-    intro: `Frontend Developer. Armo interfaces con React y TypeScript — el tipo de código que no te da vergüenza mostrar en una code review y que no se rompe con el primer edge case.`,
+    intro: `Full-Stack Developer. Construyo plataformas web completas con React, TypeScript, IoT y Machine Learning — el tipo de código que no te da vergüenza mostrar en una code review y que no se rompe con el primer edge case.`,
     experience: `Construí ManttoAI, una plataforma de mantenimiento predictivo con IoT y Machine Learning. Desarrollé Vulcania, un sistema comunitario de monitoreo volcánico con mapa en tiempo real usado por personas reales. Armé Rápido Sur, un ERP de gestión de flotas vehiculares con arquitectura enterprise. No hago tutoriales de Todo List.`,
     personal: `Estudio Ingeniería Informática en INACAP. Me gusta entender cómo funcionan las cosas por debajo — desde cómo un ESP32 transmite telemetría hasta cómo Vercel compila tus rutas. Si tu equipo valora gente que se ensucia las manos y no solo mueve componentes, hablemos.`,
     interests: [
@@ -663,11 +593,12 @@ const aboutMeData = {
     ],
     interestsTitle: "Intereses",
     techStackTitle: "Stack Tecnológico",
+    lookingFor: `Busco un equipo donde pueda contribuir con impacto real. Me motivan los proyectos que resuelven problemas concretos con tecnología bien aplicada — TypeScript, Python, cloud y testing automatizado.`,
   },
   en: {
-    intro: `Frontend Developer. I build interfaces with React and TypeScript — the kind of code you wouldn't be ashamed to show in a code review and that doesn't break on the first edge case.`,
-    experience: `I built ManttoAI, a predictive maintenance platform with IoT and Machine Learning. Developed Vulcania, a community volcanic monitoring system with real-time maps used by real people. Shipped Rápido Sur, an ERP for fleet maintenance with enterprise architecture. I don't do Todo List tutorials.`,
-    personal: `I'm a Computer Engineering student at INACAP. I like understanding how things work under the hood — from how an ESP32 transmits telemetry to how Vercel compiles your routes. If your team values people who get their hands dirty instead of just moving components around, let's talk.`,
+    intro: `Full-Stack Developer. I build production-grade web platforms with React, TypeScript, IoT and Machine Learning, focused on clean code and solid architecture.`,
+    experience: `I built ManttoAI, a predictive maintenance platform with IoT and Machine Learning. Developed Vulcania, a community volcanic monitoring system with real-time maps. Shipped Rápido Sur, an ERP for fleet maintenance with enterprise architecture. Every project I take on solves a real problem.`,
+    personal: `I'm a Computer Engineering student at INACAP. I like understanding how things work under the hood — from how an ESP32 transmits telemetry to how Vercel compiles your routes. If your team values curiosity and technical depth, let's talk.`,
     interests: [
       "Real-world software architecture",
       "Applied Machine Learning",
@@ -677,11 +608,10 @@ const aboutMeData = {
     ],
     interestsTitle: "Interests",
     techStackTitle: "Tech Stack",
+    lookingFor: `I'm looking for a team where I can make a real impact. I'm motivated by projects that solve concrete problems with well-applied technology — TypeScript, Python, cloud and automated testing.`,
   }
 }
 
 export function getAboutMe(locale: Locale = 'es') {
   return aboutMeData[locale]
 }
-
-export const aboutMe = aboutMeData.es

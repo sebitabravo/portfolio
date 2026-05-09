@@ -5,9 +5,8 @@
 import { track } from "@vercel/analytics"
 
 export type AnalyticsEvent =
-  | { name: "project_view"; props: { project: string; action: "live" | "code" | "details" } }
+  | { name: "project_view"; props: { project: string; action: "live" | "code" } }
   | { name: "cv_download"; props: { locale: string } }
-  | { name: "contact_submit"; props: { status: "success" | "error" } }
   | { name: "social_click"; props: { platform: string } }
 
 /**

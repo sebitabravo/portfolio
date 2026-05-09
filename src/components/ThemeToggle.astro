@@ -9,7 +9,7 @@ import MonitorIcon from "./icons/Monitor.astro"
   <button
     id="theme-toggle"
     type="button"
-    class="inline-flex h-11 min-w-11 items-center justify-center gap-2 rounded-md px-2.5 py-2 text-sm font-medium text-current transition-colors hover:bg-[hsl(var(--muted))] dark:hover:bg-white/10"
+    class="inline-flex h-11 min-w-11 items-center justify-center gap-2 rounded-md px-2.5 py-2 text-sm font-medium text-current transition-colors hover:bg-[hsl(var(--muted))] dark:hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[hsl(var(--primary))]"
     aria-label="Toggle theme"
   >
     <SunIcon class="size-4 theme-icon-light hidden" />
@@ -26,6 +26,7 @@ import MonitorIcon from "./icons/Monitor.astro"
     <div class="py-1">
       <button
         type="button"
+        role="menuitem"
         data-theme="light"
         class="theme-option flex items-center justify-between w-full px-4 py-2 text-sm text-[hsl(var(--foreground)/0.8)] hover:bg-[hsl(var(--muted)/0.5)] text-left"
       >
@@ -37,6 +38,7 @@ import MonitorIcon from "./icons/Monitor.astro"
       </button>
       <button
         type="button"
+        role="menuitem"
         data-theme="dark"
         class="theme-option flex items-center justify-between w-full px-4 py-2 text-sm text-[hsl(var(--foreground)/0.8)] hover:bg-[hsl(var(--muted)/0.5)] text-left"
       >
@@ -48,6 +50,7 @@ import MonitorIcon from "./icons/Monitor.astro"
       </button>
       <button
         type="button"
+        role="menuitem"
         data-theme="system"
         class="theme-option flex items-center justify-between w-full px-4 py-2 text-sm text-[hsl(var(--foreground)/0.8)] hover:bg-[hsl(var(--muted)/0.5)] text-left"
       >
@@ -62,7 +65,13 @@ import MonitorIcon from "./icons/Monitor.astro"
 </div>
 
 <script>
+  let themeCleanup: (() => void) | null = null
+
   function initThemeToggle() {
+    // Limpiar listeners de navegaciones anteriores (View Transitions)
+    themeCleanup?.()
+    const ac = new AbortController()
+    const { signal } = ac
     type ThemePreference = 'light' | 'dark' | 'system'
     const THEME_KEY = 'theme'
     
@@ -160,7 +169,7 @@ import MonitorIcon from "./icons/Monitor.astro"
       if (!wrapper.contains(e.target as Node)) {
         menu.classList.add('hidden')
       }
-    })
+    }, { signal })
 
     // Theme selection
     const themeButtons = menu.querySelectorAll('.theme-option')
@@ -177,11 +186,67 @@ import MonitorIcon from "./icons/Monitor.astro"
     })
 
     // Listen for system theme changes
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+    const mql = window.matchMedia('(prefers-color-scheme: dark)')
+    const mqHandler = () => {
       if (getThemePreference() === 'system') {
         applyTheme('system')
       }
+    }
+    mql.addEventListener('change', mqHandler)
+
+    // Keyboard navigation
+    function openMenu() {
+      menu.classList.remove('hidden')
+      const items = menu.querySelectorAll<HTMLButtonElement>('.theme-option')
+      items[0]?.focus()
+    }
+
+    function closeMenu() {
+      menu.classList.add('hidden')
+      toggle.focus()
+    }
+
+    toggle.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowDown' || e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault()
+        openMenu()
+      }
     })
+
+    menu.addEventListener('keydown', (e) => {
+      const items = Array.from(menu.querySelectorAll<HTMLButtonElement>('.theme-option'))
+      const current = document.activeElement as HTMLElement
+      const idx = items.indexOf(current as HTMLButtonElement)
+
+      switch (e.key) {
+        case 'ArrowDown':
+          e.preventDefault()
+          items[(idx + 1) % items.length]?.focus()
+          break
+        case 'ArrowUp':
+          e.preventDefault()
+          items[(idx - 1 + items.length) % items.length]?.focus()
+          break
+        case 'Home':
+          e.preventDefault()
+          items[0]?.focus()
+          break
+        case 'End':
+          e.preventDefault()
+          items[items.length - 1]?.focus()
+          break
+        case 'Escape':
+          e.preventDefault()
+          closeMenu()
+          break
+      }
+    })
+
+    // Registrar cleanup para la próxima navegación
+    themeCleanup = () => {
+      ac.abort()
+      mql.removeEventListener('change', mqHandler)
+    }
   }
 
   // Initialize on DOM ready

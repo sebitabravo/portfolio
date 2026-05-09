@@ -46,8 +46,8 @@ const navItems = [
       <div class="hidden md:flex items-center gap-1">
         {navItems.map((link) => (
           <a
-            class="nav-link relative px-3 py-2 rounded-[8px] transition-colors duration-150"
-            aria-label={link.label}
+            class="nav-link relative px-3 py-2 rounded-[8px] transition-colors duration-150 focus-ring"
+            data-section={link.label}
             href={link.url}
           >
             {link.title}
@@ -67,9 +67,7 @@ const navItems = [
               {navItems.map((link) => (
                 <a
                   href={link.url}
-                  aria-label={link.label}
-                  class="rounded-[8px] px-3 py-2 text-sm text-foreground/90 transition-colors hover:bg-muted/50"
-                  role="menuitem"
+                  class="rounded-[8px] px-3 py-2 text-sm text-foreground/90 transition-colors hover:bg-muted/50 focus-ring"
                 >
                   {link.title}
                 </a>
@@ -93,8 +91,8 @@ const navItems = [
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             navLinks.forEach((link) => {
-              const aria = link.getAttribute('aria-label')
-              if (aria === entry.target.id) link.classList.add('nav-active')
+              const section = link.getAttribute('data-section')
+              if (section === entry.target.id) link.classList.add('nav-active')
               else link.classList.remove('nav-active')
             })
           }

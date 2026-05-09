@@ -12,7 +12,7 @@ permissions:
 jobs:
   validate:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 30
 
     steps:
       - name: Checkout repository
@@ -32,28 +32,41 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Audit production dependencies
+        run: pnpm audit --prod
+
+      - name: Type check
+        run: pnpm astro check
+
       - name: Run unit and smoke tests
         run: pnpm test
 
-      - name: Install Playwright browser
-        run: pnpm exec playwright install --with-deps chromium
+      - name: Build project for E2E
+        run: pnpm build
+
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install --with-deps chromium firefox webkit
 
       - name: Run E2E tests
         run: |
-          pnpm dev --host 127.0.0.1 --port 4321 > /tmp/astro-dev.log 2>&1 &
-          for attempt in {1..30}; do
+          pnpm preview --host 127.0.0.1 --port 4321 > /tmp/astro-preview.log 2>&1 &
+          PREVIEW_PID=$!
+          for attempt in $(seq 1 30); do
             if curl --silent --fail http://127.0.0.1:4321 > /dev/null; then
               break
+            fi
+            if [ "$attempt" -eq 30 ]; then
+              echo "ERROR: Preview server failed to start after 30 attempts"
+              cat /tmp/astro-preview.log
+              exit 1
             fi
             sleep 1
           done
           PLAYWRIGHT_BASE_URL=http://127.0.0.1:4321 pnpm test:e2e
+          kill $PREVIEW_PID 2>/dev/null || true
 
       - name: Validate project links
         run: pnpm validate:links
-
-      - name: Build project
-        run: pnpm build
 
       - name: Upload Playwright report
         if: always()

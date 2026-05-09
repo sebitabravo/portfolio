@@ -11,76 +11,39 @@
   },
   "hero": {
     "greeting": "Hola, soy",
-    "description": "Frontend Developer",
-    "intro": "Estudiante de Ingeniería Informática. Construyo interfaces con React y TypeScript, y plataformas web completas con IoT, ML y arquitectura enterprise.",
-    "cta": "Ver proyectos",
+    "intro": "Desarrollador Full-Stack. Construyo plataformas web completas con React, TypeScript, IoT y Machine Learning.",
     "contact": "Contactar",
     "available": "Disponible para trabajar",
     "downloadCv": "Descargar CV"
   },
   "projects": {
     "title": "Proyectos",
-    "subtitle": "Lo que construí fuera de la universidad",
-    "allSubtitle": "Proyectos reales, no tutoriales",
-    "viewAll": "Ver todos los proyectos",
     "viewProject": "Demo",
     "viewCode": "Código",
-    "viewDetails": "Detalles",
     "viewMoreGithub": "Ver más proyectos en GitHub",
-    "filterAll": "Todas",
-    "technologyLabel": "Tecnología",
-    "technologies": "Tecnologías",
-    "featured": "Destacado",
-    "noProjects": "Aún no hay proyectos. ¡Vuelve pronto!",
-    "pageDescription": "Proyectos de desarrollo web: desde IoT con Machine Learning hasta sistemas enterprise y plataformas comunitarias."
+    "featured": "Destacado"
   },
   "work": {
     "title": "Experiencia",
-    "subtitle": "Mi trayectoria",
-    "current": "Actual",
-    "present": "Presente",
     "currently": "Actualmente...",
     "viewMore": "Ver más →",
     "noExperience": "Experiencia laboral próximamente..."
   },
   "education": {
     "title": "Educación",
-    "subtitle": "Mi formación académica",
-    "current": "En curso",
     "present": "Presente",
     "grade": "Calificación"
   },
   "certifications": {
-    "title": "Certificaciones",
-    "subtitle": "Certificados profesionales y formación complementaria",
-    "viewCredential": "Ver credencial",
-    "skills": "Habilidades",
-    "issuedBy": "Emitido por",
-    "credentialId": "ID de credencial",
-    "noExpiration": "Sin vencimiento"
+    "title": "Certificaciones"
   },
   "about": {
-    "title": "Sobre mí",
-    "subtitle": "Más allá del código"
+    "title": "Sobre mí"
   },
   "footer": {
-    "quickLinks": "Enlaces Rápidos",
-    "connect": "Conecta",
-    "allRights": "Todos los derechos reservados",
-    "builtWith": "Hecho con",
-    "rights": "Todos los derechos reservados",
-    "madeWith": "Hecho con",
-    "in": "en"
+    "madeWith": "Hecho con"
   },
   "contactForm": {
-    "title": "Contacto",
-    "subtitle": "Elegí cómo contactarme. Respondo en menos de 24h."
-  },
-  "common": {
-    "readMore": "Leer más",
-    "learnMore": "Aprender más",
-    "viewMore": "Ver más",
-    "backToHome": "Volver al inicio",
-    "close": "Cerrar"
+    "title": "Contacto"
   }
 }

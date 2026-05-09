@@ -33,7 +33,6 @@ import MailIcon from "@/components/icons/Mail.astro"
 
 <Layout
   title={`${personalInfo.name} — ${personalInfo.title}`}
-  description={personalInfo.description}
   locale="es"
 >
   <main id="main-content">
@@ -46,7 +45,7 @@ import MailIcon from "@/components/icons/Mail.astro"
       <SectionContainer id="proyectos">
         <TitleSection>
           <CodeIcon class="size-6" />
-          Proyectos
+          {t.projects.title}
         </TitleSection>
         <Projects locale="es" />
       </SectionContainer>
@@ -64,11 +63,11 @@ import MailIcon from "@/components/icons/Mail.astro"
 
       <hr class="section-divider max-w-[1200px] mx-auto" />
 
-      <!-- Educaci&oacute;n -->
+      <!-- Educacion -->
       <SectionContainer id="educacion">
         <TitleSection>
           <GraduationCapIcon class="size-6" />
-          Educaci&oacute;n
+          {t.education.title}
         </TitleSection>
         <Education locale="es" />
       </SectionContainer>
@@ -79,18 +78,18 @@ import MailIcon from "@/components/icons/Mail.astro"
       <SectionContainer id="certificaciones" data-animate>
         <TitleSection>
           <CertificateIcon class="size-6" />
-          Certificaciones
+          {t.certifications.title}
         </TitleSection>
         <Certifications locale="es" />
       </SectionContainer>
 
       <hr class="section-divider max-w-[1200px] mx-auto" />
 
-      <!-- Sobre m&iacute; -->
+      <!-- Sobre mi -->
       <SectionContainer id="sobre-mi">
         <TitleSection>
           <ProfileCheckIcon class="size-6" />
-          Sobre m&iacute;
+          {t.about.title}
         </TitleSection>
         <AboutMe locale="es" />
       </SectionContainer>

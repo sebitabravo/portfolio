@@ -11,76 +11,39 @@
   },
   "hero": {
     "greeting": "Hi, I'm",
-    "description": "Frontend Developer",
-    "intro": "Computer Engineering student. I build interfaces with React and TypeScript, and complete web platforms with IoT, ML and enterprise architecture.",
-    "cta": "View projects",
+    "intro": "Full-Stack Developer. I build production-grade web platforms with React, TypeScript, IoT and Machine Learning.",
     "contact": "Contact",
     "available": "Available for work",
     "downloadCv": "Download CV"
   },
   "projects": {
     "title": "Projects",
-    "subtitle": "What I built outside the classroom",
-    "allSubtitle": "Real projects, not tutorials",
-    "viewAll": "View all projects",
     "viewProject": "Demo",
     "viewCode": "Code",
-    "viewDetails": "Details",
     "viewMoreGithub": "More projects on GitHub",
-    "filterAll": "All",
-    "technologyLabel": "Technology",
-    "technologies": "Technologies",
-    "featured": "Featured",
-    "noProjects": "No projects yet. Check back soon!",
-    "pageDescription": "Web development projects: from IoT with Machine Learning to enterprise systems and community platforms."
+    "featured": "Featured"
   },
   "work": {
     "title": "Experience",
-    "subtitle": "My journey",
-    "current": "Current",
-    "present": "Present",
     "currently": "Currently...",
     "viewMore": "View more →",
     "noExperience": "Work experience coming soon..."
   },
   "education": {
     "title": "Education",
-    "subtitle": "My academic background",
-    "current": "In progress",
     "present": "Present",
     "grade": "Grade"
   },
   "certifications": {
-    "title": "Certifications",
-    "subtitle": "Professional certifications and additional training",
-    "viewCredential": "View credential",
-    "skills": "Skills",
-    "issuedBy": "Issued by",
-    "credentialId": "Credential ID",
-    "noExpiration": "No expiration"
+    "title": "Certifications"
   },
   "about": {
-    "title": "About",
-    "subtitle": "Beyond the code"
+    "title": "About"
   },
   "footer": {
-    "quickLinks": "Quick Links",
-    "connect": "Connect",
-    "allRights": "All rights reserved",
-    "builtWith": "Built with",
-    "rights": "All rights reserved",
-    "madeWith": "Made with",
-    "in": "in"
+    "madeWith": "Made with"
   },
   "contactForm": {
-    "title": "Contact",
-    "subtitle": "Choose how to reach me. I reply within 24h."
-  },
-  "common": {
-    "readMore": "Read more",
-    "learnMore": "Learn more",
-    "viewMore": "View more",
-    "backToHome": "Back to home",
-    "close": "Close"
+    "title": "Contact"
   }
 }

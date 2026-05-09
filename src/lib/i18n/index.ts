@@ -21,25 +21,6 @@ export function getTranslations(locale: Locale): TranslationKeys {
 }
 
 /**
- * Get a nested translation value by dot notation path
- * Example: t('nav.home') => 'Inicio'
- */
-export function t(
-  locale: Locale,
-  key: string,
-): string {
-  const keys = key.split('.')
-  const translations = getTranslations(locale)
-
-  let value: any = translations
-  for (const k of keys) {
-    value = value?.[k]
-  }
-
-  return value || key
-}
-
-/**
  * Get locale from URL using Astro's native function
  * This is a wrapper around Astro's getLocale() for type safety
  */

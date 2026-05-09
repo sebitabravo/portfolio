@@ -26,8 +26,9 @@ const duplicatedTechs = [...technologies, ...technologies]
         return (
           <div
             class="tech-item"
-            style={`animation-delay: ${(index % technologies.length) * 0.1}s`}
             aria-hidden={isDuplicate ? "true" : undefined}
+            tabindex={isDuplicate ? -1 : undefined}
+            data-duplicate={isDuplicate ? "true" : undefined}
           >
             <span class="tech-icon">
               {IconComponent ? (
@@ -91,7 +92,6 @@ const duplicatedTechs = [...technologies, ...technologies]
     border: 1px solid hsl(var(--border));
     border-radius: 0.75rem;
     transition: all 0.3s ease;
-    animation: float 3s ease-in-out infinite;
   }
 
   .tech-item:hover {
@@ -131,16 +131,6 @@ const duplicatedTechs = [...technologies, ...technologies]
     }
   }
 
-  /* Floating animation */
-  @keyframes float {
-    0%, 100% {
-      transform: translateY(0px);
-    }
-    50% {
-      transform: translateY(-10px);
-    }
-  }
-
   /* Pause animation on hover */
   .tech-carousel-container:hover .tech-carousel {
     animation-play-state: paused;
@@ -169,12 +159,30 @@ const duplicatedTechs = [...technologies, ...technologies]
 
   /* Reduced motion for accessibility */
   @media (prefers-reduced-motion: reduce) {
+    .tech-carousel-container {
+      overflow: visible;
+      -webkit-mask-image: none;
+      mask-image: none;
+    }
+
+    .tech-carousel-wrapper {
+      width: 100%;
+    }
+
     .tech-carousel {
       animation: none;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1rem;
     }
 
     .tech-item {
       animation: none;
+      min-width: 80px;
+    }
+
+    .tech-item[data-duplicate="true"] {
+      display: none;
     }
   }
 </style>

@@ -11,7 +11,6 @@ export default defineConfig({
 	devToolbar: {
 		enabled: false,
 	},
-	// Enable View Transitions for faster page navigation
 	experimental: {
 		clientPrerender: true,
 	},

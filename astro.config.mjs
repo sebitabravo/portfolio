@@ -11,9 +11,6 @@ export default defineConfig({
 	devToolbar: {
 		enabled: false,
 	},
-	experimental: {
-		clientPrerender: true,
-	},
 	i18n: {
 		defaultLocale: 'es',
 		locales: ['es', 'en'],

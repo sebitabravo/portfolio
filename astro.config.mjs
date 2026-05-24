@@ -41,9 +41,6 @@ export default defineConfig({
 	markdown: {
 		syntaxHighlight: false,
 	},
-	security: {
-		csp: true,
-	},
 	i18n: {
 		defaultLocale: 'es',
 		locales: ['es', 'en'],

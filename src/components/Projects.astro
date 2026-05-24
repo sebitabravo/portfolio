@@ -43,10 +43,11 @@ const visualGradients: Record<string, string> = {
       const statusLabel = status ? statusLabels[locale]?.[status] : undefined
       const statusColor = status ? statusColors[status] : ""
       const gradient = visualGradients[slug] ?? "linear-gradient(140deg, #2b2b2b 0%, #5a5a5a 100%)"
+      const projectUrl = locale === 'en' ? `/en/projects/${slug}` : `/projects/${slug}`
 
       const maxTags = 4
       const visibleTags = tags.slice(0, maxTags)
-      const visualStats = metrics?.length ? metrics.slice(0, 2) : visibleTags.slice(0, 2).map((tag) => ({ label: "Stack", value: tag }))
+      const visualStats = metrics?.length ? metrics.slice(0, 2) : []
 
       return (
         <article
@@ -59,16 +60,32 @@ const visualGradients: Record<string, string> = {
         >
           <div class="relative overflow-hidden border-b border-[hsl(var(--parchment))]">
             <div class="relative aspect-[16/10] w-full" style={`background:${gradient};`}>
+              <a href={projectUrl} class="absolute inset-0 z-10" aria-label={`${title} — ${t.projects.viewProject}`}>
+                <span class="sr-only">{title}</span>
+              </a>
+              <picture>
+                <source srcset={`/screenshots/${slug}.webp`} type="image/webp" />
+                <img
+                  src={`/screenshots/${slug}.png`}
+                  alt={`${title} screenshot`}
+                  class="absolute inset-0 h-full w-full object-cover"
+                  loading="lazy"
+                  data-img-fallback
+                />
+              </picture>
               <div class="absolute inset-0 bg-black/15"></div>
+              <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
               <div class="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.18),transparent_28%),linear-gradient(rgba(255,255,255,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.08)_1px,transparent_1px)] bg-[length:100%_100%,28px_28px,28px_28px]"></div>
-              <div class="absolute right-3 top-3 flex max-w-[58%] flex-col gap-2 sm:right-4 sm:top-4">
-                {visualStats.map((metric) => (
-                  <div class="rounded-lg border border-white/20 bg-white/12 px-3 py-2 text-right shadow-sm backdrop-blur-sm">
-                    <span class="block text-[10px] font-mono uppercase tracking-[0.14em] !text-white/65">{metric.label}</span>
-                    <span class="block text-xs font-semibold !text-white sm:text-sm">{metric.value}</span>
-                  </div>
-                ))}
-              </div>
+              {visualStats.length > 0 && (
+                <div class="absolute right-3 top-3 flex max-w-[58%] flex-col gap-2 sm:right-4 sm:top-4">
+                  {visualStats.map((metric) => (
+                    <div class="rounded-lg border border-white/20 bg-white/12 px-3 py-2 text-right shadow-sm backdrop-blur-sm">
+                      <span class="block text-[10px] font-mono uppercase tracking-[0.14em] !text-white/65">{metric.label}</span>
+                      <span class="block text-xs font-semibold !text-white sm:text-sm">{metric.value}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
               <div class="absolute inset-x-0 bottom-0 p-3 sm:p-4 lg:p-5">
                 {statusLabel && (
                   <span class:list={["inline-block rounded-md border px-2 py-0.5 text-[10px] font-mono uppercase tracking-[0.14em] mb-1.5", statusColor]}>
@@ -116,7 +133,7 @@ const visualGradients: Record<string, string> = {
                     rel="noopener noreferrer"
                     data-track-project={slug}
                     data-track-action="code"
-                    class="inline-flex h-11 items-center gap-1.5 sm:gap-2 rounded-lg border border-[hsl(var(--parchment))] bg-transparent px-3 sm:px-3.5 text-sm font-medium text-foreground/85 transition hover:bg-[hsl(var(--muted))]"
+                    class="inline-flex h-11 items-center gap-1.5 sm:gap-2 rounded-lg border border-[hsl(var(--parchment))] bg-transparent px-3 sm:px-3.5 text-sm font-medium text-foreground/85 transition hover:bg-[hsl(var(--muted))] focus-ring"
                   >
                     <GitHubIcon class="size-3 sm:size-4" />
                     {t.projects.viewCode}
@@ -130,7 +147,7 @@ const visualGradients: Record<string, string> = {
                     rel="noopener noreferrer"
                     data-track-project={slug}
                     data-track-action="live"
-                    class="btn-cream !h-11 !px-3 sm:!px-3.5 !text-sm"
+                    class="btn-cream focus-ring !h-11 !px-3 sm:!px-3.5 !text-sm"
                   >
                     <LinkIcon class="size-3 sm:size-4" />
                     {t.projects.viewProject}
@@ -175,8 +192,14 @@ const visualGradients: Record<string, string> = {
       })
     })
 
-
-
+    // Fallback: ocultar imágenes rotas (reemplaza onerror inline, CSP-compatible)
+    document.querySelectorAll<HTMLImageElement>("img[data-img-fallback]").forEach((img) => {
+      if (img.dataset.fallbackBound === "true") return
+      img.dataset.fallbackBound = "true"
+      img.addEventListener("error", () => {
+        img.style.display = "none"
+      })
+    })
   }
 
   document.addEventListener("astro:page-load", setupProjects)

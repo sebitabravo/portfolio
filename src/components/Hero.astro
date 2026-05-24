@@ -21,7 +21,7 @@ interface Props {
 const { locale = 'es' } = Astro.props
 const t = getTranslations(locale)
 const aboutMe = getAboutMe(locale)
-const contactUrl = locale === 'es' ? '#contacto' : '/en#contact'
+const contactUrl = locale === 'es' ? '#contacto' : '#contact'
 ---
 
 <section class="hero-gradient w-full">
@@ -37,7 +37,7 @@ const contactUrl = locale === 'es' ? '#contacto' : '/en#contact'
 
         <!-- Name with gradient -->
         <h1 class="animate-slide-up animation-delay-100 tracking-tight leading-[0.92]">
-          <span class="block text-3xl md:text-4xl lg:text-[56px] bg-gradient-to-r from-[hsl(var(--foreground))] via-[hsl(var(--foreground))] to-[hsl(var(--primary))] bg-clip-text text-transparent">{personalInfo.name}</span>
+          <span class="block text-3xl md:text-4xl lg:text-[56px] bg-gradient-to-r from-[hsl(var(--foreground))] via-[hsl(var(--foreground))] to-[hsl(var(--primary))] bg-clip-text text-transparent bg-clip-text-fallback">{personalInfo.name}</span>
         </h1>
 
         <!-- Role -->
@@ -57,8 +57,18 @@ const contactUrl = locale === 'es' ? '#contacto' : '/en#contact'
           </p>
         )}
 
+        <!-- Wins -->
+        <ul class="animate-slide-up animation-delay-400 mt-5 space-y-1.5">
+          {t.hero.wins.map((win: string) => (
+            <li class="flex items-start gap-2 text-sm hero-text-muted">
+              <svg class="mt-0.5 size-3.5 shrink-0 text-[hsl(var(--primary))]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+              <span>{win}</span>
+            </li>
+          ))}
+        </ul>
+
         <!-- CTAs + Social -->
-        <div class="animate-slide-up animation-delay-400 mt-8 flex flex-wrap items-center gap-4">
+        <div class="animate-slide-up animation-delay-500 mt-8 flex flex-wrap items-center gap-4">
           <a
             href={contactUrl}
             class="btn-primary focus-ring"
@@ -88,16 +98,16 @@ const contactUrl = locale === 'es' ? '#contacto' : '/en#contact'
               data-track-social="calendly"
             >
               <CalendarIcon class="size-4" />
-              <span>{locale === 'es' ? 'Agendar llamada' : 'Schedule call'}</span>
+              <span>{t.hero.scheduleCall}</span>
             </a>
           )}
 
           <div class="flex items-center gap-2">
-            <SocialPill href={social.linkedin} target="_blank" rel="noopener noreferrer" data-track-social="linkedin">
+            <SocialPill href={social.linkedin} target="_blank" rel="me noopener noreferrer" data-track-social="linkedin">
               <LinkedInIcon class="size-4" />
               <span class="sr-only">LinkedIn</span>
             </SocialPill>
-            <SocialPill href={social.github} target="_blank" rel="noopener noreferrer" data-track-social="github">
+            <SocialPill href={social.github} target="_blank" rel="me noopener noreferrer" data-track-social="github">
               <GitHubIcon class="size-4" />
               <span class="sr-only">GitHub</span>
             </SocialPill>
@@ -136,7 +146,7 @@ const contactUrl = locale === 'es' ? '#contacto' : '/en#contact'
               <a
                 href={social.linkedin}
                 target="_blank"
-                rel="noopener noreferrer"
+                rel="me noopener noreferrer"
                 aria-label={t.hero.available}
                 class="block rounded-full focus-ring"
               >

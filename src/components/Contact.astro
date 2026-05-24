@@ -55,6 +55,7 @@ const contactLinks = [
         href={href}
         data-animate
         data-animate-delay={String(i + 1)}
+        data-track-social={icon}
         target={icon !== 'mail' ? '_blank' : undefined}
         rel={icon !== 'mail' ? 'noopener noreferrer' : undefined}
         class="group flex flex-col items-center gap-3 rounded-2xl border border-[hsl(var(--parchment))] bg-[hsl(var(--card))] p-6 text-center transition-all duration-300 hover:-translate-y-1 hover:shadow-[var(--shadow-card-hover)] focus-ring"
@@ -70,3 +71,20 @@ const contactLinks = [
     ))}
   </div>
 </div>
+
+<script>
+  import { trackEvent } from "@/lib/analytics"
+
+  const setupContactTracking = () => {
+    document.querySelectorAll<HTMLElement>('[data-track-social]').forEach((el) => {
+      if (el.dataset.trackBound === 'true') return
+      el.dataset.trackBound = 'true'
+      el.addEventListener('click', () => {
+        trackEvent({ name: 'social_click', props: { platform: el.dataset.trackSocial ?? '' } })
+      })
+    })
+  }
+
+  document.addEventListener('astro:page-load', setupContactTracking)
+  setupContactTracking()
+</script>

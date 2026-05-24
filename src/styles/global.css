@@ -54,6 +54,16 @@
     --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06);
     --shadow-card-hover: 0 8px 25px rgba(0, 0, 0, 0.08), 0 4px 10px rgba(0, 0, 0, 0.04);
     --shadow-nav: 0 1px 0 rgba(0, 0, 0, 0.04);
+
+    /* Hero gradient stops */
+    --hero-gradient-start: 244 40% 96%;
+    --hero-gradient-mid: 240 30% 95%;
+    --hero-gradient-end: 250 35% 97%;
+
+    /* Nav background */
+    --nav-bg: 248 248 252;
+    --nav-bg-scrolled: 248 248 252;
+    --nav-border-color: 228 228 231;
   }
 
   .dark {
@@ -72,7 +82,7 @@
     --secondary-foreground: 36 14% 90%;
 
     --muted: 245 12% 14%;
-    --muted-foreground: 30 5% 55%;       /* WCAG AA on dark backgrounds */
+    --muted-foreground: 30 5% 58%;       /* WCAG AA 5.3:1 sobre #0f0f14 */
 
     --accent: 264 60% 78%;               /* = primary en dark mode */
     --accent-foreground: 0 0% 100%;
@@ -96,6 +106,16 @@
     --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.2), 0 1px 2px rgba(0, 0, 0, 0.3);
     --shadow-card-hover: 0 8px 25px rgba(0, 0, 0, 0.3), 0 4px 10px rgba(0, 0, 0, 0.2);
     --shadow-nav: 0 1px 0 rgba(255, 255, 255, 0.04);
+
+    /* Hero gradient stops — dark */
+    --hero-gradient-start: 245 45% 12%;
+    --hero-gradient-mid: 240 33% 6%;
+    --hero-gradient-end: 248 40% 10%;
+
+    /* Nav background — dark */
+    --nav-bg: 15 15 20;
+    --nav-bg-scrolled: 15 15 20;
+    --nav-border-color: 42 42 53;
   }
 }
 
@@ -405,7 +425,7 @@ pre code {
    ============================================ */
 
 .hero-gradient {
-  background: linear-gradient(165deg, #1b1938 0%, #0d0d1a 50%, #15122a 100%);
+  background: linear-gradient(165deg, hsl(var(--hero-gradient-start)) 0%, hsl(var(--hero-gradient-mid)) 50%, hsl(var(--hero-gradient-end)) 100%);
   position: relative;
 }
 
@@ -601,6 +621,11 @@ pre code {
   transform: translateY(-1px);
 }
 
+.btn-ghost:focus-visible {
+  outline: 2px solid hsl(var(--primary));
+  outline-offset: 2px;
+}
+
 /* ============================================
    Tech Badge — Monospace developer identity
    ============================================ */
@@ -681,6 +706,7 @@ pre code {
 .animation-delay-100 { animation-delay: 100ms; }
 .animation-delay-200 { animation-delay: 200ms; }
 .animation-delay-300 { animation-delay: 300ms; }
+.animation-delay-350 { animation-delay: 350ms; }
 .animation-delay-400 { animation-delay: 400ms; }
 .animation-delay-500 { animation-delay: 500ms; }
 
@@ -721,6 +747,11 @@ pre code {
 .btn-cream:hover {
   transform: translateY(-1px);
   box-shadow: 0 4px 14px hsl(var(--primary) / 0.25);
+}
+
+.btn-cream:focus-visible {
+  outline: 2px solid hsl(var(--primary));
+  outline-offset: 2px;
 }
 
 /* ============================================
@@ -773,5 +804,33 @@ pre code {
   .card-hover {
     animation: none !important;
     transform: none !important;
+  }
+}
+
+/* ============================================
+   Accessibility — High Contrast
+   ============================================ */
+
+@media (prefers-contrast: high) {
+  :root {
+    --border: 240 6% 70%;
+    --muted-foreground: 240 4% 15%;
+    --caption-color: 240 4% 30%;
+  }
+
+  .dark {
+    --border: 245 12% 42%;
+    --muted-foreground: 30 5% 80%;
+    --caption-color: 30 6% 65%;
+  }
+}
+
+/* ============================================
+   Background-clip text fallback
+   ============================================ */
+
+@supports not (-webkit-background-clip: text) {
+  .bg-clip-text-fallback.bg-clip-text-fallback {
+    color: hsl(var(--foreground));
   }
 }

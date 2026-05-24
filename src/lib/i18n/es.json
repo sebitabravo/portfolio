@@ -14,7 +14,13 @@
     "intro": "Desarrollador Full-Stack. Construyo plataformas web completas con React, TypeScript, IoT y Machine Learning.",
     "contact": "Contactar",
     "available": "Disponible para trabajar",
-    "downloadCv": "Descargar CV"
+    "downloadCv": "Descargar CV",
+    "scheduleCall": "Agendar llamada",
+    "wins": [
+      "Modelo ML Random Forest con 94.1% F1-Score en producción",
+      "43 módulos migrados a TanStack Query en SaaS enterprise",
+      "+10K líneas de dead code eliminadas reduciendo superficie de ataque"
+    ]
   },
   "projects": {
     "title": "Proyectos",

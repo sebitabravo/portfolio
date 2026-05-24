@@ -1,0 +1,283 @@
+---
+import Layout from "@/layouts/Layout.astro"
+import { getProjects, personalInfo } from "@/lib/data"
+import { getTranslations } from "@/lib/i18n"
+import { getTechStyle } from "@/lib/tech-colors"
+import { getTechIcon } from "@/lib/tech-icons-map"
+import GitHubIcon from "@/components/icons/GitHub.astro"
+import LinkIcon from "@/components/icons/Link.astro"
+import type { GetStaticPaths } from "astro"
+
+export const getStaticPaths = (() => {
+  const projects = getProjects('es')
+  return projects.map((p) => ({ params: { slug: p.slug } }))
+}) satisfies GetStaticPaths
+
+const { slug } = Astro.params
+const locale = 'es'
+const t = getTranslations(locale)
+const projects = getProjects(locale)
+const project = projects.find((p) => p.slug === slug)
+
+if (!project) return Astro.redirect('/404')
+
+const statusLabels: Record<string, string> = {
+  production: "En producción",
+  development: "En desarrollo",
+  demo: "Demo",
+}
+
+const statusColors: Record<string, string> = {
+  production: "bg-emerald-500/85 text-white border-emerald-400/30",
+  development: "bg-amber-500/85 text-white border-amber-400/30",
+  demo: "bg-sky-500/85 text-white border-sky-400/30",
+}
+
+const visualGradients: Record<string, string> = {
+  manttoai: "linear-gradient(140deg, #0e5f66 0%, #3d9f7a 100%)",
+  vulcania: "linear-gradient(140deg, #7a2a0a 0%, #e35b25 45%, #f3aa3a 100%)",
+  "rapido-sur": "linear-gradient(140deg, #1e3a8a 0%, #3730a3 50%, #6d28d9 100%)",
+  wenuke: "linear-gradient(140deg, #075e54 0%, #128c7e 50%, #25d366 100%)",
+}
+
+const gradient = visualGradients[slug] ?? "linear-gradient(140deg, #2b2b2b 0%, #5a5a5a 100%)"
+const canonicalUrl = `https://sebita.dev/projects/${slug}`
+const statusLabel = statusLabels[project.status] ?? ""
+const statusColor = statusColors[project.status] ?? ""
+const otherProjects = projects.filter((p) => p.slug !== slug)
+
+const jsonLdSoftware = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": project.title,
+  "description": project.longDescription || project.description,
+  "applicationCategory": "WebApplication",
+  "operatingSystem": "Web",
+  "url": canonicalUrl,
+  "image": `https://sebita.dev/screenshots/${slug}.webp`,
+  "author": {
+    "@type": "Person",
+    "name": personalInfo.name,
+    "url": "https://sebita.dev",
+  },
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD",
+  },
+  "keywords": project.tags.join(", "),
+  ...(project.githubUrl ? { "codeRepository": project.githubUrl } : {}),
+}
+---
+
+<Layout
+  title={`${project.title} - ${personalInfo.name}`}
+  description={project.longDescription || project.description}
+  image={`/screenshots/${slug}.webp`}
+  locale={locale}
+  canonicalUrl={canonicalUrl}
+>
+  <script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLdSoftware)}></script>
+
+  <main id="main-content">
+    <!-- Hero -->
+    <section class="relative overflow-hidden" style={`background: ${gradient};`}>
+      <div class="absolute inset-0 bg-black/20"></div>
+      <div class="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.18),transparent_28%),linear-gradient(rgba(255,255,255,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.08)_1px,transparent_1px)] bg-[length:100%_100%,28px_28px,28px_28px]"></div>
+      <div class="relative mx-auto max-w-[1200px] px-4 py-16 sm:py-24 lg:py-32">
+        <!-- Breadcrumb -->
+        <nav class="mb-8" aria-label="Breadcrumb">
+          <ol class="flex flex-wrap items-center gap-2 text-sm text-white/70">
+            <li><a href="/" class="hover:text-white transition-colors">Home</a></li>
+            <li aria-hidden="true">/</li>
+            <li><a href="/#proyectos" class="hover:text-white transition-colors">{t.nav.projects}</a></li>
+            <li aria-hidden="true">/</li>
+            <li class="text-white/90 font-medium" aria-current="page">{project.title}</li>
+          </ol>
+        </nav>
+
+        <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
+          <div class="max-w-2xl">
+            <div class="flex flex-wrap items-center gap-3 mb-4">
+              {statusLabel && (
+                <span class:list={["inline-block rounded-md border px-2.5 py-0.5 text-xs font-mono uppercase tracking-[0.14em]", statusColor]}>
+                  {statusLabel}
+                </span>
+              )}
+              {project.featured && (
+                <span class="rounded-md border border-white/30 bg-white/15 px-2.5 py-0.5 text-xs font-mono uppercase tracking-[0.12em] !text-white/90">
+                  {t.projects.featured}
+                </span>
+              )}
+            </div>
+            <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold !text-white tracking-tight font-mono">{project.title}</h1>
+            <p class="mt-4 text-white/80 text-base sm:text-lg max-w-xl">{project.description}</p>
+          </div>
+
+          {project.metrics && project.metrics.length > 0 && (
+            <div class="flex flex-wrap gap-3">
+              {project.metrics.map((m) => (
+                <div class="rounded-lg border border-white/20 bg-white/12 px-4 py-3 text-right backdrop-blur-sm">
+                  <span class="block text-xs font-mono uppercase tracking-[0.14em] !text-white/65">{m.label}</span>
+                  <span class="block text-lg font-bold !text-white">{m.value}</span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+
+    <div class="mx-auto max-w-[900px] px-4 py-12 sm:py-16 lg:py-20 space-y-16 sm:space-y-20">
+      <!-- Overview -->
+      {project.longDescription && (
+        <section>
+          <h2 class="text-2xl sm:text-3xl font-bold tracking-tight mb-6">Resumen</h2>
+          <p class="text-foreground/80 text-base sm:text-lg leading-relaxed whitespace-pre-line">{project.longDescription}</p>
+
+          <div class="mt-8 flex flex-wrap gap-2">
+            {project.tags.map((tag) => {
+              const style = getTechStyle(tag)
+              const Icon = getTechIcon(tag)
+              return (
+                <span class:list={["tech-badge flex items-center gap-1.5 text-sm px-3 py-1.5", style.bg, style.border, style.text]}>
+                  {Icon && <Icon class="size-4" />}
+                  {tag}
+                </span>
+              )
+            })}
+          </div>
+        </section>
+      )}
+
+      <!-- Problem -->
+      {project.problemStatement && (
+        <section>
+          <h2 class="text-2xl sm:text-3xl font-bold tracking-tight mb-6">Problema</h2>
+          <div class="rounded-2xl border border-[hsl(var(--parchment))] bg-[hsl(var(--card))] p-6 sm:p-8">
+            <p class="text-foreground/80 text-base sm:text-lg leading-relaxed whitespace-pre-line">{project.problemStatement}</p>
+          </div>
+        </section>
+      )}
+
+      {/* Approach */}
+      {project.approach && (
+        <section>
+          <h2 class="text-2xl sm:text-3xl font-bold tracking-tight mb-6">Enfoque</h2>
+          <div class="rounded-2xl border border-[hsl(var(--parchment))] bg-[hsl(var(--card))] p-6 sm:p-8">
+            <p class="text-foreground/80 text-base sm:text-lg leading-relaxed whitespace-pre-line">{project.approach}</p>
+          </div>
+        </section>
+      )}
+
+      {/* Architecture */}
+      {project.architecture && (
+        <section>
+          <h2 class="text-2xl sm:text-3xl font-bold tracking-tight mb-6">Arquitectura</h2>
+          <div class="rounded-2xl border border-[hsl(var(--parchment))] bg-[hsl(var(--muted))] p-6 sm:p-8">
+            <p class="text-foreground/80 text-base leading-relaxed font-mono text-sm whitespace-pre-line">{project.architecture}</p>
+          </div>
+        </section>
+      )}
+
+      {/* Challenges */}
+      {project.challenges && project.challenges.length > 0 && (
+        <section>
+          <h2 class="text-2xl sm:text-3xl font-bold tracking-tight mb-6">Desafíos</h2>
+          <div class="grid gap-4 sm:gap-6 sm:grid-cols-2">
+            {project.challenges.map((c) => (
+              <div class="rounded-2xl border border-[hsl(var(--parchment))] bg-[hsl(var(--card))] p-5 sm:p-6">
+                <h3 class="font-semibold text-foreground mb-2">{c.title}</h3>
+                <p class="text-sm text-foreground/70 leading-relaxed">{c.description}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Results */}
+      {project.results && project.results.length > 0 && (
+        <section>
+          <h2 class="text-2xl sm:text-3xl font-bold tracking-tight mb-6">Resultados</h2>
+          <div class="rounded-2xl border border-[hsl(var(--parchment))] bg-[hsl(var(--card))] p-6 sm:p-8">
+            <ul class="space-y-3">
+              {project.results.map((r) => (
+                <li class="flex items-start gap-3 text-foreground/85">
+                  <svg class="mt-0.5 size-5 shrink-0 text-[hsl(var(--primary))]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                  <span class="text-base leading-relaxed">{r}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+      )}
+
+      {/* Lessons Learned */}
+      {project.lessonsLearned && project.lessonsLearned.length > 0 && (
+        <section>
+          <h2 class="text-2xl sm:text-3xl font-bold tracking-tight mb-6">Aprendizajes</h2>
+          <div class="rounded-2xl border border-[hsl(var(--parchment))] bg-[hsl(var(--card))] p-6 sm:p-8">
+            <ul class="space-y-3">
+              {project.lessonsLearned.map((lesson) => (
+                <li class="flex items-start gap-3 text-foreground/85">
+                  <svg class="mt-0.5 size-5 shrink-0 text-[hsl(var(--primary))]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+                  <span class="text-base leading-relaxed">{lesson}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+      )}
+
+      {/* Links */}
+      <section class="flex flex-wrap items-center gap-4 pt-4 border-t border-[hsl(var(--parchment))]">
+        {project.githubUrl && (
+          <a
+            href={project.githubUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex h-11 items-center gap-2 rounded-lg border border-[hsl(var(--parchment))] bg-transparent px-4 text-sm font-medium text-foreground/85 transition hover:bg-[hsl(var(--muted))] focus-ring"
+          >
+            <GitHubIcon class="size-4" />
+            {t.projects.viewCode}
+          </a>
+        )}
+        {project.liveUrl && (
+          <a
+            href={project.liveUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn-cream focus-ring !h-11 !px-4 !text-sm"
+          >
+            <LinkIcon class="size-4" />
+            {t.projects.viewProject}
+          </a>
+        )}
+      </section>
+
+      <!-- Related Projects -->
+      {otherProjects.length > 0 && (
+        <section class="pt-4 border-t border-[hsl(var(--parchment))]">
+          <h2 class="text-xl sm:text-2xl font-bold tracking-tight mb-6">Otros proyectos</h2>
+          <div class="grid gap-4 sm:grid-cols-3">
+            {otherProjects.map((p) => {
+              const pGradient = visualGradients[p.slug] ?? "linear-gradient(140deg, #2b2b2b 0%, #5a5a5a 100%)"
+              return (
+                <a
+                  href={`/projects/${p.slug}`}
+                  class="group block rounded-xl overflow-hidden border border-[hsl(var(--parchment))] transition-all duration-300 hover:-translate-y-[2px] hover:shadow-[var(--shadow-card-hover)] focus-ring"
+                >
+                  <div class="h-2" style={`background: ${pGradient};`}></div>
+                  <div class="p-4 bg-[hsl(var(--card))]">
+                    <h3 class="font-semibold text-sm font-mono">{p.title}</h3>
+                    <p class="mt-1 text-xs text-foreground/60 line-clamp-2">{p.description}</p>
+                  </div>
+                </a>
+              )
+            })}
+          </div>
+        </section>
+      )}
+    </div>
+  </main>
+</Layout>

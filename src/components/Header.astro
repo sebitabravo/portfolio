@@ -58,7 +58,7 @@ const navItems = [
       <div class="flex items-center gap-3">
         <div class="flex items-center gap-2 border-l border-transparent pl-3">
           <ThemeToggle />
-          <LanguageToggle />
+          <LanguageToggle locale={locale} />
         </div>
 
         <div class="md:hidden">
@@ -142,16 +142,16 @@ const navItems = [
 
   /* Default: semi-transparent nav with blur */
   .site-nav {
-    background: rgba(248, 248, 252, 1);
-    border-bottom: 1px solid hsl(var(--parchment) / 0.5);
+    background: rgb(var(--nav-bg));
+    border-bottom: 1px solid rgb(var(--nav-border-color) / 0.5);
     color: hsl(var(--foreground));
     backdrop-filter: saturate(1.25) blur(12px);
     -webkit-backdrop-filter: saturate(1.25) blur(12px);
   }
 
   :global(.dark) .site-nav {
-    background: rgba(15, 15, 20, 0.96);
-    border-bottom: 1px solid rgba(42, 42, 53, 0.4);
+    background: rgb(var(--nav-bg) / 0.96);
+    border-bottom: 1px solid rgb(var(--nav-border-color) / 0.4);
     color: rgba(255, 255, 255, 0.9);
   }
 
@@ -165,7 +165,7 @@ const navItems = [
 
   /* Scrolled: more opaque background */
   .site-nav.scrolled {
-    background: rgba(248, 248, 252, 0.96);
+    background: rgb(var(--nav-bg-scrolled) / 0.96);
     border-bottom: 1px solid hsl(var(--border));
     color: hsl(var(--foreground));
   }
@@ -186,8 +186,8 @@ const navItems = [
 
   /* Dark scrolled */
   :global(.dark) .site-nav.scrolled {
-    background: rgba(15, 15, 20, 0.92);
-    border-bottom: 1px solid rgba(42, 42, 53, 0.7);
+    background: rgb(var(--nav-bg-scrolled) / 0.92);
+    border-bottom: 1px solid rgb(var(--nav-border-color) / 0.7);
     color: hsl(var(--foreground));
   }
 

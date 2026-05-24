@@ -18,6 +18,7 @@ interface Props {
   image?: string
   locale?: Locale
   noindex?: boolean
+  canonicalUrl?: string
 }
 
 const {
@@ -25,11 +26,12 @@ const {
   image,
   locale = 'es',
   noindex = false,
+  canonicalUrl,
 } = Astro.props
 
 const description = locale === 'en' ? personalInfo.descriptionEn : personalInfo.description
 
-const profileUrl = locale === "es" ? "https://sebita.dev/" : "https://sebita.dev/en"
+const profileUrl = locale === "es" ? "https://sebita.dev/" : "https://sebita.dev/en/"
 const dynamicOgImage = new URL(
   `/og/${locale}.svg?title=${encodeURIComponent(title)}`,
   "https://sebita.dev",
@@ -129,7 +131,6 @@ const jsonLd = {
     <Font cssVariable="--font-jetbrains-mono" />
     <meta name="generator" content={Astro.generator} />
     <meta name="robots" content={noindex ? "noindex, nofollow" : "index, follow"} />
-    <link rel="canonical" href={profileUrl} />
     <link rel="alternate" hreflang="es" href="https://sebita.dev/" />
     <link rel="alternate" hreflang="en" href="https://sebita.dev/en" />
     <link rel="alternate" hreflang="x-default" href="https://sebita.dev/" />
@@ -137,6 +138,7 @@ const jsonLd = {
     <SEO
       title={title}
       description={description}
+      canonical={canonicalUrl ?? profileUrl}
       openGraph={{
         basic: {
           title: title,
@@ -163,16 +165,20 @@ const jsonLd = {
             content: title,
           },
           {
+            property: "og:image:width",
+            content: "1200",
+          },
+          {
+            property: "og:image:height",
+            content: "630",
+          },
+          {
             property: "og:url",
-            content: profileUrl,
+            content: canonicalUrl ?? profileUrl,
           },
           {
             property: "og:locale",
             content: locale === "es" ? "es_CL" : "en_US",
-          },
-          {
-            name: "keywords",
-            content: "frontend developer, react, typescript, astro, next.js, portfolio, desarrollador frontend, chile",
           },
           {
             name: "author",
@@ -228,6 +234,6 @@ const jsonLd = {
     <Header locale={locale} />
     <slot />
     <Footer locale={locale} />
-    <Analytics />
+    {import.meta.env.VERCEL && <Analytics />}
   </body>
 </html>

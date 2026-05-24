@@ -423,6 +423,15 @@ const duplicatedCerts = [...certifications, ...certifications]
     container.addEventListener('mouseenter', stopAutoScroll)
     container.addEventListener('mouseleave', startAutoScroll)
 
+    function handleVisibilityChange() {
+      if (document.visibilityState === 'hidden') {
+        stopAutoScroll()
+      } else if (!isHovered()) {
+        startAutoScroll()
+      }
+    }
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+
     startAutoScroll()
 
     // Registrar cleanup para la próxima navegación
@@ -433,6 +442,7 @@ const duplicatedCerts = [...certifications, ...certifications]
       }
       container.removeEventListener('mouseenter', stopAutoScroll)
       container.removeEventListener('mouseleave', startAutoScroll)
+      document.removeEventListener('visibilitychange', handleVisibilityChange)
     }
   }
 

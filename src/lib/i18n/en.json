@@ -14,7 +14,13 @@
     "intro": "Full-Stack Developer. I build production-grade web platforms with React, TypeScript, IoT and Machine Learning.",
     "contact": "Contact",
     "available": "Available for work",
-    "downloadCv": "Download CV"
+    "downloadCv": "Download CV",
+    "scheduleCall": "Schedule call",
+    "wins": [
+      "ML Random Forest model with 94.1% F1-Score in production",
+      "43 modules migrated to TanStack Query in enterprise SaaS",
+      "+10K dead code lines removed reducing attack surface"
+    ]
   },
   "projects": {
     "title": "Projects",

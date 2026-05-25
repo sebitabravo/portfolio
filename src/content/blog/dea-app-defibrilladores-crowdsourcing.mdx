@@ -1,0 +1,58 @@
+---
+title: "DEA Points: una app móvil de crowdsourcing de desfibriladores con React Native y Express"
+description: "App React Native (Expo) + API Express + MySQL para mapear y reportar desfibriladores externos automáticos. Mapa interactivo, Redux, TailwindCSS, JWT. Multi-plataforma iOS y Android."
+publishDate: 2026-03-19
+tags: ["React Native", "Express", "MySQL", "TypeScript", "Expo", "TailwindCSS"]
+image: "dea-app"
+---
+
+Un desfibrilador externo automático (DEA) puede salvar una vida durante un paro cardíaco, pero solo si alguien sabe dónde está el más cercano. En la mayoría de las ciudades chilenas, no existe un registro público y actualizado de DEAs. La gente no sabe que hay uno a 50 metros, en el lobby de un edificio al que nunca entró.
+
+DEA Points es una app móvil que intenta resolver eso con crowdsourcing: cualquier persona puede ver los DEAs cercanos en un mapa y reportar nuevos puntos. La app es multi-plataforma (iOS y Android) gracias a React Native con Expo. El backend es una API Express con TypeScript, MySQL y autenticación JWT.
+
+El proyecto fue desarrollado en equipo con [@c-donnachie](https://github.com/c-donnachie).
+
+## Stack
+
+| Capa | Tecnología |
+|------|------------|
+| App móvil | React Native (Expo SDK) + TypeScript |
+| Estado | Redux |
+| Estilos | TailwindCSS (NativeWind) |
+| UI | @gorhom/bottom-sheet |
+| Backend | Node.js + Express + TypeScript |
+| Base de datos | MySQL 8.0 |
+| Auth | JWT |
+| Infra | Docker Compose (3 archivos: dev, prod, full) |
+
+La app usa NativeWind para estilos — TailwindCSS en React Native sin overhead de StyleSheet.create manual. Redux maneja el estado global (ubicación del usuario, lista de DEAs, filtros). El mapa usa seguimiento de ubicación en tiempo real para mostrar puntos DEA cercanos.
+
+## Lo que construimos
+
+- **Mapa interactivo con geolocalización.** El usuario ve los DEAs cercanos como marcadores en el mapa. Cada marcador muestra distancia, dirección y horario de acceso si está disponible.
+- **Registro colaborativo de DEAs.** Cualquier usuario autenticado puede reportar un nuevo DEA: ubicación GPS, foto, tipo de acceso (público/privado), horario disponible.
+- **Modo claro/oscuro.** La app detecta la preferencia del sistema y adapta la interfaz. Importante para uso en exteriores con mucha luz.
+- **Autenticación JWT.** Registro, login y sesiones persistentes. Los tokens se refrescan automáticamente.
+- **Publicaciones/comentarios.** Cada punto DEA tiene una sección de comentarios para reportar estado (funcionando, fuera de servicio, removido).
+
+El backend expone endpoints REST para auth, DEAs y publicaciones. Validación con express-validator. Helmet para headers de seguridad. Tres archivos docker-compose: `dev.yml` (solo base de datos + phpMyAdmin), `prod.yml` (stack completo con HTTPS), `docker-compose.yml` (stack completo para development).
+
+## Las decisiones
+
+**Expo en vez de React Native puro.** Expo simplifica el build y el deploy a iOS/Android sin ejectar. Para un MVP con dos desarrolladores, evita la complejidad de configurar Xcode y Android Studio. El trade-off: menos control sobre módulos nativos, pero para una app que usa mapa, cámara y geolocalización, Expo SDK cubre todo lo necesario.
+
+**MySQL en vez de PostgreSQL.** Decisión del equipo basada en familiaridad. MySQL 8 ya tiene soporte para JSON, window functions y CTEs. Para el schema simple de DEAs (usuarios, puntos, comentarios), PostgreSQL no ofrecía ventajas significativas.
+
+**TailwindCSS en React Native (NativeWind).** Stilear en React Native con StyleSheet.create es verboso. NativeWind permite usar las mismas clases de Tailwind que en web, lo que acelera el desarrollo cuando el equipo ya conoce Tailwind. La desventaja: el bundle incluye el runtime de Tailwind, pero el overhead es marginal (~5KB).
+
+## Lo que aprendí
+
+La geolocalización en React Native es frágil. Los permisos varían entre iOS y Android, y el comportamiento en background es inconsistente. En iOS, la app debe declarar `NSLocationWhenInUseUsageDescription` en el Info.plist. En Android, necesitás `ACCESS_FINE_LOCATION` y `ACCESS_COARSE_LOCATION`. Si el usuario niega el permiso, la app igual debe funcionar (sin mapa en tiempo real, pero con búsqueda manual).
+
+Los bottom sheets de @gorhom son excelentes para mostrar detalles de un punto sin navegar a otra pantalla, pero el rendimiento en Android empeora cuando tenés más de 50 marcadores en el mapa. La solución fue agrupar marcadores cercanos (clustering) y solo mostrar el detalle de los visibles en el viewport.
+
+## Código abierto
+
+El repo incluye la app React Native completa, API Express con TypeScript, esquema de base de datos, y tres configuraciones de Docker Compose.
+
+[github.com/sebitabravo/dea-app](https://github.com/sebitabravo/dea-app)

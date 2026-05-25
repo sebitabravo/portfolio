@@ -1,0 +1,34 @@
+---
+title: "CRM Native: una SPA en JavaScript vanilla para gestión de clientes"
+description: "Primer CRM construido como proyecto educacional en INACAP. Single Page Application con JavaScript vanilla, CSS y HTML. Seis secciones de gestión sin frameworks ni bundlers."
+publishDate: 2022-06-15
+tags: ["JavaScript", "SPA", "CSS", "HTML", "Educacional"]
+image: "crm-evolucion"
+---
+
+Este fue mi primer proyecto fullstack como estudiante de ingeniería en informática en INACAP. La consigna era simple: construir un sistema de gestión de clientes (CRM) funcional. Sin frameworks, sin bundlers, sin npm. Solo JavaScript vanilla, CSS y HTML.
+
+## Qué hace
+
+Una SPA con seis secciones de gestión: clientes, gestiones, usuarios, tipos de gestión, resultados y un dashboard básico. Cada sección con su propio archivo JS, un solo `index.html` como entry point y llamadas HTTP con `fetch()` directo a un backend externo.
+
+El patrón de navegación era rudimentario pero efectivo: cada "pantalla" era un `div` que se mostraba u ocultaba con `display: none/block`. El estado se manejaba en variables globales. No había componentes, no había rutas, no había estado reactivo.
+
+## Stack
+
+| Capa | Tecnología |
+|------|------------|
+| Frontend | JavaScript vanilla + CSS + HTML |
+| HTTP | fetch() nativo |
+| Deploy | Vercel (vercel.json de 3 líneas) |
+| Backend | API externa (provista por el docente) |
+
+## Lo que aprendí
+
+Construir una SPA sin frameworks te enseña qué problemas resuelven los frameworks. Manipular el DOM manualmente para seis secciones distintas te hace apreciar React. Manejar estado con variables globales te hace apreciar Zustand. Pero también te enseña que se puede hacer mucho con muy poco — la SPA funcionaba, era rápida y el deploy pesaba menos de 100 KB.
+
+Este proyecto fue el punto de partida de una evolución que continuaría a lo largo de toda la carrera.
+
+## Código abierto
+
+[github.com/sebitabravo/crm-native](https://github.com/sebitabravo/crm-native)

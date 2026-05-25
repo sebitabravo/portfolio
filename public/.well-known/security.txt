@@ -1,0 +1,4 @@
+Contact: mailto:sebitabravocontacto@gmail.com
+Expires: 2027-05-25T00:00:00.000Z
+Preferred-Languages: es, en
+Canonical: https://sebita.dev/.well-known/security.txt

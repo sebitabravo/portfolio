@@ -1,0 +1,36 @@
+---
+title: "Servidor de correo Poste.io con Dokploy en Hostinger"
+description: "Proyecto educacional de INACAP. Servidor de correo autogestionado con Poste.io, Docker Compose y Dokploy en VPS Hostinger. SPF, DKIM, DMARC y configuración DNS completa."
+publishDate: 2025-08-17
+tags: ["Docker", "Poste.io", "Dokploy", "Hostinger", "DNS", "SMTP", "Educacional"]
+---
+
+Servidor de correo autogestionado listo para producción usando Poste.io desplegado con Dokploy en un VPS de Hostinger. Incluye configuración DNS completa con registros MX, SPF, DKIM y DMARC.
+
+## Qué hace
+
+Poste.io es una solución de correo completa en un contenedor Docker. Webmail (Roundcube), antispam con Rspamd, SSL/TLS automático con Let's Encrypt, y soporte para SMTP, IMAP y POP3. Administrable desde interfaz web.
+
+## Stack
+
+| Capa | Tecnología |
+|------|------------|
+| Servidor de correo | Poste.io |
+| Orquestación | Docker Compose |
+| Deploy | Dokploy |
+| VPS | Hostinger |
+| Seguridad | SSL/TLS, SPF, DKIM, DMARC |
+| Webmail | Roundcube |
+| Antispam | Rspamd |
+
+## Configuración DNS
+
+Registros obligatorios: PTR (DNS inverso), A para `mail.tudominio.com`, MX con prioridad 10, SPF con `v=spf1 mx ~all`, y DMARC para monitoreo. Sin PTR record los correos van a spam — es el paso más crítico y olvidado.
+
+## Lo que aprendí
+
+Autogestionar un servidor de correo implica mucho más que levantar un contenedor — la entregabilidad depende de DNS correcto, reputación de IP y relays SMTP. Dokploy simplifica el deploy pero no reemplaza entender SPF/DKIM/DMARC.
+
+## Código abierto
+
+[github.com/sebitabravo/correo](https://github.com/sebitabravo/correo)

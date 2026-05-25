@@ -1,0 +1,36 @@
+---
+title: "Rioclaro: monitoreo fluvial con Django REST API, React y MySQL"
+description: "Proyecto educacional de INACAP. Sistema de monitoreo en tiempo real del Río Claro en Pucón. Backend Django REST Framework, frontend React con Vite, MySQL 8.0 y Docker Compose."
+publishDate: 2025-08-13
+tags: ["Django", "React", "MySQL", "Docker", "IoT", "DRF", "Educacional"]
+image: "rioclaro"
+---
+
+El Río Claro en Pucón, Región de La Araucanía, Chile, es propenso a crecidas que amenazan a la comunidad local. Este proyecto — desarrollado como parte de mi formación en INACAP — es un sistema de monitoreo en tiempo real que mide el nivel del agua, detecta posibles desbordamientos y emite alertas preventivas.
+
+## Stack
+
+| Capa | Tecnología |
+|------|------------|
+| Backend API | Django 4.x + Django REST Framework |
+| Frontend | React + Vite |
+| Base de datos | MySQL 8.0 |
+| Servidor WSGI | Gunicorn |
+| Infra | Docker Compose (3 servicios) |
+| Admin | Django Admin (`/admin`) |
+
+## Qué hace
+
+La API REST expone endpoints para estaciones de monitoreo, mediciones de nivel de agua y usuarios del sistema. El frontend React muestra un dashboard con gráficos de series temporales y estado actual de cada estación.
+
+Docker Compose orquesta tres servicios: backend Django con Gunicorn, frontend React con Vite y base de datos MySQL 8.0. El panel de administración de Django permite gestionar estaciones y usuarios sin tocar la base de datos directamente.
+
+## Lo que aprendí
+
+Django REST Framework tiene una curva de aprendizaje, pero una vez que entendés ModelViewSet y serializers, la productividad es altísima. El admin de Django es un regalo — CRUD visual para datos de configuración sin escribir una línea de frontend.
+
+Docker Compose con healthchecks y depends_on evita los errores clásicos de "la API arrancó antes que la base de datos".
+
+## Código abierto
+
+[github.com/sebitabravo/rioclaro](https://github.com/sebitabravo/rioclaro)

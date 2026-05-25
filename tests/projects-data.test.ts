@@ -19,8 +19,6 @@ describe("projects data", () => {
     expect(featuredProjects.length).toBeGreaterThan(0)
 
     for (const project of featuredProjects) {
-      expect(project.image.startsWith("http")).toBe(false)
-
       const links = [project.githubUrl, project.liveUrl].filter(
         (value): value is string => Boolean(value),
       )

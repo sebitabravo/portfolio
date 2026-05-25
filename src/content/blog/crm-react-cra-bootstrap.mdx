@@ -1,0 +1,36 @@
+---
+title: "CRM React: migración de vanilla JS a componentes con Create React App y Bootstrap"
+description: "Proyecto educacional de INACAP. Segunda versión del CRM migrada a React con CRA, React Router, Axios y Bootstrap. El salto de manipular el DOM a pensar en componentes."
+publishDate: 2023-06-15
+tags: ["React", "CRA", "Bootstrap", "React Router", "Axios", "Educacional"]
+image: "crm-evolucion"
+---
+
+Después de construir un CRM en JavaScript vanilla, el siguiente paso lógico era migrarlo a React. Este proyecto fue parte de mi formación en INACAP y representó el salto conceptual más importante: dejar de pensar en "qué div muestro ahora" y empezar a pensar en "qué componente renderiza esta ruta".
+
+## Qué cambió
+
+La SPA de seis secciones fue reescrita completamente con componentes React. Create React App como bundler, React Router para navegación declarativa, Axios para llamadas HTTP con interceptores y Bootstrap como framework CSS.
+
+La tabla interactiva de clientes pasó de 200 líneas de manipulación manual del DOM a un componente React con estado local. Las llamadas `fetch()` directas fueron reemplazadas por una capa de servicios con Axios.
+
+## Stack
+
+| Capa | Tecnología |
+|------|------------|
+| Framework | React 18 |
+| Bundler | Create React App |
+| Estilos | Bootstrap 5 |
+| Routing | React Router 6 |
+| HTTP | Axios |
+| Testing | Jest + React Testing Library |
+
+## Lo que aprendí
+
+El cambio más grande no fue técnico — fue mental. Componentes, props, estado, ciclo de vida. React te fuerza a pensar en unidades reutilizables y flujo de datos unidireccional. Bootstrap aceleró el desarrollo de la UI pero el resultado se veía genérico — todas las apps CRA + Bootstrap se parecen.
+
+CRA era el estándar en 2023. Un año después ya era obsoleto frente a Vite. Así de rápido se mueve el ecosistema frontend.
+
+## Código abierto
+
+[github.com/sebitabravo/crm-react](https://github.com/sebitabravo/crm-react)

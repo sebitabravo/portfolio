@@ -3,6 +3,7 @@ import { ClientRouter } from "astro:transitions"
 import { Font } from "astro:assets"
 import { SEO } from "astro-seo"
 import Analytics from "@vercel/analytics/astro"
+import SpeedInsights from "@vercel/speed-insights/astro"
 
 import "@/styles/global.css"
 
@@ -11,6 +12,7 @@ import Header from "@/components/Header.astro"
 import { siteConfig } from "@/lib/config"
 import { personalInfo, social } from "@/lib/data"
 import type { Locale } from "@/lib/i18n"
+import perfilImage from "@/assets/perfil.jpeg"
 
 interface Props {
   title?: string
@@ -18,24 +20,29 @@ interface Props {
   image?: string
   locale?: Locale
   noindex?: boolean
+  canonicalUrl?: string
+  alternates?: Array<{ hreflang: string; href: string }>
 }
 
 const {
   title = siteConfig.title,
+  description: pageDescription,
   image,
   locale = 'es',
   noindex = false,
+  canonicalUrl,
+  alternates = [],
 } = Astro.props
 
-const description = locale === 'en' ? personalInfo.descriptionEn : personalInfo.description
+const description = pageDescription ?? (locale === 'en' ? personalInfo.descriptionEn : personalInfo.description)
 
-const profileUrl = locale === "es" ? "https://sebita.dev/" : "https://sebita.dev/en"
+const profileUrl = locale === "es" ? "https://sebita.dev/" : "https://sebita.dev/en/"
 const dynamicOgImage = new URL(
   `/og/${locale}.svg?title=${encodeURIComponent(title)}`,
   "https://sebita.dev",
 ).toString()
 const seoImage = image ?? dynamicOgImage
-const sameAsProfiles = [social.github, social.linkedin, social.twitter].filter(
+const sameAsProfiles = [social.github, social.linkedin].filter(
   (url): url is string => Boolean(url),
 )
 
@@ -49,7 +56,7 @@ const jsonLd = {
       url: profileUrl,
       jobTitle: personalInfo.title,
       email: `mailto:${personalInfo.email}`,
-      image: "https://sebita.dev/perfil.jpeg",
+      image: new URL(perfilImage.src, "https://sebita.dev").toString(),
       sameAs: sameAsProfiles,
       nationality: {
         "@type": "Country",
@@ -124,19 +131,27 @@ const jsonLd = {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preload" as="image" href={perfilImage.src} />
+    {import.meta.env.VERCEL && (
+      <>
+        <link rel="preconnect" href="https://cdn.vercel-insights.com" />
+        <link rel="preconnect" href="https://vitals.vercel-insights.com" />
+      </>
+    )}
     <Font cssVariable="--font-manrope" />
     <Font cssVariable="--font-syne" />
     <Font cssVariable="--font-jetbrains-mono" />
-    <meta name="generator" content={Astro.generator} />
-    <meta name="robots" content={noindex ? "noindex, nofollow" : "index, follow"} />
-    <link rel="canonical" href={profileUrl} />
-    <link rel="alternate" hreflang="es" href="https://sebita.dev/" />
-    <link rel="alternate" hreflang="en" href="https://sebita.dev/en" />
-    <link rel="alternate" hreflang="x-default" href="https://sebita.dev/" />
+
+    {alternates.map(({ hreflang, href }) => (
+      <link rel="alternate" hreflang={hreflang} href={href} />
+    ))}
 
     <SEO
       title={title}
       description={description}
+      canonical={canonicalUrl ?? profileUrl}
+      noindex={noindex}
+      nofollow={noindex}
       openGraph={{
         basic: {
           title: title,
@@ -163,43 +178,72 @@ const jsonLd = {
             content: title,
           },
           {
+            property: "og:image:width",
+            content: "1200",
+          },
+          {
+            property: "og:image:height",
+            content: "630",
+          },
+          {
             property: "og:url",
-            content: profileUrl,
+            content: canonicalUrl ?? profileUrl,
           },
           {
             property: "og:locale",
-            content: locale === "es" ? "es_CL" : "en_US",
-          },
-          {
-            name: "keywords",
-            content: "frontend developer, react, typescript, astro, next.js, portfolio, desarrollador frontend, chile",
+            content: locale === "es" ? "es-CL" : "en-US",
           },
           {
             name: "author",
             content: personalInfo.name,
           },
         ],
-        link: [
-          {
-            rel: "dns-prefetch",
-            href: "https://github.com",
-          },
-          {
-            rel: "dns-prefetch",
-            href: "https://linkedin.com",
-          },
-        ],
+        link: [],
       }}
     />
 
-    <ClientRouter fallback="none" />
+    <ClientRouter fallback="swap" />
 
     <script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd)}></script>
 
-    <script is:inline src="/theme-init.js"></script>
-
     <script is:inline>
+      (function() {
+        function getThemePreference() {
+          if (typeof localStorage !== 'undefined') {
+            const stored = localStorage.getItem('theme');
+            if (stored === 'dark' || stored === 'light' || stored === 'system') {
+              return stored;
+            }
+          }
+          return 'system';
+        }
+        function applyTheme(theme) {
+          const effectiveTheme = theme === 'system'
+            ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+            : theme;
+          if (effectiveTheme === 'dark') {
+            document.documentElement.classList.add('dark');
+          } else {
+            document.documentElement.classList.remove('dark');
+          }
+        }
+        const theme = getThemePreference();
+        applyTheme(theme);
+      })();
+    </script>
+
+  </head>
+  <body class="bg-background text-foreground">
+    <a href="#main-content" class="skip-link">
+      {locale === 'es' ? 'Saltar al contenido' : 'Skip to content'}
+    </a>
+    <Header locale={locale} />
+    <slot />
+    <Footer locale={locale} />
+    <script is:inline>
+      let revealObserver = null
       function initScrollReveal() {
+        revealObserver?.disconnect()
         const observer = new IntersectionObserver(
           (entries) => {
             entries.forEach((entry) => {
@@ -211,23 +255,32 @@ const jsonLd = {
           },
           { threshold: 0.1, rootMargin: '0px 0px -50px 0px' }
         )
-
         document.querySelectorAll('[data-animate]').forEach((el) => {
           observer.observe(el)
         })
+        revealObserver = observer
       }
-
       document.addEventListener('DOMContentLoaded', initScrollReveal)
       document.addEventListener('astro:page-load', initScrollReveal)
+      document.addEventListener('astro:before-swap', () => {
+        revealObserver?.disconnect()
+        revealObserver = null
+      })
     </script>
-  </head>
-  <body class="bg-background text-foreground">
-    <a href="#main-content" class="skip-link">
-      {locale === 'es' ? 'Saltar al contenido' : 'Skip to content'}
-    </a>
-    <Header locale={locale} />
-    <slot />
-    <Footer locale={locale} />
-    <Analytics />
+    {import.meta.env.VERCEL && <Analytics />}
+    {import.meta.env.VERCEL && <SpeedInsights />}
+    <script>
+      document.addEventListener("astro:page-load", () => {
+        const hash = window.location.hash
+        if (!hash) return
+        try {
+          const el = document.querySelector(hash)
+          if (!el) return
+          el.scrollIntoView({ block: 'start' })
+        } catch {
+          // hash con caracteres especiales que querySelector no puede parsear
+        }
+      })
+    </script>
   </body>
 </html>

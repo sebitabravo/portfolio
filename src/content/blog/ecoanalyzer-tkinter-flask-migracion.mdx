@@ -1,0 +1,60 @@
+---
+title: "EcoAnalyzer: migré un tracker de ventas de Tkinter a Flask y Docker, y sobreviví para contarlo"
+description: "App de escritorio Tkinter migrada a aplicación web Flask con Docker, MySQL y Chart.js. Seguimiento de ventas diarias, dashboard interactivo y visualizaciones. Proyecto universitario de primer año convertido en app web."
+publishDate: 2025-08-16
+tags: ["Python", "Flask", "Docker", "MySQL", "Tkinter", "Chart.js"]
+image: "ecoanalyzer"
+---
+
+EcoAnalyzer empezó como un proyecto universitario de primer año: una app de escritorio en Tkinter para que un usuario registrara sus ventas diarias. Producto, valor, cantidad. Una tabla interactiva con edición y eliminación. Un botón para ver gráficos de ventas. Corre en `python run.py` y ya.
+
+Dos años después, volví al código con ojos de desarrollador más experimentado. La app funcionaba, pero tenía los problemas clásicos de una app de escritorio: un solo usuario (SQLite local), imposible de compartir datos, interfaz que parecía Windows 95, imposible de deployar. Hice lo que haría cualquier desarrollador razonable — la migré a Flask con Docker usando el Tkinter original como base de datos de referencia para no perder la esencia.
+
+## Stack original → Stack actual
+
+| Componente | Original (v1) | Migración (v2) |
+|------------|--------------|----------------|
+| UI | Tkinter + CustomTkinter | Flask + Jinja2 + Tailwind CSS CDN |
+| Lógica | Python script | Flask routes + services |
+| Base de datos | SQLite local | MySQL 8.0 (Docker) |
+| Gráficos | Matplotlib (ventana emergente) | Chart.js (dashboard web) |
+| Auth | Usuario admin hardcodeado | Flask sessions + password hash |
+| Deploy | `python run.py` | Docker + docker-compose |
+| Salud | No existía | Healthcheck HTTP con curl |
+
+La migración no fue un rewrite — fue una traducción arquitectónica. La tabla interactiva de Tkinter se convirtió en una tabla HTML con JavaScript para inline editing. Los gráficos de Matplotlib que se abrían en ventanas emergentes se convirtieron en gráficos Chart.js en tiempo real. La base de datos SQLite local pasó a MySQL en un contenedor Docker.
+
+## Arquitectura
+
+El `docker-compose.yml` define un solo servicio `ecoanalyzer` que construye la imagen desde el Dockerfile local. El healthcheck usa `curl -f http://localhost:8081/health` cada 30 segundos — un endpoint Flask que responde 200 si la app y la base de datos están vivas. Los volúmenes Docker persisten la base de datos y los logs.
+
+La estructura del proyecto está organizada en capas:
+- `src/` — lógica de negocio, autenticación, modelos de datos
+- `templates/` — vistas Jinja2 con Tailwind CSS CDN
+- `static/` — Chart.js, JavaScript para interacciones
+- `database/` — volumen Docker para datos MySQL
+- `config/` — variables de entorno y configuración
+
+Flask sirve la app web en el puerto 8081. Las rutas manejan login, registro de ventas, visualización de tabla interactiva y generación de gráficos. La autenticación usa Flask sessions con contraseñas hasheadas.
+
+## Las decisiones
+
+**Flask en vez de FastAPI.** EcoAnalyzer es una app web tradicional con formularios HTML, no una API REST. Flask con Jinja2 es más natural para server-side rendering que FastAPI, que está optimizada para JSON APIs. Para el caso de uso — un usuario logueado que ve su dashboard de ventas — Flask es la herramienta correcta.
+
+**Tailwind CSS CDN en vez de build step.** La interfaz usa Tailwind desde CDN con Jinja2 templates. Cero build step, cero node_modules. La decisión fue pragmática: la app tiene 3 pantallas (login, dashboard, gráficos). Webpack/Vite sería overhead desproporcionado. Si la app creciera a 10+ pantallas con componentes reutilizables, ahí sí evaluaría un bundler.
+
+**Docker con healthcheck real.** El healthcheck de Docker no es cosmético — es la diferencia entre "el contenedor está corriendo" y "la app está funcionando". Si MySQL no responde, el healthcheck falla y Docker puede reiniciar el contenedor automáticamente con `restart: unless-stopped`.
+
+**run.py como orquestador.** El `run.py` original instalaba dependencias y lanzaba Tkinter. El nuevo `run.py` levanta el servidor Flask con configuración de entorno. Mantuve el mismo entry point para que la experiencia de uso fuera idéntica: `python run.py` sigue funcionando, solo que ahora abre un navegador en vez de una ventana Tkinter.
+
+## Lo que aprendí
+
+Migrar de SQLite a MySQL no es solo cambiar el conector. SQLite es permisivo con tipos de datos — podés guardar un string en una columna que declaraste como INTEGER y SQLite no se queja. MySQL es estricto. La migración encontró datos inconsistentes que habían pasado años en producción sin que nadie notara.
+
+El healthcheck de Docker necesita un endpoint dedicado, no usar la ruta principal. Si el healthcheck pega a `/` y la app tiene un bug que solo afecta al dashboard pero no a la ruta raíz, Docker cree que está todo bien mientras los usuarios ven errores. El endpoint `/health` verifica conectividad con la base de datos explícitamente.
+
+## Código abierto
+
+El repo incluye la app Flask completa, Dockerfile, docker-compose.yml, healthcheck, y el Tkinter original para referencia histórica.
+
+[github.com/sebitabravo/ecoanalyzer](https://github.com/sebitabravo/ecoanalyzer)

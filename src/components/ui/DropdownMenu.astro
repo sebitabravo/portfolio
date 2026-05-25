@@ -36,12 +36,17 @@ const { id, triggerLabel, class: className } = Astro.props
   {
     let controller = new AbortController()
 
-    const closeAllDropdowns = () => {
+    const closeAllDropdowns = (returnFocus = true) => {
       const triggers = document.querySelectorAll("[data-dropdown-trigger]")
       const menus = document.querySelectorAll("[data-dropdown-menu]")
 
+      let focusedTrigger: HTMLElement | null = null
+
       triggers.forEach((trigger) => {
         if (trigger instanceof HTMLElement) {
+          if (trigger.getAttribute("aria-expanded") === "true") {
+            focusedTrigger = trigger
+          }
           trigger.setAttribute("aria-expanded", "false")
         }
       })
@@ -52,6 +57,10 @@ const { id, triggerLabel, class: className } = Astro.props
           menu.classList.remove("visible", "opacity-100")
         }
       })
+
+      if (returnFocus && focusedTrigger) {
+        ;(focusedTrigger as HTMLElement).focus()
+      }
     }
 
     const setup = () => {

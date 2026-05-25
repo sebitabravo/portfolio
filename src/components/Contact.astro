@@ -41,14 +41,12 @@ const contactLinks = [
 ---
 
 <div class="space-y-8">
-  <!-- Disponibilidad -->
   {personalInfo.available && (
     <div class="flex items-center justify-center gap-3">
       <AvailableBadge>{t.hero.available}</AvailableBadge>
     </div>
   )}
 
-  <!-- Contact cards grid -->
   <div class="grid gap-4 sm:grid-cols-3">
     {contactLinks.map(({ href, label, icon, description }, i) => (
       <a

@@ -48,6 +48,10 @@ playwright-report/
 test-results/
 .tmp-lighthouse.json
 
+# audit artifacts
+.audit/
+.trash/
+
 # QA/debug snapshots
 qa-*.png
 *-snapshot.md

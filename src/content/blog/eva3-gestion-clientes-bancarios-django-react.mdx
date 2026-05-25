@@ -1,0 +1,37 @@
+---
+title: "EVA3: sistema de gestión de clientes bancarios con Django REST Framework y React"
+description: "Proyecto educacional de INACAP. Full-stack bancario con Django 5.1, DRF, React 18 y PostgreSQL. Dashboard con gráficos Recharts, JWT, rate limiting y modo demo protegido."
+publishDate: 2025-10-11
+tags: ["Django", "React", "DRF", "PostgreSQL", "Docker", "JWT", "Recharts", "Educacional"]
+---
+
+Tercera evaluación del módulo de backend en INACAP. Un sistema full-stack de gestión bancaria con API REST, dashboard interactivo, autenticación JWT y modo demo para evaluación sin riesgo de modificar datos reales.
+
+## Qué hace
+
+**Backend Django REST Framework**: API REST completa para clientes bancarios con JWT (99 minutos access + 1 día refresh), Swagger/OpenAPI, rate limiting diferenciado (10k/h autenticados), estadísticas generales y por cliente, y 18 tests con pytest.
+
+**Frontend React 18**: 4 vistas (Dashboard, CRUD, Análisis, Salud), 5 gráficos Recharts, caché que reduce 90% de API calls, shadcn/ui + Tailwind CSS.
+
+**Modo demo**: middleware que bloquea POST/PUT/PATCH/DELETE en modo demo, banner visible, solo lectura. Permite evaluar el sistema sin riesgo.
+
+## Stack
+
+| Capa | Tecnología |
+|------|------------|
+| Backend | Django 5.1 + DRF 3.15 |
+| Frontend | React 18 + Vite + Tailwind |
+| Base de datos | PostgreSQL 16 |
+| Auth | JWT (SimpleJWT) |
+| Gráficos | Recharts |
+| Infra | Docker Compose (3 servicios) |
+
+## Lo que aprendí
+
+Un modo demo protegido es esencial para proyectos educacionales — el profesor puede probar todo sin romper datos. La combinación Django + React con Docker Compose es robusta pero requiere coordinación de puertos, CORS y volúmenes.
+
+Recharts con datos de API cacheados evita el problema clásico de gráficos que disparan requests duplicados en cada re-render.
+
+## Código abierto
+
+[github.com/sebitabravo/eva3-backend](https://github.com/sebitabravo/eva3-backend)

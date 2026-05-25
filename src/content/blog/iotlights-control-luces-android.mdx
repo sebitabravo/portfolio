@@ -1,0 +1,31 @@
+---
+title: "IoT Lights: app Android para control de luces IoT con Firebase y OneSignal"
+description: "Proyecto educacional de INACAP. App Android nativa en Java para control de luces IoT con autenticación Firebase, notificaciones push OneSignal y persistencia en Firestore."
+publishDate: 2024-11-28
+tags: ["Android", "Java", "Firebase", "IoT", "OneSignal", "Educacional"]
+---
+
+Aplicación Android nativa desarrollada en Java como proyecto educacional en INACAP. Control de luces IoT con autenticación Firebase, notificaciones push vía OneSignal y datos en Firestore.
+
+## Qué hace
+
+Login con Firebase Auth (email/password) con validación de formato y longitud. Registro de nuevos usuarios con los mismos criterios de validación. Pantalla de control de luces y configuración de dispositivos IoT. Notificaciones push con OneSignal para alertas del sistema.
+
+## Stack
+
+| Capa | Tecnología |
+|------|------------|
+| Plataforma | Android (Java) |
+| Auth | Firebase Authentication |
+| Base de datos | Firestore |
+| Notificaciones | OneSignal |
+| UI | XML Layouts |
+| Build | Gradle |
+
+## Lo que aprendí
+
+Firebase Auth + Firestore abstraen la complejidad del backend pero crean vendor lock-in desde el día uno. OneSignal para notificaciones push es más simple que FCM para proyectos educacionales — la integración es literalmente 3 líneas.
+
+## Código abierto
+
+[github.com/sebitabravo/iotlights](https://github.com/sebitabravo/iotlights)

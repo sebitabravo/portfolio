@@ -1,13 +1,15 @@
 // @ts-check
 import { defineConfig, fontProviders } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
+import mdx from '@astrojs/mdx';
 
 import tailwindcss from '@tailwindcss/vite';
 
 // https://astro.build/config
 export default defineConfig({
 	site: 'https://sebita.dev',
-	integrations: [sitemap({ filter: (page) => !page.includes('/404') })],
+	output: 'static',
+	integrations: [sitemap({ filter: (page) => !page.includes('/404') }), mdx()],
 	devToolbar: {
 		enabled: false,
 	},
@@ -38,12 +40,6 @@ export default defineConfig({
 			fallbacks: ['monospace'],
 		},
 	],
-	markdown: {
-		syntaxHighlight: false,
-	},
-	security: {
-		csp: true,
-	},
 	i18n: {
 		defaultLocale: 'es',
 		locales: ['es', 'en'],

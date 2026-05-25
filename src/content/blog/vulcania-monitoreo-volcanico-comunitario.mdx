@@ -1,0 +1,95 @@
+---
+title: "Vulcania: monitoreo volcánico comunitario con Next.js, Supabase y síntesis de audio"
+description: "Plataforma de monitoreo volcánico para Chile. Next.js 15, React 19, Supabase real-time, Leaflet y alertas de emergencia con Web Audio API. Modo demo sin backend, modo completo con Row Level Security."
+publishDate: 2025-06-10
+tags: ["Next.js", "Supabase", "Leaflet", "Open Source", "TypeScript", "Civic Tech"]
+image: "vulcania"
+---
+
+Chile tiene más de 90 volcanes activos. Es la segunda cadena volcánica más grande del mundo, después de Indonesia. Sernageomin hace el monitoreo oficial, pero cuando hay una emergencia, la información que llega a las comunidades es un desastre: grupos de WhatsApp, publicaciones de Facebook, llamadas. No hay una fuente única de verdad.
+
+Los que viven en zonas de riesgo — agricultores, pobladores rurales, equipos de emergencia municipales — no tienen cómo reportar lo que ven en terreno. Esa información de primera mano se pierde o circula sin verificación.
+
+Vulcania intenta resolver ese vacío. Es una plataforma de monitoreo volcánico comunitario que junta observaciones ciudadanas con datos verificados, centrada en el Volcán Villarrica.
+
+## Dos modos, una app
+
+La aplicación funciona en dos modos. El modo **Demo** usa datos simulados locales y no necesita nada más que el frontend corriendo. El modo **Completo** se conecta a Supabase para auth, base de datos y tiempo real. La transición es automática: `lib/app-config.ts` chequea si existen las variables de entorno de Supabase y, si no, activa demo.
+
+Esto no fue un lujo. Fue la decisión que permitió que cualquiera pudiera clonar el repo y ver la aplicación completa sin configurar una base de datos, sin crear un proyecto en Supabase, sin tocar variables de entorno. `pnpm dev` y ya está.
+
+En modo demo, los datos vienen de `lib/demo-data.ts`: un usuario predefinido con teléfono +56 9 8765 4321, alerta naranja para el Villarrica, tres puntos de encuentro precargados (Estadio Pucón, Escuela Quelhue, Club de Huasos), zonas de evacuación. Suficiente para mostrar la experiencia completa.
+
+## Stack
+
+| Capa | Tecnología |
+|------|------------|
+| Frontend | Next.js 15 (App Router) + React 19 + TypeScript |
+| Estilos | Tailwind CSS v4 + shadcn/ui |
+| Backend | Supabase (PostgreSQL + Auth + RLS + Realtime) |
+| Mapas | Leaflet + OpenStreetMap (gratis, sin API key) |
+| Audio | Web Audio API (síntesis de osciladores) |
+| Notificaciones | Browser Notification API |
+| Infra | Vercel |
+| Testing | Vitest + jsdom |
+
+## El modal de emergencia
+
+El componente `emergency-modal.tsx` es lo más interesante de la app. Cuando el nivel de alerta sube a naranja o rojo, un modal a pantalla completa bloquea todo y emite un patrón de sonido con la Web Audio API.
+
+No usamos archivos de audio. Usamos osciladores de onda triangular generados en tiempo real: 880 Hz con pulsos cortos para alerta naranja, 440 Hz con pulsos más largos e intervalos más cortos para alerta roja. El sonido se reproduce en loop hasta que el usuario interactúa. Hay un botón `forceEmergency()` en desarrollo para probar el modal sin esperar una alerta real.
+
+Los navegadores bloquean la reproducción automática de audio — necesitás interacción previa del usuario. La solución fue un handler de `click`/`touchstart` que inicializa el AudioContext y lo mantiene vivo con `setupAudioUnlock()`. Sin ese truco, el modal de emergencia sería mudo cuando más se necesita.
+
+Las notificaciones de navegador usan `document.visibilityState`: solo disparan cuando la pestaña no está visible. Si el usuario está activamente mirando el mapa, no tiene sentido tirarle una notificación.
+
+## Desafíos
+
+<div class="grid gap-4 sm:grid-cols-2 not-prose my-6">
+
+<div class="rounded-xl border border-[hsl(var(--parchment))] bg-[hsl(var(--card))] p-5">
+  <h3 class="font-mono text-sm font-semibold text-foreground mb-2">Sincronización en tiempo real multi-usuario</h3>
+  <p class="text-sm text-foreground/75 leading-relaxed">El chat y las alertas debían reflejarse instantáneamente para todos los usuarios. Supabase Realtime resolvió el canal de broadcast, pero tuvimos que manejar race conditions en mensajes concurrentes con ordenamiento por timestamp del servidor.</p>
+</div>
+
+<div class="rounded-xl border border-[hsl(var(--parchment))] bg-[hsl(var(--card))] p-5">
+  <h3 class="font-mono text-sm font-semibold text-foreground mb-2">Diseño mobile-first para uso en campo</h3>
+  <p class="text-sm text-foreground/75 leading-relaxed">Los usuarios acceden principalmente desde smartphones en zonas con señal irregular. La PWA debía funcionar offline con datos cacheados y sincronizar al reconectar. La arquitectura dual demo/completo fue la clave: cualquiera clona el repo, hace <code>pnpm dev</code> y ve la experiencia completa en 30 segundos.</p>
+</div>
+
+<div class="rounded-xl border border-[hsl(var(--parchment))] bg-[hsl(var(--card))] p-5">
+  <h3 class="font-mono text-sm font-semibold text-foreground mb-2">Notificaciones push confiables</h3>
+  <p class="text-sm text-foreground/75 leading-relaxed">Las alertas de actividad volcánica son críticas. Implementamos reintentos exponenciales, suscripción a tópicos por nivel de urgencia, y notificaciones de navegador que solo disparan cuando la pestaña no está visible — usando <code>document.visibilityState</code>.</p>
+</div>
+
+</div>
+
+## Arquitectura
+
+<div class="not-prose my-6 rounded-xl border border-[hsl(var(--parchment))] bg-[hsl(var(--muted))] p-5 font-mono text-sm leading-relaxed text-foreground/85">
+  <p class="mb-1"><strong>Next.js 14 App Router</strong> → Supabase (PostgreSQL + PostGIS + Realtime) → Leaflet mapa interactivo → PWA Service Worker.</p>
+  <p class="mb-1">Autenticación con Supabase Auth (OAuth + email). Row Level Security para datos comunitarios.</p>
+  <p>Vercel para hosting con Edge Functions.</p>
+</div>
+
+## Resultados
+
+- **Plataforma PWA funcional** con demo online en producción, instalable y offline-first
+- **Mapa interactivo en tiempo real** con datos sismológicos y capas de datos volcánicos
+- **Chat comunitario** con sincronización instantánea vía Supabase Realtime
+- **Sistema de alertas** con notificaciones push configurables por nivel de urgencia
+- **Síntesis de audio** con Web Audio API para el modal de emergencia — osciladores generados en tiempo real, sin archivos de audio
+
+## Lecciones aprendidas
+
+- **Supabase Realtime simplifica drásticamente WebSockets.** Lo que antes requería un servicio dedicado ahora son suscripciones declarativas. Broadcast, presence y postgres changes en un solo producto.
+- **Las PWA son infravaloradas.** Instalabilidad, offline-first y notificaciones nativas sin pasar por app stores. Para herramientas de emergencia, que el usuario no tenga que instalar nada es una ventaja decisiva.
+- **Row Level Security es traicionero.** La configuración inicial permitía que un usuario viera reportes de otro. Las políticas `USING` y `WITH CHECK` correctamente definidas por `user_id` delegaron la autorización a la capa de datos sin middleware complejo. Pero hay que testearlas como código.
+- **Leaflet sobre Mapbox/Google Maps.** Más liviano, open source, y suficiente para datos geoespaciales de complejidad media. La importación dinámica con `next/dynamic` y `ssr: false` requiere baile inicial, pero vale la pena.
+- **La normalización de teléfonos chilenos es un infierno necesario.** +569XXXXXXXX, +56XXXXXXXX, 9XXXXXXXX, 0XXXXXXXX — todas válidas. La función `normalizarTelefono()` maneja todas las combinaciones para que el login funcione sin importar cómo el usuario escriba su número.
+
+## Código abierto
+
+El repo incluye la app completa con modo demo funcional sin configuración, tests con Vitest + jsdom, scripts de diagnóstico (`pnpm doctor`, `pnpm validate-env`) y deploy a Vercel.
+
+[github.com/sebitabravo/vulcania-web](https://github.com/sebitabravo/vulcania-web)

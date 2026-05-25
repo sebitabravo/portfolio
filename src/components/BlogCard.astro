@@ -1,0 +1,34 @@
+---
+interface Props {
+  id: string
+  title: string
+  description: string
+  publishDate: Date
+  tags: string[]
+  locale: 'es' | 'en'
+}
+
+const { id, title, description, publishDate, tags, locale } = Astro.props
+const prefix = locale === 'es' ? '' : '/en'
+const dateLocale = locale === 'es' ? 'es-CL' : 'en-US'
+const headingId = `post-title-${id}`
+---
+
+<article class="group rounded-2xl border border-[hsl(var(--parchment))] bg-[hsl(var(--card))] overflow-hidden transition-all duration-300 hover:-translate-y-[2px] hover:shadow-[var(--shadow-card-hover)]" aria-labelledby={headingId}>
+  <a href={`${prefix}/blog/${id}`} class="block p-6 sm:p-8">
+    <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 mb-3">
+      <div class="flex flex-wrap gap-2">
+        {tags.slice(0, 3).map((tag) => (
+          <span class="rounded-md border border-[hsl(var(--parchment))] bg-[hsl(var(--muted))] px-2 py-0.5 text-xs font-mono text-foreground/60">{tag}</span>
+        ))}
+      </div>
+      <time datetime={publishDate.toISOString()} class="text-xs text-foreground/45 font-mono shrink-0">
+        {new Intl.DateTimeFormat(dateLocale, { year: 'numeric', month: 'long', day: 'numeric' }).format(publishDate)}
+      </time>
+    </div>
+    <h2 id={headingId} class="text-xl sm:text-2xl font-bold tracking-tight mb-2 group-hover:text-[hsl(var(--primary))] transition-colors">
+      {title}
+    </h2>
+    <p class="text-foreground/65 text-sm sm:text-base leading-relaxed">{description}</p>
+  </a>
+</article>

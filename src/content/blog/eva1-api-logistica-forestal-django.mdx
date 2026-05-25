@@ -1,0 +1,36 @@
+---
+title: "EVA1: mi primera API REST — logística forestal con Django REST Framework"
+description: "Proyecto educacional de INACAP. Primera API REST profesional para gestión de logística forestal de Maderas del Sur S.A. Django 5.1, PostgreSQL, rate limiting y optimización para servidores con 512MB RAM."
+publishDate: 2025-10-03
+tags: ["Django", "DRF", "Python", "PostgreSQL", "REST API", "Docker", "Educacional"]
+---
+
+Mi primera API REST, desarrollada originalmente como evaluación final del módulo de backend en INACAP. Gestiona la logística completa de transporte de madera para la empresa ficticia "Maderas del Sur S.A.".
+
+## Qué hace
+
+API RESTful pública para cinco recursos: conductores (con licencia), camiones (con placa, modelo, capacidad), tipos de madera, clientes (empresa, dirección, contacto) y cargas (tipo, cantidad, peso, camión asignado, cliente). Incluye endpoints de estadísticas por camión, por cliente y generales del sistema.
+
+## Stack
+
+| Capa | Tecnología |
+|------|------------|
+| Framework | Django 5.1 + DRF 3.15 |
+| Base de datos | PostgreSQL 16 (prod) / SQLite (dev) |
+| Auth | JWT |
+| Server | Gunicorn |
+| Infra | Docker + Docker Compose |
+
+## Optimización para recursos limitados
+
+El sistema está optimizado para correr en un VPS de 512MB RAM y 1 CPU core: rate limiting restrictivo (30 req/h anónimos, burst de 10/min), caché de 15 minutos en endpoints costosos y paginación limitada a 100 resultados.
+
+## Lo que aprendí
+
+Tu primera API REST es un rito de iniciación. Django REST Framework con ModelViewSet te da CRUD completo con 5 líneas de código, pero entender qué pasa detrás — serializers, querysets, permisos, throttling — es lo que te convierte de estudiante a desarrollador.
+
+Rate limiting no es opcional cuando tu API es pública. Sin throttling, un script de 10 líneas puede tirar abajo tu servidor en minutos.
+
+## Código abierto
+
+[github.com/sebitabravo/eva1-backend](https://github.com/sebitabravo/eva1-backend)

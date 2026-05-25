@@ -1,0 +1,39 @@
+---
+title: "REDP: registro de experiencias y descubrimientos personales con Django"
+description: "Proyecto educacional de INACAP. Aplicación Django para registrar experiencias personales con autenticación JWT, comentarios, favoritos y exportación CSV."
+publishDate: 2024-12-24
+tags: ["Django", "DRF", "PostgreSQL", "JWT", "CRUD", "Educacional"]
+---
+
+Aplicación web construida con Django para registrar y compartir experiencias personales — lugares interesantes, habilidades aprendidas, momentos memorables. Desarrollada como proyecto educacional en INACAP.
+
+## Qué hace
+
+CRUD completo de experiencias categorizadas (descubrimientos culinarios, hitos personales, recomendaciones culturales) con sistema de comentarios, marcado de favoritos y exportación de datos filtrados a CSV. Autenticación JWT y registro de usuarios con validación de integridad.
+
+## Funcionalidades
+
+- **CRUD de experiencias** con categorización
+- **Comentarios** en experiencias
+- **Favoritos** por usuario
+- **Exportación CSV** de experiencias filtradas
+- **Autenticación JWT** con SimpleJWT
+- **Templates Django** para frontend server-rendered
+
+## Stack
+
+| Capa | Tecnología |
+|------|------------|
+| Backend | Django + DRF |
+| Base de datos | PostgreSQL (prod) / SQLite (dev) |
+| Auth | JWT (SimpleJWT) |
+| Frontend | Django Templates |
+| Deploy | Railway / Heroku |
+
+## Lo que aprendí
+
+Django con server-side rendering vía templates sigue siendo viable para aplicaciones donde el SEO y la simplicidad importan más que la interactividad SPA. Exportar datos a CSV desde un QuerySet de Django es una feature subestimada — 3 líneas de código y los usuarios tienen sus datos en Excel.
+
+## Código abierto
+
+[github.com/sebitabravo/redp_project](https://github.com/sebitabravo/redp_project)

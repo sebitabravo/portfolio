@@ -1,0 +1,31 @@
+---
+title: "VR Escape Room: experiencia de realidad virtual con Unity y PlayFab"
+description: "Proyecto educacional de INACAP. Experiencia de realidad virtual en Unity con autenticación PlayFab, obstacle course en primera persona y escenas interactivas."
+publishDate: 2024-10-14
+tags: ["Unity", "VR", "C#", "PlayFab", "Realidad Virtual", "Educacional"]
+---
+
+Experiencia de realidad virtual desarrollada en Unity como proyecto educacional en INACAP. Incluye autenticación de usuarios con PlayFab, obstacle course en primera persona y múltiples escenas interactivas.
+
+## Qué hace
+
+Sistema de login/registro con PlayFab integrado en Unity. Recorrido en primera persona con obstáculos y detección de colisiones. Panel de victoria al llegar a la meta y sistema de game over por caída. Timer en pantalla y efectos de sonido (ambiente, recorrido, meta, caída). Navegación entre escenas (MainScene, ActionScene).
+
+## Stack
+
+| Capa | Tecnología |
+|------|------------|
+| Motor | Unity |
+| Lenguaje | C# |
+| Backend | PlayFab (auth + datos) |
+| UI | Unity UI + TextMesh Pro |
+| Assets | Obstacle Course Pack |
+| Sonido | AudioSource + efectos |
+
+## Lo que aprendí
+
+Unity para VR educacional es accesible — el Obstacle Course Pack y PlayFab SDK eliminan la fricción inicial. PlayFab como backend para juegos pequeños es gratuito hasta 100k MAU, ideal para prototipos. La detección de colisiones con tags (`MetaTag`) y umbrales de caída (Y < -1) es un patrón simple pero efectivo para game loops.
+
+## Código abierto
+
+[github.com/sebitabravo/VR-eva1](https://github.com/sebitabravo/VR-eva1)

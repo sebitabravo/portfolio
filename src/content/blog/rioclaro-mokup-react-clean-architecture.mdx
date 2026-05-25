@@ -1,0 +1,43 @@
+---
+title: "Rioclaro Mokup: Clean Architecture en el frontend con React 19, TypeScript y Playwright"
+description: "Proyecto educacional de INACAP. SPA con React 19, TypeScript 5.9 y Vite 6 que implementa Clean Architecture completa en el frontend. Zustand, Leaflet, Recharts y testing E2E con Playwright."
+publishDate: 2026-03-02
+tags: ["React", "TypeScript", "Clean Architecture", "Vite", "Zustand", "Leaflet", "Playwright", "Educacional"]
+image: "rioclaro"
+---
+
+La versión más madura del sistema de monitoreo del Río Claro. Una SPA construida con React 19, TypeScript 5.9 y Vite 6 que aplica Clean Architecture al frontend — algo poco común en proyectos educacionales. Desarrollada como proyecto final en INACAP.
+
+## Clean Architecture en el frontend
+
+- **domain/** — Entidades puras: Station, Measurement, Sensor, Alert. Contratos para repositorios. Cero dependencias externas.
+- **application/** — Casos de uso: GetStationMetrics, SubscribeToAlerts, ExportReport. Orquestan el dominio sin conocer React ni HTTP.
+- **infrastructure/** — Adaptadores concretos: ApiStationRepository, MockStationRepository, DIContainer con tsyringe.
+- **presentation/** — Componentes React organizados por feature: Dashboard, Reports, Admin, Activity Monitoring.
+
+Cuatro modos de datos: MOCK (estáticos), DEMO (simulación realista), MOCKUP (diseño) y API (producción). Switcheables por variable de entorno sin cambiar código.
+
+## Stack
+
+| Capa | Tecnología |
+|------|------------|
+| Framework | React 19 + TypeScript 5.9 + Vite 6 |
+| Estado | Zustand |
+| Mapas | Leaflet + OpenStreetMap |
+| Gráficos | Recharts |
+| Testing | Playwright E2E + Vitest |
+| DI | tsyringe |
+
+## Testing
+
+Tests E2E con Playwright en Chromium, Firefox y WebKit. Cubren dashboard performance, renderizado de gráficos y filtros por fecha. Vitest para tests unitarios de casos de uso y repositorios.
+
+## Lo que aprendí
+
+Clean Architecture no es solo para backends. Aplicada al frontend, la separación en capas permite cambiar la fuente de datos, el framework de UI o la librería de gráficos sin tocar la lógica de negocio.
+
+Tres modos de datos (MOCK/DEMO/API) son mejores que dos. El modo DEMO con datos realistas pero locales permite hacer demos sin depender de un backend deployado.
+
+## Código abierto
+
+[github.com/sebitabravo/rioclaro-mokup](https://github.com/sebitabravo/rioclaro-mokup)

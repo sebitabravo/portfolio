@@ -20,7 +20,7 @@ const toggleLabel = locale === 'es' ? `Cambiar idioma (actual: ${currentLangCode
     aria-label={toggleLabel}
   >
     <LanguagesIcon class="size-4" />
-    <span id="current-language">ES</span>
+    <span id="current-language">{locale === 'en' ? 'EN' : 'ES'}</span>
   </button>
 
   <div
@@ -93,18 +93,19 @@ const toggleLabel = locale === 'es' ? `Cambiar idioma (actual: ${currentLangCode
 
     function switchLanguage(lang: string) {
       const currentPath = window.location.pathname
-      const isEnglish = currentPath.startsWith('/en')
+      const isEnglish = (currentPath === '/en' || currentPath.startsWith('/en/'))
 
       if (lang === 'en' && !isEnglish) {
-        navigate('/en')
+        navigate('/en' + (currentPath === '/' ? '/' : currentPath))
       } else if (lang === 'es' && isEnglish) {
-        navigate('/')
+        const targetPath = currentPath.replace(/^\/en/, '') || '/'
+        navigate(targetPath)
       }
     }
 
     function getCurrentLanguageFromUrl(): string {
       const currentPath = window.location.pathname
-      return currentPath.startsWith('/en') ? 'en' : 'es'
+      return (currentPath === '/en' || currentPath.startsWith('/en/')) ? 'en' : 'es'
     }
 
     const currentLang = getCurrentLanguageFromUrl()
@@ -115,7 +116,7 @@ const toggleLabel = locale === 'es' ? `Cambiar idioma (actual: ${currentLangCode
       e.preventDefault()
       e.stopPropagation()
       menu.classList.toggle('hidden')
-    })
+    }, { signal })
 
     document.addEventListener('click', (e) => {
       if (!wrapper.contains(e.target as Node)) {
@@ -134,7 +135,7 @@ const toggleLabel = locale === 'es' ? `Cambiar idioma (actual: ${currentLangCode
           menu.classList.add('hidden')
           switchLanguage(lang)
         }
-      })
+      }, { signal })
     })
 
     // Keyboard navigation
@@ -154,7 +155,7 @@ const toggleLabel = locale === 'es' ? `Cambiar idioma (actual: ${currentLangCode
         e.preventDefault()
         openMenu()
       }
-    })
+    }, { signal })
 
     menu.addEventListener('keydown', (e) => {
       const items = Array.from(menu!.querySelectorAll<HTMLButtonElement>('.language-option'))
@@ -183,7 +184,7 @@ const toggleLabel = locale === 'es' ? `Cambiar idioma (actual: ${currentLangCode
           closeMenu()
           break
       }
-    })
+    }, { signal })
 
     // Registrar cleanup para la próxima navegación
     langCleanup = () => {

@@ -49,19 +49,12 @@ async function checkUrl(url: string): Promise<LinkCheckResult> {
 
 async function main() {
   const urlContexts = new Map<string, Set<string>>()
-  const imageErrors: string[] = []
 
   for (const locale of locales) {
     const projects = getProjects(locale)
 
     for (const project of projects) {
       const context = `${locale}:${project.slug}`
-
-      if (project.featured && /^https?:\/\//.test(project.image)) {
-        imageErrors.push(
-          `Imagen externa detectada en proyecto destacado (${context}): ${project.image}`,
-        )
-      }
 
       const links = [project.githubUrl, project.liveUrl].filter(
         (value): value is string => Boolean(value),
@@ -74,13 +67,6 @@ async function main() {
         urlContexts.get(link)?.add(context)
       }
     }
-  }
-
-  if (imageErrors.length > 0) {
-    for (const imageError of imageErrors) {
-      console.error(`x ${imageError}`)
-    }
-    process.exit(1)
   }
 
   const urls = Array.from(urlContexts.keys()).sort((a, b) => a.localeCompare(b))

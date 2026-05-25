@@ -1,0 +1,58 @@
+---
+title: "Un bot de Discord con 19 comandos, Lavalink y PostgreSQL: sistema de moderación y música con Docker"
+description: "Bot de Discord profesional con 9 comandos de moderación, 10 comandos de música vía Lavalink, Prisma ORM, PostgreSQL y Docker. Auto-moderation, multi-stage builds, healthchecks."
+publishDate: 2025-11-15
+tags: ["Discord.js", "Node.js", "PostgreSQL", "Prisma", "Lavalink", "Docker"]
+image: "bot-discord"
+---
+
+Un bot de Discord con moderación automática y streaming de música es un clásico proyecto de portfolio, pero la mayoría son tutoriales de 20 minutos con 3 comandos y cero persistencia. Este bot tiene 19 comandos funcionales, 8 tablas en PostgreSQL con Prisma ORM, auto-moderation configurable, streaming de audio vía Lavalink 4.0 y una infraestructura Docker completa con multi-stage builds y healthchecks.
+
+El proyecto está documentado con ~70 páginas de guías: cada fase de desarrollo tiene su propio documento. No es un README generado por IA — son documentos escritos durante el desarrollo real.
+
+## Stack
+
+| Componente | Tecnología |
+|------------|------------|
+| Runtime | Node.js 20+ (ES Modules) |
+| Discord API | Discord.js v14 |
+| Streaming audio | Lavalink 4.0 + Shoukaku 4.x |
+| Base de datos | PostgreSQL 16 + Prisma ORM |
+| Infra | Docker Compose (4 servicios) |
+| CI/CD | Docker multi-stage builds |
+
+El docker-compose.yml define cuatro servicios: PostgreSQL 16 Alpine con healthcheck cada 10 segundos, Lavalink 4 con healthcheck cada 30 segundos, el bot (que espera que ambos estén healthy antes de arrancar) y un dashboard web con Next.js y OAuth2 de Discord.
+
+## Moderación
+
+El sistema de moderación tiene 9 comandos slash: kick, ban, unban, mute, unmute, warn, warnings, setup y ping. La moderación automática es configurable por servidor: definís un límite de advertencias (ej. 3) y una acción automática (mute/kick/ban). Cuando un usuario llega a ese límite, la acción se ejecuta sin intervención humana.
+
+Cada acción de moderación se loguea en un canal configurable con embeds de Discord. Los usuarios reciben DMs con el motivo de la sanción. El sistema de mute usa timers para desmutear automáticamente cuando expira la duración.
+
+La validación es multi-capa: permisos del bot, permisos del moderador, jerarquía de roles (no podés banear a alguien con un rol superior al tuyo). Los datos persisten en PostgreSQL con el schema de Prisma: guilds, users, warnings, mutes, bans, kicks, modLogs, autoModConfig.
+
+## Música
+
+El sistema de música usa Lavalink 4.0 como servidor de audio dedicado y Shoukaku como cliente. Los 10 comandos de música implementados: play, skip, stop, queue (con paginación), nowplaying (con barra de progreso), pause, resume, volume (con barra visual 0-100), loop (off/track/queue) y shuffle.
+
+La arquitectura WebSocket entre el bot y Lavalink permite streaming de audio en tiempo real sin bloquear el event loop de Discord.js. La cola de reproducción se maneja en memoria con un sistema de páginas para el comando `/queue`.
+
+## Docker
+
+Los Dockerfiles usan multi-stage builds con Alpine Linux. El tamaño de la imagen del bot se redujo de 1.2GB a 150MB (87% menos). Los contenedores corren como usuarios no-root. Los healthchecks detectan servicios caídos y Docker Compose los reinicia automáticamente.
+
+El `docker-compose.yml` incluye resource limits: PostgreSQL limitado a 1 CPU y 1GB RAM, Lavalink a 1 CPU y 1GB RAM, el bot a 0.75 CPU y 512MB RAM. Para un bot de Discord que no procesa video, esto es más que suficiente.
+
+## Lo que aprendí
+
+Los Privileged Gateway Intents de Discord (Presence, Server Members, Message Content) son obligatorios para un bot de moderación, pero Discord los revisa manualmente para bots en más de 100 servidores. Si el bot crece, hay que justificar cada intent ante el equipo de Discord.
+
+Lavalink 4 requiere Java 17+. La imagen oficial de Lavalink usa Alpine con OpenJDK, pero el tiempo de arranque es lento (~45 segundos). El healthcheck con `start_period: 60s` es necesario para darle margen.
+
+Las migraciones de Prisma en producción necesitan `prisma migrate deploy`, no `prisma migrate dev`. El comando `dev` crea migraciones nuevas (para desarrollo); `deploy` aplica las existentes sin crear nuevas (para producción). Mezclarlos causa migraciones huérfanas.
+
+## Código abierto
+
+El repo incluye el bot completo, docker-compose con 4 servicios, schema de Prisma con 8 tablas, guías de deployment para Railway, Render y VPS, y ~70 páginas de documentación de desarrollo.
+
+[github.com/sebitabravo/bot-discord](https://github.com/sebitabravo/bot-discord)

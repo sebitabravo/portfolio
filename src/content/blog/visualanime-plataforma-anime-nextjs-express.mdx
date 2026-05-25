@@ -1,0 +1,42 @@
+---
+title: "VisualAnime: plataforma de anime con Next.js 14, Express y MongoDB"
+description: "Proyecto educacional de INACAP. Plataforma completa de streaming de anime con Next.js 14, Express.js, MongoDB y sincronización desde MyAnimeList. Socket.IO, Puppeteer y extracción de enlaces M3U8."
+publishDate: 2025-08-04
+tags: ["Next.js", "Express", "MongoDB", "Socket.IO", "Tailwind CSS", "Puppeteer", "Educacional"]
+---
+
+Plataforma completa de streaming de anime desarrollada como proyecto educacional en INACAP. Monorepo pnpm con frontend Next.js 14, backend Express.js + MongoDB, sincronización automática desde MyAnimeList API y extracción de enlaces con Puppeteer.
+
+## Qué hace
+
+Frontend moderno con TailwindCSS y sistema de caché para optimización. Backend con API REST completa para animes y episodios, endpoints con paginación y filtros, búsqueda por texto. Sincronización automática desde MyAnimeList para mantener el catálogo actualizado. Notificaciones en tiempo real con Socket.IO y panel de administración.
+
+## Funcionalidades
+
+- **Sincronización MyAnimeList** automática de animes populares
+- **Extracción de enlaces M3U8** desde JKAnime con Puppeteer
+- **Notificaciones en tiempo real** con Socket.IO
+- **Panel de administración** para gestión de contenido
+- **API REST** con paginación, búsqueda y filtros
+- **Sistema de caché** para optimizar consultas frecuentes
+- **Validación** con express-validator y seguridad con Helmet + CORS
+
+## Stack
+
+| Capa | Tecnología |
+|------|------------|
+| Frontend | Next.js 14 + TailwindCSS |
+| Backend | Express.js + Node.js |
+| Base de datos | MongoDB + Mongoose |
+| Tiempo real | Socket.IO |
+| Extracción | Puppeteer |
+| Monorepo | pnpm workspace |
+| Deploy | Docker Compose |
+
+## Lo que aprendí
+
+Extraer datos de sitios de terceros con Puppeteer es frágil — los selectores cambian sin aviso y el rate limiting es impredecible. MongoDB con Mongoose para catálogos de contenido es flexible pero requiere índices bien pensados para búsquedas por género, año y texto simultáneo. Socket.IO para notificaciones en tiempo real agrega complejidad de estado que solo se justifica si la UX lo demanda.
+
+## Código abierto
+
+[github.com/sebitabravo/visualanime](https://github.com/sebitabravo/visualanime)

@@ -1,10 +1,12 @@
 ---
-import { getProjects } from "@/lib/data"
+import { getProjects, type Project } from "@/lib/data"
 import { getTranslations, type Locale } from "@/lib/i18n"
 import { getTechStyle } from "@/lib/tech-colors"
 import { getTechIcon } from "@/lib/tech-icons-map"
+import { projectGradient } from "@/lib/visual-gradients"
 import GitHubIcon from "./icons/GitHub.astro"
 import LinkIcon from "./icons/Link.astro"
+import BookOpen from "./icons/BookOpen.astro"
 
 interface Props {
   locale?: Locale
@@ -17,33 +19,28 @@ const projects = getProjects(locale)
   .slice()
   .sort((projectA, projectB) => projectA.order - projectB.order)
 
-const statusLabels: Record<string, Record<string, string>> = {
-  es: { production: "En producción", development: "En desarrollo", demo: "Demo" },
-  en: { production: "In production", development: "In development", demo: "Demo" },
+const statusLabels: Record<Project["status"], string> = {
+  production: t.projects.statusProduction,
+  development: t.projects.statusDevelopment,
+  demo: t.projects.statusDemo,
 }
 
-const statusColors: Record<string, string> = {
+const statusColors: Record<Project["status"], string> = {
   production: "bg-emerald-500/85 text-white border-emerald-400/30",
   development: "bg-amber-500/85 text-white border-amber-400/30",
   demo: "bg-sky-500/85 text-white border-sky-400/30",
-}
-
-const visualGradients: Record<string, string> = {
-  manttoai: "linear-gradient(140deg, #0e5f66 0%, #3d9f7a 100%)",
-  vulcania: "linear-gradient(140deg, #7a2a0a 0%, #e35b25 45%, #f3aa3a 100%)",
-  "rapido-sur": "linear-gradient(140deg, #1e3a8a 0%, #3730a3 50%, #6d28d9 100%)",
-  wenuke: "linear-gradient(140deg, #075e54 0%, #128c7e 50%, #25d366 100%)",
 }
 
 ---
 
 <div class="space-y-12">
   <div class="grid gap-6 sm:gap-8 md:grid-cols-2" data-projects-list>
-    {projects.map(({ slug, title, description, tags, liveUrl, githubUrl, featured, status, metrics }, i) => {
-      const statusLabel = status ? statusLabels[locale]?.[status] : undefined
+    {projects.map(({ slug, title, description, tags, liveUrl, githubUrl, featured, status, metrics, blogSlug }, i) => {
+      const statusLabel = status ? statusLabels[status] : undefined
       const statusColor = status ? statusColors[status] : ""
-      const gradient = visualGradients[slug] ?? "linear-gradient(140deg, #2b2b2b 0%, #5a5a5a 100%)"
-      const projectUrl = locale === 'en' ? `/en/projects/${slug}` : `/projects/${slug}`
+      const gradient = projectGradient(slug)
+      const resolvedBlogSlug = blogSlug || slug
+      const projectUrl = locale === 'en' ? `/en/blog/${resolvedBlogSlug}` : `/blog/${resolvedBlogSlug}`
 
       const maxTags = 4
       const visibleTags = tags.slice(0, maxTags)
@@ -63,16 +60,15 @@ const visualGradients: Record<string, string> = {
               <a href={projectUrl} class="absolute inset-0 z-10" aria-label={`${title} — ${t.projects.viewProject}`}>
                 <span class="sr-only">{title}</span>
               </a>
-              <picture>
-                <source srcset={`/screenshots/${slug}.webp`} type="image/webp" />
-                <img
-                  src={`/screenshots/${slug}.png`}
-                  alt={`${title} screenshot`}
-                  class="absolute inset-0 h-full w-full object-cover"
-                  loading="lazy"
-                  data-img-fallback
-                />
-              </picture>
+              <img
+                src={`/screenshots/${slug}.webp`}
+                alt={`${title} screenshot`}
+                width="800"
+                height="500"
+                class="absolute inset-0 h-full w-full object-cover"
+                loading="lazy"
+                data-img-fallback
+              />
               <div class="absolute inset-0 bg-black/15"></div>
               <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
               <div class="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.18),transparent_28%),linear-gradient(rgba(255,255,255,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.08)_1px,transparent_1px)] bg-[length:100%_100%,28px_28px,28px_28px]"></div>
@@ -153,6 +149,16 @@ const visualGradients: Record<string, string> = {
                     {t.projects.viewProject}
                   </a>
                 )}
+
+                <a
+                  href={projectUrl}
+                  data-track-project={slug}
+                  data-track-action="casestudy"
+                  class="inline-flex h-11 items-center gap-1.5 sm:gap-2 rounded-lg border border-[hsl(var(--parchment))] bg-transparent px-3 sm:px-3.5 text-sm font-medium text-foreground/85 transition hover:bg-[hsl(var(--muted))] focus-ring"
+                >
+                  <BookOpen class="size-3 sm:size-4" />
+                  {t.projects.readMore}
+                </a>
               </footer>
             </div>
           </div>
@@ -187,7 +193,7 @@ const visualGradients: Record<string, string> = {
       btn.dataset.trackBound = "true"
       btn.addEventListener("click", () => {
         const project = btn.dataset.trackProject ?? ""
-        const action = (btn.dataset.trackAction ?? "code") as "live" | "code"
+        const action = (btn.dataset.trackAction ?? "code") as "live" | "code" | "casestudy"
         trackEvent({ name: "project_view", props: { project, action } })
       })
     })

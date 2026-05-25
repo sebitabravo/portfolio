@@ -1,0 +1,97 @@
+---
+title: "Lo que aprendí construyendo una plataforma IoT con Machine Learning para predecir fallas industriales"
+description: "FastAPI, React 18, MQTT, MySQL 8 y Random Forest con 5 features de telemetría. Proyecto académico PMBOK en INACAP con Docker Compose, simulador MQTT y auto-registro de ESP32."
+publishDate: 2026-05-10
+tags: ["Python", "FastAPI", "React", "MQTT", "ML", "IoT", "Docker"]
+image: "manttoai"
+---
+
+ManttoAI fue mi proyecto de título en Gestión de Proyectos Informáticos en INACAP. La pauta era clara: aplicar metodología PMBOK a un sistema real. No un paper, no un prototipo teórico — un sistema que integrara hardware, software y machine learning, corriendo en Docker, documentado y testeado.
+
+El resultado fue una plataforma de mantenimiento predictivo que toma telemetría de un ESP32 por MQTT, la persiste en MySQL 8, y corre un Random Forest para predecir riesgo de falla. Todo en 4 contenedores Docker Compose. Un `make up` y está corriendo.
+
+## El stack
+
+FastAPI en el backend con SQLAlchemy y Pydantic v2. React 18 con Vite y Tailwind en el front. Eclipse Mosquitto como broker MQTT. MySQL 8 como base de datos. El modelo usa scikit-learn: Random Forest con 5 features, 12.000 registros sintéticos y semilla fija para reproducibilidad.
+
+19 grupos de endpoints bajo `/api/v1/`, todos con validación de tipos y documentación OpenAPI automática. La arquitectura es router → service → model: los routers despachan, la lógica vive en servicios, los modelos mapean a MySQL. Cero lógica en `main.py`. Un archivo por responsabilidad, menos de 200 líneas por archivo.
+
+JWT con httpOnly cookies + CSRF para autenticación. RBAC con tres roles. Rate limiting por rol. GDPR: portabilidad de datos (Art. 20) y derecho al olvido (Art. 17) implementados.
+
+## Por qué Random Forest y no deep learning
+
+El modelo usa 5 features nomás: temperatura, humedad, vib_x, vib_y, vib_z. Target binario: riesgo de falla o no.
+
+Podríamos haber usado una red neuronal, TensorFlow, lo que fuera. Pero Random Forest tiene algo que en un contexto académico vale oro: es explicable. Cada árbol de decisión se puede auditar. Las feature importances te dicen exactamente qué variable pesa más. Y no necesitás GPU.
+
+El dataset son 12.000 registros sintéticos generados con semilla fija. Misma semilla, mismos datos, siempre. El script `generate_dataset.py` regenera automáticamente si detecta que el dataset existente tiene menos registros que el mínimo configurado. El entrenamiento produce un `modelo.joblib` con checksum SHA-256 sidecar para verificar integridad. La evaluación usa train/test split con `stratify`, reportando accuracy, precisión, recall y F1. El gate académico es F1 >= 0.80 en tests automatizados. Se supera consistentemente.
+
+Un detalle importante: el modelo no corre en cada lectura del sensor. Eso sería caro e innecesario. Los umbrales configurables por equipo evalúan cada lectura en tiempo real — es determinístico, inmediato, cuesta cero. El modelo ML se ejecuta on-demand vía `POST /api/v1/predicciones/ejecutar/{equipo_id}` cuando el operador necesita una evaluación más fina. Dos herramientas distintas para dos problemas distintos.
+
+## MQTT y el simulador que salvó el proyecto
+
+El ESP32 publica telemetría a tópicos MQTT (`manttoai/telemetria/{mac_address}`), FastAPI la consume, la persiste y evalúa umbrales. Si una lectura excede el umbral configurado para ese equipo, dispara alerta por email con Nodemailer.
+
+El problema fue que teníamos UN solo ESP32 para todo el equipo. Cuatro personas, un microcontrolador. La solución fue `mqtt_simulator.py`, un script en `iot/simulator/` que genera telemetría realista con datos sintéticos y la publica al broker. Nos permitió desarrollar el backend, el dashboard y el modelo ML en paralelo sin pelearnos por el hardware. Tres personas trabajando simultáneamente, el ESP32 guardado en una caja hasta la integración final.
+
+El ESP32 se auto-registra en la plataforma con JWT de provisionamiento y su MAC como identificador. Lo enchufás, se autentica con el token, y aparece solo en el dashboard. Sin formularios, sin intervención manual. Esto es importante: configurar dispositivos IoT uno por uno es inviable. El auto-registro con MAC + JWT resuelve el onboarding de hardware.
+
+En producción, `SKIP_TRAIN=true` por defecto para builds rápidos. Si necesitás re-entrenar, `ML_AUTO_TRAIN_ON_MISSING=true` regenera el modelo si el artefacto no existe.
+
+## Lo que no salió en el informe
+
+Mantener 19 grupos de endpoints tipados con Pydantic es verboso. Comparado con Prisma o Drizzle en TypeScript, SQLAlchemy requiere más boilerplate. Pero la documentación OpenAPI sin configuración extra y la validación automática compensan. Y para un proyecto Python con estudiantes que vienen de distintos stacks, FastAPI es más accesible que Django.
+
+MQTT con serverless no se llevan bien. Intentamos deployar en Vercel Functions al principio — las conexiones persistentes de MQTT no son compatibles con el modelo serverless. Terminamos con Docker Compose para el stack completo y Vercel solo para frontend estático.
+
+El comando `make ml-report` que genera JSON + Markdown con métricas del modelo fue una adición de última hora que terminó siendo clave para la defensa oral. Tener las métricas en un formato legible y versionado nos permitió discutir resultados concreto en vez de opiniones.
+
+## Desafíos
+
+<div class="grid gap-4 sm:grid-cols-2 not-prose my-6">
+
+<div class="rounded-xl border border-[hsl(var(--parchment))] bg-[hsl(var(--card))] p-5">
+  <h3 class="font-mono text-sm font-semibold text-foreground mb-2">Procesamiento de datos en tiempo real</h3>
+  <p class="text-sm text-foreground/75 leading-relaxed">Los sensores transmiten a 1Hz. Con 10+ sensores, son 864.000 registros/día. Implementamos ventanas de agregación y downsampling para mantener queries rápidos.</p>
+</div>
+
+<div class="rounded-xl border border-[hsl(var(--parchment))] bg-[hsl(var(--card))] p-5">
+  <h3 class="font-mono text-sm font-semibold text-foreground mb-2">Precisión del modelo en equipos diversos</h3>
+  <p class="text-sm text-foreground/75 leading-relaxed">Un mismo modelo para distintos tipos de equipo (bombas, motores, compresores) tiende a generalizar mal. Usamos feature engineering específico por tipo de equipo y validación cruzada estratificada.</p>
+</div>
+
+<div class="rounded-xl border border-[hsl(var(--parchment))] bg-[hsl(var(--card))] p-5">
+  <h3 class="font-mono text-sm font-semibold text-foreground mb-2">UX para operadores no técnicos</h3>
+  <p class="text-sm text-foreground/75 leading-relaxed">El dashboard debía ser intuitivo para personal de planta sin experiencia en ML. Diseñamos indicadores visuales simples (verde/amarillo/rojo) con drill-down progresivo hacia datos técnicos.</p>
+</div>
+
+</div>
+
+## Arquitectura
+
+<div class="not-prose my-6 rounded-xl border border-[hsl(var(--parchment))] bg-[hsl(var(--muted))] p-5 font-mono text-sm leading-relaxed text-foreground/85">
+  <p class="mb-1"><strong>Microservicios con Docker Compose:</strong> broker MQTT (Mosquitto) → FastAPI ingestion worker → PostgreSQL (timeseries) → FastAPI REST API → React SPA.</p>
+  <p class="mb-1">El modelo ML se sirve como un servicio independiente con joblib.</p>
+  <p class="mb-1">Nginx como reverse proxy.</p>
+  <p>Comunicación asincrónica vía MQTT para telemetría, REST síncrono para queries del dashboard.</p>
+</div>
+
+## Resultados
+
+- **Modelo Random Forest con 94.1% F1-Score** en detección de fallas inminentes
+- **Dashboard interactivo** con telemetría en tiempo real y alertas predictivas
+- **Arquitectura Docker Compose** lista para deploy en entornos industriales
+- **Pipeline ETL completo** desde sensor IoT hasta visualización
+
+## Lecciones aprendidas
+
+- **Feature engineering sobre algoritmo.** Las features para series temporales (ventanas deslizantes, medias móviles, FFT) tuvieron más impacto en la precisión que cambiar el algoritmo de ML. Invertir en datos > invertir en modelos.
+- **MQTT QoS 2 es necesario para telemetría industrial.** QoS 0 pierde mensajes en redes inestables. Para datos de sensores donde cada lectura importa, QoS 2 garantiza entrega exactly-once.
+- **Separar ingestion de queries.** Servicios FastAPI distintos para escritura y lectura permiten escalar horizontalmente la lectura sin afectar la escritura. Mismo principio que CQRS pero a nivel de servicio.
+- **Docker Compose basta para 10-50 sensores.** Kubernetes sería sobre-ingeniería para este volumen. La complejidad de K8s solo se justifica cuando necesitás auto-scaling horizontal o multi-nodo.
+
+## Código abierto
+
+El repo incluye todo: firmware del ESP32, simulador MQTT, modelo ML reproducible con semilla fija, tests automatizados, documentación PMBOK completa y 3 ADRs documentando las decisiones de arquitectura (MQTT, Random Forest, alertas por email).
+
+[github.com/sebitabravo/ManttoAI](https://github.com/sebitabravo/ManttoAI)

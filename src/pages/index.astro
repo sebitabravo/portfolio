@@ -34,6 +34,12 @@ import MailIcon from "@/components/icons/Mail.astro"
 <Layout
   title={`${personalInfo.name} — ${personalInfo.title}`}
   locale="es"
+  canonicalUrl="https://sebita.dev"
+  alternates={[
+    { hreflang: 'es', href: 'https://sebita.dev' },
+    { hreflang: 'en', href: 'https://sebita.dev/en/' },
+    { hreflang: 'x-default', href: 'https://sebita.dev' },
+  ]}
 >
   <main id="main-content">
   <!-- Hero: midnight gradient, full-width -->
@@ -100,7 +106,7 @@ import MailIcon from "@/components/icons/Mail.astro"
       <SectionContainer id="contacto" headingId="contacto-heading">
         <TitleSection id="contacto-heading">
           <MailIcon class="size-6" />
-          {t.contactForm.title}
+          {t.nav.contact}
         </TitleSection>
         <Contact locale="es" />
       </SectionContainer>

@@ -1,0 +1,30 @@
+---
+title: "Peso Ideal: calculadora de peso ideal infantil para Android"
+description: "Proyecto educacional de INACAP. App Android en Java que calcula el peso ideal de niños entre 1 y 10 años. Validación de datos, paso de parámetros entre actividades."
+publishDate: 2024-10-10
+tags: ["Android", "Java", "Salud", "Educacional"]
+---
+
+Aplicación Android nativa en Java que calcula el peso ideal para niños entre 1 y 10 años. Desarrollada como proyecto educacional en INACAP.
+
+## Qué hace
+
+Formulario con campos de edad (1-10 años) y peso (1-200 kg) con validación completa. Verifica que los campos no estén vacíos, que los valores estén en rango y que sean numéricos. Navega a una segunda actividad (`ResultadoActivity`) pasando edad y peso como extras del Intent.
+
+## Stack
+
+| Capa | Tecnología |
+|------|------------|
+| Plataforma | Android (Java) |
+| UI | XML Layouts + AppCompatActivity |
+| Navegación | Intent con extras |
+| Validación | Lógica custom en MainActivity |
+| Build | Gradle (Kotlin DSL) |
+
+## Lo que aprendí
+
+Pasar datos entre actividades con `Intent.putExtra()` es el mecanismo fundamental de navegación Android — entender tipos de datos serializables vs primitivos evita bugs sutiles. Validación de entrada del lado del cliente no reemplaza validación backend, pero en apps offline es la única línea de defensa.
+
+## Código abierto
+
+[github.com/sebitabravo/pesoideal-android](https://github.com/sebitabravo/pesoideal-android)

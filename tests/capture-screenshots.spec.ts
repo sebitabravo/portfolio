@@ -15,7 +15,7 @@ test.describe("Screenshots del portafolio", () => {
     const wenuke = page.locator("[data-project='wenuke']")
     await wenuke.scrollIntoViewIfNeeded()
     // Esperar que la imagen cargue antes de capturar
-    const img = wenuke.locator("picture img").first()
+    const img = wenuke.locator("img").first()
     await img.waitFor({ state: "visible", timeout: 10000 })
     await img.evaluate((el) => (el as HTMLImageElement).complete && (el as HTMLImageElement).naturalWidth > 0 ? Promise.resolve() : new Promise((resolve) => { (el as HTMLImageElement).onload = resolve }))
     await page.waitForTimeout(300)

@@ -25,7 +25,7 @@ test.describe("Projects — screenshots con fallback", () => {
     await page.goto(BASE)
     const wenukeCard = page.locator("[data-project='wenuke']")
     await wenukeCard.scrollIntoViewIfNeeded()
-    const img = wenukeCard.locator("picture img").first()
+    const img = wenukeCard.locator("img").first()
     await expect(img).toHaveAttribute("src", "/screenshots/wenuke.webp")
   })
 

@@ -1,0 +1,55 @@
+---
+title: "Minepanel en Docker: un panel de gestión de servidores Minecraft con auto-updates y FileBrowser"
+description: "Stack Docker Compose con Minepanel, FileBrowser y Watchtower para gestión de servidores Minecraft. Despliegue auto-actualizable, persistencia de datos, resource limits y configuración lista para Dokploy."
+publishDate: 2025-12-14
+tags: ["Docker", "Minecraft", "Minepanel", "Watchtower", "DevOps"]
+image: "minecraft-server"
+---
+
+Administrar servidores Minecraft sin un panel es un dolor de cabeza: editar archivos de configuración por SSH, reiniciar procesos manualmente, buscar logs en directorios anidados. Minepanel es un panel web open-source que resuelve esto: interfaz gráfica para crear, iniciar, detener y configurar servidores Minecraft desde el navegador.
+
+Este proyecto es un `docker-compose.yml` que despliega Minepanel con FileBrowser para explorar archivos y Watchtower para auto-actualizaciones. Un solo archivo de 114 líneas que orquesta tres servicios Docker con healthchecks, resource limits y persistencia de datos.
+
+## Stack
+
+| Componente | Tecnología |
+|------------|------------|
+| Panel | Minepanel (ketbom/minepanel) |
+| Archivos | FileBrowser (hurlenko/filebrowser) |
+| Auto-updates | Watchtower (containrrr/watchtower) |
+| Infra | Docker Compose 3.8 |
+| Deploy | Dokploy-ready con Traefik |
+
+## Los tres servicios
+
+**Minepanel.** El panel corre en modo `privileged: true` porque necesita acceso al socket de Docker para ejecutar `docker-compose` internamente. Expone dos puertos: 3000 (frontend Next.js) y 8091 (backend API). Las variables de entorno incluyen JWT secret, credenciales del cliente, URLs del frontend/backend y el lenguaje por defecto configurado a español.
+
+Los servidores Minecraft que crea el panel se persisten en `../files/servers` — un volumen montado desde el host. Si el contenedor de Minepanel se destruye y se recrea, los servidores sobreviven.
+
+**FileBrowser.** Un explorador de archivos web que monta el mismo directorio `../files/servers`. Permite navegar, editar y descargar los archivos de configuración de los servidores Minecraft sin SSH. La configuración persiste en un volumen separado (`filebrowser-data`).
+
+**Watchtower.** Monitorea las imágenes Docker de Minepanel y FileBrowser cada 6 horas (21600 segundos). Si detecta una nueva versión, descarga la imagen, reinicia el contenedor y limpia la imagen vieja. Watchtower no se actualiza a sí mismo por razones obvias (label `enable=false`).
+
+## Las decisiones
+
+**Privileged: true en Minepanel.** Es necesario porque Minepanel ejecuta `docker-compose` internamente para gestionar los servidores Minecraft. Sin acceso al socket de Docker, el panel no puede crear contenedores. El trade-off de seguridad es real — un contenedor privileged tiene acceso al kernel del host — pero para un homelab o un VPS dedicado a Minecraft, el riesgo es aceptable.
+
+**Resource limits conservadores.** Minepanel limitado a 0.5 CPU y 512MB RAM con reservas de 0.25 CPU y 256MB. FileBrowser a 0.25 CPU y 256MB con reservas mínimas. Watchtower a 0.1 CPU y 128MB. Los servidores Minecraft en sí no están limitados por este compose — el panel los gestiona como contenedores separados, cada uno con sus propios límites.
+
+**Watchtower en vez de CI/CD.** Para un homelab, Watchtower es más simple que un pipeline de CI/CD. No necesitás GitHub Actions, webhooks ni registry propio. La desventaja: no hay control de versiones granular. Si una actualización rompe algo, tenés que hacer rollback manual.
+
+**Sin Traefik/Nginx en el compose.** El proyecto está diseñado para Dokploy, que ya incluye Traefik como reverse proxy. El compose solo expone puertos internamente — Dokploy se encarga de enrutar el tráfico HTTPS a los puertos correctos. Esto mantiene el compose portable: funciona en Dokploy, en un VPS con Traefik propio, o en localhost para desarrollo.
+
+## Lo que aprendí
+
+Un `docker-compose.yml` de 114 líneas puede ser un proyecto completo si está bien configurado. No todo proyecto necesita código propio — a veces la contribución es la integración de herramientas existentes con la configuración correcta.
+
+Watchtower con `WATCHTOWER_POLL_INTERVAL=21600` (6 horas) es razonable para un homelab. El default es 24 horas, pero para imágenes que reciben actualizaciones frecuentes (Minepanel, FileBrowser), 6 horas reduce la ventana de vulnerabilidad sin sobrecargar el registry.
+
+Los resource limits en Docker Compose no son opcionales cuando compartís el host con los servidores Minecraft. Sin límites, Minepanel podría consumir toda la CPU durante una operación de backup y congelar los servidores de juego.
+
+## Código abierto
+
+El repo contiene el docker-compose.yml completo con los tres servicios, variables de entorno documentadas y configuración lista para Dokploy.
+
+[github.com/sebitabravo/minecraft-server](https://github.com/sebitabravo/minecraft-server)

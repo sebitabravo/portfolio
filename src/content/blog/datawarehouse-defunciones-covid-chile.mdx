@@ -1,0 +1,42 @@
+---
+title: "Data Warehouse: análisis de defunciones COVID-19 en Chile con Python"
+description: "Proyecto educacional de INACAP. Proceso ETL en Python para analizar 832MB de datos oficiales del DEIS. 55,060 defunciones COVID-19 de Chile procesadas con Pandas y modelo dimensional."
+publishDate: 2025-07-20
+tags: ["Python", "Pandas", "ETL", "Data Warehouse", "COVID-19", "Minería de Datos", "Educacional"]
+---
+
+Proceso ETL (Extract, Transform, Load) desarrollado como proyecto educacional en INACAP para analizar las defunciones relacionadas con COVID-19 en Chile usando datos oficiales del DEIS (Departamento de Estadísticas e Información de Salud).
+
+## Qué hace
+
+Procesa un CSV fuente de 832MB con datos del período 1990-2022 en chunks de 50,000 registros para optimizar memoria. Filtra por palabras clave COVID-19 (incluyendo códigos CIE-10 U07.1 y U07.2), normaliza columnas y genera un dataset filtrado con 55,060 defunciones.
+
+## Resultados
+
+- **2019**: 1 caso (coronavirus no especificado)
+- **2020**: 18,680 defunciones
+- **2021**: 22,946 defunciones (año peak)
+- **2022**: 13,433 defunciones
+
+## Modelo dimensional
+
+Propuesta de star schema con tabla de hechos `fact_defunciones_covid` y 4 dimensiones: `dim_tiempo` (fecha, año, mes, trimestre), `dim_ubicacion` (comuna, región, zona geográfica), `dim_persona` (sexo, rango etario) y `dim_diagnostico` (código, tipo COVID).
+
+## Stack
+
+| Capa | Tecnología |
+|------|------------|
+| Lenguaje | Python 3 |
+| Procesamiento | Pandas (chunked read) |
+| Datos fuente | DEIS - MINSAL Chile |
+| Encoding | Latin-1 |
+| Formato | CSV delimitado por `;` |
+| Versionado | Git LFS |
+
+## Lo que aprendí
+
+832MB de CSV no se procesan con `pd.read_csv()` sin estrategia — lectura en chunks y filtrado temprano reduce uso de RAM de ~2GB a ~200MB. El encoding Latin-1 es común en datasets gubernamentales chilenos y causa errores silenciosos si se asume UTF-8. Un modelo dimensional bien diseñado convierte un CSV plano en análisis multidimensional sin necesidad de OLAP.
+
+## Código abierto
+
+[github.com/sebitabravo/datawarehouse-defunciones](https://github.com/sebitabravo/datawarehouse-defunciones)

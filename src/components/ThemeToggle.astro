@@ -1,21 +1,37 @@
 ---
 // ThemeToggle Component - Toggle between light, dark, and system theme
+import { getTranslations, type Locale } from "@/lib/i18n"
 import SunIcon from "./icons/Sun.astro"
 import MoonIcon from "./icons/Moon.astro"
 import MonitorIcon from "./icons/Monitor.astro"
+
+interface Props {
+  locale?: Locale
+}
+
+const { locale = 'es' } = Astro.props
+const t = getTranslations(locale)
 ---
 
-<div class="relative inline-block" id="theme-toggle-wrapper">
+<div
+  class="relative inline-block"
+  id="theme-toggle-wrapper"
+  data-i18n-light={t.theme.light}
+  data-i18n-dark={t.theme.dark}
+  data-i18n-system={t.theme.system}
+>
   <button
     id="theme-toggle"
     type="button"
     class="inline-flex h-11 min-w-11 items-center justify-center gap-2 rounded-md px-2.5 py-2 text-sm font-medium text-current transition-colors hover:bg-[hsl(var(--muted))] dark:hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[hsl(var(--primary))]"
-    aria-label="Toggle theme"
+    aria-label={t.theme.toggle}
+    aria-haspopup="menu"
+    aria-expanded="false"
   >
     <SunIcon class="size-4 theme-icon-light hidden" />
     <MoonIcon class="size-4 theme-icon-dark hidden" />
     <MonitorIcon class="size-4 theme-icon-system" />
-    <span id="current-theme" class="hidden xl:inline">System</span>
+    <span id="current-theme" class="hidden xl:inline">{t.theme.system}</span>
   </button>
 
   <div
@@ -32,7 +48,7 @@ import MonitorIcon from "./icons/Monitor.astro"
       >
         <span class="flex items-center gap-3">
           <SunIcon class="size-4" />
-          Light
+          {t.theme.light}
         </span>
         <span class="check-light hidden">✓</span>
       </button>
@@ -44,7 +60,7 @@ import MonitorIcon from "./icons/Monitor.astro"
       >
         <span class="flex items-center gap-3">
           <MoonIcon class="size-4" />
-          Dark
+          {t.theme.dark}
         </span>
         <span class="check-dark hidden">✓</span>
       </button>
@@ -56,7 +72,7 @@ import MonitorIcon from "./icons/Monitor.astro"
       >
         <span class="flex items-center gap-3">
           <MonitorIcon class="size-4" />
-          System
+          {t.theme.system}
         </span>
         <span class="check-system hidden">✓</span>
       </button>
@@ -125,17 +141,23 @@ import MonitorIcon from "./icons/Monitor.astro"
         checkSystem.classList.add('hidden')
       }
 
+      const labels = {
+        light: wrapper.dataset.i18nLight || 'Light',
+        dark: wrapper.dataset.i18nDark || 'Dark',
+        system: wrapper.dataset.i18nSystem || 'System',
+      }
+
       if (theme === 'light') {
         lightIcon.classList.remove('hidden')
-        if (themeText) themeText.textContent = 'Light'
+        if (themeText) themeText.textContent = labels.light
         if (checkLight) checkLight.classList.remove('hidden')
       } else if (theme === 'dark') {
         darkIcon.classList.remove('hidden')
-        if (themeText) themeText.textContent = 'Dark'
+        if (themeText) themeText.textContent = labels.dark
         if (checkDark) checkDark.classList.remove('hidden')
       } else {
         systemIcon.classList.remove('hidden')
-        if (themeText) themeText.textContent = 'System'
+        if (themeText) themeText.textContent = labels.system
         if (checkSystem) checkSystem.classList.remove('hidden')
       }
     }
@@ -161,13 +183,15 @@ import MonitorIcon from "./icons/Monitor.astro"
     toggle.addEventListener('click', (e) => {
       e.preventDefault()
       e.stopPropagation()
-      menu.classList.toggle('hidden')
-    })
+      const isOpen = !menu.classList.toggle('hidden')
+      toggle.setAttribute('aria-expanded', String(isOpen))
+    }, { signal })
 
     // Close menu when clicking outside
     document.addEventListener('click', (e) => {
       if (!wrapper.contains(e.target as Node)) {
         menu.classList.add('hidden')
+        toggle.setAttribute('aria-expanded', 'false')
       }
     }, { signal })
 
@@ -181,8 +205,9 @@ import MonitorIcon from "./icons/Monitor.astro"
           setThemePreference(theme)
           applyTheme(theme)
           menu.classList.add('hidden')
+          toggle.setAttribute('aria-expanded', 'false')
         }
-      })
+      }, { signal })
     })
 
     // Listen for system theme changes
@@ -197,12 +222,14 @@ import MonitorIcon from "./icons/Monitor.astro"
     // Keyboard navigation
     function openMenu() {
       menu.classList.remove('hidden')
+      toggle.setAttribute('aria-expanded', 'true')
       const items = menu.querySelectorAll<HTMLButtonElement>('.theme-option')
       items[0]?.focus()
     }
 
     function closeMenu() {
       menu.classList.add('hidden')
+      toggle.setAttribute('aria-expanded', 'false')
       toggle.focus()
     }
 
@@ -211,7 +238,7 @@ import MonitorIcon from "./icons/Monitor.astro"
         e.preventDefault()
         openMenu()
       }
-    })
+    }, { signal })
 
     menu.addEventListener('keydown', (e) => {
       const items = Array.from(menu.querySelectorAll<HTMLButtonElement>('.theme-option'))
@@ -240,7 +267,7 @@ import MonitorIcon from "./icons/Monitor.astro"
           closeMenu()
           break
       }
-    })
+    }, { signal })
 
     // Registrar cleanup para la próxima navegación
     themeCleanup = () => {

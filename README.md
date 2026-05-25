@@ -2,7 +2,7 @@
 
 > Modern, fast, and accessible portfolio built with Astro, TailwindCSS, and TypeScript
 
-[![Astro](https://img.shields.io/badge/Astro-5-FF5D01?style=for-the-badge&logo=astro&logoColor=white)](https://astro.build)
+[![Astro](https://img.shields.io/badge/Astro-6-FF5D01?style=for-the-badge&logo=astro&logoColor=white)](https://astro.build)
 [![TailwindCSS](https://img.shields.io/badge/Tailwind-4-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org)
 
@@ -26,11 +26,11 @@
 
 ## Tech Stack
 
-- **Framework:** Astro 5
+- **Framework:** Astro 6
 - **Styling:** Tailwind CSS v4 (CSS-first config)
 - **Language:** TypeScript
 - **Images:** Sharp
-- **SEO:** astro-seo
+- **Content:** MDX (blog)
 
 ## Quick Start
 
@@ -60,14 +60,18 @@ src/
 ├── components/       # Astro components
 │   ├── icons/        # SVG icon components
 │   └── ui/           # Reusable UI components (Card, Button, Badge)
+├── content/          # MDX blog posts
+│   └── blog/         # Blog entries (.mdx)
 ├── data/             # Static data (technologies list)
 ├── layouts/          # Page layout
 ├── lib/
 │   ├── data.ts       # Portfolio content (experience, projects, education, certifications)
 │   └── i18n/         # Translations (es.json, en.json)
 ├── pages/
+│   ├── blog/         # Spanish blog (/blog)
+│   ├── en/           # English routes (/en/*)
 │   ├── index.astro   # Spanish home (/)
-│   └── en/index.astro # English home (/en)
+│   └── projects/     # Project case studies (/projects/*)
 ├── styles/           # Global CSS with theme variables
 └── types/            # TypeScript type definitions
 ```
@@ -82,5 +86,5 @@ pnpm preview
 ## Contact
 
 - **GitHub:** [@sebitabravo](https://github.com/sebitabravo)
-- **Email:** hello@sebastianbravo.dev
+- **Email:** hello@sebita.dev
 - **LinkedIn:** [Sebastian Bravo](https://linkedin.com/in/sebitabravo)

@@ -1,6 +1,15 @@
 ---
 // LanguageToggle Component - Toggle between ES and EN
 import LanguagesIcon from "./icons/Languages.astro"
+import type { Locale } from "@/lib/i18n"
+
+interface Props {
+  locale?: Locale
+}
+
+const { locale = 'es' } = Astro.props
+const currentLangCode = locale === 'es' ? 'ES' : 'EN'
+const toggleLabel = locale === 'es' ? `Cambiar idioma (actual: ${currentLangCode})` : `Toggle language (current: ${currentLangCode})`
 ---
 
 <div class="relative inline-block" id="language-toggle-wrapper">
@@ -8,10 +17,10 @@ import LanguagesIcon from "./icons/Languages.astro"
     id="language-toggle"
     type="button"
     class="inline-flex h-11 min-w-11 items-center justify-center gap-2 rounded-md px-2.5 py-2 text-sm font-medium text-current transition-colors hover:bg-[hsl(var(--muted))] dark:hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[hsl(var(--primary))]"
-    aria-label="Toggle language"
+    aria-label={toggleLabel}
   >
     <LanguagesIcon class="size-4" />
-    <span id="current-language">ES</span>
+    <span id="current-language">{locale === 'en' ? 'EN' : 'ES'}</span>
   </button>
 
   <div
@@ -66,9 +75,12 @@ import LanguagesIcon from "./icons/Languages.astro"
     }
 
     function updateLanguageDisplay(lang: string): void {
-      if (!currentLangEl || !wrapper) return
+      if (!currentLangEl || !wrapper || !toggle) return
 
       currentLangEl.textContent = lang.toUpperCase()
+
+      const ariaLabel = lang === 'es' ? 'Cambiar idioma (actual: ES)' : 'Toggle language (current: EN)'
+      toggle.setAttribute('aria-label', ariaLabel)
 
       const checkEs = wrapper.querySelector('.check-es')
       const checkEn = wrapper.querySelector('.check-en')
@@ -81,18 +93,19 @@ import LanguagesIcon from "./icons/Languages.astro"
 
     function switchLanguage(lang: string) {
       const currentPath = window.location.pathname
-      const isEnglish = currentPath.startsWith('/en')
+      const isEnglish = (currentPath === '/en' || currentPath.startsWith('/en/'))
 
       if (lang === 'en' && !isEnglish) {
-        navigate('/en')
+        navigate('/en' + (currentPath === '/' ? '/' : currentPath))
       } else if (lang === 'es' && isEnglish) {
-        navigate('/')
+        const targetPath = currentPath.replace(/^\/en/, '') || '/'
+        navigate(targetPath)
       }
     }
 
     function getCurrentLanguageFromUrl(): string {
       const currentPath = window.location.pathname
-      return currentPath.startsWith('/en') ? 'en' : 'es'
+      return (currentPath === '/en' || currentPath.startsWith('/en/')) ? 'en' : 'es'
     }
 
     const currentLang = getCurrentLanguageFromUrl()
@@ -103,7 +116,7 @@ import LanguagesIcon from "./icons/Languages.astro"
       e.preventDefault()
       e.stopPropagation()
       menu.classList.toggle('hidden')
-    })
+    }, { signal })
 
     document.addEventListener('click', (e) => {
       if (!wrapper.contains(e.target as Node)) {
@@ -122,7 +135,7 @@ import LanguagesIcon from "./icons/Languages.astro"
           menu.classList.add('hidden')
           switchLanguage(lang)
         }
-      })
+      }, { signal })
     })
 
     // Keyboard navigation
@@ -142,7 +155,7 @@ import LanguagesIcon from "./icons/Languages.astro"
         e.preventDefault()
         openMenu()
       }
-    })
+    }, { signal })
 
     menu.addEventListener('keydown', (e) => {
       const items = Array.from(menu!.querySelectorAll<HTMLButtonElement>('.language-option'))
@@ -171,7 +184,7 @@ import LanguagesIcon from "./icons/Languages.astro"
           closeMenu()
           break
       }
-    })
+    }, { signal })
 
     // Registrar cleanup para la próxima navegación
     langCleanup = () => {

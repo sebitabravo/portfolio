@@ -1,0 +1,42 @@
+---
+title: "CRM Backend: API REST con Express, MySQL y seguridad desde el diseño"
+description: "Proyecto educacional de INACAP. Backend REST para el CRM con Node.js, Express y MySQL 8.0. Prepared statements, rate limiting, Helmet, CORS y Docker Compose."
+publishDate: 2023-11-15
+tags: ["Node.js", "Express", "MySQL", "Docker", "REST API", "Educacional"]
+image: "crm-evolucion"
+---
+
+El CRM React necesitaba un backend. Este proyecto fue desarrollado como parte de mi formación en INACAP y fue mi primera experiencia diseñando una API REST desde cero con foco en seguridad.
+
+## Qué hace
+
+CRUD completo para cinco recursos: clientes, usuarios, gestiones, tipos de gestión y resultados. Cada recurso con sus cinco endpoints REST: GET all, GET by ID, POST, PATCH, DELETE. Validación con express-validator en cada endpoint, rate limiting por IP, CORS configurado con whitelist y headers de seguridad vía Helmet.
+
+## Stack
+
+| Capa | Tecnología |
+|------|------------|
+| Runtime | Node.js |
+| Framework | Express 4 |
+| Base de datos | MySQL 8.0 |
+| Validación | express-validator |
+| Seguridad | Helmet, CORS, rate limiting |
+| Infra | Docker Compose (app + MySQL) |
+
+## Decisiones de seguridad
+
+**Prepared statements para prevenir SQL injection.** Todos los queries usan placeholders parametrizados. Nunca se concatena input del usuario en un query string.
+
+**Rate limiting por IP.** Los endpoints públicos están limitados a 100 requests por hora. Previene abuso básico sin necesidad de autenticación.
+
+**Helmet para headers de seguridad.** CSP, X-Frame-Options, X-Content-Type-Options y demás headers configurados con defaults seguros.
+
+## Lo que aprendí
+
+La seguridad no es una capa que se agrega al final — se diseña desde el primer endpoint. Un error de SQL injection en producción puede costar toda la base de datos. Prepared statements no son opcionales, son el mínimo.
+
+Docker Compose simplificó el desarrollo: `docker-compose up` levantaba la app y MySQL en segundos. El healthcheck con `curl` aseguraba que la app estuviera lista antes de aceptar tráfico.
+
+## Código abierto
+
+[github.com/sebitabravo/crm-react-backend](https://github.com/sebitabravo/crm-react-backend)

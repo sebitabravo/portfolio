@@ -1,0 +1,57 @@
+---
+title: "Video Downloader: una app Flask para descargar videos de YouTube y Twitch con rotación de proxies y anti-bot"
+description: "App web Flask + yt-dlp con rotación de proxies, cookies falsas, rate limiting y Docker. Sistema completo anti-detección con healthcheck, headers de seguridad y cola de descargas automática."
+publishDate: 2025-08-17
+tags: ["Python", "Flask", "Docker", "yt-dlp", "Proxy Rotation", "Anti-bot"]
+image: "twitch-youtube-compiler"
+---
+
+Bajar un video de YouTube o un VOD de Twitch suena trivial — hasta que YouTube te bloquea por "actividad sospechosa" después de 3 descargas. Las plataformas de streaming invierten millones en detectar bots. Este proyecto es una app web Flask que descarga videos sorteando esas defensas: rotación de proxies, cookies falsas, user agents rotativos y rate limiting.
+
+La app expone una interfaz web donde pegás una URL y obtenés el video descargado. Simple para el usuario. Por detrás, una coreografía de contramedidas anti-detección.
+
+## Stack
+
+| Componente | Tecnología |
+|------------|------------|
+| Backend | Flask + Python 3.11 |
+| Motor de descarga | yt-dlp + Streamlink |
+| Anti-detección | Proxy rotation, fake cookies, rotating user agents |
+| Seguridad | CSP, HSTS, X-Frame-Options, rate limiting |
+| Infra | Docker + Traefik labels |
+| Cola | Sistema de cola de descargas automática |
+| Cleanup | Servicio de limpieza de archivos temporales |
+
+## Cómo esquiva la detección
+
+**Rotación de proxies.** `proxy_rotation.py` consulta APIs públicas de proxies gratuitos (proxy-list.download, proxyscrape.com), testea cada proxy con timeout de 10 segundos y mantiene una lista de proxies funcionales. Si un proxy falla, se elimina de la rotación.
+
+**Cookies falsas.** `fake_cookies.py` genera cookies sintéticas que imitan las que un navegador real enviaría a YouTube. El generador incluye headers avanzados con fingerprints de navegadores reales y user agents rotativos.
+
+**Rate limiting.** `security_utils.py` implementa rate limiting por IP: máximo 3 descargas por minuto, 20 por hora. Si un cliente excede el límite, se bloquea su IP por 5 minutos (producción: 10 minutos). Las IPs se hashean antes de almacenarse — los logs no exponen direcciones reales.
+
+**Headers de seguridad.** Cada response incluye CSP, HSTS con `includeSubDomains`, `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin` y `Permissions-Policy` restrictiva.
+
+## Las decisiones
+
+**Flask en vez de FastAPI.** Misma razón que en EcoAnalyzer — esto es una app web con formularios HTML, no una API REST. Flask + Jinja2 es la herramienta correcta para server-side rendering de un formulario de descarga.
+
+**Proxy rotation casera en vez de un servicio pago.** Los proxies gratuitos son menos confiables, pero para un proyecto personal el costo de un servicio de proxies residenciales ($50-300/mes) no se justifica. La rotación automática y el testeo de conectividad mantienen la tasa de éxito razonable sin gastar un peso.
+
+**Traefik labels en vez de Nginx separado.** La app incluye labels de Traefik para integración directa con el reverse proxy. Si ya tenés Traefik corriendo en el host, la app se expone automáticamente con TLS y rate limiting a nivel del router.
+
+**Cola de descargas en vez de procesamiento sincrónico.** `download_queue.py` encola las descargas y las procesa en background. El usuario no se queda mirando un spinner durante 5 minutos mientras yt-dlp negocia con YouTube.
+
+## Lo que aprendí
+
+La detección anti-bot de YouTube no es binaria (bloqueado/no bloqueado) — es gradual. Primero recibís un 429 (rate limit) sin mensaje de error visible. Después un captcha. Después un shadow ban donde las descargas "funcionan" pero devuelven archivos vacíos. La rotación de proxies y cookies no es opcional — es necesaria desde la primera request.
+
+El healthcheck de Docker no puede usar `/health` si la app no expone ese endpoint. En este caso, el healthcheck usa `curl -f http://localhost:5000/health` — un endpoint Flask dedicado que verifica que la app esté respondiendo.
+
+El rate limiting por IP no funciona detrás de un proxy inverso sin `app.set('trust proxy', 1)`. Si no configurás esto, Flask ve la IP del proxy inverso (Traefik/Nginx) en vez de la IP real del cliente, y el rate limiting afecta a todos los usuarios por igual.
+
+## Código abierto
+
+El repo incluye la app Flask completa, Dockerfile, docker-compose.yml con healthcheck y resource limits, sistema de rotación de proxies, generador de cookies falsas, rate limiting y cola de descargas.
+
+[github.com/sebitabravo/twitch-youtube-compiler](https://github.com/sebitabravo/twitch-youtube-compiler)

@@ -10,7 +10,7 @@
  * - Responsive design
  */
 import type { CarouselCertification } from "@/types"
-import type { Locale } from "@/lib/i18n"
+import { getTranslations, type Locale } from "@/lib/i18n"
 
 interface Props {
   certifications: CarouselCertification[]
@@ -18,13 +18,14 @@ interface Props {
 }
 
 const { certifications, locale = 'es' } = Astro.props
+const t = getTranslations(locale)
 
 // Duplicate the array for seamless infinite scroll
 const duplicatedCerts = [...certifications, ...certifications]
 ---
 
 <div class="cert-carousel-container" id="certCarouselContainer">
-  <button class="cert-nav-btn cert-nav-prev" id="certNavPrev" aria-label={locale === 'es' ? "Anterior" : "Previous"} type="button">
+  <button class="cert-nav-btn cert-nav-prev" id="certNavPrev" aria-label={t.certifications.previous} type="button">
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
   </button>
 
@@ -36,15 +37,16 @@ const duplicatedCerts = [...certifications, ...certifications]
 
         return (
           <a
-            href={pdfUrl}
+            href={pdfUrl ?? undefined}
             target="_blank"
             rel="noopener noreferrer"
             class="cert-item"
             style={`animation-delay: ${(index % certifications.length) * 0.15}s`}
-            title={`${name} - ${organization}`}
+            title={pdfUrl ? `${name} - ${organization}` : name}
             aria-hidden={isDuplicate ? "true" : undefined}
-            tabindex={isDuplicate ? "-1" : undefined}
+            tabindex={isDuplicate ? "-1" : pdfUrl ? undefined : "-1"}
             data-duplicate={isDuplicate ? "true" : undefined}
+            role={pdfUrl ? undefined : "presentation"}
           >
             {logo ? (
               <div class="cert-logo-wrapper">
@@ -60,10 +62,10 @@ const duplicatedCerts = [...certifications, ...certifications]
             <span class="cert-name">{name}</span>
             <span class="cert-org">{organization}</span>
             {category === 'professional' && (
-              <span class="cert-badge cert-badge-pro">{locale === 'es' ? 'Profesional' : 'Professional'}</span>
+              <span class="cert-badge cert-badge-pro">{t.certifications.professional}</span>
             )}
             {category === 'academic' && (
-              <span class="cert-badge cert-badge-acad">{locale === 'es' ? 'Académico' : 'Academic'}</span>
+              <span class="cert-badge cert-badge-acad">{t.certifications.academic}</span>
             )}
           </a>
         )
@@ -71,7 +73,7 @@ const duplicatedCerts = [...certifications, ...certifications]
     </div>
   </div>
 
-  <button class="cert-nav-btn cert-nav-next" id="certNavNext" aria-label={locale === 'es' ? "Siguiente" : "Next"} type="button">
+  <button class="cert-nav-btn cert-nav-next" id="certNavNext" aria-label={t.certifications.next} type="button">
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
   </button>
 </div>
@@ -222,16 +224,6 @@ const duplicatedCerts = [...certifications, ...certifications]
     border: 1px solid hsl(var(--border));
   }
 
-  /* Floating animation */
-  @keyframes float {
-    0%, 100% {
-      transform: translateY(0px);
-    }
-    50% {
-      transform: translateY(-6px);
-    }
-  }
-
   /* Navigation buttons */
   .cert-nav-btn {
     position: absolute;
@@ -248,7 +240,7 @@ const duplicatedCerts = [...certifications, ...certifications]
     background: hsl(var(--card) / 0.92);
     color: hsl(var(--foreground));
     cursor: pointer;
-    opacity: 0.4;
+    opacity: 0.7;
     transition: opacity 0.3s ease, background 0.2s ease, transform 0.2s ease;
     backdrop-filter: blur(6px);
     -webkit-backdrop-filter: blur(6px);
@@ -366,10 +358,14 @@ const duplicatedCerts = [...certifications, ...certifications]
 
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
 
+    const ac = new AbortController()
+    const { signal } = ac
+
     let animationId: number | null = null
     let lastTime = 0
     const scrollSpeed = 40 // px per second
     const navScrollAmount = 350
+    let scrollEndPending = false
 
     function isHovered() {
       return container!.matches(':hover')
@@ -407,32 +403,42 @@ const duplicatedCerts = [...certifications, ...certifications]
 
     prevBtn.addEventListener('click', () => {
       wrapper!.scrollBy({ left: -navScrollAmount, behavior: 'smooth' })
-    })
+    }, { signal })
 
     nextBtn.addEventListener('click', () => {
       const w = wrapper!
-      w.scrollBy({ left: navScrollAmount, behavior: 'smooth' })
       const halfWidth = w.scrollWidth / 2
-      if (w.scrollLeft + navScrollAmount >= halfWidth) {
-        setTimeout(() => {
+      if (w.scrollLeft + navScrollAmount >= halfWidth && !scrollEndPending) {
+        scrollEndPending = true
+        w.addEventListener('scrollend', () => {
           w.scrollLeft = w.scrollLeft - halfWidth
-        }, 350)
+          scrollEndPending = false
+        }, { once: true })
       }
-    })
+      w.scrollBy({ left: navScrollAmount, behavior: 'smooth' })
+    }, { signal })
 
-    container.addEventListener('mouseenter', stopAutoScroll)
-    container.addEventListener('mouseleave', startAutoScroll)
+    container.addEventListener('mouseenter', stopAutoScroll, { signal })
+    container.addEventListener('mouseleave', startAutoScroll, { signal })
+
+    function handleVisibilityChange() {
+      if (document.visibilityState === 'hidden') {
+        stopAutoScroll()
+      } else if (!isHovered()) {
+        startAutoScroll()
+      }
+    }
+    document.addEventListener('visibilitychange', handleVisibilityChange, { signal })
 
     startAutoScroll()
 
     // Registrar cleanup para la próxima navegación
     certCleanup = () => {
+      ac.abort()
       if (animationId) {
         cancelAnimationFrame(animationId)
         animationId = null
       }
-      container.removeEventListener('mouseenter', stopAutoScroll)
-      container.removeEventListener('mouseleave', startAutoScroll)
     }
   }
 

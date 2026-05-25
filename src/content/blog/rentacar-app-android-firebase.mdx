@@ -1,0 +1,30 @@
+---
+title: "Rentacar: app Android de registro de devoluciones de vehículos con Firebase"
+description: "Proyecto educacional de INACAP. App Android en Java para registro de devoluciones de vehículos arrendados. Firestore para persistencia con modelo de datos personalizado."
+publishDate: 2024-11-16
+tags: ["Android", "Java", "Firebase", "Firestore", "Educacional"]
+---
+
+Aplicación Android nativa en Java para registro de devoluciones de vehículos arrendados. Desarrollada como proyecto educacional en INACAP.
+
+## Qué hace
+
+Formulario de registro con campos de fecha, patente, comentarios y estado (dropdown). Los datos se persisten en Firestore con un modelo de datos `Entrada` que incluye patente, comentario, estado y fecha. Listado de todas las entradas registradas.
+
+## Stack
+
+| Capa | Tecnología |
+|------|------------|
+| Plataforma | Android (Java) |
+| Base de datos | Firebase Firestore |
+| UI | XML Layouts + Spinner |
+| Modelo | POJO con Firebase annotations |
+| Build | Gradle |
+
+## Lo que aprendí
+
+Firestore con `CollectionReference.add()` es la forma más directa de persistir datos en Android sin escribir una API backend. El adapter de Spinner con `ArrayAdapter.createFromResource` resuelve dropdowns con datos estáticos en una línea. Separar el modelo de datos en su propio paquete (`modelo.Entrada`) es una buena práctica incluso en proyectos chicos.
+
+## Código abierto
+
+[github.com/sebitabravo/rentacar](https://github.com/sebitabravo/rentacar)

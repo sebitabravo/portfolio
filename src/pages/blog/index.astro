@@ -1,0 +1,56 @@
+---
+import { getCollection } from 'astro:content'
+import Layout from "@/layouts/Layout.astro"
+import { personalInfo } from "@/lib/data"
+import BlogCard from "@/components/BlogCard.astro"
+
+const locale = 'es'
+const posts = (await getCollection('blog'))
+  .filter((p) => (p.data.locale ?? 'es') === 'es')
+  .sort((a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime())
+
+const canonicalUrl = 'https://sebita.dev/blog'
+---
+
+<Layout
+  title={`Blog - ${personalInfo.name}`}
+  description="Artículos sobre desarrollo full-stack, IoT, Machine Learning y experiencias construyendo software en producción."
+  locale={locale}
+  canonicalUrl={canonicalUrl}
+  alternates={[
+    { hreflang: 'es', href: canonicalUrl },
+    { hreflang: 'en', href: 'https://sebita.dev/en/blog' },
+    { hreflang: 'x-default', href: canonicalUrl },
+  ]}
+>
+  <main id="main-content" class="mx-auto max-w-[900px] px-4 py-12 sm:py-16 lg:py-20">
+    <nav class="mb-6" aria-label="Breadcrumb">
+      <ol class="flex flex-wrap items-center gap-2 text-sm text-foreground/55">
+        <li><a href="/" class="hover:text-foreground transition-colors">Inicio</a></li>
+        <li aria-hidden="true">/</li>
+        <li class="text-foreground/80 font-medium" aria-current="page">Blog</li>
+      </ol>
+    </nav>
+    <h1 class="text-3xl sm:text-4xl font-bold tracking-tight mb-4">Blog</h1>
+    <p class="text-foreground/70 text-base sm:text-lg mb-12 max-w-xl">
+      Escribo sobre lo que aprendo construyendo. Full-stack, IoT, Machine Learning y lecciones de codigo en produccion.
+    </p>
+
+    {posts.length === 0 ? (
+      <p class="text-foreground/55 text-sm">No hay artículos publicados aún.</p>
+    ) : (
+      <div class="space-y-8">
+        {posts.map((post) => (
+          <BlogCard
+            id={post.id}
+            title={post.data.title}
+            description={post.data.description}
+            publishDate={post.data.publishDate}
+            tags={post.data.tags}
+            locale={locale}
+          />
+        ))}
+      </div>
+    )}
+  </main>
+</Layout>

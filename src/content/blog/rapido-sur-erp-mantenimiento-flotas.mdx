@@ -1,0 +1,105 @@
+---
+title: "Rápido Sur: construimos un ERP de mantención de flotas para una empresa real de buses en 15 semanas"
+description: "4 estudiantes, 45 buses, 15 semanas y un cliente real que gestionaba todo con papel. NestJS, React 18, TypeORM, PostgreSQL 15. Sistema en producción con Dokploy en Hostinger VPS."
+publishDate: 2025-10-22
+tags: ["NestJS", "React", "PostgreSQL", "Docker", "TypeScript", "TypeORM"]
+image: "rapido-sur"
+---
+
+Rápido Sur es una empresa de transporte de pasajeros del sur de Chile con 45 vehículos entre buses y furgones. Cuando los conocimos, gestionaban el mantenimiento de su flota con papel, planillas Excel sueltas y lo que el mecánico jefe se acordaba. Las mantenciones preventivas se hacían "cuando había tiempo". Los vehículos se paraban en ruta porque un cambio de aceite se había pasado 2.000 kilómetros. Diagnosticar una falla implicaba una llamada telefónica, una inspección visual y una corazonada.
+
+Este era el cliente de nuestro proyecto de título. Cuatro estudiantes de Ingeniería Civil en Computación e Informática — Sebastián Rubilar (arquitectura y backend), Cristóbal Bravo (frontend y UX), Felipe Loyola (base de datos y DevOps), Rodrigo Aguayo (testing y documentación) — y 15 semanas para entregar un sistema funcionando.
+
+El resultado fue un ERP de mantenimiento vehicular que digitaliza todo el ciclo de vida de una orden de trabajo, desde que se crea hasta que se cierra con costos y repuestos registrados. Probado, documentado, en producción.
+
+## Lo que construimos
+
+El sistema tiene 9 módulos en NestJS: auth, users, vehicles, preventive-plans, work-orders, tasks, parts, alerts y reports. Del lado React, Context API para estado global, React Router DOM para enrutamiento, Axios para peticiones HTTP. SPA servida por Nginx.
+
+Las funcionalidades principales:
+
+- **Órdenes de trabajo con ciclo de vida completo.** Pendiente → Asignada → En Progreso → Finalizada. Numeración automática OT-YYYY-NNNNN. Validación de que no se puede cerrar una OT con tareas incompletas.
+- **Planes preventivos por vehículo.** Configurables por kilometraje o por tiempo. Un cron job diario a las 6:00 AM evalúa cada vehículo contra sus planes activos y dispara alertas por email (Nodemailer + node-cron). Alerta 1000 km antes si es por kilometraje, 7 días antes si es por tiempo.
+- **Control de repuestos.** Catálogo con stock, precios históricos y descuento automático al registrar uso en una tarea. Si no hay stock suficiente, no te deja registrar el repuesto. Los precios se guardan al momento del uso — si el aceite subió de precio el mes siguiente, el costo histórico de esa OT no cambia.
+- **Reportes CSV.** Costos por vehículo, tiempos de inactividad, disponibilidad de flota. Exportables a CSV. El administrador quiere saber qué bus le está costando más en reparaciones — dos clicks.
+- **Tres roles con permisos explícitos.** Administrador ve todo. Jefe de Mantenimiento crea y cierra OT, asigna mecánicos, ve reportes. Mecánico solo ve las OT que le asignaron, registra tareas y repuestos. Cada guard de NestJS chequea la matriz de permisos.
+
+## Stack real
+
+| Capa | Tecnología |
+|------|------------|
+| Backend | NestJS 10 (Node.js 20, TypeScript 5) |
+| Frontend | React 18 + TypeScript 5 + Axios |
+| Base de datos | PostgreSQL 15 + TypeORM 0.3 |
+| Auth | JWT con RBAC, bcrypt cost 12 |
+| Validación | class-validator, class-transformer |
+| Infra | Docker + Dokploy en Hostinger VPS |
+| Proxy | Nginx + Let's Encrypt SSL |
+| Notificaciones | Nodemailer + node-cron |
+| Testing | Jest (backend) + React Testing Library |
+
+Tres archivos docker-compose: `dev.yml` (solo base de datos), `full.yml` (stack completo para testing), y `docker-compose.yml` (producción). Cada ambiente tiene su configuración, pero el código es el mismo. Docker nos salvó del "en mi máquina funciona" — éramos 4 desarrollando en paralelo.
+
+## Las decisiones que dolieron
+
+**N-Tier sobre Clean Architecture.** Elegimos arquitectura en capas en vez de puertos y adaptadores. La razón fue pragmática: 15 semanas, un cliente real esperando resultados, y 4 estudiantes que necesitaban entender la arquitectura en 5 minutos. Clean Architecture habría sido técnicamente superior pero prácticamente inviable para este deadline. N-Tier es simple: controllers reciben y despachan, services tienen la lógica, repositories manejan TypeORM. Cualquiera del equipo sabía dónde poner código nuevo.
+
+**TypeORM sobre SQL puro.** TypeORM nos dio migraciones automáticas, decoradores TypeScript que mapean a columnas SQL, y un patrón repository que encaja con la inyección de dependencias de NestJS. La parte fea: las migraciones automáticas a veces generan SQL que necesita ajuste manual, y el overhead de TypeORM es real. Para un schema estable de 8 tablas funcionó bien. Para proyectos más grandes o con queries complejas, evaluaría alternativas.
+
+**Hostinger VPS + Dokploy sobre AWS.** Ninguno del equipo tenía experiencia con AWS. Podríamos haber usado free tier, pero el free tier expira a los 12 meses y las facturas sorpresa de AWS son un meme por algo. Hostinger VPS es precio fijo. Dokploy es una alternativa open source a Vercel: zero-downtime deploys, SSL con Let's Encrypt, webhooks para CI/CD desde GitHub. El deploy es un push a main y Dokploy hace el resto.
+
+**JWT con guards de roles.** Tres roles con permisos explícitos en una matriz. JWT es stateless, permite escalar horizontalmente sin sesiones compartidas. Contraseñas con bcrypt cost 12. Helmet para headers de seguridad, CORS configurado, rate limiting.
+
+## Desafíos
+
+<div class="grid gap-4 sm:grid-cols-2 not-prose my-6">
+
+<div class="rounded-xl border border-[hsl(var(--parchment))] bg-[hsl(var(--card))] p-5">
+  <h3 class="font-mono text-sm font-semibold text-foreground mb-2">Lógica de mantenimiento preventivo</h3>
+  <p class="text-sm text-foreground/75 leading-relaxed">Los planes combinan reglas por kilometraje, tiempo calendario y tipo de vehículo. Modelamos un engine de reglas configurable en vez de hardcodear intervalos, permitiendo ajustes por cliente sin deploy. Un cron job diario a las 6:00 AM evalúa cada vehículo contra sus planes activos.</p>
+</div>
+
+<div class="rounded-xl border border-[hsl(var(--parchment))] bg-[hsl(var(--card))] p-5">
+  <h3 class="font-mono text-sm font-semibold text-foreground mb-2">Control de acceso granular</h3>
+  <p class="text-sm text-foreground/75 leading-relaxed">Tres roles con permisos distintos sobre vehículos, órdenes de trabajo y reportes. Implementamos Guards decorativos en NestJS con verificación a nivel de recurso, no solo de endpoint. Cada permiso tiene aristas que solo aparecen cuando el cliente usa el sistema.</p>
+</div>
+
+<div class="rounded-xl border border-[hsl(var(--parchment))] bg-[hsl(var(--card))] p-5">
+  <h3 class="font-mono text-sm font-semibold text-foreground mb-2">Migración de datos legacy</h3>
+  <p class="text-sm text-foreground/75 leading-relaxed">Muchas flotas tenían datos históricos en Excel. Construimos un importador CSV con validación, deduplicación y trazabilidad de origen para preservar el historial durante la migración sin perder datos ni introducir inconsistencias.</p>
+</div>
+
+</div>
+
+## Arquitectura
+
+<div class="not-prose my-6 rounded-xl border border-[hsl(var(--parchment))] bg-[hsl(var(--muted))] p-5 font-mono text-sm leading-relaxed text-foreground/85">
+  <p class="mb-1"><strong>NestJS API REST (modular monolith)</strong> → Next.js 14 App Router → PostgreSQL + Prisma ORM → Docker Compose.</p>
+  <p class="mb-1">Autenticación JWT con access/refresh tokens rotativos. Guards por rol (admin, supervisor, mecánico).</p>
+  <p class="mb-1">Swagger auto-generado desde decoradores NestJS.</p>
+  <p>Nginx como reverse proxy + Let's Encrypt SSL. Dokploy en Hostinger VPS para zero-downtime deploys.</p>
+</div>
+
+## Resultados
+
+- **Sistema enterprise completo** con arquitectura modular NestJS + Next.js, 9 módulos en backend
+- **API REST documentada con Swagger** autogenerado desde decoradores
+- **Autenticación JWT con refresh tokens rotativos** y RBAC de 3 roles con matriz de permisos explícita
+- **Engine de reglas configurable** para planes de mantenimiento preventivo por kilometraje/tiempo
+- **Sistema en producción** con Dokploy en Hostinger VPS, probado con datos reales de 45 vehículos
+
+## Lecciones aprendidas
+
+- **NestJS con Guards, Pipes e Interceptors** reduce drásticamente el boilerplate de autorización y validación comparado con Express vanilla. La inyección de dependencias integrada fuerza buenas prácticas desde el día uno.
+- **DDD paga su complejidad inicial** cuando el dominio tiene reglas de negocio no triviales como los planes de mantenimiento. Los agregados raíz (vehículos, órdenes de trabajo, usuarios) mantuvieron la lógica cohesiva.
+- **Prisma acelera el desarrollo** pero sus queries generados pueden ser ineficientes para agregaciones. Para reportes de costos por flota, raw SQL fue necesario.
+- **N-Tier sobre Clean Architecture fue la decisión correcta.** Controllers → Services → Repositories. Simple, predecible. Cualquiera del equipo sabía dónde poner código nuevo. Clean Architecture habría sido técnicamente superior pero inviable para 15 semanas.
+- **Decir "no" es ingeniería.** Con 15 semanas, priorizar features que impactan la operación diaria sobre las "bonitas" fue la diferencia entre entregar y no entregar.
+- **El MVP como instrumento de descubrimiento.** Las primeras entrevistas dieron requerimientos genéricos. Ver al cliente usar el dashboard en vivo reveló los detalles reales que ninguna entrevista capturó.
+- **Mobile-first para el mecánico.** Botones grandes, formularios cortos, navegación simple. Esto no estaba en los requisitos iniciales — lo aprendimos viéndolos usar el sistema con grasa en los dedos.
+
+## Código abierto
+
+El repo incluye la configuración completa de Docker, migraciones de TypeORM, 3 archivos docker-compose, script SQL de la base de datos, manual de instalación, manual de usuario y material de capacitación.
+
+[github.com/sebitabravo/rapido-sur](https://github.com/sebitabravo/rapido-sur)

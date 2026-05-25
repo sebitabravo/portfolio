@@ -32,13 +32,13 @@ export interface Project {
   description: string
   tags: string[]
   featured: boolean
-  status: "production" | "wip" | "archived"
+  status: "production" | "development" | "demo"
   metrics?: { label: string; value: string }[]
   publishDate: Date
-  image: string
   githubUrl?: string
   liveUrl?: string
   order: number
+  blogSlug?: string
 }
 
 export interface Education {
@@ -57,11 +57,9 @@ export interface Education {
 export interface Certification {
   name: string
   organization: string
-  description: string
-  issueDate: Date
-  expirationDate?: Date | null
   pdfUrl?: string
-  skills: string[]
+  order: number
+  category: "professional" | "academic"
 }
 
 // ============================================
@@ -71,18 +69,16 @@ export interface Certification {
 export const personalInfo = {
   name: "Sebastian Bravo",
   title: "Full-Stack Developer",
-  description: "Full-Stack Developer. Construyo plataformas web completas con React, TypeScript, IoT y Machine Learning. Estudiante de Ingeniería Informática.",
-  descriptionEn: "Full-Stack Developer. I build production-grade web platforms with React, TypeScript, IoT and Machine Learning. Computer Engineering student.",
+  description: "Full-Stack Developer. Construyo plataformas web completas con React, TypeScript, IoT y Machine Learning. Estudiante de Ingeniería Informática. Inglés C1.",
+  descriptionEn: "Full-Stack Developer. I build production-grade web platforms with React, TypeScript, IoT and Machine Learning. Computer Engineering student. English C1.",
   email: "sebitabravocontacto@gmail.com",
   location: "Chile 🇨🇱",
   available: true,
-  calendly: "", // Tu link de Cal.com o Calendly
 }
 
 export const social = {
   github: "https://github.com/sebitabravo",
   linkedin: "https://linkedin.com/in/sebitabravo",
-  twitter: "https://twitter.com/sebitabravo",
 }
 
 // ============================================
@@ -94,21 +90,21 @@ const workExperienceData = {
     {
       company: "MIMASOFT",
       position: "Desarrollador Full Stack",
-      description: `Contribuí al desarrollo de una plataforma SaaS de huella de carbono en producción para el sector minero e industrial. Estandaricé la capa de datos migrando 43 módulos a TanStack Query, resolví bug crítico de autenticación CSRF, implementé sistema de permisos granulares (15 permisos/módulo con guards por tenant) y eliminé +10K líneas de dead code reduciendo bundle y superficie de ataque.`,
+      description: `Contribuí al desarrollo de una plataforma SaaS de huella de carbono en producción para el sector minero e industrial. Estandaricé la capa de datos migrando módulos legacy a TanStack Query, implementé sistema de permisos granulares con guards por tenant, y lideré una limpieza de codebase que redujo significativamente el bundle y la superficie de ataque.`,
       startDate: new Date("2026-02-01"),
       endDate: new Date("2026-04-30"),
       current: false,
       location: "Santiago, Chile (Remoto)",
-      employmentType: "Contrato",
+      employmentType: "Contrato por proyecto (3 meses)",
       skills: ["React", "TypeScript", "Laravel", "TanStack Query", "Docker", "Git"],
       logos: [
-        { src: "/experience/mimasoft.png", alt: "MIMASOFT", url: "https://www.mimasoft.com" },
+        { src: "/experience/mimasoft.webp", alt: "MIMASOFT", url: "https://www.mimasoft.com" },
       ],
     },
     {
       company: "Temutel",
       position: "Técnico en Redes y Telecomunicaciones",
-      description: `Técnico en Temutel, proveedor de servicios para Telsur. Realicé ~30+ instalaciones y configuraciones semanales de equipos de telecomunicaciones (routers, decodificadores, sistemas telefónicos) para clientes residenciales y comerciales, con soporte técnico en sitio.`,
+      description: `Técnico de instalación y soporte para Telsur. ~30+ instalaciones semanales de equipos de telecomunicaciones en clientes residenciales y comerciales.`,
       startDate: new Date("2022-12-01"),
       endDate: new Date("2023-02-28"),
       current: false,
@@ -116,8 +112,8 @@ const workExperienceData = {
       employmentType: "Contrato temporal",
       skills: ["Mantenimiento de Redes", "Instalación de Equipos", "Configuración de Routers", "Soporte Técnico"],
       logos: [
-        { src: "/experience/temutel.png", alt: "Temutel Telecomunicaciones", url: "https://www.temutel.cl" },
-        { src: "/experience/telsur.png", alt: "Telsur GTD", url: "https://www.telsur.cl" },
+        { src: "/experience/temutel.webp", alt: "Temutel Telecomunicaciones", url: "https://www.temutel.cl" },
+        { src: "/experience/telsur.webp", alt: "Telsur GTD", url: "https://www.telsur.cl" },
       ],
     }
   ],
@@ -125,7 +121,7 @@ const workExperienceData = {
     {
       company: "MIMASOFT",
       position: "Full Stack Developer",
-      description: `Contributed to a carbon footprint SaaS platform in production for the mining and industrial sector. Standardized the data layer by migrating 43 modules to TanStack Query, fixed a critical CSRF authentication bug, implemented granular permission system (15 permissions/module with tenant-based guards), and removed 10K+ lines of dead code reducing bundle size and attack surface.`,
+      description: `Contributed to a carbon footprint SaaS platform in production for the mining and industrial sector. Standardized the data layer by migrating legacy modules to TanStack Query, implemented a granular permission system with tenant-based guards, and led a codebase cleanup that significantly reduced bundle size and attack surface.`,
       startDate: new Date("2026-02-01"),
       endDate: new Date("2026-04-30"),
       current: false,
@@ -133,13 +129,13 @@ const workExperienceData = {
       employmentType: "Contract",
       skills: ["React", "TypeScript", "Laravel", "TanStack Query", "Docker", "Git"],
       logos: [
-        { src: "/experience/mimasoft.png", alt: "MIMASOFT", url: "https://www.mimasoft.com" },
+        { src: "/experience/mimasoft.webp", alt: "MIMASOFT", url: "https://www.mimasoft.com" },
       ],
     },
     {
       company: "Temutel",
       position: "Network and Telecommunications Technician",
-      description: `Technician at Temutel, a service provider for Telsur. Handled ~30+ weekly installations and configurations of telecommunications equipment (routers, decoders, telephone systems) for residential and commercial clients, with on-site technical support.`,
+      description: `Installation and support technician for Telsur. ~30+ weekly telecom equipment installations for residential and commercial clients.`,
       startDate: new Date("2022-12-01"),
       endDate: new Date("2023-02-28"),
       current: false,
@@ -147,8 +143,8 @@ const workExperienceData = {
       employmentType: "Temporary contract",
       skills: ["Network Maintenance", "Equipment Installation", "Router Configuration", "Technical Support"],
       logos: [
-        { src: "/experience/temutel.png", alt: "Temutel Telecomunicaciones", url: "https://www.temutel.cl" },
-        { src: "/experience/telsur.png", alt: "Telsur GTD", url: "https://www.telsur.cl" },
+        { src: "/experience/temutel.webp", alt: "Temutel Telecomunicaciones", url: "https://www.temutel.cl" },
+        { src: "/experience/telsur.webp", alt: "Telsur GTD", url: "https://www.telsur.cl" },
       ],
     }
   ]
@@ -167,7 +163,7 @@ const projectsData = {
     {
       slug: "manttoai",
       title: "ManttoAI",
-      description: "Plataforma de mantenimiento predictivo IoT con Machine Learning. Telemetría en tiempo real, modelo Random Forest (94.1% F1-Score) y dashboard interactivo.",
+      description: "Mantenimiento predictivo para industria con IoT y ML: telemetría en tiempo real, modelo Random Forest con 94.1% F1-Score en producción y dashboard interactivo.",
       tags: ["FastAPI", "React", "Machine Learning", "Docker", "IoT"],
       featured: true,
       status: "production" as const,
@@ -176,15 +172,15 @@ const projectsData = {
         { label: "Stack", value: "6 techs" },
       ],
       publishDate: new Date("2026-04-29"),
-      image: "manttoai",
       githubUrl: "https://github.com/sebitabravo/ManttoAI",
       liveUrl: undefined,
       order: 3,
+      blogSlug: "manttoai-ml-iot-random-forest",
     },
     {
       slug: "vulcania",
       title: "Vulcania",
-      description: "Plataforma de monitoreo volcánico comunitario con mapa en tiempo real, chat, alertas y notificaciones push.",
+      description: "Monitoreo volcánico comunitario para zonas de riesgo sísmico: mapa colaborativo en tiempo real, chat, alertas tempranas y notificaciones push.",
       tags: ["Next.js", "TypeScript", "Supabase", "shadcn/ui"],
       featured: true,
       status: "production" as const,
@@ -193,15 +189,15 @@ const projectsData = {
         { label: "Stack", value: "4 techs" },
       ],
       publishDate: new Date("2026-03-02"),
-      image: "vulcania",
       githubUrl: "https://github.com/sebitabravo/vulcania-web",
       liveUrl: "https://vulcania-web.vercel.app",
       order: 1,
+      blogSlug: "vulcania-monitoreo-volcanico-comunitario",
     },
     {
       slug: "rapido-sur",
       title: "Rápido Sur",
-      description: "Sistema enterprise de gestión de mantenimiento vehicular. NestJS + Next.js + PostgreSQL con auth JWT, planes preventivos y órdenes de trabajo.",
+      description: "Gestión de mantenimiento vehicular para flotas enterprise: backend NestJS con JWT, frontend Next.js y PostgreSQL con planes preventivos y órdenes de trabajo.",
       order: 4,
       tags: ["NestJS", "Next.js", "TypeScript", "PostgreSQL", "Docker"],
       featured: true,
@@ -211,14 +207,14 @@ const projectsData = {
         { label: "Stack", value: "5 techs" },
       ],
       publishDate: new Date("2026-03-02"),
-      image: "rapido-sur",
       githubUrl: "https://github.com/sebitabravo/rapido-sur",
       liveUrl: undefined,
+      blogSlug: "rapido-sur-erp-mantenimiento-flotas",
     },
     {
       slug: "wenuke",
-      title: "Wenuke",
-      description: "Asistente climático agrícola por WhatsApp para pequeños agricultores de Chile. IA conversacional con Groq Llama 3.1 70B, alertas de helada/lluvia y recomendaciones por cultivo.",
+      title: "Werken-mapu",
+      description: "Asistente climático agrícola para pequeños agricultores de Chile vía WhatsApp: IA conversacional con Groq Llama 3.1 70B, alertas de helada/lluvia en tiempo real y recomendaciones personalizadas por cultivo.",
       tags: ["FastAPI", "Python", "Groq LLM", "WhatsApp API", "Turso"],
       featured: true,
       status: "production" as const,
@@ -227,17 +223,17 @@ const projectsData = {
         { label: "Usuarios", value: "Agricultores" },
       ],
       publishDate: new Date("2026-05-03"),
-      image: "wenuke",
       githubUrl: "https://github.com/sebitabravo/Wenuke",
       liveUrl: "https://frontend-lac-eight-97.vercel.app",
       order: 2,
+      blogSlug: "wenuke-asistente-climatico-whatsapp",
     },
   ],
   en: [
     {
       slug: "manttoai",
       title: "ManttoAI",
-      description: "IoT predictive maintenance platform with Machine Learning. Real-time telemetry, Random Forest model (94.1% F1-Score) and interactive dashboard.",
+      description: "Predictive maintenance for industry with IoT and ML: real-time telemetry, Random Forest model with 94.1% F1-Score in production and interactive dashboard.",
       order: 3,
       tags: ["FastAPI", "React", "Machine Learning", "Docker", "IoT"],
       featured: true,
@@ -247,14 +243,14 @@ const projectsData = {
         { label: "Stack", value: "6 techs" },
       ],
       publishDate: new Date("2026-04-29"),
-      image: "manttoai",
       githubUrl: "https://github.com/sebitabravo/ManttoAI",
       liveUrl: undefined,
+      blogSlug: "manttoai-ml-iot-random-forest",
     },
     {
       slug: "vulcania",
       title: "Vulcania",
-      description: "Community volcanic monitoring platform with real-time map, chat, alerts and push notifications.",
+      description: "Community volcanic monitoring for at-risk seismic zones: real-time collaborative map, chat, early alerts and push notifications.",
       tags: ["Next.js", "TypeScript", "Supabase", "shadcn/ui"],
       featured: true,
       status: "production" as const,
@@ -263,15 +259,15 @@ const projectsData = {
         { label: "Stack", value: "4 techs" },
       ],
       publishDate: new Date("2026-03-02"),
-      image: "vulcania",
       githubUrl: "https://github.com/sebitabravo/vulcania-web",
       liveUrl: "https://vulcania-web.vercel.app",
       order: 1,
+      blogSlug: "vulcania-monitoreo-volcanico-comunitario",
     },
     {
       slug: "rapido-sur",
       title: "Rápido Sur",
-      description: "Enterprise fleet vehicle maintenance system. NestJS + Next.js + PostgreSQL with JWT auth, preventive maintenance plans and work orders.",
+      description: "Fleet vehicle maintenance management for enterprise: NestJS backend with JWT auth, Next.js frontend and PostgreSQL with preventive plans and work orders.",
       order: 4,
       tags: ["NestJS", "Next.js", "TypeScript", "PostgreSQL", "Docker"],
       featured: true,
@@ -281,14 +277,14 @@ const projectsData = {
         { label: "Stack", value: "5 techs" },
       ],
       publishDate: new Date("2026-03-02"),
-      image: "rapido-sur",
       githubUrl: "https://github.com/sebitabravo/rapido-sur",
       liveUrl: undefined,
+      blogSlug: "rapido-sur-erp-mantenimiento-flotas",
     },
     {
       slug: "wenuke",
-      title: "Wenuke",
-      description: "Agricultural climate assistant via WhatsApp for small farmers in Chile. Conversational AI with Groq Llama 3.1 70B, frost/rain alerts and crop-specific recommendations.",
+      title: "Werken-mapu",
+      description: "Agricultural climate assistant for small farmers in Chile via WhatsApp: conversational AI with Groq Llama 3.1 70B, real-time frost/rain alerts and personalized crop recommendations.",
       tags: ["FastAPI", "Python", "Groq LLM", "WhatsApp API", "Turso"],
       featured: true,
       status: "production" as const,
@@ -297,10 +293,10 @@ const projectsData = {
         { label: "Users", value: "Small farmers" },
       ],
       publishDate: new Date("2026-05-03"),
-      image: "wenuke",
       githubUrl: "https://github.com/sebitabravo/Wenuke",
       liveUrl: "https://frontend-lac-eight-97.vercel.app",
       order: 2,
+      blogSlug: "wenuke-asistente-climatico-whatsapp",
     },
   ]
 }
@@ -381,89 +377,36 @@ const certificationsData = {
     {
       name: "AWS Academy Graduate - AWS Academy Cloud Foundations",
       organization: "Amazon Web Services (AWS)",
-      description: "Conocimientos fundamentales en computación en la nube, servicios AWS (EC2, S3, RDS, Lambda), arquitectura de alta disponibilidad y seguridad en la nube.",
-      issueDate: new Date("2025-07-01"),
-      expirationDate: null,
       pdfUrl: "/certifications/aws-cloud-foundations.pdf",
-      skills: ["AWS", "Cloud Computing", "EC2", "S3", "Cloud Architecture"],
       order: 1,
       category: 'professional' as const,
     },
     {
       name: "Git de noob a pro",
       organization: "Mastermind",
-      description: "Control de versiones avanzado con Git: branching strategies, Git Flow, resolución de conflictos, GitHub workflows y automatización.",
-      issueDate: new Date("2025-01-01"),
-      expirationDate: null,
       pdfUrl: "/certifications/git-noob-pro.pdf",
-      skills: ["Git", "GitHub", "Control de Versiones", "Git Flow"],
       order: 2,
       category: 'professional' as const,
     },
     {
       name: "Desarrollador Full Stack",
       organization: "INACAP",
-      description: "Desarrollo full stack completo: Frontend (HTML5, CSS3, JavaScript, React.js) y Backend (Python, Django, REST APIs), con deployment y mejores prácticas.",
-      issueDate: new Date("2024-12-01"),
-      expirationDate: null,
       pdfUrl: "/certifications/full-stack-developer.pdf",
-      skills: ["Django", "Python", "JavaScript", "React.js", "REST API", "Full Stack"],
       order: 3,
-      category: 'academic' as const,
-    },
-    {
-      name: "Desarrollo de Aplicaciones Básicas",
-      organization: "INACAP",
-      description: "Fundamentos de programación orientada a objetos, estructuras de datos, algoritmos y desarrollo con Python.",
-      issueDate: new Date("2024-12-01"),
-      expirationDate: null,
-      pdfUrl: "/certifications/basic-app-development.pdf",
-      skills: ["POO", "Python", "Estructuras de Datos", "Algoritmos"],
-      order: 4,
-      category: 'academic' as const,
-    },
-    {
-      name: "Soporte Computacional",
-      organization: "INACAP",
-      description: "Administración de sistemas Windows/Linux, troubleshooting de redes, Cisco Packet Tracer y mantenimiento preventivo.",
-      issueDate: new Date("2024-12-01"),
-      expirationDate: null,
-      pdfUrl: "/certifications/computer-support.pdf",
-      skills: ["Linux", "Windows", "Soporte Técnico", "Packet Tracer", "Networking"],
-      order: 5,
       category: 'academic' as const,
     },
     {
       name: "Diseño y Gestión de Base de Datos",
       organization: "INACAP",
-      description: "Diseño de bases de datos relacionales, SQL avanzado, MySQL, PostgreSQL, MongoDB y optimización de rendimiento.",
-      issueDate: new Date("2024-10-01"),
-      expirationDate: null,
       pdfUrl: "/certifications/database-design.pdf",
-      skills: ["MongoDB", "MySQL", "PostgreSQL", "SQL", "Database Design"],
-      order: 6,
+      order: 4,
       category: 'academic' as const,
     },
     {
       name: "Diseño Ágil de Sistemas",
       organization: "INACAP",
-      description: "Metodologías ágiles (Scrum, Kanban), gestión de sprints, user stories y herramientas de gestión ágil (Jira, Trello).",
-      issueDate: new Date("2024-10-01"),
-      expirationDate: null,
       pdfUrl: "/certifications/agile-systems-design.pdf",
-      skills: ["Scrum", "Metodologías Ágiles", "Agile", "Sprint Planning"],
-      order: 7,
-      category: 'academic' as const,
-    },
-    {
-      name: "Instalación y Configuración de Windows",
-      organization: "Mastermind",
-      description: "Instalación y configuración de Windows 10/11, Windows Server, Active Directory, Group Policy y PowerShell básico.",
-      issueDate: new Date("2023-12-01"),
-      expirationDate: null,
-      pdfUrl: "/certifications/windows-installation.pdf",
-      skills: ["Windows", "Windows Server", "Active Directory", "Group Policy"],
-      order: 8,
+      order: 5,
       category: 'academic' as const,
     },
   ],
@@ -471,89 +414,36 @@ const certificationsData = {
     {
       name: "AWS Academy Graduate - AWS Academy Cloud Foundations",
       organization: "Amazon Web Services (AWS)",
-      description: "Fundamental knowledge in cloud computing, AWS services (EC2, S3, RDS, Lambda), high availability architecture and cloud security.",
-      issueDate: new Date("2025-07-01"),
-      expirationDate: null,
       pdfUrl: "/certifications/aws-cloud-foundations.pdf",
-      skills: ["AWS", "Cloud Computing", "EC2", "S3", "Cloud Architecture"],
       order: 1,
       category: 'professional' as const,
     },
     {
       name: "Git from Noob to Pro",
       organization: "Mastermind",
-      description: "Advanced version control with Git: branching strategies, Git Flow, conflict resolution, GitHub workflows and automation.",
-      issueDate: new Date("2025-01-01"),
-      expirationDate: null,
       pdfUrl: "/certifications/git-noob-pro.pdf",
-      skills: ["Git", "GitHub", "Version Control", "Git Flow"],
       order: 2,
       category: 'professional' as const,
     },
     {
       name: "Full Stack Developer",
       organization: "INACAP",
-      description: "Complete full stack development: Frontend (HTML5, CSS3, JavaScript, React.js) and Backend (Python, Django, REST APIs), with deployment and best practices.",
-      issueDate: new Date("2024-12-01"),
-      expirationDate: null,
       pdfUrl: "/certifications/full-stack-developer.pdf",
-      skills: ["Django", "Python", "JavaScript", "React.js", "REST API", "Full Stack"],
       order: 3,
-      category: 'academic' as const,
-    },
-    {
-      name: "Basic Application Development",
-      organization: "INACAP",
-      description: "Fundamentals of object-oriented programming, data structures, algorithms and Python development.",
-      issueDate: new Date("2024-12-01"),
-      expirationDate: null,
-      pdfUrl: "/certifications/basic-app-development.pdf",
-      skills: ["OOP", "Python", "Data Structures", "Algorithms"],
-      order: 4,
-      category: 'academic' as const,
-    },
-    {
-      name: "Computer Support",
-      organization: "INACAP",
-      description: "Windows/Linux system administration, network troubleshooting, Cisco Packet Tracer and preventive maintenance.",
-      issueDate: new Date("2024-12-01"),
-      expirationDate: null,
-      pdfUrl: "/certifications/computer-support.pdf",
-      skills: ["Linux", "Windows", "Technical Support", "Packet Tracer", "Networking"],
-      order: 5,
       category: 'academic' as const,
     },
     {
       name: "Database Design and Management",
       organization: "INACAP",
-      description: "Relational database design, advanced SQL, MySQL, PostgreSQL, MongoDB and performance optimization.",
-      issueDate: new Date("2024-10-01"),
-      expirationDate: null,
       pdfUrl: "/certifications/database-design.pdf",
-      skills: ["MongoDB", "MySQL", "PostgreSQL", "SQL", "Database Design"],
-      order: 6,
+      order: 4,
       category: 'academic' as const,
     },
     {
       name: "Agile Systems Design",
       organization: "INACAP",
-      description: "Agile methodologies (Scrum, Kanban), sprint management, user stories and agile management tools (Jira, Trello).",
-      issueDate: new Date("2024-10-01"),
-      expirationDate: null,
       pdfUrl: "/certifications/agile-systems-design.pdf",
-      skills: ["Scrum", "Agile Methodologies", "Agile", "Sprint Planning"],
-      order: 7,
-      category: 'academic' as const,
-    },
-    {
-      name: "Windows Installation and Configuration",
-      organization: "Mastermind",
-      description: "Installation and configuration of Windows 10/11, Windows Server, Active Directory, Group Policy and basic PowerShell.",
-      issueDate: new Date("2023-12-01"),
-      expirationDate: null,
-      pdfUrl: "/certifications/windows-installation.pdf",
-      skills: ["Windows", "Windows Server", "Active Directory", "Group Policy"],
-      order: 8,
+      order: 5,
       category: 'academic' as const,
     },
   ]
@@ -593,6 +483,7 @@ const aboutMeData = {
     ],
     interestsTitle: "Intereses",
     techStackTitle: "Stack Tecnológico",
+    techStackSubtitle: "Las herramientas con las que construyo día a día",
     lookingFor: `Busco un equipo donde pueda contribuir con impacto real. Me motivan los proyectos que resuelven problemas concretos con tecnología bien aplicada — TypeScript, Python, cloud y testing automatizado.`,
   },
   en: {
@@ -608,6 +499,7 @@ const aboutMeData = {
     ],
     interestsTitle: "Interests",
     techStackTitle: "Tech Stack",
+    techStackSubtitle: "The tools I build with day to day",
     lookingFor: `I'm looking for a team where I can make a real impact. I'm motivated by projects that solve concrete problems with well-applied technology — TypeScript, Python, cloud and automated testing.`,
   }
 }

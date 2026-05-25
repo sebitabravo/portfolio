@@ -1,0 +1,30 @@
+---
+title: "SeguroApp: calculadora de seguro vehicular para Android"
+description: "Proyecto educacional de INACAP. App Android en Java para cotizar seguros de vehículos según marca, modelo y año. Cálculo de antigüedad y paso de objetos entre actividades."
+publishDate: 2024-10-10
+tags: ["Android", "Java", "Seguros", "Educacional"]
+---
+
+Aplicación Android nativa en Java para cotización de seguros vehiculares. Desarrollada como proyecto educacional en INACAP.
+
+## Qué hace
+
+Formulario con campos de marca, modelo y año del vehículo. Calcula la antigüedad usando `Calendar.getInstance().get(Calendar.YEAR)` y la envía junto con los datos del vehículo a una segunda actividad para mostrar la cotización. El modelo `Vehiculo` implementa `Serializable` para pasarse como extra del Intent.
+
+## Stack
+
+| Capa | Tecnología |
+|------|------------|
+| Plataforma | Android (Java) |
+| UI | XML Layouts + AppCompatActivity |
+| Modelo | POJO serializable |
+| Navegación | Intent con objeto Serializable |
+| Build | Gradle (Kotlin DSL) |
+
+## Lo que aprendí
+
+Pasar objetos complejos entre actividades requiere `implements Serializable` — los tipos primitivos funcionan directo con `putExtra()`, pero objetos custom necesitan serialización. Calcular antigüedad con `Calendar.getInstance()` es simple pero frágil — en producción usarías `java.time` (API Level 26+) o ThreeTenABP para backport.
+
+## Código abierto
+
+[github.com/sebitabravo/seguroapp](https://github.com/sebitabravo/seguroapp)

@@ -1,0 +1,69 @@
+---
+title: "Reducción de ruido en tiempo real con Web Audio API: DSP en el navegador sin backend"
+description: "Sistema web de reducción de ruido con pipeline DSP completo en el navegador: high-pass, low-pass, compressor, noise gate. Dashboard interactivo con Chart.js y Web Audio API. Procesamiento 100% client-side."
+publishDate: 2025-10-08
+tags: ["JavaScript", "Web Audio API", "DSP", "Flask", "Chart.js", "Tailwind CSS"]
+image: "reducir-ruido"
+---
+
+La mayoría de las apps de reducción de ruido procesan el audio en el servidor: subís un archivo, esperás, descargás el resultado. Este proyecto hace todo en el navegador, en tiempo real, sin enviar un solo byte de audio a ningún servidor. Hablás al micrófono, el audio pasa por una cadena de filtros DSP (Digital Signal Processing) y sale limpio por los altavoces — todo con Web Audio API y latencia mínima.
+
+El servidor Flask es un lujo: solo sirve el HTML y el JavaScript estático. Podría ser un archivo `.html` abierto directamente en el navegador y funcionaría igual.
+
+## Stack
+
+| Componente | Tecnología |
+|------------|------------|
+| DSP | Web Audio API (BiquadFilter, DynamicsCompressor, ScriptProcessor) |
+| Frontend | HTML5 + JavaScript ES6 + Tailwind CSS + Flowbite |
+| Dashboard | Chart.js (forma de onda, espectro, estadísticas) |
+| Servidor | Flask 3.0 (solo sirve archivos estáticos) |
+| Infra | Docker |
+
+## El pipeline DSP
+
+El procesamiento de audio es una cadena de cuatro etapas nativas del navegador:
+
+```
+Micrófono → High-Pass Filter → Low-Pass Filter → Compressor → Noise Gate → Altavoces
+```
+
+Cada etapa tiene un propósito específico:
+
+- **High-Pass Filter (100 Hz).** Elimina ruidos graves: vibraciones del escritorio, aire acondicionado, "rumble" de manipulación del micrófono. La voz humana empieza alrededor de 85 Hz, así que 100 Hz es un corte seguro que preserva los fundamentales de la voz.
+- **Low-Pass Filter (8 kHz).** Elimina ruidos agudos: sibilancias, interferencia eléctrica, aliasing digital. La voz humana no produce energía significativa arriba de 8 kHz — todo lo demás es ruido o armónicos irrelevantes para la inteligibilidad.
+- **Dynamic Compressor.** Reduce la diferencia entre los sonidos fuertes y los suaves. Si alguien susurra y después grita, el compressor empareja los niveles para que la salida sea consistente.
+- **Noise Gate.** Cuando el nivel de audio cae por debajo de un umbral, el gate silencia la salida completamente. Esto elimina el ruido de fondo cuando nadie está hablando, que es donde más se nota.
+
+El `AudioContext` se configura con `sampleRate: 48000` y `latencyHint: 'interactive'` para minimizar el delay. Los filtros Biquad son nativos del navegador — cero overhead de JavaScript en la ruta crítica de audio.
+
+## Dashboard en tiempo real
+
+El dashboard usa Chart.js con actualización en tiempo real vía `requestAnimationFrame`:
+
+- **Gráfico de forma de onda:** visualización de amplitud en el dominio del tiempo.
+- **Espectro de frecuencias:** análisis FFT en tiempo real. Muestra qué frecuencias están presentes en la señal y cómo cambian cuando hablás.
+- **Estadísticas en vivo:** nivel de volumen en dB, porcentaje de reducción de ruido, frecuencia de muestreo en Hz, latencia del sistema en ms.
+- **Pipeline visual:** indicador de estado para cada etapa del procesamiento.
+
+## Las decisiones
+
+**Todo en el navegador.** La arquitectura es deliberadamente minimalista: Flask solo sirve dos archivos (`index.html` y `main.js`). No hay base de datos, no hay colas, no hay workers. La privacidad es total — el audio nunca sale del navegador del usuario. Para una herramienta de procesamiento de audio, esto es una ventaja competitiva real, no un compromiso.
+
+**Web Audio API en vez de una librería DSP.** Existen librerías como Tone.js o Pizzicato que abstraen la Web Audio API, pero para una cadena de filtros simple como esta, la API nativa es más que suficiente. Los BiquadFilter nodes son eficientes (corren en un thread de audio dedicado fuera del event loop de JavaScript) y el soporte en navegadores modernos es universal.
+
+**Chart.js en vez de visualización canvas nativa.** Chart.js agrega ~60KB al bundle, pero la diferencia en calidad visual y mantenibilidad justifica el overhead. Actualizar un gráfico de Chart.js con nuevos datos es una línea; dibujar un osciloscopio en canvas manualmente son 50 líneas de trigonometría y coordenadas.
+
+## Lo que aprendí
+
+La Web Audio API tiene un modo "suspendido" por defecto. El `AudioContext` no empieza a procesar audio hasta que el usuario interactúa con la página (click, tap, tecla). Esto es una política de los navegadores para evitar que los sitios web consuman CPU de audio sin consentimiento del usuario. La app tiene que llamar `audioContext.resume()` después del primer click del usuario, no antes.
+
+El `echoCancellation: true` en `getUserMedia` ayuda con el feedback del micrófono, pero no es perfecto. Si el usuario no usa auriculares, el audio de los altavoces se cuela en el micrófono y crea un loop. La solución real es usar auriculares — no hay DSP que resuelva acústica de sala.
+
+El noise gate con `ScriptProcessorNode` está deprecado. La API moderna es `AudioWorklet`, pero el soporte en navegadores todavía no es universal (Safari lo agregó en 2021, Firefox en 2022). Para un proyecto que prioriza compatibilidad, `ScriptProcessorNode` sigue siendo la opción pragmática.
+
+## Código abierto
+
+El repo incluye la app Flask, el pipeline DSP completo, dashboard con Chart.js, Dockerfile y documentación detallada de cada técnica de procesamiento.
+
+[github.com/sebitabravo/reducir-ruido](https://github.com/sebitabravo/reducir-ruido)

@@ -1,0 +1,35 @@
+---
+title: "SistemBiblio: sistema de inventario para librería con Django"
+description: "Proyecto educacional de INACAP. Sistema de gestión de inventario para librerías con Django. Productos, bodegas, movimientos entre bodegas y roles de usuario."
+publishDate: 2024-11-28
+tags: ["Django", "Python", "SQLite", "CRUD", "Inventario", "Educacional"]
+---
+
+Sistema de inventario para la librería "El Gran Poeta" desarrollado como proyecto educacional en INACAP. Gestiona productos, bodegas y movimientos con control de acceso basado en roles.
+
+## Qué hace
+
+Gestión de productos (libros, revistas, enciclopedias) con asignación de editorial y autores. Administración de bodegas con visualización de stock por ubicación. Registro de movimientos entre bodegas con trazabilidad completa (origen, destino, productos, cantidades, usuario responsable). Sistema de login con roles diferenciados.
+
+## Roles
+
+- **Jefe de Bodega**: gestión completa de productos, bodegas e informes
+- **Bodeguero**: realización de movimientos de productos entre bodegas
+
+## Stack
+
+| Capa | Tecnología |
+|------|------------|
+| Backend | Django 5.1 |
+| Base de datos | SQLite |
+| API | Django REST Framework |
+| Frontend | Django Templates |
+| Auth | Login basado en roles |
+
+## Lo que aprendí
+
+Sistemas de inventario con múltiples bodegas requieren modelo de movimientos — no alcanza con stock actual, necesitás trazabilidad completa de cada transferencia. Roles de usuario sin librería externa es perfectamente viable en Django con `@user_passes_test` y templates condicionales.
+
+## Código abierto
+
+[github.com/sebitabravo/sistembiblio](https://github.com/sebitabravo/sistembiblio)

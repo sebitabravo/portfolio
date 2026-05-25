@@ -1,0 +1,29 @@
+---
+title: "QRGen: generador de códigos QR en Python"
+description: "Proyecto educacional de INACAP. Herramienta simple en Python para generar códigos QR desde URLs. Usa la librería qrcode[pil] y exporta imágenes PNG."
+publishDate: 2025-05-29
+tags: ["Python", "QR Code", "CLI", "Educacional"]
+---
+
+Generador simple de códigos QR en Python desarrollado como proyecto educacional en INACAP. Convierte cualquier URL en una imagen PNG con código QR lista para usar.
+
+## Qué hace
+
+Programa CLI que solicita una URL y un nombre de archivo, genera el código QR correspondiente y lo guarda automáticamente en la carpeta `qrs/` como imagen PNG.
+
+## Stack
+
+| Capa | Tecnología |
+|------|------------|
+| Lenguaje | Python 3.11+ |
+| Librería | qrcode[pil] |
+| Salida | PNG |
+| Tipo | CLI tool |
+
+## Lo que aprendí
+
+Una herramienta de una sola función bien empaquetada es más útil que un sistema sobre-diseñado. La librería `qrcode` maneja corrección de errores Reed-Solomon automáticamente — los QR generados son legibles incluso con hasta 30% de daño en la imagen.
+
+## Código abierto
+
+[github.com/sebitabravo/qrgen](https://github.com/sebitabravo/qrgen)

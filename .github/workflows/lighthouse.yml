@@ -20,7 +20,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Run Lighthouse CI
-        continue-on-error: true
+        continue-on-error: false
         uses: treosh/lighthouse-ci-action@v12
         with:
           configPath: ./lighthouserc.json

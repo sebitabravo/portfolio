@@ -5,7 +5,13 @@
         "https://sebita.dev",
         "https://sebita.dev/en"
       ],
-      "numberOfRuns": 3
+      "numberOfRuns": 3,
+      "settings": {
+        "skipAudits": [
+          "canonical",
+          "robots-txt"
+        ]
+      }
     },
     "assert": {
       "assertions": {
@@ -34,12 +40,6 @@
           }
         ]
       }
-    },
-    "settings": {
-      "skipAudits": [
-        "canonical",
-        "robots-txt"
-      ]
     },
     "upload": {
       "target": "temporary-public-storage"

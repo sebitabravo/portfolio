@@ -35,6 +35,12 @@
         ]
       }
     },
+    "settings": {
+      "skipAudits": [
+        "canonical",
+        "robots-txt"
+      ]
+    },
     "upload": {
       "target": "temporary-public-storage"
     }

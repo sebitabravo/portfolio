@@ -1,4 +1,7 @@
 @import "tailwindcss";
+@source "../components/";
+@source "../layouts/";
+@source "../pages/";
 
 /* ============================================
    Design System — Sebastian Bravo Portfolio
@@ -129,6 +132,7 @@
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 3.5rem; /* 56px = h-14 del header fixed */
 }
 
 body {
@@ -823,6 +827,155 @@ pre code {
     --muted-foreground: 30 5% 80%;
     --caption-color: 30 6% 65%;
   }
+}
+
+/* ============================================
+   Blog prose styles — MDX content rendering
+   ============================================ */
+
+.prose-custom {
+  color: hsl(var(--foreground));
+  line-height: 1.75;
+}
+
+.prose-custom h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+  color: hsl(var(--foreground));
+}
+
+@media (min-width: 768px) {
+  .prose-custom h2 {
+    font-size: 1.75rem;
+  }
+}
+
+.prose-custom h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+  color: hsl(var(--foreground));
+}
+
+.prose-custom p {
+  margin-bottom: 1.25rem;
+  color: hsl(var(--foreground) / 0.82);
+}
+
+.prose-custom a {
+  color: hsl(var(--primary));
+  text-decoration: underline;
+  text-decoration-color: hsl(var(--primary) / 0.3);
+  text-underline-offset: 3px;
+  transition: text-decoration-color 200ms ease;
+}
+
+.prose-custom a:hover {
+  text-decoration-color: hsl(var(--primary));
+}
+
+.prose-custom ul,
+.prose-custom ol {
+  margin-bottom: 1.25rem;
+  padding-left: 1.5rem;
+  color: hsl(var(--foreground) / 0.82);
+}
+
+.prose-custom li {
+  margin-bottom: 0.5rem;
+}
+
+.prose-custom ul > li {
+  list-style-type: disc;
+}
+
+.prose-custom ol > li {
+  list-style-type: decimal;
+}
+
+.prose-custom li::marker {
+  color: hsl(var(--muted-foreground));
+}
+
+.prose-custom strong {
+  color: hsl(var(--foreground));
+  font-weight: 700;
+}
+
+.prose-custom blockquote {
+  border-left: 3px solid hsl(var(--primary) / 0.5);
+  padding-left: 1rem;
+  margin: 1.5rem 0;
+  color: hsl(var(--foreground) / 0.65);
+  font-style: italic;
+}
+
+.prose-custom table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  font-size: 0.875rem;
+}
+
+.prose-custom th {
+  text-align: left;
+  font-weight: 600;
+  padding: 0.5rem 0.75rem;
+  border-bottom: 2px solid hsl(var(--border));
+  color: hsl(var(--foreground));
+}
+
+.prose-custom td {
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid hsl(var(--border));
+  color: hsl(var(--foreground) / 0.78);
+}
+
+.prose-custom pre {
+  margin: 1.5rem 0;
+  border-radius: 0.5rem;
+  background: hsl(var(--midnight));
+  padding: 1rem 1.25rem;
+  overflow-x: auto;
+  border: 1px solid hsl(var(--parchment));
+}
+
+.prose-custom pre code {
+  background: transparent;
+  padding: 0;
+  color: hsl(var(--foreground) / 0.9);
+  font-size: 0.8125rem;
+  line-height: 1.7;
+}
+
+:global(.dark) .prose-custom pre {
+  background: hsl(var(--surface-soft));
+}
+
+.prose-custom :not(pre) > code {
+  background: hsl(var(--muted));
+  color: hsl(var(--foreground) / 0.85);
+  padding: 0.125rem 0.375rem;
+  border-radius: 0.25rem;
+  font-size: 0.8125rem;
+  border: 1px solid hsl(var(--parchment));
+}
+
+.prose-custom hr {
+  border: none;
+  border-top: 1px solid hsl(var(--border));
+  margin: 2rem 0;
+}
+
+.prose-custom img {
+  max-width: 100%;
+  border-radius: 0.5rem;
+  margin: 1.5rem 0;
 }
 
 /* ============================================

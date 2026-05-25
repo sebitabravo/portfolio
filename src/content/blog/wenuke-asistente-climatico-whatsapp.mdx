@@ -1,0 +1,106 @@
+---
+title: "Werken-mapu: un asistente climático por WhatsApp para agricultores de La Araucanía — primer lugar hackathon NTTData TICSUR 2026"
+description: "Chatbot de WhatsApp que entrega alertas de helada, lluvia y recomendaciones por cultivo a pequeños agricultores. Ganador de la hackathon NTTData TICSUR en la Universidad Santo Tomás de Temuco — 4 horas, una idea, una landing page y una presentación. FastAPI, Groq Llama 3.1 70B, Open-Meteo."
+publishDate: 2026-05-03
+tags: ["FastAPI", "Python", "WhatsApp", "Groq LLM", "Open-Meteo", "Civic Tech"]
+image: "wenuke"
+---
+
+Los pequeños agricultores de La Araucanía toman decisiones que definen su cosecha — cuándo sembrar, cuándo fumigar, cuándo proteger contra la helada — con la información del noticiero de la tele o de la radio. Una helada no pronosticada puede costarles hasta el 30% de su producción anual.
+
+No tienen acceso a datos climáticos precisos por ubicación. Las apps que existen asumen smartphones modernos, conectividad permanente y cierta alfabetización digital. Pero WhatsApp es distinto: funciona hasta con señal 3G, no consume datos apenas, no hay que instalar nada, no tiene curva de aprendizaje. Está en todos lados — incluso en zonas rurales donde no llega bien la señal.
+
+Wenuke — "Werken-mapu", mensajero de la tierra en mapudungun — es un chatbot de WhatsApp que entrega alertas climáticas personalizadas y recomendaciones agronómicas por cultivo. Sin apps, sin sensores, sin costo para el agricultor.
+
+El proyecto nació en la hackathon NTTData TICSUR 2026 en la Universidad Santo Tomás de Temuco. Teníamos 4 horas para: elegir una idea con impacto real, definir el problema y a quién afecta, proponer una solución viable, analizar dolores y falencias del mercado, estimar presupuestos y costos, y presentarlo todo frente a un jurado de NTTData. Wenuke obtuvo el primer lugar — fuimos el único equipo con un nombre con significado, una landing page funcional y una propuesta abordada de principio a fin.
+
+## Qué hace
+
+- **Alertas de helada, lluvia, granizo y viento** configuradas por ubicación GPS con 19 umbrales por cultivo (papa, trigo, manzano)
+- **Recomendaciones accionables**: cuándo fumigar, regar, sembrar o cosechar según el pronóstico de los próximos 7 días
+- **IA conversacional en español chileno** con Groq Llama 3.1 70B, con fallback offline a reglas expertas hardcodeadas si no hay API key disponible
+- **Precios de referencia ODEPA** del mercado mayorista Lo Valledor, para que el agricultor sepa si le están pagando bien
+- **Historial climático** de 1 a 10 años vía Open-Meteo Archive para análisis de tendencias
+
+El agricultor manda un mensaje de WhatsApp: "¿hay helada mañana?" o "¿puedo fumigar el sábado?" y Wenuke responde con datos específicos para su parcela, en su idioma, sin tecnicismos.
+
+## Stack y arquitectura
+
+| Capa | Tecnología |
+|------|------------|
+| API | FastAPI 0.115 (Python 3.12), 14 endpoints |
+| Base de datos | Turso + aiosqlite, interfaz unificada (mismo schema, misma API, cero cambios entre entornos) |
+| Clima | Open-Meteo (gratis, sin API key, forecast horario + archivo histórico) |
+| IA | Groq Llama 3.1 70B (\$0.59/M tokens) + fallback offline con reglas expertas |
+| Mensajería | WhatsApp Business Cloud API (Meta Graph v21.0, envío directo sin Twilio ni intermediarios) |
+| Precios | ODEPA, datos de referencia del mercado mayorista chileno |
+| Frontend | HTML5 + Tailwind CSS CDN + Vanilla JS, 274 líneas, cero build step |
+| Infra | Vercel (static + serverless) |
+| CI/CD | GitHub Actions: ruff + mypy + pytest |
+
+El backend FastAPI expone 14 endpoints: `/clima`, `/preguntar`, `/recomendaciones`, `/historico`, `/precios`, `/registrar`, CRUD de `/parcelas`, CRUD de `/plan`, `/enviar-alertas` (admin). Todo validado con Pydantic v2 y documentado automáticamente en OpenAPI.
+
+El scheduler es un loop `asyncio` que cada 6 horas evalúa las reglas por cultivo contra el pronóstico de Open-Meteo. Si detecta condiciones de alerta — una helada, una lluvia fuerte, viento que impide fumigar — envía mensajes por WhatsApp a los agricultores con parcelas en la zona afectada.
+
+## Las decisiones que importaron
+
+**Turso + aiosqlite en vez de PostgreSQL.** Para serverless, SQLite sobre HTTP es ideal: Vercel Functions no mantienen conexiones persistentes, y Turso expone SQLite con replicación global. En desarrollo local, aiosqlite usa el mismo schema, misma interfaz. Misma API: `fetchone`, `fetchall`, `execute`, `insert`. Entre entornos no cambia una línea de código. PostgreSQL para este caso — MVP, menos de 1000 usuarios — era costo y complejidad innecesaria.
+
+**Groq + fallback offline en vez de OpenAI.** Groq cobra $0.59 por millón de tokens para Llama 3.1 70B. OpenAI cobra $5+. Para un sistema que podría procesar cientos de consultas diarias, la diferencia importa. Además, el fallback offline con reglas expertas hardcodeadas asegura que el sistema responda aunque no haya internet — las reglas cubren los escenarios más frecuentes y durante demos sin conexión nadie notó la diferencia.
+
+**Open-Meteo en vez de APIs comerciales.** Es gratis, no requiere API key, y tiene forecast horario más archivo histórico. La cobertura es global. Para proyectos sociales donde cada dólar cuenta, Open-Meteo es un hallazgo.
+
+**Vanilla JS en vez de React.** El chat demo es una SPA de una pantalla. React habría agregado ~40KB de JS compilado para 274 líneas de lógica. Tailwind CDN evita build step. Si el producto escala a múltiples pantallas con lógica de suscripción, Next.js sería lo correcto. Pero para MVP de hackathon, vanilla JS fue la decisión consciente.
+
+## Desafíos
+
+<div class="grid gap-4 sm:grid-cols-2 not-prose my-6">
+
+<div class="rounded-xl border border-[hsl(var(--parchment))] bg-[hsl(var(--card))] p-5">
+  <h3 class="font-mono text-sm font-semibold text-foreground mb-2">Formato de mensajes WhatsApp</h3>
+  <p class="text-sm text-foreground/75 leading-relaxed">WhatsApp limita mensajes a 4096 caracteres y no soporta markdown completo. Diseñamos respuestas concisas con formato simple (emojis, saltos de línea, negritas limitadas) priorizando información accionable sobre exhaustividad. Un agricultor no necesita el forecast completo de 7 días — necesita saber si hay helada mañana.</p>
+</div>
+
+<div class="rounded-xl border border-[hsl(var(--parchment))] bg-[hsl(var(--card))] p-5">
+  <h3 class="font-mono text-sm font-semibold text-foreground mb-2">Latencia del LLM en conversación</h3>
+  <p class="text-sm text-foreground/75 leading-relaxed">Llama 3.1 70B en Groq tarda 2-4 segundos en generar respuestas. Para no hacer esperar al agricultor, implementamos streaming de respuesta con actualizaciones parciales y un mensaje de "escribiendo..." vía WhatsApp typing indicator.</p>
+</div>
+
+<div class="rounded-xl border border-[hsl(var(--parchment))] bg-[hsl(var(--card))] p-5">
+  <h3 class="font-mono text-sm font-semibold text-foreground mb-2">Terminología agrícola en español chileno</h3>
+  <p class="text-sm text-foreground/75 leading-relaxed">Los LLMs genéricos no conocen bien términos agrícolas chilenos ("rulo" para secano, "chacra", "media sombra"). Fine-tuneamos prompts con glosario de términos y ejemplos de conversaciones reales de agricultores. "Harta helada pa' mañana, cubra las papas" conecta más que "Alta probabilidad de heladas".</p>
+</div>
+
+</div>
+
+## Arquitectura
+
+<div class="not-prose my-6 rounded-xl border border-[hsl(var(--parchment))] bg-[hsl(var(--muted))] p-5 font-mono text-sm leading-relaxed text-foreground/85">
+  <p class="mb-1"><strong>FastAPI (webhook handler + REST API)</strong> → Twilio WhatsApp Business API → Groq LLM (Llama 3.1 70B) → Open-Meteo API (datos climáticos) → Turso DB (libsql, edge).</p>
+  <p class="mb-1">APScheduler para alertas programadas cada 6 horas.</p>
+  <p class="mb-1">Fallback offline con reglas expertas si no hay API key de Groq disponible.</p>
+  <p>Vercel para hosting serverless del frontend informativo. GitHub Actions: ruff + mypy + pytest.</p>
+</div>
+
+## Resultados
+
+- **Primer lugar hackathon NTTData TICSUR 2026** — único equipo con nombre significativo, landing page y propuesta completa en 4 horas
+- **Chatbot conversacional con IA** accesible vía WhatsApp sin instalar apps
+- **Alertas automáticas de helada/lluvia** configurables por ubicación GPS con 19 umbrales por cultivo
+- **Recomendaciones específicas por tipo de cultivo** (papa, trigo, manzano) usando lenguaje natural y precios ODEPA
+- **Arquitectura serverless escalable** con FastAPI + Turso edge database + Open-Meteo sin API key
+- **Costo operativo estimado: \$0-10 USD/mes.** Open-Meteo gratis, Groq \$0.59/M tokens, Turso tier gratuito, WhatsApp ~\$0.005/msg
+
+## Lecciones aprendidas
+
+- **WhatsApp como plataforma de delivery** tiene tasas de engagement mucho más altas que apps propias en zonas rurales. Funciona con 3G, no consume datos apenas, no tiene curva de aprendizaje.
+- **Prompt engineering con ejemplos del dominio (few-shot)** fue más efectivo que fine-tuning para adaptar el LLM a terminología agrícola chilena. Iterar prompts es más rápido y barato que preparar datasets de fine-tuning.
+- **Turso (libsql) en edge** da latencias de lectura `<1ms` pero las escrituras son más lentas que PostgreSQL tradicional. Ideal para cargas read-heavy como preferencias de usuario. Para serverless, SQLite sobre HTTP evita el problema de conexiones persistentes.
+- **APScheduler en el mismo proceso FastAPI** funciona para alertas simples con pocos usuarios. Para escala mayor, separar scheduler a un worker independiente con Redis o BullMQ.
+- **El español chileno importa más de lo que parece.** Los agricultores responden mejor cuando el bot habla como un vecino, no como un informe meteorológico. La personalización del tono no es un lujo — es accesibilidad cultural.
+
+## Código abierto
+
+El repo incluye el backend FastAPI completo, frontend vanilla JS, scheduler de alertas, tests E2E con httpx + Playwright, tests unitarios del motor de reglas (20+ casos), y configuración de Vercel para monorepo.
+
+[github.com/sebitabravo/Wenuke](https://github.com/sebitabravo/Wenuke)

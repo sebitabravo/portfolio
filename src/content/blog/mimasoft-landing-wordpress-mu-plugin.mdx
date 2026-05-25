@@ -1,0 +1,61 @@
+---
+title: "MIMASOFT: migré una landing corporativa de HTML estático a WordPress con Docker y un MU Plugin de 1983 líneas"
+description: "Landing corporativa WordPress dockerizada con MariaDB, un MU Plugin monolítico de 1983 líneas, 18 plugins premium y dump SQL completo de la base de datos de producción. Migración desde HTML/CSS/JS estático."
+publishDate: 2026-03-24
+tags: ["WordPress", "Docker", "MariaDB", "PHP", "PHPMyAdmin"]
+image: "mimasoft"
+---
+
+MIMASOFT es una empresa de desarrollo de software donde trabajé como project manager y desarrollador full-stack. Cuando llegué, la landing corporativa era HTML, CSS y JavaScript estático — difícil de mantener, imposible de actualizar sin tocar código, y con cero capacidad de escalar contenido.
+
+La migré a WordPress con Docker. El resultado: landing autoadministrable, 18 plugins premium para SEO, caché, formularios, backups y seguridad, y un MU Plugin de 1983 líneas que concentra toda la lógica de negocio en un solo archivo PHP.
+
+## Stack
+
+| Capa | Tecnología |
+|------|------------|
+| CMS | WordPress 6.9.4 + PHP 8.2 Apache |
+| Base de datos | MariaDB 10.11 |
+| Admin DB | PHPMyAdmin 5 |
+| Infra | Docker Compose (3 servicios) |
+| Seguridad | hCaptcha, Loginizer, WP Mail SMTP |
+| SEO | WordPress SEO (Yoast), Google Analytics |
+| Caché | WP Super Cache |
+| Multilenguaje | Polylang |
+| Backups | UpdraftPlus, Backuply |
+| Forms | WPForms |
+
+El `docker-compose.yml` define tres servicios: MariaDB con healthcheck cada 5 segundos, WordPress con dependencia condicional (wait for healthy), y PHPMyAdmin expuesto en puerto 80. Las variables de entorno manejan credenciales, prefijo de tablas y debug mode. `WP_DEBUG` y `display_errors` están desactivados en producción — una lección que aprendí después de que un error de PHP mostrara credenciales en pantalla durante una demo.
+
+## El MU Plugin monolítico
+
+El archivo `dreamhost-panel-login.php` tiene 1983 líneas. Es un Must-Use Plugin — se carga automáticamente, no se puede desactivar desde el admin, y corre antes que cualquier plugin normal.
+
+Lo que hace:
+- Custom login page con el branding de MIMASOFT (logo, colores corporativos, fondo personalizado)
+- Panel de control personalizado post-login con accesos rápidos a documentación, tutoriales y configuraciones comunes
+- White label del admin de WordPress (oculta menús, notificaciones y widgets que el cliente no necesita ver)
+- Integración con los 18 plugins premium en un solo punto de configuración
+- Shortcodes para formularios de contacto, precios y features de servicios
+
+¿Por qué un MU Plugin monolítico en vez de una arquitectura modular? Contexto: la landing era parte de un stack más grande que incluía React, Node.js, Python y otras tecnologías. El MU Plugin era un único archivo portable — se copia a `wp-content/mu-plugins/`, se configura desde el admin, y está corriendo. Para el equipo de soporte no técnico que mantenía la landing después del traspaso, diagnosticar errores en un solo archivo era más simple que navegar una jerarquía de plugins interdependientes.
+
+## Docker Compose con dump SQL completo
+
+El repo incluye el dump SQL completo de la base de datos de producción en `db-init/init.sql`. Es un archivo de ~1MB con el schema, los datos de demo y la configuración inicial de WordPress. Cuando levantas `docker-compose up`, MariaDB ejecuta el dump en el primer inicio vía `docker-entrypoint-initdb.d`. En 30 segundos tenés WordPress corriendo con contenido real, no el placeholder de "Hello World".
+
+Esto es importante: la mayoría de los repos WordPress son solo el tema o los plugins. Incluir el dump SQL completo significa que podés recrear el estado exacto de producción en desarrollo sin pasos manuales de importación.
+
+## Lo que aprendí
+
+WordPress en Docker es delicado con los permisos de archivos. Los volúmenes montados heredan los permisos del host, y si el UID del contenedor Apache no coincide, WordPress no puede escribir en `wp-content/uploads`. La solución fue montar `wp-content` como volumen y asegurar que los directorios tuvieran permisos 755 antes del primer `docker-compose up`.
+
+El prefijo de tabla configurable (`WP_TABLE_PREFIX`) es una capa extra de seguridad que casi nadie usa. Cambiarlo de `wp_` a un prefijo personalizado no detiene a un atacante determinado, pero derrota a los bots automáticos que escanean `wp_users` y `wp_options`.
+
+El MU Plugin monolítico no escala bien si el equipo crece. Para un equipo chico con un solo maintainer, funciona. Para proyectos más grandes, separar la lógica en plugins independientes con responsabilidades claras es mejor práctica. Pero como fase 1 de migración desde HTML estático, el monolito fue la decisión correcta.
+
+## Código abierto
+
+El repo incluye docker-compose completo, dump SQL, 18 plugins premium configurados y el MU Plugin de 1983 líneas.
+
+[github.com/sebitabravo/mimasoft-landing](https://github.com/sebitabravo/mimasoft-landing)

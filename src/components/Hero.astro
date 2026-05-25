@@ -11,7 +11,6 @@ import GitHubIcon from "./icons/GitHub.astro"
 import LinkedInIcon from "./icons/LinkedIn.astro"
 import MailIcon from "./icons/Mail.astro"
 import DownloadIcon from "./icons/Download.astro"
-import CalendarIcon from "./icons/Calendar.astro"
 import cvPdf from "@/assets/Sebastian_Bravo_CV.pdf"
 
 interface Props {
@@ -70,15 +69,6 @@ const contactUrl = locale === 'es' ? '#contacto' : '#contact'
         <!-- CTAs + Social -->
         <div class="animate-slide-up animation-delay-500 mt-8 flex flex-wrap items-center gap-4">
           <a
-            href={contactUrl}
-            class="btn-primary focus-ring"
-            aria-label={t.hero.contact}
-          >
-            <MailIcon class="size-4" />
-            <span>{t.hero.contact}</span>
-          </a>
-
-          <a
             href={cvPdf}
             class="btn-ghost hero-btn-ghost focus-ring"
             target="_blank"
@@ -89,18 +79,14 @@ const contactUrl = locale === 'es' ? '#contacto' : '#contact'
             <span>{t.hero.downloadCv}</span>
           </a>
 
-          {personalInfo.calendly && (
-            <a
-              href={personalInfo.calendly}
-              class="btn-ghost hero-btn-ghost focus-ring"
-              target="_blank"
-              rel="noopener noreferrer"
-              data-track-social="calendly"
-            >
-              <CalendarIcon class="size-4" />
-              <span>{t.hero.scheduleCall}</span>
-            </a>
-          )}
+          <a
+            href={contactUrl}
+            class="btn-ghost hero-btn-ghost focus-ring"
+            aria-label={t.hero.contact}
+          >
+            <MailIcon class="size-4" />
+            <span>{t.hero.contact}</span>
+          </a>
 
           <div class="flex items-center gap-2">
             <SocialPill href={social.linkedin} target="_blank" rel="me noopener noreferrer" data-track-social="linkedin">
@@ -138,6 +124,7 @@ const contactUrl = locale === 'es' ? '#contacto' : '#contact'
             sizes="(max-width: 640px) 144px, (max-width: 768px) 176px, (max-width: 1024px) 208px, 224px"
             format="webp"
             quality={90}
+            loading="eager"
             class="w-36 h-36 sm:w-44 sm:h-44 md:w-52 md:h-52 lg:w-56 lg:h-56 rounded-full object-cover shadow-2xl ring-4 ring-white/70 dark:ring-white/10"
           />
 

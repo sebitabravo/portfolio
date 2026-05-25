@@ -1,0 +1,92 @@
+---
+import { getCollection, render } from 'astro:content'
+import type { GetStaticPaths } from 'astro'
+import Layout from "@/layouts/Layout.astro"
+import { personalInfo } from "@/lib/data"
+
+export const getStaticPaths = (async () => {
+  const posts = await getCollection('blog')
+  return posts
+    .filter((p) => (p.data.locale ?? 'es') === 'en')
+    .map((p) => ({ params: { slug: p.id }, props: { post: p } }))
+}) satisfies GetStaticPaths
+
+const { post } = Astro.props
+const { Content } = await render(post)
+const locale = 'en'
+const canonicalUrl = `https://sebita.dev/en/blog/${post.id}`
+---
+
+<Layout
+  title={`${post.data.title} - ${personalInfo.name}`}
+  description={post.data.description}
+  image={post.data.image ? `/screenshots/${post.data.image}.webp` : undefined}
+  locale={locale}
+  canonicalUrl={canonicalUrl}
+  alternates={[
+    { hreflang: 'en', href: canonicalUrl },
+    { hreflang: 'es', href: `https://sebita.dev/blog/${post.id}` },
+    { hreflang: 'x-default', href: `https://sebita.dev/blog/${post.id}` },
+  ]}
+>
+  <main id="main-content" class="mx-auto max-w-[780px] px-4 py-12 sm:py-16 lg:py-20">
+    <!-- Breadcrumb -->
+    <nav class="mb-8" aria-label="Breadcrumb">
+      <ol class="flex flex-wrap items-center gap-2 text-sm text-foreground/55">
+        <li><a href="/en" class="hover:text-foreground transition-colors">Home</a></li>
+        <li aria-hidden="true">/</li>
+        <li><a href="/en/blog" class="hover:text-foreground transition-colors">Blog</a></li>
+        <li aria-hidden="true">/</li>
+        <li class="text-foreground/80 font-medium" aria-current="page">{post.data.title}</li>
+      </ol>
+    </nav>
+
+    <article>
+      <header class="mb-10">
+        <div class="flex flex-wrap gap-2 mb-4">
+          {post.data.tags.map((tag) => (
+            <span class="rounded-md border border-[hsl(var(--parchment))] bg-[hsl(var(--muted))] px-2 py-0.5 text-xs font-mono text-foreground/60">{tag}</span>
+          ))}
+        </div>
+        <h1 class="text-3xl sm:text-4xl font-bold tracking-tight mb-4 leading-tight">{post.data.title}</h1>
+        <p class="text-foreground/65 text-base sm:text-lg leading-relaxed max-w-2xl">{post.data.description}</p>
+        <time datetime={post.data.publishDate.toISOString()} class="mt-4 inline-block text-sm text-foreground/40 font-mono">
+          {new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric' }).format(post.data.publishDate)}
+        </time>
+      </header>
+
+      <div class="prose-custom">
+        <Content />
+      </div>
+    </article>
+
+    <footer class="mt-16 pt-8 border-t border-[hsl(var(--parchment))]">
+      <nav class="flex flex-wrap items-center justify-between gap-4" aria-label="Post navigation">
+        <a href="/en/blog" class="text-sm text-[hsl(var(--primary))] hover:underline">
+          ← Back to blog
+        </a>
+        <a href="/en" class="text-sm text-foreground/55 hover:text-foreground transition-colors">
+          Home →
+        </a>
+      </nav>
+    </footer>
+  </main>
+
+  <script is:inline type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: post.data.title,
+    description: post.data.description,
+    ...(post.data.image && { image: new URL(`/screenshots/${post.data.image}.webp`, "https://sebita.dev").toString() }),
+    datePublished: post.data.publishDate.toISOString(),
+    author: {
+      "@type": "Person",
+      name: personalInfo.name,
+      url: "https://sebita.dev",
+    },
+    publisher: {
+      "@type": "Organization",
+      name: personalInfo.name,
+    },
+  })} />
+</Layout>

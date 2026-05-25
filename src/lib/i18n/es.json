@@ -7,27 +7,33 @@
     "education": "Educación",
     "certifications": "Certificaciones",
     "about": "Sobre mí",
-    "contact": "Contacto"
+    "contact": "Contacto",
+    "blog": "Blog",
+    "formation": "Formación",
+    "cta": "Hablemos"
   },
   "hero": {
     "greeting": "Hola, soy",
-    "intro": "Desarrollador Full-Stack. Construyo plataformas web completas con React, TypeScript, IoT y Machine Learning.",
+    "intro": "Full-Stack Developer. Convierto ideas en plataformas web completas que escalan, se mantienen solas y pasan las code reviews sin drama.",
     "contact": "Contactar",
     "available": "Disponible para trabajar",
     "downloadCv": "Descargar CV",
-    "scheduleCall": "Agendar llamada",
     "wins": [
       "Modelo ML Random Forest con 94.1% F1-Score en producción",
-      "43 módulos migrados a TanStack Query en SaaS enterprise",
-      "+10K líneas de dead code eliminadas reduciendo superficie de ataque"
+      "Plataforma SaaS enterprise de huella de carbono para minería e industria",
+      "4 proyectos full-stack en producción con arquitectura limpia y testing"
     ]
   },
   "projects": {
     "title": "Proyectos",
     "viewProject": "Demo",
     "viewCode": "Código",
+    "readMore": "Leer más",
     "viewMoreGithub": "Ver más proyectos en GitHub",
-    "featured": "Destacado"
+    "featured": "Destacado",
+    "statusProduction": "En producción",
+    "statusDevelopment": "En desarrollo",
+    "statusDemo": "Demo"
   },
   "work": {
     "title": "Experiencia",
@@ -41,15 +47,24 @@
     "grade": "Calificación"
   },
   "certifications": {
-    "title": "Certificaciones"
+    "title": "Certificaciones",
+    "professional": "Profesional",
+    "academic": "Académico",
+    "previous": "Anterior",
+    "next": "Siguiente"
   },
   "about": {
-    "title": "Sobre mí"
+    "title": "Sobre mí",
+    "techStackSubtitle": "Las herramientas con las que construyo día a día"
+  },
+  "theme": {
+    "toggle": "Cambiar tema",
+    "light": "Claro",
+    "dark": "Oscuro",
+    "system": "Sistema"
   },
   "footer": {
-    "madeWith": "Hecho con"
-  },
-  "contactForm": {
-    "title": "Contacto"
+    "madeWith": "Hecho con",
+    "privacy": "Privacidad"
   }
 }

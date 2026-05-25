@@ -1,0 +1,38 @@
+---
+title: "Metro Quest: juego de acción rítmico del Metro de Santiago con React Native Web"
+description: "Proyecto educacional de INACAP. Juego de acción rítmico en React Native Web ambientado en la Línea 1 del Metro de Santiago. Motor de física 2D custom, 5 estaciones, bosses con patrones de ataque y rankings."
+publishDate: 2025-10-28
+tags: ["React Native", "TypeScript", "Game Dev", "Zustand", "Expo", "Educacional"]
+image: "metro-quest"
+---
+
+Un juego de acción rítmico para navegador ambientado en el Metro de Santiago de Chile. Los jugadores viajan por las estaciones de la Línea 1 enfrentándose a bosses únicos inspirados en la música urbana y el ritmo de la ciudad. Desarrollado como proyecto educacional en INACAP.
+
+## Qué hace
+
+- **Sistema de combate fluido** con físicas realistas a 60 FPS usando `requestAnimationFrame`
+- **5 estaciones** de la Línea 1 del Metro de Santiago con desbloqueo progresivo
+- **Boss único completamente implementado** (El Sordo) con 4 patrones de ataque
+- **Sistema de progresión** con rankings Oro/Plata/Bronce basado en desempeño
+- **Guardado automático** con persistencia local vía AsyncStorage
+
+## Stack
+
+| Capa | Tecnología |
+|------|------------|
+| Framework | React Native Web + Expo Router |
+| Lenguaje | TypeScript |
+| Estado | Zustand + AsyncStorage |
+| Motor de física | Custom Physics Engine 2D desde cero |
+| Game Loop | 60 FPS con requestAnimationFrame |
+| Deploy | Vercel (export estático) |
+
+## Lo que aprendí
+
+Construir un motor de física 2D desde cero te enseña más sobre game dev que cualquier motor prefabricado. Colisiones AABB, interpolación de movimiento, game loop con delta time — conceptos que se aplican a cualquier motor de juegos.
+
+React Native Web con Expo permite deployar a web y móvil desde el mismo código. Zustand para estado de juego es sorprendentemente efectivo — los selectores son funciones puras, perfectas para suscripciones de UI.
+
+## Código abierto
+
+[github.com/sebitabravo/metro-quest-app](https://github.com/sebitabravo/metro-quest-app)

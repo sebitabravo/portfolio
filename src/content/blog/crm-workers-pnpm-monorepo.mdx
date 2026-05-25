@@ -1,0 +1,41 @@
+---
+title: "CRM Workers: monorepo pnpm fullstack con React 18, Vite, JWT y Docker"
+description: "Proyecto educacional de INACAP. Versión final del CRM como monorepo pnpm con React 18, Vite, Tailwind CSS, Express, JWT auth con roles y Docker Compose con 4 servicios."
+publishDate: 2024-08-16
+tags: ["React", "TypeScript", "Vite", "Tailwind CSS", "Node.js", "JWT", "Docker", "pnpm", "Educacional"]
+image: "crm-evolucion"
+---
+
+La versión final del CRM que evolucionó a lo largo de tres años de carrera en INACAP. De JavaScript vanilla a un monorepo pnpm profesional con dos workspaces, autenticación JWT, roles y permisos, y Docker Compose con cuatro servicios.
+
+## Qué hace
+
+Sistema de gestión de trabajadores con roles y permisos. Admin tiene acceso total, HR gestiona empleados y reportes, Worker ve solo su información personal. Dashboard interactivo con Chart.js, CRUD completo para trabajadores y contactos de emergencia, y autenticación JWT con tokens de 24 horas.
+
+## Stack
+
+| Capa | Tecnología |
+|------|------------|
+| Frontend | React 18 + Vite + Tailwind CSS + Chart.js |
+| Backend | Express + JWT (bcrypt) + MySQL 8.0 |
+| Infra | Docker Compose: MySQL, PHPMyAdmin, backend, Nginx |
+| Monorepo | pnpm workspaces (2 paquetes) |
+| HTTP | Axios con interceptores JWT |
+
+## Arquitectura
+
+**Frontend.** React 18 con Vite como bundler — HMR instantáneo. Tailwind CSS reemplazó a Bootstrap. React Router para navegación protegida por roles. Axios con interceptores que adjuntan el JWT automáticamente a cada request.
+
+**Backend.** Autenticación JWT con tokens de 24 horas y refresh tokens. Bcrypt para hash de contraseñas. Middleware de roles que verifica el token y el rol antes de ejecutar cualquier query. Endpoints protegidos por capa de permisos.
+
+**Docker.** Cuatro servicios: MySQL 8.0 con healthcheck, PHPMyAdmin en puerto 8080, backend Node.js en puerto 3001 y frontend servido por Nginx en puerto 80. Multi-stage builds para mantener las imágenes chicas.
+
+## Lo que aprendí
+
+Un monorepo pnpm con dos workspaces es el punto dulce para un proyecto fullstack de este tamaño. No necesitás NX o Turborepo cuando tenés dos paquetes. pnpm workspaces nativo maneja la instalación y los scripts en paralelo.
+
+La diferencia entre la v1 y la v3 no es solo técnica — es de pensamiento. En v1 pensaba en archivos y funciones. En v3 pienso en arquitectura, separación de concerns, seguridad desde el diseño y developer experience.
+
+## Código abierto
+
+[github.com/sebitabravo/crm-workers](https://github.com/sebitabravo/crm-workers)

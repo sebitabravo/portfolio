@@ -1,0 +1,41 @@
+---
+title: "EVA2: API REST de reservas para restaurantes con Django y PostgreSQL"
+description: "Proyecto educacional de INACAP. API REST profesional para gestión de reservas de restaurantes. Django 5.1, DRF, JWT, rate limiting diferenciado, estadísticas avanzadas y Docker."
+publishDate: 2025-10-07
+tags: ["Django", "DRF", "PostgreSQL", "REST API", "Docker", "JWT", "Educacional"]
+---
+
+Segunda evaluación del módulo de backend en INACAP. Una API REST profesional para gestión de reservas de restaurantes con separación clara entre endpoints públicos (lectura) y protegidos (escritura), rate limiting diferenciado y estadísticas de negocio.
+
+## Qué hace
+
+CRUD completo para tres recursos: clientes, mesas y reservas. Los endpoints GET son públicos con rate limit de 100/hora. POST, PUT y DELETE requieren autenticación admin con rate limit de 20/hora. Endpoints de estadísticas con métricas de negocio: distribución por estado, tendencias temporales, top 5 mesas/clientes/horarios, tasas de cancelación.
+
+## Stack
+
+| Capa | Tecnología |
+|------|------------|
+| Framework | Django 5.1 + DRF 3.15 |
+| Base de datos | PostgreSQL 16 |
+| Auth | JWT (SimpleJWT) |
+| Docs | drf-spectacular (Swagger + Redoc) |
+| Server | Gunicorn |
+| Validación | Model.clean() + serializers |
+| Infra | Docker Compose |
+
+## Rate limiting
+
+| Tipo | Límite |
+|------|--------|
+| Anónimo (lectura) | 100/hora |
+| Usuario autenticado | 1000/hora |
+| Escritura (POST/PUT/DELETE) | 20/hora |
+| Estadísticas | 10/hora |
+
+## Lo que aprendí
+
+Validación en dos capas — `Model.clean()` para reglas de negocio y serializers para formato — evita datos inconsistentes sin importar cómo entran. Rate limiting diferenciado por tipo de operación es más útil que un límite genérico: proteger las escrituras es más importante que limitar las lecturas.
+
+## Código abierto
+
+[github.com/sebitabravo/eva2-backend](https://github.com/sebitabravo/eva2-backend)

@@ -9,7 +9,7 @@ export interface CarouselCertification {
     name: string
     organization: string
     logo?: string
-    pdfUrl: string
+    pdfUrl?: string
     category?: 'professional' | 'academic'
   }
 }

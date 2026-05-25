@@ -1,0 +1,327 @@
+---
+/**
+ * Política de Privacidad — sebita.dev (Español)
+ *
+ * Sitio estático personal. No recolecta datos personales directamente.
+ * Único analytics: Vercel Analytics (anonymized, sin cookies).
+ */
+import Layout from "@/layouts/Layout.astro"
+import { personalInfo } from "@/lib/data"
+
+const lastUpdate = "24 de mayo de 2026"
+const canonicalUrl = "https://sebita.dev/privacy/"
+const title = "Política de Privacidad — Sebastian Bravo"
+const description =
+  "Política de privacidad de sebita.dev. Sebastian Bravo no recolecta datos personales. Información sobre Vercel Analytics, derechos ARCO y GDPR."
+---
+
+<Layout
+  title={title}
+  description={description}
+  locale="es"
+  canonicalUrl={canonicalUrl}
+  alternates={[
+    { hreflang: 'es', href: canonicalUrl },
+    { hreflang: 'en', href: 'https://sebita.dev/en/privacy/' },
+    { hreflang: 'x-default', href: canonicalUrl },
+  ]}
+>
+  <main id="main-content">
+    <div class="px-4 md:px-6">
+      <div class="mx-auto max-w-[720px] pt-20 md:pt-28 pb-16 md:pb-24">
+        <!-- Encabezado -->
+        <h1 class="text-2xl md:text-3xl font-bold tracking-tight">
+          Política de Privacidad
+        </h1>
+        <p class="mt-2 text-sm text-[hsl(var(--caption-color))]">
+          Última actualización: {lastUpdate}
+        </p>
+
+        <div class="mt-10 space-y-10 text-[hsl(var(--muted-foreground))]">
+          <!-- 1. Responsable -->
+          <section>
+            <h2 class="text-lg font-semibold text-foreground">
+              1. Responsable del Tratamiento
+            </h2>
+            <div class="mt-3 space-y-2 leading-relaxed">
+              <p>
+                <strong class="text-foreground">Sebastian Bravo</strong>
+                <br />
+                Chile
+              </p>
+              <p>
+                Correo electrónico:
+                <a
+                  href="mailto:{personalInfo.email}"
+                  class="link-inline"
+                >
+                  {personalInfo.email}
+                </a>
+              </p>
+              <p>
+                Este sitio web (<a href="https://sebita.dev" class="link-inline">sebita.dev</a>)
+                es un portfolio personal de carácter informativo y profesional.
+                No representa una empresa ni una organización formal.
+              </p>
+            </div>
+          </section>
+
+          <!-- 2. Datos que NO recolectamos -->
+          <section>
+            <h2 class="text-lg font-semibold text-foreground">
+              2. Datos que NO Recolectamos
+            </h2>
+            <div class="mt-3 space-y-2 leading-relaxed">
+              <p>
+                Este sitio web es <strong class="text-foreground">100% estático</strong>.
+                No tiene formularios de contacto, no utiliza cookies propias,
+                no tiene bases de datos ni almacena información de visitantes
+                en el servidor.
+              </p>
+              <p>Especificamente, NO recolectamos:</p>
+              <ul class="list-disc pl-6 space-y-1">
+                <li>Nombres, correos electrónicos ni datos de contacto</li>
+                <li>Cookies de sesión o persistentes propias</li>
+                <li>Datos biométricos, de salud o categóricos</li>
+                <li>Información financiera o de pago</li>
+                <li>Direcciones IP completas (son anonimizadas por Vercel)</li>
+              </ul>
+            </div>
+          </section>
+
+          <!-- 3. Vercel Analytics -->
+          <section>
+            <h2 class="text-lg font-semibold text-foreground">
+              3. Vercel Analytics
+            </h2>
+            <div class="mt-3 space-y-2 leading-relaxed">
+              <p>
+                Este sitio utiliza
+                <a
+                  href="https://vercel.com/analytics"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="link-inline"
+                >
+                  Vercel Web Analytics
+                </a>,
+                una herramienta de analítica que opera sin cookies y sin
+                recopilar datos personales identificables.
+              </p>
+              <p>Características de Vercel Analytics:</p>
+              <ul class="list-disc pl-6 space-y-1">
+                <li>
+                  <strong class="text-foreground">Sin cookies:</strong> no
+                  utiliza cookies propias ni de terceros
+                </li>
+                <li>
+                  <strong class="text-foreground">IP anonimizada:</strong> las
+                  direcciones IP se anonimizan antes de procesarse
+                </li>
+                <li>
+                  <strong class="text-foreground">Datos agregados:</strong>
+                  solo se registran métricas agregadas como páginas vistas,
+                  origen geografico a nivel de pais y tipo de dispositivo
+                </li>
+                <li>
+                  <strong class="text-foreground">Sin tracking
+                  cross-site:</strong> no se rastrea a los usuarios entre
+                  distintos sitios web
+                </li>
+              </ul>
+              <p class="text-sm">
+                Vercel Analytics está desactivado en entornos de desarrollo y
+                solo se activa en producción (sebita.dev).
+              </p>
+            </div>
+          </section>
+
+          <!-- 4. Enlaces externos -->
+          <section>
+            <h2 class="text-lg font-semibold text-foreground">
+              4. Enlaces a Sitios Externos
+            </h2>
+            <div class="mt-3 space-y-2 leading-relaxed">
+              <p>
+                Este sitio contiene enlaces a plataformas de terceros:
+              </p>
+              <ul class="list-disc pl-6 space-y-1">
+                <li>
+                  <a
+                    href="https://github.com/sebitabravo"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="link-inline"
+                  >
+                    GitHub
+                  </a>
+                  — repositorios de código
+                </li>
+                <li>
+                  <a
+                    href="https://linkedin.com/in/sebitabravo"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="link-inline"
+                  >
+                    LinkedIn
+                  </a>
+                  — perfil profesional
+                </li>
+                <li>
+                  <a
+                    href="https://cal.com/sebitabravo/15min"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="link-inline"
+                  >
+                    Cal.com
+                  </a>
+                  — agendamiento de reuniones
+                </li>
+              </ul>
+              <p>
+                No tenemos control sobre el contenido ni las prácticas de
+                privacidad de estos sitios. Te recomendamos revisar sus
+                respectivas políticas de privacidad al visitarlos.
+              </p>
+            </div>
+          </section>
+
+          <!-- 5. Derechos ARCO (Chile) -->
+          <section>
+            <h2 class="text-lg font-semibold text-foreground">
+              5. Derechos ARCO (Chile)
+            </h2>
+            <div class="mt-3 space-y-2 leading-relaxed">
+              <p>
+                La legislación chilena protege tus datos personales. De acuerdo
+                a la <strong class="text-foreground">Ley 19.628</strong> (vigente)
+                y la <strong class="text-foreground">Ley 21.719</strong> (vigente
+                a partir del 1 de diciembre de 2026), tienes los siguientes
+                derechos ARCO:
+              </p>
+              <ul class="list-disc pl-6 space-y-1">
+                <li>
+                  <strong class="text-foreground">Acceso:</strong> solicitar
+                  que te informemos qué datos personales nuestros estamos
+                  tratando
+                </li>
+                <li>
+                  <strong class="text-foreground">Rectificación:</strong>
+                  solicitar la corrección de datos inexactos o incompletos
+                </li>
+                <li>
+                  <strong class="text-foreground">Cancelación:</strong>
+                  solicitar la eliminación de tus datos personales
+                </li>
+                <li>
+                  <strong class="text-foreground">Oposición:</strong>
+                  oponerte al tratamiento de tus datos personales
+                </li>
+              </ul>
+              <p>
+                Dado que este sitio no recolecta datos personales de forma
+                activa, no mantenemos registros de visitantes que podamos
+                asociar a una persona identificada o identificable. Si
+                consideras que tus datos han sido tratados de forma contraria
+                a la ley, contáctanos al correo electrónico indicado en la
+                sección 1 y resolveremos tu solicitud a la brevedad.
+              </p>
+            </div>
+          </section>
+
+          <!-- 6. GDPR (Europa) -->
+          <section>
+            <h2 class="text-lg font-semibold text-foreground">
+              6. Derechos GDPR (Visitantes Europeos)
+            </h2>
+            <div class="mt-3 space-y-2 leading-relaxed">
+              <p>
+                Si te encuentras en el Espacio Económico Europeo (EEE), el
+                <strong class="text-foreground"
+                  >Reglamento General de Protección de Datos (GDPR)</strong
+                >
+                te otorga derechos adicionales:
+              </p>
+              <ul class="list-disc pl-6 space-y-1">
+                <li>
+                  <strong class="text-foreground">Portabilidad:</strong>
+                  solicitar tus datos en un formato estructurado y legible
+                </li>
+                <li>
+                  <strong class="text-foreground">Limitación del
+                  tratamiento:</strong> restringir el procesamiento de tus
+                  datos
+                </li>
+                <li>
+                  <strong class="text-foreground">Retirada del
+                  consentimiento:</strong> revocar cualquier consentimiento
+                  otorgado en cualquier momento
+                </li>
+                <li>
+                  <strong class="text-foreground"
+                    >Reclamación ante autoridad de control:</strong
+                  >
+                  presentar una reclamación ante tu autoridad local de
+                  protección de datos
+                </li>
+              </ul>
+              <p>
+                <strong class="text-foreground">Base legal:</strong> el único
+                tratamiento de datos que realiza este sitio es Vercel
+                Analytics, cuya base legal es el interés legítimo en medir el
+                rendimiento del sitio, limitado a datos anonimizados y
+                agregados sin identificacion de usuarios.
+              </p>
+            </div>
+          </section>
+
+          <!-- 7. Cambios -->
+          <section>
+            <h2 class="text-lg font-semibold text-foreground">
+              7. Cambios a esta Política
+            </h2>
+            <div class="mt-3 space-y-2 leading-relaxed">
+              <p>
+                Esta politica de privacidad puede actualizarse para reflejar
+                cambios en las funcionalidades del sitio o en la legislación
+                aplicable. La fecha de "Última actualización" al inicio de
+                esta página indica cuándo fue modificada por última vez.
+              </p>
+              <p>
+                Te recomendamos revisar esta página periódicamente si te
+                interesa conocer como protegemos tu privacidad.
+              </p>
+            </div>
+          </section>
+
+          <!-- 8. Contacto -->
+          <section>
+            <h2 class="text-lg font-semibold text-foreground">
+              8. Contacto
+            </h2>
+            <div class="mt-3 space-y-2 leading-relaxed">
+              <p>
+                Si tienes preguntas sobre esta política de privacidad o deseas
+                ejercer tus derechos, puedes contactarme directamente a:
+              </p>
+              <p>
+                <a
+                  href="mailto:{personalInfo.email}"
+                  class="link-inline font-medium"
+                >
+                  {personalInfo.email}
+                </a>
+              </p>
+              <p class="text-sm">
+                Responderé a la brevedad. No utilizo este canal para fines
+                comerciales ni comparto tu correo con terceros.
+              </p>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+  </main>
+</Layout>

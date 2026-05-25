@@ -163,7 +163,7 @@ const projectsData = {
     {
       slug: "manttoai",
       title: "ManttoAI",
-      description: "Plataforma de mantenimiento predictivo IoT con Machine Learning. Telemetría en tiempo real, modelo Random Forest (94.1% F1-Score) y dashboard interactivo.",
+      description: "Mantenimiento predictivo para industria con IoT y ML: telemetría en tiempo real, modelo Random Forest con 94.1% F1-Score en producción y dashboard interactivo.",
       tags: ["FastAPI", "React", "Machine Learning", "Docker", "IoT"],
       featured: true,
       status: "production" as const,
@@ -180,7 +180,7 @@ const projectsData = {
     {
       slug: "vulcania",
       title: "Vulcania",
-      description: "Plataforma de monitoreo volcánico comunitario con mapa en tiempo real, chat, alertas y notificaciones push.",
+      description: "Monitoreo volcánico comunitario para zonas de riesgo sísmico: mapa colaborativo en tiempo real, chat, alertas tempranas y notificaciones push.",
       tags: ["Next.js", "TypeScript", "Supabase", "shadcn/ui"],
       featured: true,
       status: "production" as const,
@@ -197,7 +197,7 @@ const projectsData = {
     {
       slug: "rapido-sur",
       title: "Rápido Sur",
-      description: "Sistema enterprise de gestión de mantenimiento vehicular. NestJS + Next.js + PostgreSQL con auth JWT, planes preventivos y órdenes de trabajo.",
+      description: "Gestión de mantenimiento vehicular para flotas enterprise: backend NestJS con JWT, frontend Next.js y PostgreSQL con planes preventivos y órdenes de trabajo.",
       order: 4,
       tags: ["NestJS", "Next.js", "TypeScript", "PostgreSQL", "Docker"],
       featured: true,
@@ -214,7 +214,7 @@ const projectsData = {
     {
       slug: "wenuke",
       title: "Werken-mapu",
-      description: "Asistente climático agrícola por WhatsApp para pequeños agricultores de Chile. IA conversacional con Groq Llama 3.1 70B, alertas de helada/lluvia y recomendaciones por cultivo.",
+      description: "Asistente climático agrícola para pequeños agricultores de Chile vía WhatsApp: IA conversacional con Groq Llama 3.1 70B, alertas de helada/lluvia en tiempo real y recomendaciones personalizadas por cultivo.",
       tags: ["FastAPI", "Python", "Groq LLM", "WhatsApp API", "Turso"],
       featured: true,
       status: "production" as const,
@@ -233,7 +233,7 @@ const projectsData = {
     {
       slug: "manttoai",
       title: "ManttoAI",
-      description: "IoT predictive maintenance platform with Machine Learning. Real-time telemetry, Random Forest model (94.1% F1-Score) and interactive dashboard.",
+      description: "Predictive maintenance for industry with IoT and ML: real-time telemetry, Random Forest model with 94.1% F1-Score in production and interactive dashboard.",
       order: 3,
       tags: ["FastAPI", "React", "Machine Learning", "Docker", "IoT"],
       featured: true,
@@ -250,7 +250,7 @@ const projectsData = {
     {
       slug: "vulcania",
       title: "Vulcania",
-      description: "Community volcanic monitoring platform with real-time map, chat, alerts and push notifications.",
+      description: "Community volcanic monitoring for at-risk seismic zones: real-time collaborative map, chat, early alerts and push notifications.",
       tags: ["Next.js", "TypeScript", "Supabase", "shadcn/ui"],
       featured: true,
       status: "production" as const,
@@ -267,7 +267,7 @@ const projectsData = {
     {
       slug: "rapido-sur",
       title: "Rápido Sur",
-      description: "Enterprise fleet vehicle maintenance system. NestJS + Next.js + PostgreSQL with JWT auth, preventive maintenance plans and work orders.",
+      description: "Fleet vehicle maintenance management for enterprise: NestJS backend with JWT auth, Next.js frontend and PostgreSQL with preventive plans and work orders.",
       order: 4,
       tags: ["NestJS", "Next.js", "TypeScript", "PostgreSQL", "Docker"],
       featured: true,
@@ -284,7 +284,7 @@ const projectsData = {
     {
       slug: "wenuke",
       title: "Werken-mapu",
-      description: "Agricultural climate assistant via WhatsApp for small farmers in Chile. Conversational AI with Groq Llama 3.1 70B, frost/rain alerts and crop-specific recommendations.",
+      description: "Agricultural climate assistant for small farmers in Chile via WhatsApp: conversational AI with Groq Llama 3.1 70B, real-time frost/rain alerts and personalized crop recommendations.",
       tags: ["FastAPI", "Python", "Groq LLM", "WhatsApp API", "Turso"],
       featured: true,
       status: "production" as const,

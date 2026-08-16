@@ -158,7 +158,12 @@
     right: auto;
     bottom: 1.25rem;
     left: 1.25rem;
+    max-width: 34%;
     text-align: left;
+  }
+
+  .hero-art-status {
+    right: 0.75rem;
   }
 
   .hero-footer {

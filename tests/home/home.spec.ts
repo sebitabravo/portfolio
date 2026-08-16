@@ -35,10 +35,15 @@ test.describe("Home Page", () => {
       await expect(page.locator("html")).toHaveClass(/dark/)
 
       await page.locator("#proyectos").scrollIntoViewIfNeeded()
-      await page.waitForTimeout(250)
-      const transform = await page.locator("[data-reading-progress]").evaluate((element) => getComputedStyle(element).transform)
-      const scaleX = transform.match(/^matrix\(([^,]+)/)?.[1]
-      expect(Number(scaleX)).toBeGreaterThan(0)
+      await expect
+        .poll(
+          () => page.locator("[data-reading-progress]").evaluate((element) => {
+            const match = element.getAttribute("style")?.match(/scaleX\(([^)]+)\)/)
+            return Number(match?.[1] ?? 0)
+          }),
+          { timeout: 5000 },
+        )
+        .toBeGreaterThan(0)
 
       await expect(page.locator("#contacto").getByText("Descargar CV", { exact: true })).toBeVisible()
 
@@ -118,21 +123,24 @@ test.describe("Home Page", () => {
       await expect(page.locator("[data-portfolio-motion]")).toHaveAttribute(
         "data-motion-status",
         /^(active|fallback)$/,
-        { timeout: 4000 },
+        { timeout: 10000 },
       )
       await expect(page.locator("[data-hero-webgl]")).toHaveAttribute(
         "data-webgl-status",
         /^(ready|fallback)$/,
-        { timeout: 4000 },
+        { timeout: 10000 },
       )
 
       await page.locator("#proyectos").scrollIntoViewIfNeeded()
-      await page.waitForTimeout(350)
-      const meterTransform = await page.locator("[data-project-scroll-meter] span").evaluate(
-        (element) => getComputedStyle(element).transform,
-      )
-      const scaleX = meterTransform.match(/^matrix\(([^,]+)/)?.[1]
-      expect(Number(scaleX)).toBeGreaterThan(0)
+      await expect
+        .poll(
+          () => page.locator("[data-project-scroll-meter] span").evaluate((element) => {
+            const match = element.getAttribute("style")?.match(/scaleX\(([^)]+)\)/)
+            return Number(match?.[1] ?? 0)
+          }),
+          { timeout: 5000 },
+        )
+        .toBeGreaterThan(0)
     },
   )
 

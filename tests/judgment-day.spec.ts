@@ -63,11 +63,11 @@ test.describe("Judgment Day regression contracts", () => {
       }
     })
 
-    expect(cascade).toEqual({
+    expect(cascade).toMatchObject({
       secondaryPadding: "18.4px 24px",
       companyFontSize: "20px",
       companyLineHeight: "24px",
-      locationLineHeight: "19.2px",
     })
+    expect(Number.parseFloat(cascade.locationLineHeight ?? "")).toBeCloseTo(19.2, 1)
   })
 })

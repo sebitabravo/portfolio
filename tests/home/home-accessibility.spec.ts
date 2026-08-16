@@ -4,7 +4,7 @@ import { expect, test } from "@playwright/test"
 // Las animaciones de revelado dejan el texto en opacidad intermedia durante el
 // scroll; Axe compone ese estado y reporta falsos positivos de contraste. El
 // escaneo mide el estado estable del producto, no frames de transicion.
-test.use({ reducedMotion: "reduce" })
+test.use({ contextOptions: { reducedMotion: "reduce" } })
 
 test.describe("Home Accessibility", () => {
   test(

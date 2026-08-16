@@ -13,13 +13,14 @@ const t = getTranslations('en')
 
 // Components
 import Hero from "@/components/Hero.astro"
+import SignalStrip from "@/components/SignalStrip.astro"
 import Experience from "@/components/Experience.astro"
 import Projects from "@/components/Projects.astro"
 import Education from "@/components/Education.astro"
 import Certifications from "@/components/Certifications.astro"
 import AboutMe from "@/components/AboutMe.astro"
 import Contact from "@/components/Contact.astro"
-import SectionContainer from "@/components/SectionContainer.astro"
+import SectionBand from "@/components/SectionBand.astro"
 import TitleSection from "@/components/TitleSection.astro"
 
 // Icons
@@ -43,73 +44,62 @@ import MailIcon from "@/components/icons/Mail.astro"
 >
   <main id="main-content">
   <Hero locale="en" />
+  <SignalStrip locale="en" />
 
-  <div class="px-4 md:px-6">
-    <div class="space-y-20 md:space-y-28 pt-16 md:pt-24">
+  <div class="home-sections">
       <!-- Projects -->
-      <SectionContainer id="projects" headingId="projects-heading">
-        <TitleSection id="projects-heading">
+      <SectionBand id="projects" headingId="projects-heading">
+        <TitleSection id="projects-heading" index={1} total={6}>
           <CodeIcon class="size-6" />
           {t.projects.title}
         </TitleSection>
         <Projects locale="en" />
-      </SectionContainer>
-
-      <hr class="section-divider max-w-[1200px] mx-auto" />
+      </SectionBand>
 
       <!-- Experience -->
-      <SectionContainer id="experience" headingId="experience-heading">
-        <TitleSection id="experience-heading">
+      <SectionBand id="experience" headingId="experience-heading" tone="tinted">
+        <TitleSection id="experience-heading" index={2} total={6}>
           <BriefcaseIcon class="size-6" />
           {t.work.title}
         </TitleSection>
         <Experience locale="en" />
-      </SectionContainer>
-
-      <hr class="section-divider max-w-[1200px] mx-auto" />
+      </SectionBand>
 
       <!-- Education -->
-      <SectionContainer id="education" headingId="education-heading">
-        <TitleSection id="education-heading">
+      <SectionBand id="education" headingId="education-heading">
+        <TitleSection id="education-heading" index={3} total={6}>
           <GraduationCapIcon class="size-6" />
           {t.education.title}
         </TitleSection>
         <Education locale="en" />
-      </SectionContainer>
-
-      <hr class="section-divider max-w-[1200px] mx-auto" />
+      </SectionBand>
 
       <!-- Certifications -->
-      <SectionContainer id="certifications" headingId="certifications-heading" data-animate>
-        <TitleSection id="certifications-heading">
+      <SectionBand id="certifications" headingId="certifications-heading" tone="tinted" data-animate>
+        <TitleSection id="certifications-heading" index={4} total={6}>
           <CertificateIcon class="size-6" />
           {t.certifications.title}
         </TitleSection>
         <Certifications locale="en" />
-      </SectionContainer>
-
-      <hr class="section-divider max-w-[1200px] mx-auto" />
+      </SectionBand>
 
       <!-- About -->
-      <SectionContainer id="about" headingId="about-heading">
-        <TitleSection id="about-heading">
+      <SectionBand id="about" headingId="about-heading">
+        <TitleSection id="about-heading" index={5} total={6}>
           <ProfileCheckIcon class="size-6" />
           {t.about.title}
         </TitleSection>
         <AboutMe locale="en" />
-      </SectionContainer>
-
-      <hr class="section-divider max-w-[1200px] mx-auto" />
+      </SectionBand>
 
       <!-- Contact -->
-      <SectionContainer id="contact" headingId="contact-heading">
-        <TitleSection id="contact-heading">
+      <SectionBand id="contact" headingId="contact-heading">
+        <TitleSection id="contact-heading" index={6} total={6}>
           <MailIcon class="size-6" />
           {t.nav.contact}
         </TitleSection>
         <Contact locale="en" />
-      </SectionContainer>
-    </div>
+      </SectionBand>
   </div>
   </main>
 </Layout>

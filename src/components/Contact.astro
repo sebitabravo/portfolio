@@ -6,6 +6,8 @@ import AvailableBadge from "./AvailableBadge.astro"
 import MailIcon from "./icons/Mail.astro"
 import LinkedInIcon from "./icons/LinkedIn.astro"
 import GitHubIcon from "./icons/GitHub.astro"
+import DownloadIcon from "./icons/Download.astro"
+import cvPdf from "@/assets/Sebastian_Bravo_CV.pdf"
 
 interface Props {
   locale?: Locale
@@ -55,7 +57,7 @@ const contactLinks = [
         data-animate-delay={String(i + 1)}
         target={icon !== 'mail' ? '_blank' : undefined}
         rel={icon !== 'mail' ? 'noopener noreferrer' : undefined}
-        class="group flex flex-col items-center gap-3 rounded-2xl border border-[hsl(var(--parchment))] bg-[hsl(var(--card))] p-6 text-center transition-all duration-300 hover:-translate-y-1 hover:shadow-[var(--shadow-card-hover)] focus-ring"
+        class="section-card group flex flex-col items-center gap-3 rounded-2xl border border-[hsl(var(--parchment))] bg-[hsl(var(--card))] p-6 text-center transition-all duration-300 hover:-translate-y-1 hover:shadow-[var(--shadow-card-hover)] focus-ring"
       >
         <div class="flex size-12 items-center justify-center rounded-xl bg-[hsl(var(--primary))]/10 text-[hsl(var(--primary))] transition-transform duration-200 group-hover:scale-110">
           {icon === 'mail' && <MailIcon class="size-5" />}
@@ -66,5 +68,20 @@ const contactLinks = [
         <span class="text-xs text-[hsl(var(--caption-color))]">{description}</span>
       </a>
     ))}
+  </div>
+
+  <div class="contact-resume-row">
+    <a
+      href={cvPdf}
+      target="_blank"
+      rel="noopener noreferrer"
+      data-track-cv={locale}
+      class="contact-resume-action focus-ring"
+    >
+      <DownloadIcon class="size-4" />
+      <span>{t.hero.downloadCv}</span>
+      <span aria-hidden="true">↗</span>
+    </a>
+    <p>{locale === 'es' ? 'CV disponible para revisar mi experiencia completa.' : 'Download the CV for the full experience overview.'}</p>
   </div>
 </div>

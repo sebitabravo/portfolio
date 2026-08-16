@@ -16,7 +16,7 @@ describe("projects data", () => {
   it("ensures featured projects have local image keys and valid links", () => {
     const featuredProjects = getProjects("es").filter((project) => project.featured)
 
-    expect(featuredProjects.length).toBeGreaterThan(0)
+    expect(featuredProjects).toHaveLength(1)
 
     for (const project of featuredProjects) {
       const links = [project.githubUrl, project.liveUrl].filter(

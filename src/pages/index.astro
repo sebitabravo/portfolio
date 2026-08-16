@@ -13,13 +13,14 @@ const t = getTranslations('es')
 
 // Components
 import Hero from "@/components/Hero.astro"
+import SignalStrip from "@/components/SignalStrip.astro"
 import Experience from "@/components/Experience.astro"
 import Projects from "@/components/Projects.astro"
 import Education from "@/components/Education.astro"
 import Certifications from "@/components/Certifications.astro"
 import AboutMe from "@/components/AboutMe.astro"
 import Contact from "@/components/Contact.astro"
-import SectionContainer from "@/components/SectionContainer.astro"
+import SectionBand from "@/components/SectionBand.astro"
 import TitleSection from "@/components/TitleSection.astro"
 
 // Icons
@@ -44,73 +45,62 @@ import MailIcon from "@/components/icons/Mail.astro"
   <main id="main-content">
   <!-- Hero: midnight gradient, full-width -->
   <Hero locale="es" />
+  <SignalStrip locale="es" />
 
-  <div class="px-4 md:px-6">
-    <div class="space-y-20 md:space-y-28 pt-16 md:pt-24">
+  <div class="home-sections">
       <!-- Proyectos -->
-      <SectionContainer id="proyectos" headingId="proyectos-heading">
-        <TitleSection id="proyectos-heading">
+      <SectionBand id="proyectos" headingId="proyectos-heading">
+        <TitleSection id="proyectos-heading" index={1} total={6}>
           <CodeIcon class="size-6" />
           {t.projects.title}
         </TitleSection>
         <Projects locale="es" />
-      </SectionContainer>
-
-      <hr class="section-divider max-w-[1200px] mx-auto" />
+      </SectionBand>
 
       <!-- Experiencia -->
-      <SectionContainer id="experiencia" headingId="experiencia-heading">
-        <TitleSection id="experiencia-heading">
+      <SectionBand id="experiencia" headingId="experiencia-heading" tone="tinted">
+        <TitleSection id="experiencia-heading" index={2} total={6}>
           <BriefcaseIcon class="size-6" />
           {t.work.title}
         </TitleSection>
         <Experience locale="es" />
-      </SectionContainer>
-
-      <hr class="section-divider max-w-[1200px] mx-auto" />
+      </SectionBand>
 
       <!-- Educacion -->
-      <SectionContainer id="educacion" headingId="educacion-heading">
-        <TitleSection id="educacion-heading">
+      <SectionBand id="educacion" headingId="educacion-heading">
+        <TitleSection id="educacion-heading" index={3} total={6}>
           <GraduationCapIcon class="size-6" />
           {t.education.title}
         </TitleSection>
         <Education locale="es" />
-      </SectionContainer>
-
-      <hr class="section-divider max-w-[1200px] mx-auto" />
+      </SectionBand>
 
       <!-- Certificaciones -->
-      <SectionContainer id="certificaciones" headingId="certificaciones-heading" data-animate>
-        <TitleSection id="certificaciones-heading">
+      <SectionBand id="certificaciones" headingId="certificaciones-heading" tone="tinted" data-animate>
+        <TitleSection id="certificaciones-heading" index={4} total={6}>
           <CertificateIcon class="size-6" />
           {t.certifications.title}
         </TitleSection>
         <Certifications locale="es" />
-      </SectionContainer>
-
-      <hr class="section-divider max-w-[1200px] mx-auto" />
+      </SectionBand>
 
       <!-- Sobre mi -->
-      <SectionContainer id="sobre-mi" headingId="sobre-mi-heading">
-        <TitleSection id="sobre-mi-heading">
+      <SectionBand id="sobre-mi" headingId="sobre-mi-heading">
+        <TitleSection id="sobre-mi-heading" index={5} total={6}>
           <ProfileCheckIcon class="size-6" />
           {t.about.title}
         </TitleSection>
         <AboutMe locale="es" />
-      </SectionContainer>
-
-      <hr class="section-divider max-w-[1200px] mx-auto" />
+      </SectionBand>
 
       <!-- Contacto -->
-      <SectionContainer id="contacto" headingId="contacto-heading">
-        <TitleSection id="contacto-heading">
+      <SectionBand id="contacto" headingId="contacto-heading">
+        <TitleSection id="contacto-heading" index={6} total={6}>
           <MailIcon class="size-6" />
           {t.nav.contact}
         </TitleSection>
         <Contact locale="es" />
-      </SectionContainer>
-    </div>
+      </SectionBand>
   </div>
   </main>
 </Layout>

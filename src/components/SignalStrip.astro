@@ -1,0 +1,78 @@
+---
+import type { Locale } from "@/lib/i18n"
+import { getTranslations } from "@/lib/i18n"
+import { canonicalTechnologies } from "@/lib/data"
+
+interface Props {
+  locale?: Locale
+}
+
+const { locale = 'es' } = Astro.props
+const t = getTranslations(locale)
+const technologies = [...canonicalTechnologies]
+const repeatedTechnologies = [...technologies, ...technologies]
+const label = t.signal.label
+const technologyCount = String(technologies.length).padStart(2, '0')
+---
+
+<div
+  class="signal-strip"
+  data-animate
+  role="region"
+  aria-label={label}
+  data-signal-pause={t.signal.pause}
+  data-signal-resume={t.signal.resume}
+>
+  <div class="signal-strip-inner">
+    <div class="signal-strip-label">
+      <span class="signal-strip-dot" aria-hidden="true"></span>
+      <span>{label}</span>
+    </div>
+    <div class="signal-marquee-window" aria-hidden="true">
+      <div class="signal-marquee">
+        {repeatedTechnologies.map((technology, index) => (
+          <span class="signal-tech" data-duplicate={index >= technologies.length ? 'true' : undefined}>
+            <span class="signal-tech-mark">✳</span>
+            {technology}
+          </span>
+        ))}
+      </div>
+    </div>
+    <div class="signal-strip-actions">
+      <span class="signal-strip-index" aria-hidden="true">{technologyCount} / {technologyCount}</span>
+      <button
+        type="button"
+        class="signal-marquee-toggle focus-ring"
+        data-signal-toggle
+        aria-pressed="false"
+        aria-label={t.signal.pause}
+      >
+        <span aria-hidden="true">Ⅱ</span>
+        <span class="sr-only">{t.signal.pause}</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const setupSignalStrip = () => {
+    const strip = document.querySelector<HTMLElement>('.signal-strip')
+    const toggle = strip?.querySelector<HTMLButtonElement>('[data-signal-toggle]')
+    if (!strip || !toggle || toggle.dataset.bound === 'true') return
+
+    toggle.dataset.bound = 'true'
+    toggle.addEventListener('click', () => {
+      const paused = strip.classList.toggle('is-paused')
+      const label = paused ? strip.dataset.signalResume : strip.dataset.signalPause
+      toggle.setAttribute('aria-pressed', String(paused))
+      if (label) toggle.setAttribute('aria-label', label)
+      const srText = toggle.querySelector('.sr-only')
+      if (srText && label) srText.textContent = label
+      const icon = toggle.querySelector('[aria-hidden="true"]')
+      if (icon) icon.textContent = paused ? '▶' : 'Ⅱ'
+    })
+  }
+
+  setupSignalStrip()
+  document.addEventListener('astro:page-load', setupSignalStrip)
+</script>

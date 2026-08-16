@@ -18,6 +18,9 @@ const toggleLabel = locale === 'es' ? `Cambiar idioma (actual: ${currentLangCode
     type="button"
     class="inline-flex h-11 min-w-11 items-center justify-center gap-2 rounded-md px-2.5 py-2 text-sm font-medium text-current transition-colors hover:bg-[hsl(var(--muted))] dark:hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[hsl(var(--primary))]"
     aria-label={toggleLabel}
+    aria-haspopup="menu"
+    aria-expanded="false"
+    aria-controls="language-menu"
   >
     <LanguagesIcon class="size-4" />
     <span id="current-language">{locale === 'en' ? 'EN' : 'ES'}</span>
@@ -31,21 +34,23 @@ const toggleLabel = locale === 'es' ? `Cambiar idioma (actual: ${currentLangCode
     <div class="py-1">
       <button
         type="button"
-        role="menuitem"
+        role="menuitemradio"
+        aria-checked={locale === 'es' ? 'true' : 'false'}
         data-lang="es"
         class="language-option flex items-center justify-between w-full px-4 py-2 text-sm text-[hsl(var(--foreground)/0.8)] hover:bg-[hsl(var(--muted)/0.5)] text-left"
       >
         <span>Español</span>
-        <span class="check-es hidden">✓</span>
+        <span class="check-es hidden" aria-hidden="true">✓</span>
       </button>
       <button
         type="button"
-        role="menuitem"
+        role="menuitemradio"
+        aria-checked={locale === 'en' ? 'true' : 'false'}
         data-lang="en"
         class="language-option flex items-center justify-between w-full px-4 py-2 text-sm text-[hsl(var(--foreground)/0.8)] hover:bg-[hsl(var(--muted)/0.5)] text-left"
       >
         <span>English</span>
-        <span class="check-en hidden">✓</span>
+        <span class="check-en hidden" aria-hidden="true">✓</span>
       </button>
     </div>
   </div>
@@ -69,6 +74,8 @@ const toggleLabel = locale === 'es' ? `Cambiar idioma (actual: ${currentLangCode
     const currentLangEl = document.getElementById('current-language')
 
     if (!toggle || !menu || !wrapper || !currentLangEl) return
+    const languageToggle = toggle
+    const languageMenu = menu
 
     function setLanguagePreference(lang: string): void {
       localStorage.setItem(LANG_KEY, lang)
@@ -84,11 +91,20 @@ const toggleLabel = locale === 'es' ? `Cambiar idioma (actual: ${currentLangCode
 
       const checkEs = wrapper.querySelector('.check-es')
       const checkEn = wrapper.querySelector('.check-en')
+      const optionEs = wrapper.querySelector('[data-lang="es"]')
+      const optionEn = wrapper.querySelector('[data-lang="en"]')
 
       if (checkEs && checkEn) {
         checkEs.classList.toggle('hidden', lang !== 'es')
         checkEn.classList.toggle('hidden', lang !== 'en')
       }
+      optionEs?.setAttribute('aria-checked', String(lang === 'es'))
+      optionEn?.setAttribute('aria-checked', String(lang === 'en'))
+    }
+
+    function setMenuOpen(isOpen: boolean) {
+      languageMenu.classList.toggle('hidden', !isOpen)
+      languageToggle.setAttribute('aria-expanded', String(isOpen))
     }
 
     function switchLanguage(lang: string) {
@@ -115,12 +131,12 @@ const toggleLabel = locale === 'es' ? `Cambiar idioma (actual: ${currentLangCode
     toggle.addEventListener('click', (e) => {
       e.preventDefault()
       e.stopPropagation()
-      menu.classList.toggle('hidden')
+      setMenuOpen(menu.classList.contains('hidden'))
     }, { signal })
 
     document.addEventListener('click', (e) => {
       if (!wrapper.contains(e.target as Node)) {
-        menu.classList.add('hidden')
+        setMenuOpen(false)
       }
     }, { signal })
 
@@ -132,7 +148,7 @@ const toggleLabel = locale === 'es' ? `Cambiar idioma (actual: ${currentLangCode
         if (lang) {
           setLanguagePreference(lang)
           updateLanguageDisplay(lang)
-          menu.classList.add('hidden')
+          setMenuOpen(false)
           switchLanguage(lang)
         }
       }, { signal })
@@ -140,13 +156,13 @@ const toggleLabel = locale === 'es' ? `Cambiar idioma (actual: ${currentLangCode
 
     // Keyboard navigation
     function openMenu() {
-      menu!.classList.remove('hidden')
+      setMenuOpen(true)
       const items = menu!.querySelectorAll<HTMLButtonElement>('.language-option')
       items[0]?.focus()
     }
 
     function closeMenu() {
-      menu!.classList.add('hidden')
+      setMenuOpen(false)
       toggle!.focus()
     }
 
@@ -200,9 +216,3 @@ const toggleLabel = locale === 'es' ? `Cambiar idioma (actual: ${currentLangCode
 
   document.addEventListener('astro:after-swap', initLanguageToggle)
 </script>
-
-<style>
-  #language-menu {
-    min-width: max-content;
-  }
-</style>

@@ -1,82 +1,122 @@
 ---
-// Header Component - Navigation (Superhuman-inspired)
+// Floating navigation: the home gets a theme-aware glass treatment, while
+// inner pages keep the same layout with a surface-colored fallback.
 import { getTranslations, type Locale } from "@/lib/i18n"
 import ThemeToggle from "./ThemeToggle.astro"
 import LanguageToggle from "./LanguageToggle.astro"
 import DropdownMenu from "./ui/DropdownMenu.astro"
+import DownloadIcon from "./icons/Download.astro"
+import cvPdf from "@/assets/Sebastian_Bravo_CV.pdf"
 
 interface Props {
   locale?: Locale
+  home?: boolean
 }
 
-const { locale = 'es' } = Astro.props
+const { locale = 'es', home = false } = Astro.props
 const t = getTranslations(locale)
 const prefix = locale === 'es' ? '' : '/en'
 
 const sectionIds = {
-  es: { experience: 'experiencia', projects: 'proyectos', education: 'educacion', certifications: 'certificaciones', about: 'sobre-mi', contact: 'contacto' },
-  en: { experience: 'experience', projects: 'projects', education: 'education', certifications: 'certifications', about: 'about', contact: 'contact' },
+  es: { experience: 'experiencia', projects: 'proyectos', education: 'educacion', about: 'sobre-mi', contact: 'contacto' },
+  en: { experience: 'experience', projects: 'projects', education: 'education', about: 'about', contact: 'contact' },
 } as const
 
 const ids = sectionIds[locale]
 const mobileMenuId = `mobile-nav-${locale}`
+const homeUrl = prefix || '/'
+const contactUrl = `${homeUrl}#${ids.contact}`
 
 const desktopNavItems = [
   { title: t.nav.blog, label: 'blog', url: `${prefix}/blog` },
-  { title: t.nav.projects, label: ids.projects, url: `${prefix || '/'}#${ids.projects}` },
-  { title: t.nav.experience, label: ids.experience, url: `${prefix || '/'}#${ids.experience}` },
-  { title: t.nav.formation, label: ids.education, url: `${prefix || '/'}#${ids.education}` },
+  { title: t.nav.projects, label: ids.projects, url: `${homeUrl}#${ids.projects}` },
+  { title: t.nav.experience, label: ids.experience, url: `${homeUrl}#${ids.experience}` },
+  { title: t.nav.formation, label: ids.education, url: `${homeUrl}#${ids.education}` },
 ]
 
-// Mobile: agrega "Inicio" como primer item — el logo solo no basta como affordance en mobile
 const mobileNavItems = [
-  { title: t.nav.home, label: 'home', url: prefix || '/' },
+  { title: t.nav.home, label: 'home', url: homeUrl },
   ...desktopNavItems,
+  { title: t.nav.contact, label: ids.contact, url: contactUrl },
 ]
-
+const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/'
+const isCurrentRoute = (url: string) => {
+  if (url.includes('#')) return false
+  const routePath = url.replace(/\/$/, '') || '/'
+  return routePath === currentPath
+}
 ---
 
-<header class="fixed inset-x-0 top-0 z-50 bg-[hsl(var(--background))]">
-  <div class="mx-auto max-w-[1200px] px-4">
+<header class="site-header" data-home={home ? 'true' : 'false'}>
+  <div class="mx-auto max-w-[1280px] px-3 sm:px-4">
     <nav
       aria-label={locale === 'es' ? 'Navegación principal' : 'Main navigation'}
-      class="site-nav mx-auto flex h-14 items-center justify-between gap-6 px-4 text-sm font-medium transition-colors duration-300"
+      class:list={["site-nav mx-auto flex min-h-14 items-center justify-between gap-3 px-3 py-2 text-sm font-medium transition-all duration-300 sm:px-4", { "site-nav-home": home }]}
     >
-      <div class="flex items-center gap-4">
-        <a href={prefix || '/'} class="text-base font-semibold tracking-tight whitespace-nowrap">
-          Sebastian<span class="hidden sm:inline"> Bravo</span>
-        </a>
-      </div>
+      <a href={homeUrl} class="brand-mark-link shrink-0 focus-ring" aria-label={locale === 'es' ? 'Inicio — Sebastian Bravo' : 'Home — Sebastian Bravo'}>
+        <span class="brand-mark" aria-hidden="true">SB</span>
+        <span class="hidden whitespace-nowrap sm:inline">Sebastian <span class="brand-lastname">Bravo</span></span>
+      </a>
 
-      <div class="hidden md:flex items-center gap-1">
+      <div class="hidden items-center gap-1 md:flex">
         {desktopNavItems.map((link) => (
           <a
-            class="nav-link relative px-3 py-2 rounded-[8px] transition-colors duration-150 focus-ring"
+            class="nav-link relative rounded-lg px-3 py-2 transition-colors duration-200 focus-ring"
             data-section={link.label}
             href={link.url}
+            aria-current={isCurrentRoute(link.url) ? 'page' : undefined}
           >
             {link.title}
           </a>
         ))}
       </div>
 
-      <div class="flex items-center gap-3">
-        <div class="flex items-center gap-2 border-l border-transparent pl-3">
+      <div class="flex items-center gap-1.5 sm:gap-2">
+        <a href={contactUrl} class="header-cta hidden items-center gap-2 rounded-lg px-3 py-2 text-xs font-semibold transition sm:inline-flex focus-ring">
+          <span class="header-cta-dot" aria-hidden="true"></span>
+          {t.nav.cta}
+        </a>
+
+        <a
+          href={cvPdf}
+          target="_blank"
+          rel="noopener noreferrer"
+          data-track-cv={locale}
+          class="header-resume hidden items-center gap-1.5 rounded-lg px-2.5 py-2 text-xs font-semibold transition sm:inline-flex focus-ring"
+          aria-label={t.hero.downloadCv}
+        >
+          <DownloadIcon class="size-3.5" />
+          <span>CV</span>
+        </a>
+
+        <div class="flex items-center gap-0.5 border-l border-current/15 pl-1.5 sm:gap-1 sm:pl-2">
           <ThemeToggle locale={locale} />
           <LanguageToggle locale={locale} />
         </div>
 
         <div class="md:hidden">
           <DropdownMenu id={mobileMenuId} triggerLabel={t.nav.menu}>
-            <div class="flex flex-col gap-1 p-2">
+            <div class="flex min-w-52 flex-col gap-1 p-1">
               {mobileNavItems.map((link) => (
                 <a
                   href={link.url}
-                  class="rounded-[8px] px-3 py-2 text-sm text-foreground/90 transition-colors hover:bg-muted/50 focus-ring"
+                  class="rounded-lg px-3 py-2.5 text-sm text-foreground/90 transition-colors hover:bg-muted/70 focus-ring"
+                  aria-current={isCurrentRoute(link.url) ? 'page' : undefined}
+                  target={link.url === cvPdf ? '_blank' : undefined}
+                  rel={link.url === cvPdf ? 'noopener noreferrer' : undefined}
                 >
                   {link.title}
                 </a>
               ))}
+              <a
+                href={cvPdf}
+                target="_blank"
+                rel="noopener noreferrer"
+                data-track-cv={locale}
+                class="rounded-lg px-3 py-2.5 text-sm text-foreground/90 transition-colors hover:bg-muted/70 focus-ring"
+              >
+                {t.hero.downloadCv}
+              </a>
             </div>
           </DropdownMenu>
         </div>
@@ -86,130 +126,73 @@ const mobileNavItems = [
 </header>
 
 <script>
-  let io: IntersectionObserver | null = null
-  let onScroll: (() => void) | null = null
-  let onVisibilityChange: (() => void) | null = null
+  let headerController: AbortController | null = null
+  let headerObserver: IntersectionObserver | null = null
 
-  document.addEventListener("astro:page-load", () => {
-    const sections = Array.from(document.querySelectorAll("section[id]"))
-    const navLinks = Array.from(document.querySelectorAll(".site-nav .nav-link"))
+  function setupHeader() {
+    headerController?.abort()
+    headerObserver?.disconnect()
+
+    const controller = new AbortController()
+    headerController = controller
+    const { signal } = controller
+    const sections = Array.from(document.querySelectorAll('section[id]'))
+    const navLinks = Array.from(document.querySelectorAll('.site-nav .nav-link'))
     const siteNav = document.querySelector('.site-nav')
 
-    if (io) io.disconnect()
-    if (onScroll) window.removeEventListener('scroll', onScroll)
-    if (onVisibilityChange) document.removeEventListener('visibilitychange', onVisibilityChange)
+    if (!siteNav) return
 
-    io = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            navLinks.forEach((link) => {
-              const section = link.getAttribute('data-section')
-              if (section === entry.target.id) link.classList.add('nav-active')
-              else link.classList.remove('nav-active')
-            })
-          }
-        })
-      },
-      { threshold: 0.35 }
-    )
-
-    sections.forEach((s) => io!.observe(s))
-
-    onScroll = () => {
-      if (!siteNav) return
-      if (window.scrollY > 40) siteNav.classList.add('scrolled')
-      else siteNav.classList.remove('scrolled')
+    const setActive = (sectionId: string) => {
+      navLinks.forEach((link) => {
+        const isActive = link.getAttribute('data-section') === sectionId
+        link.classList.toggle('nav-active', isActive)
+        if (isActive) {
+          link.setAttribute('aria-current', 'page')
+        } else {
+          link.removeAttribute('aria-current')
+        }
+      })
     }
 
-    onScroll()
-    window.addEventListener('scroll', onScroll, { passive: true })
+    const currentPath = window.location.pathname.replace(/\/$/, '') || '/'
+    navLinks.forEach((link) => {
+      const href = link.getAttribute('href') ?? ''
+      const linkPath = href.split('#')[0].replace(/\/$/, '') || '/'
+      if (!href.includes('#') && linkPath === currentPath) {
+        link.classList.add('nav-active')
+        link.setAttribute('aria-current', 'page')
+      }
+    })
 
-    onVisibilityChange = () => {
+    headerObserver = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0]
+        if (visible) setActive(visible.target.id)
+      },
+      { threshold: [0.15, 0.35, 0.6], rootMargin: '-15% 0px -55% 0px' },
+    )
+    sections.forEach((section) => headerObserver?.observe(section))
+
+    const onScroll = () => siteNav.classList.toggle('scrolled', window.scrollY > 36)
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true, signal })
+
+    const onVisibilityChange = () => {
       if (document.visibilityState === 'hidden') {
-        io?.disconnect()
+        headerObserver?.disconnect()
       } else {
-        document.querySelectorAll("section[id]").forEach((s) => io!.observe(s))
+        sections.forEach((section) => headerObserver?.observe(section))
       }
     }
-    document.addEventListener('visibilitychange', onVisibilityChange)
+    document.addEventListener('visibilitychange', onVisibilityChange, { signal })
+  }
+
+  setupHeader()
+  document.addEventListener('astro:page-load', setupHeader)
+  document.addEventListener('astro:before-swap', () => {
+    headerController?.abort()
+    headerObserver?.disconnect()
   })
 </script>
-
-<style>
-  .nav-link {
-    color: inherit;
-  }
-
-  .nav-link.nav-active::after {
-    content: '';
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    bottom: -6px;
-    width: 36%;
-    height: 3px;
-    border-radius: 8px;
-    background: hsl(var(--primary));
-    box-shadow: 0 4px 18px hsl(var(--primary) / 0.35);
-  }
-
-  /* Default: semi-transparent nav with blur */
-  .site-nav {
-    background: rgb(var(--nav-bg));
-    border-bottom: 1px solid rgb(var(--nav-border-color) / 0.5);
-    color: hsl(var(--foreground));
-    backdrop-filter: saturate(1.25) blur(12px);
-    -webkit-backdrop-filter: saturate(1.25) blur(12px);
-  }
-
-  :global(.dark) .site-nav {
-    background: rgb(var(--nav-bg) / 0.96);
-    border-bottom: 1px solid rgb(var(--nav-border-color) / 0.4);
-    color: rgba(255, 255, 255, 0.9);
-  }
-
-  .site-nav .nav-link:hover {
-    background: hsl(var(--muted));
-  }
-
-  :global(.dark) .site-nav .nav-link:hover {
-    background: rgba(255, 255, 255, 0.08);
-  }
-
-  /* Scrolled: more opaque background */
-  .site-nav.scrolled {
-    background: rgb(var(--nav-bg-scrolled) / 0.96);
-    border-bottom: 1px solid hsl(var(--border));
-    color: hsl(var(--foreground));
-  }
-
-  .site-nav.scrolled .nav-link:hover {
-    background: hsl(var(--muted));
-  }
-
-  .site-nav.scrolled :global(#theme-toggle),
-  .site-nav.scrolled :global(#language-toggle) {
-    color: hsl(var(--foreground));
-  }
-
-  .site-nav.scrolled :global(#theme-toggle:hover),
-  .site-nav.scrolled :global(#language-toggle:hover) {
-    background: hsl(var(--muted));
-  }
-
-  /* Dark scrolled */
-  :global(.dark) .site-nav.scrolled {
-    background: rgb(var(--nav-bg-scrolled) / 0.92);
-    border-bottom: 1px solid rgb(var(--nav-border-color) / 0.7);
-    color: hsl(var(--foreground));
-  }
-
-  :global(.dark) .site-nav.scrolled .nav-link:hover {
-    background: rgba(255, 255, 255, 0.06);
-  }
-
-  .dropdown:focus {
-    outline: none;
-  }
-</style>

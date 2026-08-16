@@ -1,8 +1,7 @@
 ---
-// Hero Component — Superhuman-inspired full-width hero
+// Hero: a recruiter-readable first viewport with a deliberately cinematic visual layer.
 import { Image } from "astro:assets"
-import { personalInfo, social } from "@/lib/data"
-import { getAboutMe } from "@/lib/data"
+import { getAboutMe, personalInfo, social } from "@/lib/data"
 import { getTranslations, type Locale } from "@/lib/i18n"
 import profileImage from "@/assets/perfil.jpeg"
 import AvailableBadge from "./AvailableBadge.astro"
@@ -21,53 +20,52 @@ const { locale = 'es' } = Astro.props
 const t = getTranslations(locale)
 const aboutMe = getAboutMe(locale)
 const contactUrl = locale === 'es' ? '#contacto' : '#contact'
+const heroTitleId = `hero-title-${locale}`
+const currentYear = new Date().getFullYear()
+const sectionCount = 6
 ---
 
-<section class="hero-gradient w-full">
-   <div class="container-custom section">
-     <div class="grid grid-cols-1 gap-8 sm:gap-12 lg:gap-16 md:grid-cols-2 items-center">
+<section class="hero-gradient w-full overflow-hidden" aria-labelledby={heroTitleId} data-portfolio-motion>
+  <div class="hero-ambient hero-ambient-one" aria-hidden="true"></div>
+  <div class="hero-ambient hero-ambient-two" aria-hidden="true"></div>
 
-      <!-- Left: Textual content -->
-      <div class="order-2 md:order-1">
-        <!-- Greeting -->
-        <p class="animate-slide-up hero-text-muted text-sm md:text-base font-mono uppercase tracking-[0.16em] mb-3">
-          {t.hero.greeting}
-        </p>
-
-        <!-- Name with gradient -->
-        <h1 class="animate-slide-up animation-delay-100 tracking-tight leading-[0.92]">
-          <span class="block text-3xl md:text-4xl lg:text-[56px] bg-gradient-to-r from-[hsl(var(--foreground))] via-[hsl(var(--foreground))] to-[hsl(var(--primary))] bg-clip-text text-transparent bg-clip-text-fallback">{personalInfo.name}</span>
-        </h1>
-
-        <!-- Role -->
-        <div class="animate-slide-up animation-delay-200 mt-4">
-          <span class="hero-text-accent font-mono text-xs uppercase tracking-[0.16em] text-[hsl(var(--primary))]">
-            {personalInfo.title}
-          </span>
+  <div class="container-custom hero-inner">
+    <div class="hero-layout">
+      <div class="hero-copy">
+        <div class="hero-kicker hero-reveal hero-reveal-1">
+          <span>{t.hero.greeting}</span>
+          <span class="hero-kicker-line" aria-hidden="true"></span>
+          <span class="hero-kicker-code">SB / {currentYear}</span>
         </div>
 
-        <!-- Subtitle -->
-        <p class="animate-slide-up animation-delay-300 hero-text-primary mt-6 text-base md:text-lg max-w-xl">{t.hero.intro}</p>
+        <h1 id={heroTitleId} class="hero-title hero-reveal hero-reveal-2">
+          <span class="hero-title-name">Sebastian</span>
+          <span class="hero-title-name hero-title-accent text-gradient">Bravo</span>
+        </h1>
 
-        <!-- What I'm looking for -->
+        <p class="hero-role hero-reveal hero-reveal-3">{personalInfo.title} <span aria-hidden="true">·</span> {t.hero.roleLocation}</p>
+
+        <p class="hero-lede hero-reveal hero-reveal-4">{t.hero.intro}</p>
+
         {aboutMe.lookingFor && (
-          <p class="animate-slide-up animation-delay-350 hero-text-muted mt-4 text-sm max-w-xl italic">
-            {aboutMe.lookingFor}
-          </p>
+          <p class="hero-looking-for hero-reveal hero-reveal-4">{aboutMe.lookingFor}</p>
         )}
 
-        <!-- Wins -->
-        <ul class="animate-slide-up animation-delay-400 mt-5 space-y-1.5">
-          {t.hero.wins.map((win: string) => (
-            <li class="flex items-start gap-2 text-sm hero-text-muted">
-              <svg class="mt-0.5 size-3.5 shrink-0 text-[hsl(var(--primary))]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+        <ul class="hero-wins hero-reveal hero-reveal-5" aria-label={t.hero.winsLabel}>
+          {t.hero.wins.map((win: string, index: number) => (
+            <li class="hero-win">
+              <span class="hero-win-index" aria-hidden="true">0{index + 1}</span>
               <span>{win}</span>
             </li>
           ))}
         </ul>
 
-        <!-- CTAs + Social -->
-        <div class="animate-slide-up animation-delay-500 mt-8 flex flex-wrap items-center gap-4">
+        <div class="hero-actions hero-reveal hero-reveal-6">
+          <a href={contactUrl} class="btn-primary hero-btn-primary focus-ring" aria-label={t.hero.contact}>
+            <MailIcon class="size-4" />
+            <span>{t.hero.contact}</span>
+            <span class="hero-btn-arrow" aria-hidden="true">↗</span>
+          </a>
           <a
             href={cvPdf}
             class="btn-ghost hero-btn-ghost focus-ring"
@@ -78,17 +76,7 @@ const contactUrl = locale === 'es' ? '#contacto' : '#contact'
             <DownloadIcon class="size-4" />
             <span>{t.hero.downloadCv}</span>
           </a>
-
-          <a
-            href={contactUrl}
-            class="btn-ghost hero-btn-ghost focus-ring"
-            aria-label={t.hero.contact}
-          >
-            <MailIcon class="size-4" />
-            <span>{t.hero.contact}</span>
-          </a>
-
-          <div class="flex items-center gap-2">
+          <div class="hero-socials" role="group" aria-label={t.hero.socialLabel}>
             <SocialPill href={social.linkedin} target="_blank" rel="me noopener noreferrer" data-track-social="linkedin">
               <LinkedInIcon class="size-4" />
               <span class="sr-only">LinkedIn</span>
@@ -100,55 +88,68 @@ const contactUrl = locale === 'es' ? '#contacto' : '#contact'
           </div>
         </div>
 
-        <!-- Meta -->
-        <div class="animate-slide-up animation-delay-500 hero-meta-text mt-6 text-sm flex flex-wrap items-center gap-4">
-          <span class="flex items-center gap-2">
-            <svg width="8" height="8" viewBox="0 0 8 8" fill="currentColor" class="opacity-70" aria-hidden="true"><circle cx="4" cy="4" r="4" /></svg>
-            <span>{personalInfo.location}</span>
-          </span>
-
-          <span class="opacity-30" aria-hidden="true">&middot;</span>
-          <a href={`mailto:${personalInfo.email}`} class="hero-meta-link hover:underline">{personalInfo.email}</a>
+        <div class="hero-meta hero-reveal hero-reveal-6">
+          <span class="hero-meta-status"><span class="hero-meta-pulse" aria-hidden="true"></span>{personalInfo.available ? t.hero.available : ''}</span>
+          <span class="hero-meta-separator" aria-hidden="true">/</span>
+          <a href={`mailto:${personalInfo.email}`} class="hero-meta-link focus-ring">{personalInfo.email}</a>
         </div>
       </div>
 
-      <!-- Right: Profile image -->
-      <div class="order-1 md:order-2 flex justify-center md:justify-end">
-        <div class="relative flex flex-col items-center">
-          <div class="absolute inset-0 -z-10 rounded-full bg-[hsl(var(--primary))]/20 blur-3xl"></div>
-          <Image
-            src={profileImage}
-            alt={personalInfo.name}
-            width={224}
-            height={224}
-            sizes="(max-width: 640px) 144px, (max-width: 768px) 176px, (max-width: 1024px) 208px, 224px"
-            format="webp"
-            quality={90}
-            loading="eager"
-            class="w-36 h-36 sm:w-44 sm:h-44 md:w-52 md:h-52 lg:w-56 lg:h-56 rounded-full object-cover shadow-2xl ring-4 ring-white/70 dark:ring-white/10"
-          />
-
-          {personalInfo.available && (
-            <div class="mt-4">
-              <a
-                href={social.linkedin}
-                target="_blank"
-                rel="me noopener noreferrer"
-                aria-label={t.hero.available}
-                class="block rounded-full focus-ring"
-              >
+      <div class="hero-art hero-reveal hero-reveal-3">
+        <div class="hero-art-frame">
+          <div class="hero-art-grid"></div>
+          <canvas class="hero-webgl" data-hero-webgl aria-hidden="true"></canvas>
+          <div class="hero-art-crosshair hero-art-crosshair-top"></div>
+          <div class="hero-art-crosshair hero-art-crosshair-bottom"></div>
+          <div class="hero-orbit hero-orbit-one"></div>
+          <div class="hero-orbit hero-orbit-two"></div>
+          <div class="hero-orbit-dot hero-orbit-dot-one"></div>
+          <div class="hero-orbit-dot hero-orbit-dot-two"></div>
+          <div class="hero-portrait-shell">
+            <Image
+              src={profileImage}
+              alt={personalInfo.name}
+              width={320}
+              height={320}
+              sizes="(max-width: 767px) 210px, (max-width: 1024px) 280px, 320px"
+              format="webp"
+              quality={90}
+              loading="eager"
+              fetchpriority="high"
+              class="hero-portrait"
+            />
+          </div>
+          <div class="hero-art-tag hero-art-tag-top">FULL-STACK<br /><span>{t.hero.artTitle}</span></div>
+          <div class="hero-art-tag hero-art-tag-bottom">{t.hero.coordinates}<br /><span>{t.hero.region}</span></div>
+          <div class="hero-art-status">
+            {personalInfo.available && (
+              <a href={social.linkedin} target="_blank" rel="me noopener noreferrer" class="focus-ring" aria-label={t.hero.available}>
                 <AvailableBadge>{t.hero.available}</AvailableBadge>
               </a>
-            </div>
-          )}
+            )}
+          </div>
+        </div>
+        <div class="hero-art-caption">
+          <span>{t.hero.profileLabel}</span>
+          <span class="hero-art-caption-line" aria-hidden="true"></span>
+          <span>{t.hero.caption}</span>
         </div>
       </div>
+    </div>
+
+    <div class="hero-footer hero-reveal hero-reveal-6">
+      <a href={locale === 'es' ? '#proyectos' : '#projects'} class="hero-scroll-cue focus-ring">
+        <span class="hero-scroll-line" aria-hidden="true"></span>
+        <span>{t.hero.exploreProjects}</span>
+      </a>
+      <span class="hero-footer-index" aria-hidden="true">01 <span>/</span> {String(sectionCount).padStart(2, '0')}</span>
     </div>
   </div>
 </section>
 
 <script>
   import { trackEvent } from "@/lib/analytics"
+  import { setupPortfolioMotion, teardownPortfolioMotion } from "@/scripts/portfolio-motion"
 
   const setupHeroTracking = () => {
     document.querySelectorAll<HTMLElement>('[data-track-social]').forEach((el) => {
@@ -168,6 +169,9 @@ const contactUrl = locale === 'es' ? '#contacto' : '#contact'
     })
   }
 
-  document.addEventListener('astro:page-load', setupHeroTracking)
   setupHeroTracking()
+  setupPortfolioMotion()
+  document.addEventListener('astro:page-load', setupHeroTracking)
+  document.addEventListener('astro:page-load', setupPortfolioMotion)
+  document.addEventListener('astro:before-swap', teardownPortfolioMotion)
 </script>

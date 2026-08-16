@@ -14,6 +14,15 @@
   },
   "hero": {
     "greeting": "Hi, I'm",
+    "roleLocation": "Chile / Remote",
+    "artTitle": "DEVELOPER",
+    "coordinates": "46°S / 72°W",
+    "region": "ARAUCANÍA, CL",
+    "profileLabel": "PROFILE / 01",
+    "caption": "Built with intention",
+    "exploreProjects": "Explore projects",
+    "socialLabel": "Professional profiles",
+    "winsLabel": "Selected outcomes",
     "intro": "Full-Stack Developer. I turn ideas into complete web platforms that scale, maintain themselves, and pass code reviews without drama.",
     "contact": "Contact",
     "available": "Available for work",
@@ -35,10 +44,16 @@
     "statusDevelopment": "In development",
     "statusDemo": "Demo"
   },
+  "signal": {
+    "label": "The stack I build with",
+    "pause": "Pause moving technologies",
+    "resume": "Resume moving technologies"
+  },
   "work": {
     "title": "Experience",
     "currently": "Currently...",
     "viewMore": "View more →",
+    "viewCaseStudy": "Read case study",
     "noExperience": "Work experience coming soon..."
   },
   "education": {
@@ -55,7 +70,8 @@
   },
   "about": {
     "title": "About",
-    "techStackSubtitle": "The tools I build with day to day"
+    "focusTitle": "Where I do my best work",
+    "contactCta": "Let's talk"
   },
   "theme": {
     "toggle": "Toggle theme",
@@ -66,5 +82,14 @@
   "footer": {
     "madeWith": "Made with",
     "privacy": "Privacy"
+  },
+  "blog": {
+    "title": "Blog",
+    "description": "Articles on full-stack development, IoT, Machine Learning, and lessons from building software in production.",
+    "intro": "I write about what I learn while building. Full-stack, IoT, Machine Learning, and production code lessons.",
+    "empty": "No articles published yet.",
+    "fallbackNotice": "This article is currently available in Spanish. The English route exists so case-study links never end in a 404.",
+    "fallbackCardLabel": "Available in Spanish",
+    "back": "Back to blog"
   }
 }

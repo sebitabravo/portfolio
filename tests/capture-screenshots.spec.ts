@@ -5,13 +5,13 @@ const SCREENSHOT_DIR = path.resolve("tests/screenshots")
 
 test.describe("Screenshots del portafolio", () => {
   test("Hero con wins", async ({ page }) => {
-    await page.goto("http://localhost:4321")
+    await page.goto("/")
     await page.waitForTimeout(1000)
     await page.screenshot({ path: `${SCREENSHOT_DIR}/01-hero-wins.png` })
   })
 
   test("Proyectos — Wenuke con screenshot real", async ({ page }) => {
-    await page.goto("http://localhost:4321")
+    await page.goto("/")
     const wenuke = page.locator("[data-project='wenuke']")
     await wenuke.scrollIntoViewIfNeeded()
     // Esperar que la imagen cargue antes de capturar
@@ -23,14 +23,14 @@ test.describe("Screenshots del portafolio", () => {
   })
 
   test("Temutel descripcion reducida", async ({ page }) => {
-    await page.goto("http://localhost:4321")
+    await page.goto("/")
     await page.locator("#experiencia").scrollIntoViewIfNeeded()
     await page.waitForTimeout(500)
     await page.screenshot({ path: `${SCREENSHOT_DIR}/03-temutel.png` })
   })
 
   test("Pagina completa", async ({ page }) => {
-    await page.goto("http://localhost:4321")
+    await page.goto("/")
     await page.waitForTimeout(1500)
     await page.screenshot({ path: `${SCREENSHOT_DIR}/04-full-page.png`, fullPage: true })
   })

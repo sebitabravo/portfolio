@@ -101,9 +101,11 @@ const heroTitleId = `hero-title-${locale}`
   // proposito: no depende de imports dinamicos ni de APIs opcionales.
   ;(() => {
     const root = document.querySelector("[data-portfolio-motion]")
+    const canvas = root?.querySelector("[data-hero-webgl]")
     if (!root) return
     window.setTimeout(() => {
       if (root.dataset.motionStatus === "loading") root.dataset.motionStatus = "fallback"
+      if (canvas?.dataset.webglStatus === "pending") canvas.dataset.webglStatus = "fallback"
     }, 3000)
   })()
 </script>

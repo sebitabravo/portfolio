@@ -54,19 +54,29 @@ jobs:
         run: |
           pnpm preview --host 127.0.0.1 --port 4321 > /tmp/astro-preview.log 2>&1 &
           PREVIEW_PID=$!
-          for attempt in $(seq 1 30); do
-            if curl --silent --fail http://127.0.0.1:4321 > /dev/null; then
+          cleanup_preview() {
+            kill "$PREVIEW_PID" 2>/dev/null || true
+            pkill -P "$PREVIEW_PID" 2>/dev/null || true
+          }
+          trap cleanup_preview EXIT
+
+          for attempt in $(seq 1 60); do
+            if curl --silent --show-error --fail --max-time 2 http://127.0.0.1:4321 > /dev/null; then
               break
             fi
-            if [ "$attempt" -eq 30 ]; then
-              echo "ERROR: Preview server failed to start after 30 attempts"
+            if ! kill -0 "$PREVIEW_PID" 2>/dev/null; then
+              echo "ERROR: Preview server exited before becoming ready"
+              cat /tmp/astro-preview.log
+              exit 1
+            fi
+            if [ "$attempt" -eq 60 ]; then
+              echo "ERROR: Preview server failed to start after 60 attempts"
               cat /tmp/astro-preview.log
               exit 1
             fi
             sleep 1
           done
           PLAYWRIGHT_BASE_URL=http://127.0.0.1:4321 pnpm test:e2e
-          kill $PREVIEW_PID 2>/dev/null || true
 
       - name: Validate project links
         run: pnpm validate:links

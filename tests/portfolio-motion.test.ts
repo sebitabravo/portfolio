@@ -123,6 +123,25 @@ describe("portfolio motion gates", () => {
     expect(() => setupPortfolioMotion()).not.toThrow()
   })
 
+  it("settles to fallback when enhancement imports exceed the startup budget", () => {
+    document.body.innerHTML = `
+      <section data-portfolio-motion>
+        <canvas data-hero-webgl></canvas>
+      </section>
+    `
+    vi.useFakeTimers()
+    vi.stubGlobal("requestIdleCallback", vi.fn(() => 303))
+    vi.stubGlobal("cancelIdleCallback", vi.fn())
+
+    setupPortfolioMotion()
+    vi.advanceTimersByTime(7000)
+
+    expect(document.querySelector<HTMLElement>("[data-portfolio-motion]")?.dataset.motionStatus).toBe("fallback")
+    expect(document.querySelector<HTMLCanvasElement>("[data-hero-webgl]")?.dataset.webglStatus).toBe("fallback")
+
+    vi.useRealTimers()
+  })
+
   it("loads the active motion layer and tears down GSAP, WebGL and scroll state", async () => {
     document.body.innerHTML = `
       <section data-portfolio-motion>

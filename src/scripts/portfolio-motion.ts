@@ -15,6 +15,7 @@ type MotionRoot = HTMLElement & {
 
 let activeCleanup: Cleanup | null = null
 let setupSequence = 0
+const MOTION_FALLBACK_TIMEOUT = 7000
 
 /**
  * Progressive motion layer for the home page.
@@ -36,6 +37,7 @@ export function setupPortfolioMotion(): void {
 	let disposed = false
 	let loadTimer: number | null = null
 	let idleHandle: number | null = null
+	let fallbackTimer: number | null = null
 
 	root.dataset.motionStatus = "loading"
 	canvas.dataset.webglStatus = "pending"
@@ -45,6 +47,10 @@ export function setupPortfolioMotion(): void {
 		if (loadTimer !== null) {
 			window.clearTimeout(loadTimer)
 			loadTimer = null
+		}
+		if (fallbackTimer !== null) {
+			window.clearTimeout(fallbackTimer)
+			fallbackTimer = null
 		}
 		if (idleHandle !== null) {
 			const idleWindow = window as Window & { cancelIdleCallback?: (handle: number) => void }
@@ -64,6 +70,10 @@ export function setupPortfolioMotion(): void {
 		const shouldLoadWebGL = !window.matchMedia("(prefers-reduced-motion: reduce)").matches && canLoadWebGLEnhancement()
 		void loadMotionLayer(shouldLoadWebGL).then(({ gsap, ScrollTrigger, webgl }) => {
 			if (disposed || sequence !== setupSequence) return
+			if (fallbackTimer !== null) {
+				window.clearTimeout(fallbackTimer)
+				fallbackTimer = null
+			}
 
 			gsap.registerPlugin(ScrollTrigger)
 			const media = gsap.matchMedia()
@@ -112,10 +122,23 @@ export function setupPortfolioMotion(): void {
 			matchMediaCleanup = () => media.revert()
 		}).catch(() => {
 			if (disposed || sequence !== setupSequence) return
+			if (fallbackTimer !== null) {
+				window.clearTimeout(fallbackTimer)
+				fallbackTimer = null
+			}
 			root.dataset.motionStatus = "fallback"
 			canvas.dataset.webglStatus = "fallback"
 		})
 	}
+
+	// Enhancement loading is bounded: slow Firefox/CI imports must settle into
+	// a valid fallback state instead of leaving the contract stuck at loading.
+	fallbackTimer = window.setTimeout(() => {
+		fallbackTimer = null
+		if (disposed || sequence !== setupSequence) return
+		if (root.dataset.motionStatus === "loading") root.dataset.motionStatus = "fallback"
+		if (canvas.dataset.webglStatus === "pending") canvas.dataset.webglStatus = "fallback"
+	}, MOTION_FALLBACK_TIMEOUT)
 
 	const idleWindow = window as Window & {
 		requestIdleCallback?: (callback: () => void, options?: { timeout: number }) => number

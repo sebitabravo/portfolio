@@ -49,6 +49,7 @@ Thumbs.db
 .playwright-mcp/
 playwright-report/
 test-results/
+tests/screenshots/*.png
 .tmp-lighthouse.json
 
 # audit artifacts

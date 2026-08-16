@@ -18,6 +18,7 @@ pnpm-debug.log*
 lerna-debug.log*
 *.log
 logs
+specs
 
 # environment variables
 .env
@@ -40,6 +41,8 @@ Thumbs.db
 *.njsproj
 *.sln
 *.sw?
+.atl
+.claude
 
 # testing
 /coverage
@@ -58,3 +61,4 @@ qa-*.png
 *-postpolish.md
 *-menu-open.md
 lighthouse-scores.png
+.codegraph/

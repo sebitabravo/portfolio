@@ -41,6 +41,9 @@ jobs:
       - name: Run unit and smoke tests
         run: pnpm test
 
+      - name: Enforce unit coverage
+        run: pnpm test:coverage
+
       - name: Build project for E2E
         run: pnpm build
 

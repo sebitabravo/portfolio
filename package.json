@@ -8,8 +8,9 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "build": "rm -rf dist && astro check && pnpm verify:limits && astro build && pnpm verify:csp",
-    "build:ci": "rm -rf dist && pnpm verify:limits && astro build && pnpm verify:csp",
+    "build": "rm -rf dist && astro check && pnpm verify:limits && pnpm build:static && pnpm verify:csp",
+    "build:ci": "rm -rf dist && pnpm verify:limits && pnpm build:static && pnpm verify:csp",
+    "build:static": "env -u PUBLIC_VERCEL_OBSERVABILITY_BASEPATH -u PUBLIC_VERCEL_OBSERVABILITY_CLIENT_CONFIG astro build",
     "preview": "astro preview",
     "check": "astro check",
     "astro": "astro",

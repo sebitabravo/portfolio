@@ -15,7 +15,7 @@ type MotionRoot = HTMLElement & {
 
 let activeCleanup: Cleanup | null = null
 let setupSequence = 0
-const MOTION_FALLBACK_TIMEOUT = 7000
+const MOTION_FALLBACK_TIMEOUT = 4000
 
 /**
  * Progressive motion layer for the home page.

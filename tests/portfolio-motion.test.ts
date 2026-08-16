@@ -134,7 +134,7 @@ describe("portfolio motion gates", () => {
     vi.stubGlobal("cancelIdleCallback", vi.fn())
 
     setupPortfolioMotion()
-    vi.advanceTimersByTime(7000)
+    vi.advanceTimersByTime(4000)
 
     expect(document.querySelector<HTMLElement>("[data-portfolio-motion]")?.dataset.motionStatus).toBe("fallback")
     expect(document.querySelector<HTMLCanvasElement>("[data-hero-webgl]")?.dataset.webglStatus).toBe("fallback")

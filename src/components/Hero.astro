@@ -94,6 +94,20 @@ const heroTitleId = `hero-title-${locale}`
   </div>
 </section>
 
+<script is:inline>
+  // Fallback de contrato: si el modulo de motion no logra cargar (gates de
+  // red, parse lento del chunk de three.js, browser sin soporte), el estado
+  // pasa a fallback en vez de quedar en loading indefinidamente. Inline a
+  // proposito: no depende de imports dinamicos ni de APIs opcionales.
+  ;(() => {
+    const root = document.querySelector("[data-portfolio-motion]")
+    if (!root) return
+    window.setTimeout(() => {
+      if (root.dataset.motionStatus === "loading") root.dataset.motionStatus = "fallback"
+    }, 3000)
+  })()
+</script>
+
 <script>
   import { trackEvent } from "@/lib/analytics"
   import { setupPortfolioMotion, teardownPortfolioMotion } from "@/scripts/portfolio-motion"

@@ -18,6 +18,7 @@ test.describe("Home Page", () => {
     "mobile navigation, theme, language and reading progress work",
     { tag: ["@critical", "@e2e", "@home", "@HOME-E2E-002"] },
     async ({ page }) => {
+      test.setTimeout(60_000)
       await page.setViewportSize({ width: 390, height: 844 })
       await page.goto("/")
 

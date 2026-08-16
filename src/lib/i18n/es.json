@@ -10,37 +10,40 @@
     "contact": "Contacto",
     "blog": "Blog",
     "formation": "Formación",
+    "linkedin": "LinkedIn",
     "cta": "Hablemos"
   },
   "hero": {
     "greeting": "Hola, soy",
     "roleLocation": "Chile / Remoto",
-    "artTitle": "DESARROLLADOR",
-    "coordinates": "46°S / 72°W",
-    "region": "ARAUCANÍA, CL",
-    "profileLabel": "PERFIL / 01",
-    "caption": "Construyo con intención",
-    "exploreProjects": "Explorar proyectos",
-    "socialLabel": "Redes profesionales",
-    "winsLabel": "Resultados destacados",
-    "intro": "Full-Stack Developer. Convierto ideas en plataformas web completas que escalan, se mantienen solas y pasan las code reviews sin drama.",
+    "specialization": "Web en producción · ML aplicado",
+    "language": "Inglés C1",
+    "level": "Full-Stack Junior · primer rol full-time",
+    "metaLabel": "Disponibilidad y ubicación",
+    "intro": "Convierto ideas en plataformas web en producción y aplico Machine Learning a problemas reales, del concepto al despliegue.",
+    "proof": "94.1% F1-Score en ManttoAI",
     "contact": "Contactar",
     "available": "Disponible para trabajar",
-    "downloadCv": "Descargar CV",
-    "wins": [
-      "Modelo ML Random Forest con 94.1% F1-Score en producción",
-      "Plataforma SaaS enterprise de huella de carbono para minería e industria",
-      "4 proyectos full-stack en producción con arquitectura limpia y testing"
-    ]
+    "downloadCv": "Descargar CV"
   },
   "projects": {
     "title": "Proyectos",
+    "outcomesLabel": "Resultados",
+    "outcomesTitle": "Evidencia antes que promesas",
+    "outcomes": [
+      "94.1% F1-Score en ManttoAI para detección de fallas",
+      "Vulcania: mapa comunitario, alertas y notificaciones en tiempo real",
+      "4 proyectos full-stack publicados: 2 demos públicas y 2 repositorios disponibles"
+    ],
     "viewProject": "Demo",
     "viewCode": "Código",
     "readMore": "Leer más",
+    "contactPrompt": "¿Te interesa cómo lo construí?",
+    "contactCta": "Hablemos",
     "viewMoreGithub": "Ver más proyectos en GitHub",
     "featured": "Destacado",
     "statusProduction": "En producción",
+    "statusCodeAvailable": "Código disponible",
     "statusDevelopment": "En desarrollo",
     "statusDemo": "Demo"
   },
@@ -54,6 +57,7 @@
     "currently": "Actualmente...",
     "viewMore": "Ver más →",
     "viewCaseStudy": "Ver case study",
+    "timeline": "Entre contratos: 2023–2026 · Ingeniería Informática en INACAP y proyectos personales en producción.",
     "noExperience": "Experiencia laboral próximamente..."
   },
   "education": {

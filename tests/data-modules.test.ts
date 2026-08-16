@@ -42,11 +42,13 @@ describe("portfolio data modules", () => {
       expect(about.intro).toBeTruthy()
       expect(about.experience).toBeTruthy()
       expect(about.personal).toBeTruthy()
+      expect(about.signature).toBeTruthy()
       expect(about.interests).toHaveLength(5)
       expect(about.interestsTitle).toBeTruthy()
       expect(about.lookingFor).toBeTruthy()
     }
     expect(getAboutMe("es").intro).not.toEqual(getAboutMe("en").intro)
+    expect(getAboutMe("es").signature).toContain("Todo List")
   })
 
   it("keeps work and education records structurally complete in both locales", () => {

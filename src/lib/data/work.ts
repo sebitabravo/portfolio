@@ -28,7 +28,7 @@ const workExperienceData = {
     {
       company: "Temutel",
       position: "Técnico en Redes y Telecomunicaciones",
-      description: `Técnico de instalación y soporte para Telsur. ~30+ instalaciones semanales de equipos de telecomunicaciones en clientes residenciales y comerciales.`,
+      description: `Instalación y soporte de equipos de telecomunicaciones para clientes residenciales y comerciales: 30+ instalaciones semanales para Telsur.`,
       startDate: new Date("2022-12-01"),
       endDate: new Date("2023-02-28"),
       current: false,
@@ -65,7 +65,7 @@ const workExperienceData = {
     {
       company: "Temutel",
       position: "Network and Telecommunications Technician",
-      description: `Installation and support technician for Telsur. ~30+ weekly telecom equipment installations for residential and commercial clients.`,
+      description: `Installed and supported telecom equipment for residential and commercial Telsur customers: 30+ installations per week.`,
       startDate: new Date("2022-12-01"),
       endDate: new Date("2023-02-28"),
       current: false,

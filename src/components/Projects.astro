@@ -7,6 +7,7 @@ import { projectGradient } from "@/lib/visual-gradients"
 import GitHubIcon from "./icons/GitHub.astro"
 import LinkIcon from "./icons/Link.astro"
 import BookOpen from "./icons/BookOpen.astro"
+import MailIcon from "./icons/Mail.astro"
 
 interface Props {
   locale?: Locale
@@ -14,6 +15,7 @@ interface Props {
 
 const { locale = "es" } = Astro.props
 const t = getTranslations(locale)
+const contactUrl = locale === "es" ? "#contacto" : "#contact"
 
 const projects = getProjects(locale)
   .slice()
@@ -37,10 +39,30 @@ const statusColors: Record<Project["status"], string> = {
   <div class="project-scroll-meter" data-project-scroll-meter aria-hidden="true">
     <span></span>
   </div>
+  <div
+    class="project-outcomes"
+    data-project-outcomes
+    aria-labelledby={`project-outcomes-title-${locale}`}
+  >
+    <div class="project-outcomes-heading">
+      <p class="project-outcomes-kicker">{t.projects.outcomesLabel}</p>
+      <h3 id={`project-outcomes-title-${locale}`}>{t.projects.outcomesTitle}</h3>
+    </div>
+    <ul class="project-outcomes-list">
+      {t.projects.outcomes.map((outcome: string, index: number) => (
+        <li>
+          <span class="project-outcome-index" aria-hidden="true">0{index + 1}</span>
+          <span>{outcome}</span>
+        </li>
+      ))}
+    </ul>
+  </div>
   <div class="project-grid" data-projects-list>
     {projects.map(({ slug, title, description, tags, liveUrl, githubUrl, featured, status, metrics, blogSlug }, i) => {
       const statusLabel = status ? statusLabels[status] : undefined
+      const publicStatusLabel = !liveUrl && githubUrl ? t.projects.statusCodeAvailable : statusLabel
       const statusColor = status ? statusColors[status] : ""
+      const publicStatusColor = !liveUrl && githubUrl ? "project-status-code" : statusColor
       const gradient = projectGradient(slug)
       const resolvedBlogSlug = blogSlug || slug
       const projectUrl = locale === 'en' ? `/en/blog/${resolvedBlogSlug}` : `/blog/${resolvedBlogSlug}`
@@ -74,7 +96,7 @@ const statusColors: Record<Project["status"], string> = {
             <div class="project-media-grid" aria-hidden="true"></div>
             <div class="project-media-topline">
               <span>{projectNumber} / {projectCount}</span>
-              <span class:list={["project-media-status", statusColor]}>{statusLabel}</span>
+              <span class:list={["project-media-status", publicStatusColor]}>{publicStatusLabel}</span>
             </div>
             <a href={projectUrl} class="project-media-link focus-ring" aria-label={`${title} — ${t.projects.readMore}`}>
               <span class="project-media-link-label">{t.projects.readMore} <span aria-hidden="true">↗</span></span>
@@ -88,7 +110,7 @@ const statusColors: Record<Project["status"], string> = {
           <div class="project-body">
             <div class="project-heading-row">
               <div>
-                <p class="project-eyebrow">{projectNumber} — {statusLabel}</p>
+                <p class="project-eyebrow">{projectNumber} — {publicStatusLabel}</p>
                 <h3>{title}</h3>
               </div>
               {featured && <span class="project-featured-mark" aria-hidden="true">✳</span>}
@@ -164,6 +186,15 @@ const statusColors: Record<Project["status"], string> = {
         </article>
       )
     })}
+  </div>
+
+  <div class="projects-contact-cta">
+    <p>{t.projects.contactPrompt}</p>
+    <a href={contactUrl} class="projects-contact-link focus-ring">
+      <MailIcon class="size-4" />
+      <span>{t.projects.contactCta}</span>
+      <span aria-hidden="true">↗</span>
+    </a>
   </div>
 
   <div class="projects-endcap">

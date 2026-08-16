@@ -1,7 +1,9 @@
 ---
 // Footer Component (Superhuman-inspired)
-import { personalInfo } from "@/lib/data"
+import { personalInfo, social } from "@/lib/data"
 import { getTranslations, type Locale } from "@/lib/i18n"
+import GitHubIcon from "./icons/GitHub.astro"
+import LinkedInIcon from "./icons/LinkedIn.astro"
 
 interface Props {
   locale?: Locale
@@ -23,7 +25,36 @@ const privacyUrl = locale === 'es' ? '/privacy' : '/en/privacy'
        <a href={locale === 'en' ? '/en' : '/'} class="font-medium text-foreground hover:text-[hsl(var(--primary))] transition-colors focus-ring rounded">{personalInfo.name}</a>
      </div>
 
-    <div class="flex items-center gap-4">
+    <div class="flex flex-wrap items-center gap-4">
+      <nav aria-label={locale === 'es' ? 'Perfiles profesionales' : 'Professional profiles'}>
+        <ul class="footer-socials flex items-center gap-2">
+          <li>
+            <a
+              href={social.linkedin}
+              target="_blank"
+              rel="me noopener noreferrer"
+              data-track-social="linkedin"
+              class="inline-flex items-center gap-1.5 rounded-md px-2 py-1.5 text-[hsl(var(--caption-color))] transition-colors hover:text-foreground focus-ring"
+            >
+              <LinkedInIcon class="size-4" />
+              <span>LinkedIn</span>
+            </a>
+          </li>
+          <li>
+            <a
+              href={social.github}
+              target="_blank"
+              rel="me noopener noreferrer"
+              data-track-social="github"
+              class="inline-flex items-center gap-1.5 rounded-md px-2 py-1.5 text-[hsl(var(--caption-color))] transition-colors hover:text-foreground focus-ring"
+            >
+              <GitHubIcon class="size-4" />
+              <span>GitHub</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+
       <span class="text-xs text-[hsl(var(--caption-color))]">
         {t.footer.madeWith}
         <a href="https://astro.build" target="_blank" rel="noopener noreferrer" class="text-[hsl(var(--primary))] hover:underline focus-ring rounded">Astro</a>

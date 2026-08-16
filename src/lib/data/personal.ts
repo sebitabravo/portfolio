@@ -4,8 +4,8 @@
 export const personalInfo = {
   name: "Sebastian Bravo",
   title: "Full-Stack Developer",
-  description: "Full-Stack Developer. Construyo plataformas web completas con React, TypeScript, IoT y Machine Learning. Estudiante de Ingeniería Informática. Inglés C1.",
-  descriptionEn: "Full-Stack Developer. I build production-grade web platforms with React, TypeScript, IoT and Machine Learning. Computer Engineering student. English C1.",
+  description: "Desarrollador Full-Stack junior. Construyo plataformas web en producción con React, TypeScript, IoT y Machine Learning. Inglés C1.",
+  descriptionEn: "Junior Full-Stack Developer. I build production web platforms with React, TypeScript, IoT and Machine Learning. English C1.",
   email: "sebitabravocontacto@gmail.com",
   location: "Chile 🇨🇱",
   available: true,

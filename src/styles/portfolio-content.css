@@ -148,6 +148,14 @@
   line-height: 1.5;
 }
 
+.about-signature {
+  color: var(--hero-accent-strong);
+  font-family: var(--font-jetbrains-mono), ui-monospace, monospace;
+  font-size: 0.92rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
 .about-interests {
   margin-top: 1rem;
   padding-top: 1.25rem;
@@ -231,6 +239,32 @@
 }
 
 /* Work evidence and the compact non-development role. */
+.experience-timeline-note {
+  display: flex;
+  align-items: baseline;
+  gap: 0.65rem;
+  margin: 1.25rem 0 -0.75rem;
+  padding: 0.75rem 0.9rem;
+  border-left: 2px solid var(--hero-accent);
+  color: hsl(var(--foreground) / 0.78);
+  background: hsl(var(--primary) / 0.05);
+  font-size: 0.86rem;
+  line-height: 1.5;
+}
+
+.experience-timeline-note-mark {
+  flex: 0 0 auto;
+  color: var(--hero-accent);
+  font-family: var(--font-jetbrains-mono), ui-monospace, monospace;
+}
+
+.experience-employment-type {
+  margin-top: 0.35rem;
+  color: hsl(var(--foreground) / 0.72);
+  font-size: 0.76rem;
+  font-weight: 600;
+}
+
 .experience-highlights {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -298,6 +332,59 @@
 }
 
 /* Projects --------------------------------------------------------------- */
+
+.project-outcomes {
+  display: grid;
+  grid-template-columns: minmax(12rem, 0.72fr) minmax(0, 1.28fr);
+  gap: clamp(1.25rem, 4vw, 3.5rem);
+  align-items: start;
+  margin-bottom: 2rem;
+  padding: 1.25rem 0 1.5rem;
+  border-top: 1px solid var(--hero-line);
+  border-bottom: 1px solid var(--hero-line);
+}
+
+.project-outcomes-kicker,
+.project-outcome-index {
+  color: var(--hero-accent);
+  font-family: var(--font-jetbrains-mono), ui-monospace, monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.project-outcomes-heading h3 {
+  max-width: 12rem;
+  margin-top: 0.55rem;
+  color: hsl(var(--foreground));
+  font-size: clamp(1.35rem, 2.5vw, 2rem);
+  letter-spacing: -0.05em;
+  line-height: 1.05;
+}
+
+.project-outcomes-list {
+  display: grid;
+  gap: 0.6rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.project-outcomes-list li {
+  display: grid;
+  grid-template-columns: 2rem minmax(0, 1fr);
+  gap: 0.7rem;
+  align-items: baseline;
+  padding: 0.55rem 0;
+  color: hsl(var(--foreground) / 0.84);
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+
+.project-outcome-index {
+  color: var(--hero-faint);
+  font-size: 0.62rem;
+}
 
 .project-grid {
   display: grid;
@@ -659,7 +746,8 @@
 
 .project-status-production,
 .project-status-development,
-.project-status-demo {
+.project-status-demo,
+.project-status-code {
   border-radius: 999px;
   padding: 0.25rem 0.55rem;
   font-size: 0.68rem;
@@ -678,6 +766,49 @@
 .project-status-demo {
   color: #bae6fd;
   background: rgb(7 89 133 / 0.55);
+}
+
+.project-status-code {
+  color: #ddd6fe;
+  background: rgb(67 56 202 / 0.55);
+}
+
+.projects-contact-cta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem 1rem;
+  margin-top: 2.5rem;
+  padding: 1.1rem 0;
+  border-top: 1px solid var(--hero-line);
+  border-bottom: 1px solid var(--hero-line);
+}
+
+.projects-contact-cta p {
+  color: hsl(var(--foreground) / 0.78);
+  font-size: 0.92rem;
+}
+
+.projects-contact-link {
+  display: inline-flex;
+  min-height: 2.5rem;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.65rem 0.9rem;
+  border: 1px solid hsl(var(--primary) / 0.7);
+  border-radius: 0.55rem;
+  color: hsl(var(--primary-foreground));
+  background: hsl(var(--primary));
+  font-size: 0.82rem;
+  font-weight: 700;
+  transition: transform 180ms ease, box-shadow 180ms ease, background 180ms ease;
+}
+
+.projects-contact-link:hover {
+  transform: translateY(-2px);
+  background: hsl(var(--primary) / 0.9);
+  box-shadow: 0 10px 25px hsl(var(--primary) / 0.26);
 }
 
 .projects-endcap {

@@ -62,7 +62,6 @@
   .project-card,
   .project-image,
   .project-action,
-  .hero-scroll-line,
   .hero-btn-arrow,
   .project-scroll-meter span {
     transition: none;
@@ -114,26 +113,12 @@
     font-size: 1rem;
   }
 
-  .hero-looking-for {
-    font-size: 0.78rem;
-  }
-
-  .hero-win {
-    font-size: 0.76rem;
-  }
-
   .hero-actions {
     align-items: stretch;
   }
 
-  .hero-btn-primary,
-  .hero-btn-ghost {
-    flex: 1 1 auto;
-  }
-
-  .hero-socials {
+  .hero-btn-primary {
     flex: 0 0 auto;
-    margin-left: 0;
   }
 
   .hero-art {
@@ -149,25 +134,14 @@
     width: 56%;
   }
 
-  .hero-art-tag-top {
-    top: 1.25rem;
-    left: 1.25rem;
+  .project-outcomes {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
   }
 
-  .hero-art-tag-bottom {
-    right: auto;
-    bottom: 1.25rem;
-    left: 1.25rem;
-    max-width: 34%;
-    text-align: left;
-  }
-
-  .hero-art-status {
-    right: 0.75rem;
-  }
-
-  .hero-footer {
-    margin-top: 0.25rem;
+  .project-outcomes-heading h3 {
+    max-width: none;
   }
 
   .project-card,
@@ -219,6 +193,15 @@
     gap: 0.65rem;
   }
 
+  .projects-contact-cta {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .projects-contact-link {
+    justify-content: center;
+  }
+
   .projects-github-link {
     font-size: 0.68rem;
     text-align: center;
@@ -230,19 +213,8 @@
     font-size: 3.35rem;
   }
 
-  .hero-actions {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .hero-socials {
-    grid-column: 1 / -1;
-    justify-content: flex-start;
-  }
-
-  .hero-socials a {
-    width: 2.75rem;
-    min-width: 2.75rem;
+  .hero-btn-primary {
+    width: 100%;
   }
 }
 

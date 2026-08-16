@@ -12,6 +12,7 @@ interface Props {
   endDate?: Date | null
   current: boolean
   location?: string
+  employmentType?: string
   skills: string[]
   logos?: ExperienceLogo[]
   url?: string
@@ -20,14 +21,14 @@ interface Props {
   index?: number
 }
 
-const { company, position, description, startDate, endDate, current, location, skills, logos, url, highlights = [], locale = 'es', index = 0 } = Astro.props
+const { company, position, description, startDate, endDate, current, location, employmentType, skills, logos, url, highlights = [], locale = 'es', index = 0 } = Astro.props
 const t = getTranslations(locale)
 const externalUrl = url?.startsWith('http')
 
 const dateText = current
   ? t.work.currently
   : endDate
-    ? formatDate(endDate, locale)
+    ? `${formatDate(startDate, locale)} — ${formatDate(endDate, locale)}`
     : formatDate(startDate, locale)
 ---
 
@@ -43,6 +44,7 @@ const dateText = current
         <h4 class="text-[hsl(var(--caption-color))] mt-0.5">{company}</h4>
         <time class="text-xs text-[hsl(var(--caption-color))] mt-2 block">{dateText}</time>
         {location && <p class="text-xs leading-[1.60] text-[hsl(var(--caption-color))]">{location}</p>}
+        {employmentType && <p class="experience-employment-type">{employmentType}</p>}
 
         {logos && logos.length > 0 && (
           <div class="flex flex-wrap items-center gap-3 mt-4">

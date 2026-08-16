@@ -1,0 +1,55 @@
+---
+title: "Vulcania: community volcanic monitoring with Next.js, Supabase and real-time alerts"
+description: "A Chile-focused volcanic-monitoring platform with Next.js 15, React 19, Supabase Realtime, Leaflet and Web Audio API emergency alerts. It includes a no-backend demo mode and a complete Row Level Security setup."
+publishDate: 2025-06-10
+tags: ["Next.js", "Supabase", "Leaflet", "Open Source", "TypeScript", "Civic Tech"]
+image: "vulcania"
+locale: "en"
+---
+
+Chile has more than 90 active volcanoes. Official monitoring exists, but when an emergency starts, information still spreads through WhatsApp groups, social media posts and phone calls. Communities need a single place where verified data and first-hand observations can meet.
+
+Vulcania is a community volcanic-monitoring platform centered on Villarrica Volcano. It combines citizen reports, verified information, an interactive map, community chat and configurable emergency alerts.
+
+## Two modes, one app
+
+The app has a **Demo** mode with local simulated data and a **Complete** mode backed by Supabase Auth, PostgreSQL, Row Level Security and Realtime. `lib/app-config.ts` detects whether the required environment variables exist and selects the correct mode automatically.
+
+This design makes the repository useful immediately: anyone can clone it, run `pnpm dev` and explore the full experience without creating a database or configuring a Supabase project.
+
+## Stack
+
+| Layer | Technology |
+|------|------------|
+| Frontend | Next.js 15 App Router, React 19, TypeScript |
+| UI | Tailwind CSS v4, shadcn/ui |
+| Backend | Supabase PostgreSQL, Auth, RLS and Realtime |
+| Maps | Leaflet and OpenStreetMap |
+| Audio | Web Audio API oscillator synthesis |
+| Notifications | Browser Notification API |
+| Infrastructure | Vercel |
+| Testing | Vitest and jsdom |
+
+## The emergency modal
+
+When the alert level reaches orange or red, `emergency-modal.tsx` blocks the interface and plays a generated audio pattern. It uses triangle-wave oscillators instead of audio files: 880 Hz for orange alerts and 440 Hz for red alerts.
+
+Browsers require a user gesture before audio can play. `setupAudioUnlock()` initializes the AudioContext from click and touch events, so an emergency alert is not silently muted by autoplay policy. Browser notifications also respect `document.visibilityState`: they are sent when the user is not actively looking at the map.
+
+## Results
+
+- **Production-ready PWA** with an online demo, installability and offline-first behavior.
+- **Real-time interactive map** with volcanic and seismic data layers.
+- **Community chat** synchronized through Supabase Realtime.
+- **Configurable push notifications** by urgency level.
+- **Generated emergency audio** without shipping audio files.
+
+## What I learned
+
+Supabase Realtime removes the need for a dedicated WebSocket service for this scale, but database policies must be tested like application code. The dual demo/complete architecture was equally important: it removed setup friction while keeping the full production path explicit. Leaflet provided the map capability without a proprietary API key, and a PWA gave field users installability and offline behavior without an app-store release.
+
+## Open source
+
+The repository includes the demo mode, Vitest tests, environment diagnostics and the Vercel deployment configuration.
+
+[View Vulcania on GitHub](https://github.com/sebitabravo/vulcania-web)

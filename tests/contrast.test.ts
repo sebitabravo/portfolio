@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs"
 import { describe, expect, it } from "vitest"
 
 const heroCss = readFileSync("src/styles/portfolio-hero.css", "utf8")
-const baseCss = readFileSync("src/styles/portfolio-base.css", "utf8")
+const heroMarkup = readFileSync("src/components/Hero.astro", "utf8")
 
 function channel(value: number): number {
   const normalized = value / 255
@@ -32,13 +32,14 @@ describe("hero contrast contract", () => {
     expect(contrast("#bac5ef", "#10143a")).toBeGreaterThanOrEqual(4.5)
   })
 
-  it("keeps both surname gradient stops and the availability badge readable", () => {
+  it("keeps the surname gradient readable and availability as one copy-level status", () => {
     expect(heroCss).toContain("#3730a3")
     expect(heroCss).toContain("#312e81")
-    expect(baseCss).toContain("color: #166534")
+    expect(heroMarkup).toContain("hero-meta-status")
+    expect(heroMarkup).not.toContain("available-badge")
+    expect(heroMarkup).not.toContain("hero-art-status")
     expect(contrast("#3730a3", "#f6f5ff")).toBeGreaterThanOrEqual(4.5)
     expect(contrast("#312e81", "#f6f5ff")).toBeGreaterThanOrEqual(4.5)
     expect(contrast("#8873e8", "#10143a")).toBeGreaterThanOrEqual(4.5)
-    expect(contrast("#166534", "#dcfce7")).toBeGreaterThanOrEqual(4.5)
   })
 })

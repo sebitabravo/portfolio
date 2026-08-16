@@ -1,16 +1,10 @@
 ---
-// Hero: a recruiter-readable first viewport with a deliberately cinematic visual layer.
+// Hero: a recruiter-readable first viewport with one clear message and a cinematic visual layer.
 import { Image } from "astro:assets"
-import { getAboutMe, personalInfo, social } from "@/lib/data"
+import { personalInfo } from "@/lib/data"
 import { getTranslations, type Locale } from "@/lib/i18n"
 import profileImage from "@/assets/perfil.jpeg"
-import AvailableBadge from "./AvailableBadge.astro"
-import SocialPill from "./SocialPill.astro"
-import GitHubIcon from "./icons/GitHub.astro"
-import LinkedInIcon from "./icons/LinkedIn.astro"
 import MailIcon from "./icons/Mail.astro"
-import DownloadIcon from "./icons/Download.astro"
-import cvPdf from "@/assets/Sebastian_Bravo_CV.pdf"
 
 interface Props {
   locale?: Locale
@@ -18,11 +12,8 @@ interface Props {
 
 const { locale = 'es' } = Astro.props
 const t = getTranslations(locale)
-const aboutMe = getAboutMe(locale)
 const contactUrl = locale === 'es' ? '#contacto' : '#contact'
 const heroTitleId = `hero-title-${locale}`
-const currentYear = new Date().getFullYear()
-const sectionCount = 6
 ---
 
 <section class="hero-gradient w-full overflow-hidden" aria-labelledby={heroTitleId} data-portfolio-motion>
@@ -35,30 +26,22 @@ const sectionCount = 6
         <div class="hero-kicker hero-reveal hero-reveal-1">
           <span>{t.hero.greeting}</span>
           <span class="hero-kicker-line" aria-hidden="true"></span>
-          <span class="hero-kicker-code">SB / {currentYear}</span>
         </div>
 
         <h1 id={heroTitleId} class="hero-title hero-reveal hero-reveal-2">
           <span class="hero-title-name">Sebastian</span>
           <span class="hero-title-name hero-title-accent text-gradient">Bravo</span>
+          <span class="hero-title-role"><span aria-hidden="true">· </span>{personalInfo.title}</span>
         </h1>
 
-        <p class="hero-role hero-reveal hero-reveal-3">{personalInfo.title} <span aria-hidden="true">·</span> {t.hero.roleLocation}</p>
+        <p class="hero-role hero-reveal hero-reveal-3">{t.hero.specialization}</p>
 
         <p class="hero-lede hero-reveal hero-reveal-4">{t.hero.intro}</p>
 
-        {aboutMe.lookingFor && (
-          <p class="hero-looking-for hero-reveal hero-reveal-4">{aboutMe.lookingFor}</p>
-        )}
-
-        <ul class="hero-wins hero-reveal hero-reveal-5" aria-label={t.hero.winsLabel}>
-          {t.hero.wins.map((win: string, index: number) => (
-            <li class="hero-win">
-              <span class="hero-win-index" aria-hidden="true">0{index + 1}</span>
-              <span>{win}</span>
-            </li>
-          ))}
-        </ul>
+        <p class="hero-proof hero-reveal hero-reveal-5">
+          <span class="hero-proof-mark" aria-hidden="true">↳</span>
+          {t.hero.proof}
+        </p>
 
         <div class="hero-actions hero-reveal hero-reveal-6">
           <a href={contactUrl} class="btn-primary hero-btn-primary focus-ring" aria-label={t.hero.contact}>
@@ -66,36 +49,22 @@ const sectionCount = 6
             <span>{t.hero.contact}</span>
             <span class="hero-btn-arrow" aria-hidden="true">↗</span>
           </a>
-          <a
-            href={cvPdf}
-            class="btn-ghost hero-btn-ghost focus-ring"
-            target="_blank"
-            rel="noopener noreferrer"
-            data-track-cv={locale}
-          >
-            <DownloadIcon class="size-4" />
-            <span>{t.hero.downloadCv}</span>
-          </a>
-          <div class="hero-socials" role="group" aria-label={t.hero.socialLabel}>
-            <SocialPill href={social.linkedin} target="_blank" rel="me noopener noreferrer" data-track-social="linkedin">
-              <LinkedInIcon class="size-4" />
-              <span class="sr-only">LinkedIn</span>
-            </SocialPill>
-            <SocialPill href={social.github} target="_blank" rel="me noopener noreferrer" data-track-social="github">
-              <GitHubIcon class="size-4" />
-              <span class="sr-only">GitHub</span>
-            </SocialPill>
-          </div>
         </div>
 
-        <div class="hero-meta hero-reveal hero-reveal-6">
-          <span class="hero-meta-status"><span class="hero-meta-pulse" aria-hidden="true"></span>{personalInfo.available ? t.hero.available : ''}</span>
-          <span class="hero-meta-separator" aria-hidden="true">/</span>
-          <a href={`mailto:${personalInfo.email}`} class="hero-meta-link focus-ring">{personalInfo.email}</a>
-        </div>
+        <ul class="hero-meta hero-reveal hero-reveal-7" aria-label={t.hero.metaLabel}>
+          {personalInfo.available && (
+            <li class="hero-meta-status">
+              <span class="hero-meta-pulse" aria-hidden="true"></span>
+              {t.hero.available}
+            </li>
+          )}
+          <li class="hero-meta-item">{t.hero.language}</li>
+          <li class="hero-meta-item">{t.hero.roleLocation}</li>
+          <li class="hero-meta-item">{t.hero.level}</li>
+        </ul>
       </div>
 
-      <div class="hero-art hero-reveal hero-reveal-3">
+      <div class="hero-art hero-reveal hero-reveal-3" aria-hidden="true">
         <div class="hero-art-frame">
           <div class="hero-art-grid"></div>
           <canvas class="hero-webgl" data-hero-webgl aria-hidden="true"></canvas>
@@ -108,7 +77,7 @@ const sectionCount = 6
           <div class="hero-portrait-shell">
             <Image
               src={profileImage}
-              alt={personalInfo.name}
+              alt=""
               width={320}
               height={320}
               sizes="(max-width: 767px) 210px, (max-width: 1024px) 280px, 320px"
@@ -119,30 +88,8 @@ const sectionCount = 6
               class="hero-portrait"
             />
           </div>
-          <div class="hero-art-tag hero-art-tag-top">FULL-STACK<br /><span>{t.hero.artTitle}</span></div>
-          <div class="hero-art-tag hero-art-tag-bottom">{t.hero.coordinates}<br /><span>{t.hero.region}</span></div>
-          <div class="hero-art-status">
-            {personalInfo.available && (
-              <a href={social.linkedin} target="_blank" rel="me noopener noreferrer" class="focus-ring" aria-label={t.hero.available}>
-                <AvailableBadge>{t.hero.available}</AvailableBadge>
-              </a>
-            )}
-          </div>
-        </div>
-        <div class="hero-art-caption">
-          <span>{t.hero.profileLabel}</span>
-          <span class="hero-art-caption-line" aria-hidden="true"></span>
-          <span>{t.hero.caption}</span>
         </div>
       </div>
-    </div>
-
-    <div class="hero-footer hero-reveal hero-reveal-6">
-      <a href={locale === 'es' ? '#proyectos' : '#projects'} class="hero-scroll-cue focus-ring">
-        <span class="hero-scroll-line" aria-hidden="true"></span>
-        <span>{t.hero.exploreProjects}</span>
-      </a>
-      <span class="hero-footer-index" aria-hidden="true">01 <span>/</span> {String(sectionCount).padStart(2, '0')}</span>
     </div>
   </div>
 </section>
@@ -151,7 +98,7 @@ const sectionCount = 6
   import { trackEvent } from "@/lib/analytics"
   import { setupPortfolioMotion, teardownPortfolioMotion } from "@/scripts/portfolio-motion"
 
-  const setupHeroTracking = () => {
+  const setupPortfolioTracking = () => {
     document.querySelectorAll<HTMLElement>('[data-track-social]').forEach((el) => {
       if (el.dataset.trackBound === 'true') return
       el.dataset.trackBound = 'true'
@@ -169,9 +116,9 @@ const sectionCount = 6
     })
   }
 
-  setupHeroTracking()
+  setupPortfolioTracking()
   setupPortfolioMotion()
-  document.addEventListener('astro:page-load', setupHeroTracking)
+  document.addEventListener('astro:page-load', setupPortfolioTracking)
   document.addEventListener('astro:page-load', setupPortfolioMotion)
   document.addEventListener('astro:before-swap', teardownPortfolioMotion)
 </script>

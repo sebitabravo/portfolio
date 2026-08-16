@@ -122,6 +122,18 @@
     background: hsl(var(--card) / 0.45);
   }
 
+  .header-social {
+    border: 1px solid hsl(var(--border) / 0.9);
+    color: hsl(var(--muted-foreground));
+    background: hsl(var(--card) / 0.45);
+  }
+
+  .header-social:hover {
+    border-color: hsl(var(--primary) / 0.55);
+    color: hsl(var(--primary));
+    background: hsl(var(--primary) / 0.08);
+  }
+
   .header-resume:hover {
     border-color: hsl(var(--primary) / 0.55);
     color: hsl(var(--primary));

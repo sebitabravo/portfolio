@@ -64,9 +64,9 @@ test.describe("Home Page", () => {
       const colors = await page.evaluate(() => {
         const hero = document.querySelector(".hero-gradient")
         const nav = document.querySelector(".site-nav")
-        const badge = document.querySelector(".available-badge")
+        const status = document.querySelector(".hero-meta-status")
 
-        if (!hero || !nav || !badge) return null
+        if (!hero || !nav || !status) return null
 
         return {
           htmlClass: document.documentElement.className,
@@ -74,7 +74,7 @@ test.describe("Home Page", () => {
           heroBackground: getComputedStyle(hero).backgroundImage,
           navColor: getComputedStyle(nav).color,
           navBackground: getComputedStyle(nav).backgroundColor,
-          badgeBackground: getComputedStyle(badge).backgroundColor,
+          statusColor: getComputedStyle(status).color,
         }
       })
 
@@ -84,7 +84,7 @@ test.describe("Home Page", () => {
       expect(colors?.heroBackground).not.toContain("rgb(16, 20, 58)")
       expect(colors?.navColor).toBe("rgb(23, 23, 23)")
       expect(colors?.navBackground).toContain("255")
-      expect(colors?.badgeBackground).toContain("220")
+      expect(colors?.statusColor).toBe("rgb(76, 82, 123)")
     },
   )
 
@@ -145,33 +145,15 @@ test.describe("Home Page", () => {
   )
 
   test(
-    "availability badge does not cover hero metadata",
+    "availability stays a single hero status instead of covering the visual",
     { tag: ["@e2e", "@home", "@HOME-E2E-005"] },
     async ({ page }) => {
-      for (const viewport of [
-        { width: 1280, height: 720 },
-        { width: 390, height: 844 },
-      ]) {
-        await page.setViewportSize(viewport)
-        await page.goto("/")
+      await page.goto("/")
 
-        const geometry = await page.evaluate(() => {
-          const badge = document.querySelector(".hero-art-status")?.getBoundingClientRect()
-          const metadata = document.querySelector(".hero-art-tag-bottom")?.getBoundingClientRect()
-
-          if (!badge || !metadata) return null
-
-          return {
-            overlaps: badge.left < metadata.right
-              && badge.right > metadata.left
-              && badge.top < metadata.bottom
-              && badge.bottom > metadata.top,
-          }
-        })
-
-        expect(geometry).not.toBeNull()
-        expect(geometry?.overlaps).toBe(false)
-      }
+      await expect(page.locator(".hero-meta-status")).toHaveCount(1)
+      await expect(page.locator(".hero-art-status")).toHaveCount(0)
+      await expect(page.locator(".hero-art-tag")).toHaveCount(0)
+      await expect(page.locator(".hero-art-caption")).toHaveCount(0)
     },
   )
 

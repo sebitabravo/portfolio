@@ -14,7 +14,7 @@ const projectsData = {
       status: "production" as const,
       metrics: [
         { label: "Resultado", value: "94.1% F1-Score" },
-        { label: "Operación", value: "En producción" },
+        { label: "Código", value: "Disponible" },
       ],
       publishDate: new Date("2026-04-29"),
       githubUrl: "https://github.com/sebitabravo/ManttoAI",
@@ -48,8 +48,8 @@ const projectsData = {
       featured: false,
       status: "production" as const,
       metrics: [
-        { label: "Dominio", value: "Flotas" },
-        { label: "Flujo", value: "Preventivo + OT" },
+        { label: "Alcance", value: "45 vehículos" },
+        { label: "Entrega", value: "15 semanas" },
       ],
       publishDate: new Date("2026-03-02"),
       githubUrl: "https://github.com/sebitabravo/rapido-sur",
@@ -85,12 +85,12 @@ const projectsData = {
       status: "production" as const,
       metrics: [
         { label: "Outcome", value: "94.1% F1-Score" },
-        { label: "Runtime", value: "In production" },
+        { label: "Code", value: "Available" },
       ],
       publishDate: new Date("2026-04-29"),
       githubUrl: "https://github.com/sebitabravo/ManttoAI",
       liveUrl: undefined,
-      blogSlug: "manttoai-ml-iot-random-forest",
+      blogSlug: "manttoai-ml-iot-random-forest-en",
     },
     {
       slug: "vulcania",
@@ -107,7 +107,7 @@ const projectsData = {
       githubUrl: "https://github.com/sebitabravo/vulcania-web",
       liveUrl: "https://vulcania-web.vercel.app",
       order: 1,
-      blogSlug: "vulcania-monitoreo-volcanico-comunitario",
+      blogSlug: "vulcania-monitoreo-volcanico-comunitario-en",
     },
     {
       slug: "rapido-sur",
@@ -118,8 +118,8 @@ const projectsData = {
       featured: false,
       status: "production" as const,
       metrics: [
-        { label: "Domain", value: "Fleet ops" },
-        { label: "Flow", value: "Preventive + WO" },
+        { label: "Scope", value: "45 vehicles" },
+        { label: "Delivery", value: "15 weeks" },
       ],
       publishDate: new Date("2026-03-02"),
       githubUrl: "https://github.com/sebitabravo/rapido-sur",

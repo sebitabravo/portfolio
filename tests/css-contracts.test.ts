@@ -8,6 +8,7 @@ const responsiveCss = readFileSync("src/styles/portfolio-responsive.css", "utf8"
 const headerCss = readFileSync("src/styles/header.css", "utf8")
 const heroMarkup = readFileSync("src/components/Hero.astro", "utf8")
 const carouselMarkup = readFileSync("src/components/CertificationCarousel.astro", "utf8")
+const signalMarkup = readFileSync("src/components/SignalStrip.astro", "utf8")
 
 const componentSheets = [baseCss, heroCss, contentCss, responsiveCss, headerCss]
 const allCss = componentSheets.join("\n")
@@ -59,5 +60,13 @@ describe("CSS ownership contracts", () => {
     expect(globalCss.trim().split("\n")).toHaveLength(5)
     expect(globalCss).toContain('@import "./portfolio-base.css"')
     expect(globalCss).toContain('@import "./header.css"')
+  })
+
+  it("keeps the single-owner signal strip styles scoped to the component", () => {
+    expect(signalMarkup).toContain("<style>")
+    expect(signalMarkup).toContain(".signal-strip")
+    expect(contentCss).not.toMatch(/\.signal-/)
+    expect(heroCss).not.toMatch(/\.signal-/)
+    expect(responsiveCss).not.toMatch(/\.signal-/)
   })
 })

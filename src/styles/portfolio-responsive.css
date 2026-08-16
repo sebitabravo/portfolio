@@ -35,7 +35,6 @@
   .hero-orbit,
   .hero-orbit-dot,
   .hero-ambient,
-  .signal-marquee,
   .project-featured-mark {
     animation: none;
   }
@@ -50,17 +49,6 @@
 
   .hero-webgl {
     display: none;
-  }
-
-  .signal-marquee-window {
-    overflow-x: auto;
-    mask-image: none;
-  }
-
-  .signal-marquee {
-    width: max-content;
-    flex-wrap: nowrap;
-    transform: none;
   }
 
   [data-animate],
@@ -175,30 +163,6 @@
 
   .hero-footer {
     margin-top: 0.25rem;
-  }
-
-  .signal-strip-inner {
-    min-height: 3.7rem;
-    grid-template-columns: auto minmax(0, 1fr) auto;
-    gap: 0.65rem;
-    padding: 0 1rem;
-  }
-
-  .signal-strip-index {
-    display: none;
-  }
-
-  .signal-strip-label {
-    font-size: 0.68rem;
-    white-space: normal;
-  }
-
-  .signal-marquee {
-    gap: 1rem;
-  }
-
-  .signal-tech {
-    font-size: 0.68rem;
   }
 
   .project-card,

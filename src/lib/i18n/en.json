@@ -10,35 +10,53 @@
     "contact": "Contact",
     "blog": "Blog",
     "formation": "Education",
+    "linkedin": "LinkedIn",
     "cta": "Let's talk"
   },
   "hero": {
     "greeting": "Hi, I'm",
-    "intro": "Full-Stack Developer. I turn ideas into complete web platforms that scale, maintain themselves, and pass code reviews without drama.",
+    "roleLocation": "Chile / Remote",
+    "specialization": "Production web · Applied ML",
+    "language": "English C1",
+    "level": "Junior Full-Stack · first full-time role",
+    "metaLabel": "Availability and location",
+    "intro": "I turn ideas into production web platforms and apply Machine Learning to real-world problems, from concept to deployment.",
     "contact": "Contact",
     "available": "Available for work",
-    "downloadCv": "Download CV",
-    "wins": [
-      "ML Random Forest model with 94.1% F1-Score in production",
-      "Enterprise SaaS carbon footprint platform for mining and industry",
-      "4 full-stack projects in production with clean architecture and testing"
-    ]
+    "downloadCv": "Download CV"
   },
   "projects": {
     "title": "Projects",
+    "outcomesLabel": "Outcomes",
+    "outcomesTitle": "Evidence over promises",
+    "outcomes": [
+      "94.1% F1-Score in ManttoAI for failure detection",
+      "Vulcania: community map, alerts and real-time notifications",
+      "4 full-stack projects shipped: 2 public demos and 2 available repositories"
+    ],
     "viewProject": "Demo",
     "viewCode": "Code",
     "readMore": "Read more",
+    "contactPrompt": "Interested in how I built it?",
+    "contactCta": "Let's talk",
     "viewMoreGithub": "More projects on GitHub",
     "featured": "Featured",
     "statusProduction": "In production",
+    "statusCodeAvailable": "Code available",
     "statusDevelopment": "In development",
     "statusDemo": "Demo"
+  },
+  "signal": {
+    "label": "The stack I build with",
+    "pause": "Pause moving technologies",
+    "resume": "Resume moving technologies"
   },
   "work": {
     "title": "Experience",
     "currently": "Currently...",
     "viewMore": "View more →",
+    "viewCaseStudy": "Read case study",
+    "timeline": "Between contracts: 2023–2026 · Computer Engineering at INACAP and production personal projects.",
     "noExperience": "Work experience coming soon..."
   },
   "education": {
@@ -55,7 +73,8 @@
   },
   "about": {
     "title": "About",
-    "techStackSubtitle": "The tools I build with day to day"
+    "focusTitle": "Where I do my best work",
+    "contactCta": "Let's talk"
   },
   "theme": {
     "toggle": "Toggle theme",
@@ -66,5 +85,14 @@
   "footer": {
     "madeWith": "Made with",
     "privacy": "Privacy"
+  },
+  "blog": {
+    "title": "Blog",
+    "description": "Articles on full-stack development, IoT, Machine Learning, and lessons from building software in production.",
+    "intro": "I write about what I learn while building. Full-stack, IoT, Machine Learning, and production code lessons.",
+    "empty": "No articles published yet.",
+    "fallbackNotice": "This article is currently available in Spanish. The English route exists so case-study links never end in a 404.",
+    "fallbackCardLabel": "Available in Spanish",
+    "back": "Back to blog"
   }
 }

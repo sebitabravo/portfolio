@@ -12,35 +12,39 @@ interface Props {
   endDate?: Date | null
   current: boolean
   location?: string
+  employmentType?: string
   skills: string[]
   logos?: ExperienceLogo[]
   url?: string
+  highlights?: { label: string; value: string }[]
   locale?: Locale
   index?: number
 }
 
-const { company, position, description, startDate, endDate, current, location, skills, logos, url, locale = 'es', index = 0 } = Astro.props
+const { company, position, description, startDate, endDate, current, location, employmentType, skills, logos, url, highlights = [], locale = 'es', index = 0 } = Astro.props
 const t = getTranslations(locale)
+const externalUrl = url?.startsWith('http')
 
 const dateText = current
   ? t.work.currently
   : endDate
-    ? formatDate(endDate, locale)
+    ? `${formatDate(startDate, locale)} — ${formatDate(endDate, locale)}`
     : formatDate(startDate, locale)
 ---
 
-<div data-animate data-animate-delay={String(index + 1)} class="relative pl-8 pb-8 before:absolute before:left-0 before:block before:h-full before:border-l before:border-[hsl(var(--parchment))] before:content-['']">
+<div data-animate data-animate-delay={String(index + 1)} class:list={["experience-item relative pl-8 pb-8 before:absolute before:left-0 before:block before:h-full before:border-l before:border-[hsl(var(--parchment))] before:content-['']", { "experience-item-secondary": index > 0 }]}>
   <!-- Timeline dot — Lavender glow -->
   <span class="absolute -left-[5px] top-1 size-[10px] rounded-full bg-[hsl(var(--primary))] ring-4 ring-[hsl(var(--background))]"></span>
 
-  <div class="rounded-2xl border border-[hsl(var(--parchment))] bg-[hsl(var(--card))] p-6">
+  <div class="experience-item-card section-card rounded-2xl border border-[hsl(var(--parchment))] bg-[hsl(var(--card))]">
     <div class="grid md:grid-cols-5 md:gap-8">
       <!-- Meta info -->
       <div class="md:col-span-2 mb-4 md:mb-0">
-        <h3 class="font-semibold text-foreground leading-snug">{position}</h3>
-        <h4 class="text-sm text-[hsl(var(--caption-color))] mt-0.5">{company}</h4>
+        <h3 class="font-semibold text-foreground">{position}</h3>
+        <h4 class="text-[hsl(var(--caption-color))] mt-0.5">{company}</h4>
         <time class="text-xs text-[hsl(var(--caption-color))] mt-2 block">{dateText}</time>
-        {location && <p class="text-xs text-[hsl(var(--caption-color))]">{location}</p>}
+        {location && <p class="text-xs leading-[1.60] text-[hsl(var(--caption-color))]">{location}</p>}
+        {employmentType && <p class="experience-employment-type">{employmentType}</p>}
 
         {logos && logos.length > 0 && (
           <div class="flex flex-wrap items-center gap-3 mt-4">
@@ -69,11 +73,22 @@ const dateText = current
       </div>
 
       <!-- Description -->
-      <div class="flex flex-col gap-2 text-foreground/70 md:col-span-3">
-        <p class="text-sm leading-[1.60]">{description}</p>
+      <div class="experience-description flex flex-col gap-2 text-foreground/85 md:col-span-3">
+        <p class="text-[0.95rem] leading-[1.60]">{description}</p>
+
+        {highlights.length > 0 && (
+          <div class="experience-highlights" aria-label={locale === 'es' ? 'Evidencia del trabajo' : 'Work evidence'}>
+            {highlights.map((highlight) => (
+              <div class="experience-highlight">
+                <span>{highlight.label}</span>
+                <strong>{highlight.value}</strong>
+              </div>
+            ))}
+          </div>
+        )}
 
         {skills.length > 0 && (
-          <div class="flex flex-wrap gap-2 mt-2">
+          <div class:list={["experience-skills flex flex-wrap gap-2 mt-2", { hidden: index > 0 }]}>
             {skills.map((skill) => (
               <span class="tech-badge">{skill}</span>
             ))}
@@ -83,11 +98,11 @@ const dateText = current
         {url && (
           <a
             href={url}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="inline-flex items-center gap-1 text-sm text-[hsl(var(--accent))] hover:underline mt-2 focus-ring rounded px-1"
+            target={externalUrl ? "_blank" : undefined}
+            rel={externalUrl ? "noopener noreferrer" : undefined}
+            class="inline-flex items-center gap-1 text-sm hover:underline mt-2 focus-ring rounded px-1"
           >
-            {t.work.viewMore}
+            {t.work.viewCaseStudy}
             <svg class="size-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
           </a>
         )}

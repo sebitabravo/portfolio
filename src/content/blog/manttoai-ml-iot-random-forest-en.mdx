@@ -1,0 +1,50 @@
+---
+title: "ManttoAI: building an IoT predictive-maintenance platform with Machine Learning"
+description: "FastAPI, React 18, MQTT, MySQL 8 and a reproducible Random Forest model with five telemetry features. An INACAP academic project with Docker Compose, an MQTT simulator and ESP32 auto-registration."
+publishDate: 2026-05-10
+tags: ["Python", "FastAPI", "React", "MQTT", "ML", "IoT", "Docker"]
+image: "manttoai"
+locale: "en"
+---
+
+ManttoAI was my capstone project for Information Systems Project Management at INACAP. The brief was practical: apply PMBOK to a system that connected hardware, software and machine learning, running in Docker, documented and tested.
+
+The result is a predictive-maintenance platform that receives ESP32 telemetry through MQTT, stores it in MySQL 8 and uses a Random Forest model to estimate failure risk. The complete stack runs in four Docker Compose containers with one command.
+
+## The stack
+
+| Layer | Technology |
+|------|------------|
+| Backend | FastAPI, SQLAlchemy, Pydantic v2 |
+| Frontend | React 18, Vite, Tailwind CSS |
+| Messaging | Eclipse Mosquitto MQTT |
+| Database | MySQL 8 |
+| Model | scikit-learn Random Forest |
+| Infrastructure | Docker Compose |
+| Testing | Automated tests and reproducible reports |
+
+The model uses five features — temperature, humidity, vib_x, vib_y and vib_z — over 12,000 synthetic records generated with a fixed seed. The training pipeline uses a stratified train/test split and reports accuracy, precision, recall and F1. The academic gate was F1 >= 0.80; the result was 94.1% F1-Score for imminent-failure detection.
+
+## Architecture decisions
+
+The API is organized as router → service → model, with typed validation and automatic OpenAPI documentation. Authentication uses httpOnly JWT cookies with CSRF protection, three RBAC roles and role-based rate limits. The model is not executed for every sensor reading: deterministic thresholds handle immediate alerts, while the Random Forest runs on demand when an operator needs a deeper evaluation.
+
+The ESP32 publishes to `manttoai/telemetria/{mac_address}`. A simulator publishes realistic telemetry when the team does not have the hardware available, which allowed the backend, dashboard and model to be developed in parallel.
+
+## Results
+
+- **94.1% F1-Score** for imminent-failure detection.
+- **Real-time telemetry dashboard** with predictive alerts.
+- **Docker Compose architecture** ready for industrial deployment environments.
+- **End-to-end pipeline** from sensor ingestion to visualization.
+- **Reproducible ML reports** in JSON and Markdown with a fixed dataset seed.
+
+## What I learned
+
+Feature engineering for time series had more impact than switching algorithms. MQTT and serverless functions are a poor fit for persistent connections, so the complete stack stays in Docker Compose while the frontend can be deployed separately. The project also reinforced that explainability matters: a Random Forest was a better choice for this context than a more complex model that the team could not audit.
+
+## Open source
+
+The repository includes the ESP32 firmware, MQTT simulator, reproducible model, automated tests, PMBOK documentation and architecture decision records.
+
+[View ManttoAI on GitHub](https://github.com/sebitabravo/ManttoAI)

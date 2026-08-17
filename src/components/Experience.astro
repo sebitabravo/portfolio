@@ -14,13 +14,19 @@ const workExperience = getWorkExperience(locale)
 ---
 
 {workExperience.length > 0 ? (
-  <ol class="relative mt-8 pl-4">
-    {workExperience.map((experience, i) => (
-      <li>
-        <ExperienceItem {...experience} locale={locale} index={i} />
-      </li>
-    ))}
-  </ol>
+  <>
+    <div class="experience-timeline-note" data-experience-timeline>
+      <span class="experience-timeline-note-mark" aria-hidden="true">↳</span>
+      <p>{t.work.timeline}</p>
+    </div>
+    <ol class="relative mt-8 pl-4">
+      {workExperience.map((experience, i) => (
+        <li>
+          <ExperienceItem {...experience} locale={locale} index={i} />
+        </li>
+      ))}
+    </ol>
+  </>
 ) : (
   <div class="text-center text-foreground/80 mt-8">
     <p>{t.work.noExperience}</p>

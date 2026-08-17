@@ -10,35 +10,53 @@
     "contact": "Contacto",
     "blog": "Blog",
     "formation": "Formación",
+    "linkedin": "LinkedIn",
     "cta": "Hablemos"
   },
   "hero": {
     "greeting": "Hola, soy",
-    "intro": "Full-Stack Developer. Convierto ideas en plataformas web completas que escalan, se mantienen solas y pasan las code reviews sin drama.",
+    "roleLocation": "Chile / Remoto",
+    "specialization": "Web en producción · ML aplicado",
+    "language": "Inglés C1",
+    "level": "Full-Stack Junior · primer rol full-time",
+    "metaLabel": "Disponibilidad y ubicación",
+    "intro": "Convierto ideas en plataformas web en producción y aplico Machine Learning a problemas reales, del concepto al despliegue.",
     "contact": "Contactar",
     "available": "Disponible para trabajar",
-    "downloadCv": "Descargar CV",
-    "wins": [
-      "Modelo ML Random Forest con 94.1% F1-Score en producción",
-      "Plataforma SaaS enterprise de huella de carbono para minería e industria",
-      "4 proyectos full-stack en producción con arquitectura limpia y testing"
-    ]
+    "downloadCv": "Descargar CV"
   },
   "projects": {
     "title": "Proyectos",
+    "outcomesLabel": "Resultados",
+    "outcomesTitle": "Evidencia antes que promesas",
+    "outcomes": [
+      "94.1% F1-Score en ManttoAI para detección de fallas",
+      "Vulcania: mapa comunitario, alertas y notificaciones en tiempo real",
+      "4 proyectos full-stack publicados: 2 demos públicas y 2 repositorios disponibles"
+    ],
     "viewProject": "Demo",
     "viewCode": "Código",
     "readMore": "Leer más",
+    "contactPrompt": "¿Te interesa cómo lo construí?",
+    "contactCta": "Hablemos",
     "viewMoreGithub": "Ver más proyectos en GitHub",
     "featured": "Destacado",
     "statusProduction": "En producción",
+    "statusCodeAvailable": "Código disponible",
     "statusDevelopment": "En desarrollo",
     "statusDemo": "Demo"
+  },
+  "signal": {
+    "label": "Stack con el que construyo",
+    "pause": "Pausar tecnologías en movimiento",
+    "resume": "Reanudar tecnologías en movimiento"
   },
   "work": {
     "title": "Experiencia",
     "currently": "Actualmente...",
     "viewMore": "Ver más →",
+    "viewCaseStudy": "Ver case study",
+    "timeline": "Entre contratos: 2023–2026 · Ingeniería Informática en INACAP y proyectos personales en producción.",
     "noExperience": "Experiencia laboral próximamente..."
   },
   "education": {
@@ -55,7 +73,8 @@
   },
   "about": {
     "title": "Sobre mí",
-    "techStackSubtitle": "Las herramientas con las que construyo día a día"
+    "focusTitle": "Dónde aporto mejor",
+    "contactCta": "Hablemos"
   },
   "theme": {
     "toggle": "Cambiar tema",
@@ -66,5 +85,14 @@
   "footer": {
     "madeWith": "Hecho con",
     "privacy": "Privacidad"
+  },
+  "blog": {
+    "title": "Blog",
+    "description": "Artículos sobre desarrollo full-stack, IoT, Machine Learning y lecciones de código en producción.",
+    "intro": "Escribo sobre lo que aprendo construyendo. Full-stack, IoT, Machine Learning y lecciones de código en producción.",
+    "empty": "Todavía no hay artículos publicados.",
+    "fallbackNotice": "Este artículo todavía está disponible en español. La ruta en inglés existe para que los case studies no terminen en un 404.",
+    "fallbackCardLabel": "Disponible en español",
+    "back": "Volver al blog"
   }
 }

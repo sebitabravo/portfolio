@@ -6,9 +6,10 @@ interface Props {
   publishDate: Date
   tags: string[]
   locale: 'es' | 'en'
+  fallbackLabel?: string
 }
 
-const { id, title, description, publishDate, tags, locale } = Astro.props
+const { id, title, description, publishDate, tags, locale, fallbackLabel } = Astro.props
 const prefix = locale === 'es' ? '' : '/en'
 const dateLocale = locale === 'es' ? 'es-CL' : 'en-US'
 const headingId = `post-title-${id}`
@@ -29,6 +30,7 @@ const headingId = `post-title-${id}`
     <h2 id={headingId} class="text-xl sm:text-2xl font-bold tracking-tight mb-2 group-hover:text-[hsl(var(--primary))] transition-colors">
       {title}
     </h2>
+    {fallbackLabel && <p class="mb-2 text-xs font-medium text-[hsl(var(--primary))]">{fallbackLabel}</p>}
     <p class="text-foreground/65 text-sm sm:text-base leading-relaxed">{description}</p>
   </a>
 </article>

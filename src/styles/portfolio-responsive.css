@@ -1,0 +1,221 @@
+@layer components {
+
+/* Reduced motion --------------------------------------------------------- */
+
+/* Reveal is an enhancement, never the source of truth for visibility. */
+[data-animate] {
+  opacity: 1;
+  --reveal-y: 0rem;
+  transform: translateY(var(--reveal-y));
+  transition: opacity 650ms cubic-bezier(0.16, 1, 0.3, 1), transform 650ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+[data-animate].reveal-pending {
+  opacity: 0;
+  --reveal-y: 1.4rem;
+}
+
+[data-animate].animate-in {
+  opacity: 1;
+  --reveal-y: 0rem;
+}
+
+.project-card[data-animate] {
+  transform: perspective(1200px) rotateX(var(--card-rotate-x)) rotateY(var(--card-rotate-y)) translateY(calc(var(--card-lift) + var(--motion-y) + var(--reveal-y, 0rem))) scale(var(--motion-scale));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-reveal {
+    opacity: 1;
+    animation: none;
+    filter: none;
+    transform: none;
+  }
+
+  .hero-orbit,
+  .hero-orbit-dot,
+  .hero-ambient,
+  .project-featured-mark {
+    animation: none;
+  }
+
+  .hero-art-frame,
+  .project-card,
+  .project-card[data-animate],
+  .project-card:hover,
+  .project-card:focus-within {
+    transform: none !important;
+  }
+
+  .hero-webgl {
+    display: none;
+  }
+
+  [data-animate],
+  [data-animate].reveal-pending,
+  [data-animate].animate-in {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+
+  .project-card,
+  .project-image,
+  .project-action,
+  .hero-btn-arrow,
+  .project-scroll-meter span {
+    transition: none;
+  }
+}
+
+/* Responsive ------------------------------------------------------------- */
+
+@media (max-width: 1023px) {
+  .hero-layout {
+    gap: 2.5rem;
+    grid-template-columns: minmax(0, 1fr) minmax(250px, 0.75fr);
+  }
+
+  .hero-title {
+    font-size: clamp(3.6rem, 8vw, 6rem);
+  }
+
+  .project-card {
+    grid-column: span 6;
+  }
+
+  .project-card-featured {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 767px) {
+  .hero-inner {
+    min-height: auto;
+    padding-top: 7.5rem;
+    padding-bottom: 1.1rem;
+  }
+
+  .hero-layout {
+    display: flex;
+    min-height: 0;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 2.5rem;
+  }
+
+  .hero-title {
+    font-size: clamp(3.45rem, 17vw, 5.3rem);
+    line-height: 0.84;
+  }
+
+  .hero-lede {
+    font-size: 1rem;
+  }
+
+  .hero-actions {
+    align-items: stretch;
+  }
+
+  .hero-btn-primary {
+    flex: 0 0 auto;
+  }
+
+  .hero-art {
+    width: min(100%, 360px);
+    align-self: center;
+  }
+
+  .hero-art-frame {
+    border-radius: 1rem;
+  }
+
+  .hero-portrait-shell {
+    width: 56%;
+  }
+
+  .project-outcomes {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .project-outcomes-heading h3 {
+    max-width: none;
+  }
+
+  .project-card,
+  .project-card-featured {
+    display: flex;
+    grid-column: 1 / -1;
+    flex-direction: column;
+  }
+
+  .project-card-featured .project-media {
+    min-height: 270px;
+    border-right: 0;
+    border-bottom: 1px solid rgb(255 255 255 / 0.16);
+  }
+
+  .project-media {
+    min-height: 230px;
+  }
+
+  .project-description,
+  .project-card-featured .project-description {
+    min-height: 0;
+    font-size: 0.9rem;
+  }
+
+  .section-band {
+    padding-right: 1rem;
+    padding-left: 1rem;
+  }
+
+  .about-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .about-interests ul,
+  .experience-highlights {
+    grid-template-columns: 1fr;
+  }
+
+  .experience-item-secondary .experience-item-card {
+    padding: 1rem 1.1rem;
+  }
+
+  .project-action {
+    flex: 1 1 auto;
+  }
+
+  .projects-endcap {
+    gap: 0.65rem;
+  }
+
+  .projects-contact-cta {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .projects-contact-link {
+    justify-content: center;
+  }
+
+  .projects-github-link {
+    font-size: 0.68rem;
+    text-align: center;
+  }
+}
+
+@media (max-width: 420px) {
+  .hero-title {
+    font-size: 3.35rem;
+  }
+
+  .hero-btn-primary {
+    width: 100%;
+  }
+}
+
+}

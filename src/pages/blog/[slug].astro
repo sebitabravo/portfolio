@@ -15,6 +15,23 @@ const { post } = Astro.props
 const { Content } = await render(post)
 const locale = 'es'
 const canonicalUrl = `https://sebita.dev/blog/${post.id}`
+const articleJsonLd = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  headline: post.data.title,
+  description: post.data.description,
+  ...(post.data.image && { image: new URL(`/screenshots/${post.data.image}.webp`, "https://sebita.dev").toString() }),
+  datePublished: post.data.publishDate.toISOString(),
+  author: {
+    "@type": "Person",
+    name: personalInfo.name,
+    url: "https://sebita.dev",
+  },
+  publisher: {
+    "@type": "Organization",
+    name: personalInfo.name,
+  },
+}).replace(/</g, "\\u003c")
 ---
 
 <Layout
@@ -72,21 +89,5 @@ const canonicalUrl = `https://sebita.dev/blog/${post.id}`
     </footer>
   </main>
 
-  <script is:inline type="application/ld+json" set:html={JSON.stringify({
-    "@context": "https://schema.org",
-    "@type": "Article",
-    headline: post.data.title,
-    description: post.data.description,
-    ...(post.data.image && { image: new URL(`/screenshots/${post.data.image}.webp`, "https://sebita.dev").toString() }),
-    datePublished: post.data.publishDate.toISOString(),
-    author: {
-      "@type": "Person",
-      name: personalInfo.name,
-      url: "https://sebita.dev",
-    },
-    publisher: {
-      "@type": "Organization",
-      name: personalInfo.name,
-    },
-  })} />
+  <script is:inline type="application/ld+json" set:html={articleJsonLd}></script>
 </Layout>

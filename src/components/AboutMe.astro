@@ -1,10 +1,6 @@
 ---
-// About Me — Superhuman clean layout
-import { Image } from "astro:assets"
 import { getAboutMe } from "@/lib/data"
-import type { Locale } from "@/lib/i18n"
-import profileImage from "@/assets/perfil.jpeg"
-import TechCarousel from "@/components/TechCarousel.astro"
+import { getTranslations, type Locale } from "@/lib/i18n"
 
 interface Props {
   locale?: Locale
@@ -12,55 +8,36 @@ interface Props {
 
 const { locale = 'es' } = Astro.props
 const aboutMe = getAboutMe(locale)
+const t = getTranslations(locale)
+const contactId = locale === 'es' ? '#contacto' : '#contact'
 ---
 
-<div class="space-y-16">
-  <article class="grid grid-cols-1 gap-8 sm:gap-12 lg:gap-16 md:grid-cols-[1fr_auto] items-center">
-    <!-- Texto -->
-    <div data-animate data-animate-delay="1" class="order-2 md:order-1 max-w-xl space-y-4">
-      <p class="text-base leading-[1.60]">{aboutMe.intro}</p>
-      <p class="text-base leading-[1.60]">{aboutMe.experience}</p>
-      <p class="text-base leading-[1.60]">{aboutMe.personal}</p>
+<div class="about-layout">
+  <article data-animate data-animate-delay="1" class="about-copy">
+    <p class="about-lede">{aboutMe.intro}</p>
+    <p>{aboutMe.personal}</p>
+    <p class="about-signature">{aboutMe.signature}</p>
 
-      <div class="pt-6">
-        <h3 class="font-semibold mb-3 text-foreground">{aboutMe.interestsTitle}</h3>
-        <ul class="space-y-1.5">
-          {aboutMe.interests.map((interest) => (
-            <li class="flex items-center gap-2 text-sm text-foreground/70">
-              <span class="h-1 w-1 rounded-full bg-[hsl(var(--primary))]"></span>
-              {interest}
-            </li>
-          ))}
-        </ul>
-      </div>
-
-    </div>
-
-    <!-- Imagen -->
-    <div data-animate data-animate-delay="2" class="order-1 md:order-2 shrink-0 group md:pt-2 flex justify-center">
-      <div class="relative">
-        <div class="absolute inset-0 rounded-full bg-gradient-to-br from-[hsl(var(--primary))/0.3] to-transparent blur-xl"></div>
-        <Image
-          width={320}
-          height={320}
-          src={profileImage}
-          alt="Sebastian Bravo"
-          sizes="(max-width: 640px) 192px, (max-width: 768px) 224px, (max-width: 1024px) 256px, 288px"
-          class="relative w-48 h-48 sm:w-56 sm:h-56 md:w-64 md:h-64 lg:w-72 lg:h-72 rounded-full object-cover aspect-square ring-1 ring-black/10 dark:ring-white/15 shadow-lg transition-transform duration-500 ease-out group-hover:scale-[1.03]"
-          style="object-position: 50% 50%"
-        />
-      </div>
+    <div class="about-interests">
+      <h3>{aboutMe.interestsTitle}</h3>
+      <ul>
+        {aboutMe.interests.map((interest) => (
+          <li>
+            <span aria-hidden="true"></span>
+            {interest}
+          </li>
+        ))}
+      </ul>
     </div>
   </article>
 
-  <!-- Tech Stack Dashboard -->
-  <div class="mt-8">
-    <h3 class="font-semibold mb-2 text-center text-foreground">
-      {aboutMe.techStackTitle}
-    </h3>
-    <p class="text-sm text-center text-[hsl(var(--caption-color))] mb-6">
-      {aboutMe.techStackSubtitle}
-    </p>
-    <TechCarousel />
+  <div data-animate data-animate-delay="2" class="about-focus section-card">
+    <p class="about-focus-index">ABOUT / {locale.toUpperCase()}</p>
+    <h3>{t.about.focusTitle}</h3>
+    <p>{aboutMe.lookingFor}</p>
+    <a href={contactId} class="about-cta focus-ring">
+      <span>{t.about.contactCta}</span>
+      <span aria-hidden="true">↗</span>
+    </a>
   </div>
 </div>

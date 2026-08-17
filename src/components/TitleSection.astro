@@ -1,12 +1,25 @@
 ---
-// Title Section — Superhuman compressed display headings
-// Tight tracking, confident section labels with lavender accent
-const { id } = Astro.props
+// Section heading with a small index-like accent so long pages remain scannable.
+interface Props {
+  id: string
+  index?: number
+  total?: number
+}
+
+const { id, index = 1, total = 6 } = Astro.props
+const currentYear = new Date().getFullYear()
+const sectionIndex = String(index).padStart(2, '0')
+const sectionTotal = String(total).padStart(2, '0')
 ---
 
-<div class="mb-10">
+<div class="section-heading mb-10">
+  <div class="section-heading-meta" aria-hidden="true">
+    <span class="section-heading-meta-line"></span>
+    <span class="section-heading-index">{sectionIndex} / {sectionTotal}</span>
+    <span>SEBITA / {currentYear}</span>
+  </div>
   <h2 id={id} class="flex items-center gap-x-3 text-foreground [&>svg]:text-[hsl(var(--primary))]">
     <slot />
   </h2>
-  <div class="mt-3 h-[1px] w-16 bg-[hsl(var(--parchment))]"></div>
+  <div class="section-heading-rule mt-4" aria-hidden="true"><span></span></div>
 </div>

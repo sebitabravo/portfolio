@@ -1,17 +1,10 @@
 ---
-// Hero Component — Superhuman-inspired full-width hero
+// Hero: a recruiter-readable first viewport with one clear message and a cinematic visual layer.
 import { Image } from "astro:assets"
-import { personalInfo, social } from "@/lib/data"
-import { getAboutMe } from "@/lib/data"
+import { personalInfo } from "@/lib/data"
 import { getTranslations, type Locale } from "@/lib/i18n"
 import profileImage from "@/assets/perfil.jpeg"
-import AvailableBadge from "./AvailableBadge.astro"
-import SocialPill from "./SocialPill.astro"
-import GitHubIcon from "./icons/GitHub.astro"
-import LinkedInIcon from "./icons/LinkedIn.astro"
 import MailIcon from "./icons/Mail.astro"
-import DownloadIcon from "./icons/Download.astro"
-import cvPdf from "@/assets/Sebastian_Bravo_CV.pdf"
 
 interface Props {
   locale?: Locale
@@ -19,138 +12,104 @@ interface Props {
 
 const { locale = 'es' } = Astro.props
 const t = getTranslations(locale)
-const aboutMe = getAboutMe(locale)
 const contactUrl = locale === 'es' ? '#contacto' : '#contact'
+const heroTitleId = `hero-title-${locale}`
 ---
 
-<section class="hero-gradient w-full">
-   <div class="container-custom section">
-     <div class="grid grid-cols-1 gap-8 sm:gap-12 lg:gap-16 md:grid-cols-2 items-center">
+<section class="hero-gradient w-full overflow-hidden" aria-labelledby={heroTitleId} data-portfolio-motion>
+  <div class="hero-ambient hero-ambient-one" aria-hidden="true"></div>
+  <div class="hero-ambient hero-ambient-two" aria-hidden="true"></div>
 
-      <!-- Left: Textual content -->
-      <div class="order-2 md:order-1">
-        <!-- Greeting -->
-        <p class="animate-slide-up hero-text-muted text-sm md:text-base font-mono uppercase tracking-[0.16em] mb-3">
-          {t.hero.greeting}
-        </p>
+  <div class="container-custom hero-inner">
+    <div class="hero-layout">
+      <div class="hero-copy">
+        <div class="hero-kicker hero-reveal hero-reveal-1">
+          <span>{t.hero.greeting}</span>
+          <span class="hero-kicker-line" aria-hidden="true"></span>
+        </div>
 
-        <!-- Name with gradient -->
-        <h1 class="animate-slide-up animation-delay-100 tracking-tight leading-[0.92]">
-          <span class="block text-3xl md:text-4xl lg:text-[56px] bg-gradient-to-r from-[hsl(var(--foreground))] via-[hsl(var(--foreground))] to-[hsl(var(--primary))] bg-clip-text text-transparent bg-clip-text-fallback">{personalInfo.name}</span>
+        <h1 id={heroTitleId} class="hero-title hero-reveal hero-reveal-2">
+          <span class="hero-title-name">Sebastian</span>
+          <span class="hero-title-name hero-title-accent text-gradient">Bravo</span>
+          <span class="hero-title-role"><span aria-hidden="true">· </span>{personalInfo.title}</span>
         </h1>
 
-        <!-- Role -->
-        <div class="animate-slide-up animation-delay-200 mt-4">
-          <span class="hero-text-accent font-mono text-xs uppercase tracking-[0.16em] text-[hsl(var(--primary))]">
-            {personalInfo.title}
-          </span>
-        </div>
+        <p class="hero-role hero-reveal hero-reveal-3">{t.hero.specialization}</p>
 
-        <!-- Subtitle -->
-        <p class="animate-slide-up animation-delay-300 hero-text-primary mt-6 text-base md:text-lg max-w-xl">{t.hero.intro}</p>
+        <p class="hero-lede hero-reveal hero-reveal-4">{t.hero.intro}</p>
 
-        <!-- What I'm looking for -->
-        {aboutMe.lookingFor && (
-          <p class="animate-slide-up animation-delay-350 hero-text-muted mt-4 text-sm max-w-xl italic">
-            {aboutMe.lookingFor}
-          </p>
-        )}
-
-        <!-- Wins -->
-        <ul class="animate-slide-up animation-delay-400 mt-5 space-y-1.5">
-          {t.hero.wins.map((win: string) => (
-            <li class="flex items-start gap-2 text-sm hero-text-muted">
-              <svg class="mt-0.5 size-3.5 shrink-0 text-[hsl(var(--primary))]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-              <span>{win}</span>
-            </li>
-          ))}
-        </ul>
-
-        <!-- CTAs + Social -->
-        <div class="animate-slide-up animation-delay-500 mt-8 flex flex-wrap items-center gap-4">
-          <a
-            href={cvPdf}
-            class="btn-ghost hero-btn-ghost focus-ring"
-            target="_blank"
-            rel="noopener noreferrer"
-            data-track-cv={locale}
-          >
-            <DownloadIcon class="size-4" />
-            <span>{t.hero.downloadCv}</span>
-          </a>
-
-          <a
-            href={contactUrl}
-            class="btn-ghost hero-btn-ghost focus-ring"
-            aria-label={t.hero.contact}
-          >
+        <div class="hero-actions hero-reveal hero-reveal-5">
+          <a href={contactUrl} class="btn-primary hero-btn-primary focus-ring" aria-label={t.hero.contact}>
             <MailIcon class="size-4" />
             <span>{t.hero.contact}</span>
+            <span class="hero-btn-arrow" aria-hidden="true">↗</span>
           </a>
-
-          <div class="flex items-center gap-2">
-            <SocialPill href={social.linkedin} target="_blank" rel="me noopener noreferrer" data-track-social="linkedin">
-              <LinkedInIcon class="size-4" />
-              <span class="sr-only">LinkedIn</span>
-            </SocialPill>
-            <SocialPill href={social.github} target="_blank" rel="me noopener noreferrer" data-track-social="github">
-              <GitHubIcon class="size-4" />
-              <span class="sr-only">GitHub</span>
-            </SocialPill>
-          </div>
         </div>
 
-        <!-- Meta -->
-        <div class="animate-slide-up animation-delay-500 hero-meta-text mt-6 text-sm flex flex-wrap items-center gap-4">
-          <span class="flex items-center gap-2">
-            <svg width="8" height="8" viewBox="0 0 8 8" fill="currentColor" class="opacity-70" aria-hidden="true"><circle cx="4" cy="4" r="4" /></svg>
-            <span>{personalInfo.location}</span>
-          </span>
-
-          <span class="opacity-30" aria-hidden="true">&middot;</span>
-          <a href={`mailto:${personalInfo.email}`} class="hero-meta-link hover:underline">{personalInfo.email}</a>
-        </div>
+        <ul class="hero-meta hero-reveal hero-reveal-6" aria-label={t.hero.metaLabel}>
+          {personalInfo.available && (
+            <li class="hero-meta-status">
+              <span class="hero-meta-pulse" aria-hidden="true"></span>
+              {t.hero.available}
+            </li>
+          )}
+          <li class="hero-meta-item">{t.hero.language}</li>
+          <li class="hero-meta-item">{t.hero.roleLocation}</li>
+          <li class="hero-meta-item">{t.hero.level}</li>
+        </ul>
       </div>
 
-      <!-- Right: Profile image -->
-      <div class="order-1 md:order-2 flex justify-center md:justify-end">
-        <div class="relative flex flex-col items-center">
-          <div class="absolute inset-0 -z-10 rounded-full bg-[hsl(var(--primary))]/20 blur-3xl"></div>
-          <Image
-            src={profileImage}
-            alt={personalInfo.name}
-            width={224}
-            height={224}
-            sizes="(max-width: 640px) 144px, (max-width: 768px) 176px, (max-width: 1024px) 208px, 224px"
-            format="webp"
-            quality={90}
-            loading="eager"
-            class="w-36 h-36 sm:w-44 sm:h-44 md:w-52 md:h-52 lg:w-56 lg:h-56 rounded-full object-cover shadow-2xl ring-4 ring-white/70 dark:ring-white/10"
-          />
-
-          {personalInfo.available && (
-            <div class="mt-4">
-              <a
-                href={social.linkedin}
-                target="_blank"
-                rel="me noopener noreferrer"
-                aria-label={t.hero.available}
-                class="block rounded-full focus-ring"
-              >
-                <AvailableBadge>{t.hero.available}</AvailableBadge>
-              </a>
-            </div>
-          )}
+      <div class="hero-art hero-reveal hero-reveal-3" aria-hidden="true">
+        <div class="hero-art-frame">
+          <div class="hero-art-grid"></div>
+          <canvas class="hero-webgl" data-hero-webgl aria-hidden="true"></canvas>
+          <div class="hero-art-crosshair hero-art-crosshair-top"></div>
+          <div class="hero-art-crosshair hero-art-crosshair-bottom"></div>
+          <div class="hero-orbit hero-orbit-one"></div>
+          <div class="hero-orbit hero-orbit-two"></div>
+          <div class="hero-orbit-dot hero-orbit-dot-one"></div>
+          <div class="hero-orbit-dot hero-orbit-dot-two"></div>
+          <div class="hero-portrait-shell">
+            <Image
+              src={profileImage}
+              alt=""
+              width={320}
+              height={320}
+              sizes="(max-width: 767px) 210px, (max-width: 1024px) 280px, 320px"
+              format="webp"
+              quality={90}
+              loading="eager"
+              fetchpriority="high"
+              class="hero-portrait"
+            />
+          </div>
         </div>
       </div>
     </div>
   </div>
 </section>
 
+<script is:inline>
+  // Fallback de contrato: si el modulo de motion no logra cargar (gates de
+  // red, parse lento del chunk de three.js, browser sin soporte), el estado
+  // pasa a fallback en vez de quedar en loading indefinidamente. Inline a
+  // proposito: no depende de imports dinamicos ni de APIs opcionales.
+  ;(() => {
+    const root = document.querySelector("[data-portfolio-motion]")
+    const canvas = root?.querySelector("[data-hero-webgl]")
+    if (!root) return
+    window.setTimeout(() => {
+      if (root.dataset.motionStatus === "loading") root.dataset.motionStatus = "fallback"
+      if (canvas?.dataset.webglStatus === "pending") canvas.dataset.webglStatus = "fallback"
+    }, 3000)
+  })()
+</script>
+
 <script>
   import { trackEvent } from "@/lib/analytics"
+  import { setupPortfolioMotion, teardownPortfolioMotion } from "@/scripts/portfolio-motion"
 
-  const setupHeroTracking = () => {
+  const setupPortfolioTracking = () => {
     document.querySelectorAll<HTMLElement>('[data-track-social]').forEach((el) => {
       if (el.dataset.trackBound === 'true') return
       el.dataset.trackBound = 'true'
@@ -168,6 +127,9 @@ const contactUrl = locale === 'es' ? '#contacto' : '#contact'
     })
   }
 
-  document.addEventListener('astro:page-load', setupHeroTracking)
-  setupHeroTracking()
+  setupPortfolioTracking()
+  setupPortfolioMotion()
+  document.addEventListener('astro:page-load', setupPortfolioTracking)
+  document.addEventListener('astro:page-load', setupPortfolioMotion)
+  document.addEventListener('astro:before-swap', teardownPortfolioMotion)
 </script>

@@ -1,0 +1,757 @@
+@import "tailwindcss";
+
+/* Tailwind v4 reads the theme from CSS. Keep the manual toggle authoritative. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme inline {
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+  --color-parchment: hsl(var(--parchment));
+  --color-midnight: hsl(var(--midnight));
+  --color-midnight-deep: hsl(var(--midnight-deep));
+  --color-surface-soft: hsl(var(--surface-soft));
+  --color-warm-cream: hsl(var(--warm-cream));
+  --color-charcoal: hsl(var(--charcoal));
+  --color-caption-color: hsl(var(--caption-color));
+}
+
+/* Small custom utilities belong to Tailwind's utilities layer. Keep their
+   visual values in component/runtime tokens instead of coupling them to a
+   single component. */
+@utility text-gradient {
+  color: transparent;
+  background-clip: text;
+  -webkit-background-clip: text;
+}
+
+@utility scrollbar-hidden {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* ============================================
+   Design System — Sebastian Bravo Portfolio
+   Clean, professional, developer-forward.
+   Indigo primary, cool neutrals, zero muddy tones.
+   ============================================ */
+
+@layer base {
+  :root {
+    /* Light Palette — Clean & Professional */
+    --background: 0 0% 98%;              /* #fafafa — clean off-white */
+    --foreground: 0 0% 9%;               /* #171717 — near black */
+    --card: 246 100% 99%;                /* #fcfbff — cool glass surface */
+    --card-foreground: 0 0% 9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 9%;
+
+    /* Primary: Deep Indigo */
+    --primary: 243 75% 59%;              /* #4f46e5 — indigo-600 */
+    --primary-foreground: 0 0% 100%;
+
+    /* Clean Grays */
+    --secondary: 240 5% 96%;             /* #f4f4f6 — light gray */
+    --secondary-foreground: 0 0% 9%;
+
+    --muted: 240 5% 96%;                 /* #f4f4f6 */
+    --muted-foreground: 240 4% 32%;      /* #50505a — WCAG AA 7.2:1 */
+
+    --accent: 243 75% 59%;               /* #4f46e5 — indigo-600 */
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 98%;
+
+    /* Borders — Clean neutral */
+    --border: 244 28% 86%;               /* lavender-neutral border */
+    --input: 244 28% 86%;
+    --ring: 243 75% 59%;
+
+    --radius: 0.5rem;
+
+    /* Semantic tokens */
+    --midnight: 245 45% 16%;
+    --midnight-deep: 240 33% 8%;
+    --surface-soft: 244 45% 97%;         /* #f7f6fc */
+    --parchment: 244 28% 86%;            /* shared hero-era line */
+    --warm-cream: 240 5% 96%;            /* clean light gray */
+    --charcoal: 0 0% 9%;
+    --caption-color: 240 4% 46%;         /* zinc-500 */
+
+    /* Full-bleed section rhythm and hero crossover */
+    --section-band-bg: #f4f3fa;
+    --section-band-line: rgb(79 70 229 / 0.14);
+    --section-grid-line: rgb(75 70 140 / 0.08);
+
+    /* Shadows — restrained */
+    --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06);
+    --shadow-card-hover: 0 8px 25px rgba(0, 0, 0, 0.08), 0 4px 10px rgba(0, 0, 0, 0.04);
+    --shadow-nav: 0 1px 0 rgba(0, 0, 0, 0.04);
+
+    /* Hero gradient stops */
+    --hero-gradient-start: 244 40% 96%;
+    --hero-gradient-mid: 240 30% 95%;
+    --hero-gradient-end: 250 35% 97%;
+
+    /* Nav background */
+    --nav-bg: 248 248 252;
+    --nav-bg-scrolled: 248 248 252;
+    --nav-border-color: 228 228 231;
+  }
+
+  .dark {
+    /* Dark Palette — Lavender glow on night canvas */
+    --background: 245 20% 7%;            /* #0f0f14 */
+    --foreground: 36 14% 90%;            /* #e8e6e3 */
+    --card: 245 23% 12%;                 /* #1b1926 — cool night surface */
+    --card-foreground: 36 14% 90%;
+    --popover: 245 18% 10%;
+    --popover-foreground: 36 14% 90%;
+
+    --primary: 264 60% 78%;              /* #cbb7fb — lavender */
+    --primary-foreground: 264 40% 15%;
+
+    --secondary: 245 12% 14%;            /* dark surface */
+    --secondary-foreground: 36 14% 90%;
+
+    --muted: 245 12% 14%;
+    --muted-foreground: 30 5% 58%;       /* WCAG AA 5.3:1 sobre #0f0f14 */
+
+    --accent: 264 60% 78%;               /* = primary en dark mode */
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 62% 30%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 245 24% 24%;
+    --input: 245 24% 24%;
+    --ring: 264 60% 78%;
+
+    /* Dark semantic tokens */
+    --midnight: 245 45% 16%;
+    --midnight-deep: 240 33% 8%;
+    --surface-soft: 245 25% 14%;
+    --parchment: 245 24% 24%;
+    --warm-cream: 245 12% 14%;
+    --charcoal: 36 14% 90%;
+    --caption-color: 30 6% 50%;
+
+    --section-band-bg: #161a33;
+    --section-band-line: rgb(199 183 255 / 0.16);
+    --section-grid-line: rgb(255 255 255 / 0.055);
+
+    --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.2), 0 1px 2px rgba(0, 0, 0, 0.3);
+    --shadow-card-hover: 0 8px 25px rgba(0, 0, 0, 0.3), 0 4px 10px rgba(0, 0, 0, 0.2);
+    --shadow-nav: 0 1px 0 rgba(255, 255, 255, 0.04);
+
+    /* Hero gradient stops — dark */
+    --hero-gradient-start: 245 45% 12%;
+    --hero-gradient-mid: 240 33% 6%;
+    --hero-gradient-end: 248 40% 10%;
+
+    /* Nav background — dark */
+    --nav-bg: 15 15 20;
+    --nav-bg-scrolled: 15 15 20;
+    --nav-border-color: 42 42 53;
+  }
+}
+
+/* ============================================
+   Base Styles
+   ============================================ */
+
+@layer base {
+
+* {
+  border-color: hsl(var(--border));
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 3.5rem; /* 56px = h-14 del header fixed */
+}
+
+body {
+  font-family: var(--font-manrope), system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: hsl(var(--foreground));
+  background-color: hsl(var(--background));
+}
+
+}
+
+/* Skip-to-content — visually hidden until focused */
+@layer components {
+
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 16px;
+  z-index: 100;
+  padding: 0.5rem 1rem;
+  background: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+  border-radius: 0.5rem;
+  font-weight: 600;
+  font-size: 0.875rem;
+  text-decoration: none;
+  transition: top 0.2s ease;
+}
+
+.skip-link:focus {
+  top: 8px;
+  outline: 2px solid hsl(var(--primary));
+  outline-offset: 2px;
+}
+
+}
+
+/* ============================================
+   Typography — Syne display + Manrope body
+   ============================================ */
+
+@layer base {
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-syne), var(--font-manrope), system-ui, sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  color: hsl(var(--foreground));
+}
+
+h1 {
+  font-size: 2.25rem;
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  font-weight: 700;
+}
+
+@media (min-width: 768px) {
+  h1 {
+    font-size: 3rem;
+    line-height: 0.93;
+    letter-spacing: -0.035em;
+  }
+}
+
+@media (min-width: 1024px) {
+  h1 {
+    font-size: 3.5rem;
+    line-height: 0.92;
+    letter-spacing: -0.04em;
+  }
+}
+
+h2 {
+  font-size: 1.75rem;
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+  font-weight: 600;
+}
+
+@media (min-width: 768px) {
+  h2 {
+    font-size: 2.25rem;
+    line-height: 1.12;
+  }
+}
+
+@media (min-width: 1024px) {
+  h2 {
+    font-size: 2.5rem;
+    line-height: 1.10;
+    letter-spacing: -0.03em;
+  }
+}
+
+h3 {
+  font-size: 1.375rem;
+  line-height: 1.10;
+  letter-spacing: -0.015em;
+  font-weight: 600;
+}
+
+@media (min-width: 768px) {
+  h3 {
+    font-size: 1.5rem;
+  }
+}
+
+h4 {
+  font-size: 1.125rem;
+  line-height: 1.20;
+  font-weight: 600;
+}
+
+@media (min-width: 768px) {
+  h4 {
+    font-size: 1.25rem;
+  }
+}
+
+p {
+  line-height: 1.60;
+}
+
+/* ============================================
+   Links
+   ============================================ */
+
+a {
+  color: inherit;
+  text-decoration: none;
+  transition: color 200ms ease, text-decoration-color 200ms ease, background-color 200ms ease;
+}
+
+}
+
+@layer components {
+
+.link-inline {
+  color: hsl(var(--accent));
+  text-decoration: underline;
+  text-decoration-color: hsl(var(--accent) / 0.3);
+  text-underline-offset: 3px;
+}
+
+.link-inline:hover {
+  text-decoration-color: hsl(var(--accent));
+}
+
+}
+
+@layer base {
+
+/* ============================================
+   Code — JetBrains Mono
+   ============================================ */
+
+code {
+  font-family: var(--font-jetbrains-mono), monospace;
+  font-size: 0.8125rem;
+  background-color: hsl(var(--muted));
+  padding: 0.125rem 0.375rem;
+  border-radius: 0.25rem;
+}
+
+pre {
+  font-family: var(--font-jetbrains-mono), monospace;
+  font-size: 0.8125rem;
+  background-color: hsl(var(--muted));
+  padding: 1rem;
+  border-radius: 0.5rem;
+  overflow-x: auto;
+}
+
+pre code {
+  background-color: transparent;
+  padding: 0;
+}
+
+/* ============================================
+   Selection
+   ============================================ */
+
+::selection {
+  background-color: hsl(var(--primary) / 0.2);
+  color: hsl(var(--foreground));
+}
+
+/* ============================================
+   Scrollbar — minimal
+   ============================================ */
+
+::-webkit-scrollbar {
+  width: 0.375rem;
+  height: 0.375rem;
+}
+
+::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: hsl(var(--border));
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: hsl(var(--muted-foreground));
+}
+
+}
+
+@layer components {
+
+/* ============================================
+   Container
+   ============================================ */
+
+.container-custom {
+  max-width: 75rem;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+}
+
+@media (min-width: 640px) {
+  .container-custom {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .container-custom {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .container-custom {
+    padding-left: 3rem;
+    padding-right: 3rem;
+  }
+}
+
+/* ============================================
+   Section Spacing
+   ============================================ */
+
+.section {
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+}
+
+@media (min-width: 640px) {
+  .section {
+    padding-top: 4rem;
+    padding-bottom: 4rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .section {
+    padding-top: 5rem;
+    padding-bottom: 5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .section {
+    padding-top: 6rem;
+    padding-bottom: 6rem;
+  }
+}
+
+/* ============================================
+   Focus Ring
+   ============================================ */
+
+.focus-ring:focus {
+  outline: none;
+}
+
+.focus-ring:focus-visible {
+  outline: 2px solid hsl(var(--primary));
+  outline-offset: 2px;
+}
+
+/* ============================================
+   Button — Primary Indigo
+   ============================================ */
+
+.btn-primary {
+  background-color: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  letter-spacing: 0.02em;
+  padding: 0.625rem 1.5rem;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: background-color 200ms ease, transform 150ms ease, box-shadow 200ms ease;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-primary:hover {
+  background-color: hsl(var(--primary) / 0.88);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px hsl(var(--primary) / 0.25);
+}
+
+.dark .btn-primary {
+  background-color: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+}
+
+.dark .btn-primary:hover {
+  background-color: hsl(var(--primary) / 0.8);
+  box-shadow: 0 4px 14px hsl(var(--primary) / 0.2);
+}
+
+/* ============================================
+   Tech Badge — Monospace developer identity
+   ============================================ */
+
+.tech-badge {
+  font-family: var(--font-jetbrains-mono), monospace;
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 0.25rem 0.625rem;
+  border-radius: 6px;
+  border: 1px solid hsl(var(--border));
+  background-color: transparent;
+  color: hsl(var(--muted-foreground));
+  letter-spacing: 0;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+ /* ============================================
+    Animations — restrained, purposeful
+   ============================================ */
+
+/* Scroll-reveal visibility is defined once in the experience layer below. */
+
+[data-animate-delay="1"] { transition-delay: 0.1s; }
+[data-animate-delay="2"] { transition-delay: 0.2s; }
+[data-animate-delay="3"] { transition-delay: 0.3s; }
+[data-animate-delay="4"] { transition-delay: 0.4s; }
+[data-animate-delay="5"] { transition-delay: 0.5s; }
+[data-animate-delay="6"] { transition-delay: 0.6s; }
+[data-animate-delay="7"] { transition-delay: 0.7s; }
+[data-animate-delay="8"] { transition-delay: 0.8s; }
+
+/* ============================================
+   Accessibility — Reduced Motion
+   ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+   .hero-gradient::before {
+     animation: none !important;
+     transform: none !important;
+  }
+}
+
+/* ============================================
+   Accessibility — High Contrast
+   ============================================ */
+
+@media (prefers-contrast: high) {
+  :root {
+    --border: 240 6% 70%;
+    --muted-foreground: 240 4% 15%;
+    --caption-color: 240 4% 30%;
+  }
+
+  .dark {
+    --border: 245 12% 42%;
+    --muted-foreground: 30 5% 80%;
+    --caption-color: 30 6% 65%;
+  }
+}
+
+/* ============================================
+   Blog prose styles — MDX content rendering
+   ============================================ */
+
+.prose-custom {
+  color: hsl(var(--foreground));
+  line-height: 1.75;
+}
+
+.prose-custom h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+  color: hsl(var(--foreground));
+}
+
+@media (min-width: 768px) {
+  .prose-custom h2 {
+    font-size: 1.75rem;
+  }
+}
+
+.prose-custom h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+  color: hsl(var(--foreground));
+}
+
+.prose-custom p {
+  margin-bottom: 1.25rem;
+  color: hsl(var(--foreground) / 0.82);
+}
+
+.prose-custom a {
+  color: hsl(var(--primary));
+  text-decoration: underline;
+  text-decoration-color: hsl(var(--primary) / 0.3);
+  text-underline-offset: 3px;
+  transition: text-decoration-color 200ms ease;
+}
+
+.prose-custom a:hover {
+  text-decoration-color: hsl(var(--primary));
+}
+
+.prose-custom ul,
+.prose-custom ol {
+  margin-bottom: 1.25rem;
+  padding-left: 1.5rem;
+  color: hsl(var(--foreground) / 0.82);
+}
+
+.prose-custom li {
+  margin-bottom: 0.5rem;
+}
+
+.prose-custom ul > li {
+  list-style-type: disc;
+}
+
+.prose-custom ol > li {
+  list-style-type: decimal;
+}
+
+.prose-custom li::marker {
+  color: hsl(var(--muted-foreground));
+}
+
+.prose-custom strong {
+  color: hsl(var(--foreground));
+  font-weight: 700;
+}
+
+.prose-custom blockquote {
+  border-left: 3px solid hsl(var(--primary) / 0.5);
+  padding-left: 1rem;
+  margin: 1.5rem 0;
+  color: hsl(var(--foreground) / 0.65);
+  font-style: italic;
+}
+
+.prose-custom table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  font-size: 0.875rem;
+}
+
+.prose-custom th {
+  text-align: left;
+  font-weight: 600;
+  padding: 0.5rem 0.75rem;
+  border-bottom: 2px solid hsl(var(--border));
+  color: hsl(var(--foreground));
+}
+
+.prose-custom td {
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid hsl(var(--border));
+  color: hsl(var(--foreground) / 0.78);
+}
+
+.prose-custom pre {
+  margin: 1.5rem 0;
+  border-radius: 0.5rem;
+  background: hsl(var(--midnight));
+  padding: 1rem 1.25rem;
+  overflow-x: auto;
+  border: 1px solid hsl(var(--parchment));
+}
+
+.prose-custom pre code {
+  background: transparent;
+  padding: 0;
+  color: hsl(var(--foreground) / 0.9);
+  font-size: 0.8125rem;
+  line-height: 1.7;
+}
+
+.dark .prose-custom pre {
+  background: hsl(var(--surface-soft));
+}
+
+.prose-custom :not(pre) > code {
+  background: hsl(var(--muted));
+  color: hsl(var(--foreground) / 0.85);
+  padding: 0.125rem 0.375rem;
+  border-radius: 0.25rem;
+  font-size: 0.8125rem;
+  border: 1px solid hsl(var(--parchment));
+}
+
+.prose-custom hr {
+  border: none;
+  border-top: 1px solid hsl(var(--border));
+  margin: 2rem 0;
+}
+
+.prose-custom img {
+  max-width: 100%;
+  border-radius: 0.5rem;
+  margin: 1.5rem 0;
+}
+
+/* ============================================
+   Background-clip text fallback
+   ============================================ */
+
+@supports not (-webkit-background-clip: text) {
+.bg-clip-text-fallback.bg-clip-text-fallback {
+    color: hsl(var(--foreground));
+  }
+}
+
+}

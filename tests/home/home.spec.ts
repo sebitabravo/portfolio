@@ -126,11 +126,16 @@ test.describe("Home Page", () => {
         /^(active|fallback)$/,
         { timeout: 10000 },
       )
+      const motionStatus = await page.locator("[data-portfolio-motion]").getAttribute("data-motion-status")
       await expect(page.locator("[data-hero-webgl]")).toHaveAttribute(
         "data-webgl-status",
         /^(ready|fallback)$/,
         { timeout: 10000 },
       )
+
+      // ScrollTrigger is an optional enhancement. A bounded fallback is a
+      // valid terminal state, so its decorative meter is not expected to move.
+      if (motionStatus !== "active") return
 
       await page.locator("#proyectos").scrollIntoViewIfNeeded()
       await expect

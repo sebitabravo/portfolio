@@ -56,7 +56,11 @@ export default defineConfig({
 		},
 		build: {
 			cssCodeSplit: true,
-			minify: 'esbuild',
+			minify: 'oxc',
+			// The lazy WebGL enhancement is 523 KiB raw / about 129 KiB gzip.
+			// Keep Vite's advisory aligned with that intentional optional chunk;
+			// verify:bundle enforces both raw and compressed budgets separately.
+			chunkSizeWarningLimit: 600,
 			target: 'esnext'
 		}
 	}

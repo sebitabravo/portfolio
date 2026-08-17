@@ -45,4 +45,9 @@ if (violations.length > 0) {
   process.exit(1)
 }
 
-console.log(`Source size limits passed. Exceptions: ${[...exceptions].map(([file, reason]) => `${file} (${reason})`).join("; ")}`)
+console.log("Source size limits passed.")
+console.log(
+  `Documented exceptions (not failures): ${[...exceptions]
+    .map(([file, reason]) => `${file} (${reason})`)
+    .join("; ")}`,
+)

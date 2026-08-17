@@ -1,8 +1,10 @@
 ---
 // Contact — Direct links (no form)
-import { personalInfo } from "@/lib/data"
+import { personalInfo, social } from "@/lib/data"
 import { getTranslations, type Locale } from "@/lib/i18n"
 import MailIcon from "./icons/Mail.astro"
+import LinkedInIcon from "./icons/LinkedIn.astro"
+import GitHubIcon from "./icons/GitHub.astro"
 import DownloadIcon from "./icons/Download.astro"
 import cvPdf from "@/assets/Sebastian_Bravo_CV.pdf"
 
@@ -24,11 +26,23 @@ const contactLinks = [
     icon: 'mail',
     description: locale === 'es' ? 'Te respondo en menos de 24h' : "I'll reply within 24h",
   },
+  {
+    href: social.linkedin,
+    label: 'LinkedIn',
+    icon: 'linkedin',
+    description: locale === 'es' ? 'Conectemos profesionalmente' : "Let's connect professionally",
+  },
+  {
+    href: social.github,
+    label: 'GitHub',
+    icon: 'github',
+    description: locale === 'es' ? 'Mirá mi código abierto' : 'Check my open source code',
+  },
 ]
 ---
 
 <div class="space-y-8">
-  <div class="mx-auto grid max-w-xl gap-4">
+  <div class="mx-auto grid max-w-xl gap-4 sm:grid-cols-3">
     {contactLinks.map(({ href, label, icon, description }, i) => (
       <a
         href={href}
@@ -40,6 +54,8 @@ const contactLinks = [
       >
         <div class="flex size-12 items-center justify-center rounded-xl bg-[hsl(var(--primary))]/10 text-[hsl(var(--primary))] transition-transform duration-200 group-hover:scale-110">
           {icon === 'mail' && <MailIcon class="size-5" />}
+          {icon === 'linkedin' && <LinkedInIcon class="size-5" />}
+          {icon === 'github' && <GitHubIcon class="size-5" />}
         </div>
         <span class="text-sm font-semibold text-foreground">{label}</span>
         <span class="text-xs text-[hsl(var(--caption-color))]">{description}</span>

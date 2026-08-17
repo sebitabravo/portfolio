@@ -38,12 +38,7 @@ const heroTitleId = `hero-title-${locale}`
 
         <p class="hero-lede hero-reveal hero-reveal-4">{t.hero.intro}</p>
 
-        <p class="hero-proof hero-reveal hero-reveal-5">
-          <span class="hero-proof-mark" aria-hidden="true">↳</span>
-          {t.hero.proof}
-        </p>
-
-        <div class="hero-actions hero-reveal hero-reveal-6">
+        <div class="hero-actions hero-reveal hero-reveal-5">
           <a href={contactUrl} class="btn-primary hero-btn-primary focus-ring" aria-label={t.hero.contact}>
             <MailIcon class="size-4" />
             <span>{t.hero.contact}</span>
@@ -51,7 +46,7 @@ const heroTitleId = `hero-title-${locale}`
           </a>
         </div>
 
-        <ul class="hero-meta hero-reveal hero-reveal-7" aria-label={t.hero.metaLabel}>
+        <ul class="hero-meta hero-reveal hero-reveal-6" aria-label={t.hero.metaLabel}>
           {personalInfo.available && (
             <li class="hero-meta-status">
               <span class="hero-meta-pulse" aria-hidden="true"></span>

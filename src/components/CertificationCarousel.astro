@@ -5,7 +5,6 @@
  * Auto-scrolling carousel showing all certifications with logos and names.
  * Features:
  * - Infinite scroll animation
- * - Floating animation (up and down)
  * - Clickable to view PDF certificate
  * - Responsive design
  */
@@ -29,7 +28,7 @@ const duplicatedCerts = [...certifications, ...certifications]
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
   </button>
 
-  <div class="cert-carousel-wrapper" id="certCarouselWrapper">
+  <div class="cert-carousel-wrapper scrollbar-hidden" id="certCarouselWrapper">
     <div class="cert-carousel" id="certCarousel">
       {duplicatedCerts.map((cert, index) => {
         const { name, organization, logo, pdfUrl, category } = cert.data
@@ -41,7 +40,6 @@ const duplicatedCerts = [...certifications, ...certifications]
             target="_blank"
             rel="noopener noreferrer"
             class="cert-item"
-            style={`animation-delay: ${(index % certifications.length) * 0.15}s`}
             title={pdfUrl ? `${name} - ${organization}` : name}
             aria-hidden={isDuplicate ? "true" : undefined}
             tabindex={isDuplicate ? "-1" : pdfUrl ? undefined : "-1"}
@@ -104,12 +102,6 @@ const duplicatedCerts = [...certifications, ...certifications]
 
   .cert-carousel-wrapper {
     overflow-x: auto;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-  }
-
-  .cert-carousel-wrapper::-webkit-scrollbar {
-    display: none;
   }
 
   .cert-carousel {

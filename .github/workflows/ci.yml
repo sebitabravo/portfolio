@@ -41,6 +41,9 @@ jobs:
       - name: Run unit and smoke tests
         run: pnpm test
 
+      - name: Enforce unit coverage
+        run: pnpm test:coverage
+
       - name: Build project for E2E
         run: pnpm build
 
@@ -48,22 +51,7 @@ jobs:
         run: pnpm exec playwright install --with-deps chromium firefox webkit
 
       - name: Run E2E tests
-        run: |
-          pnpm preview --host 127.0.0.1 --port 4321 > /tmp/astro-preview.log 2>&1 &
-          PREVIEW_PID=$!
-          for attempt in $(seq 1 30); do
-            if curl --silent --fail http://127.0.0.1:4321 > /dev/null; then
-              break
-            fi
-            if [ "$attempt" -eq 30 ]; then
-              echo "ERROR: Preview server failed to start after 30 attempts"
-              cat /tmp/astro-preview.log
-              exit 1
-            fi
-            sleep 1
-          done
-          PLAYWRIGHT_BASE_URL=http://127.0.0.1:4321 pnpm test:e2e
-          kill $PREVIEW_PID 2>/dev/null || true
+        run: pnpm exec playwright test
 
       - name: Validate project links
         run: pnpm validate:links

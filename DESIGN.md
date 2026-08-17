@@ -3,20 +3,23 @@
 
 ## 1. Visual Theme & Atmosphere
 
-A developer portfolio that feels like opening a precision tool — confident, restrained, every element intentional. The hero is a cinematic midnight gradient (`#1b1938` → `#0d0d1a`), overlaid with compressed white typography that hits like a statement. Below, the site dissolves into pristine white canvas with warm charcoal text.
+A developer portfolio that feels like opening a precision tool — confident, restrained, every element intentional. The hero is a cinematic midnight gradient (`#1b1938` → `#0d0d1a`), overlaid with compressed white typography that hits like a statement. Below, the same language continues through full-bleed lavender-neutral bands, glass surfaces and technical section markers instead of reverting to a flat resume canvas.
 
 The typography is the voice: headlines compress into dense, powerful blocks (line-height 0.92–0.96), while body text breathes at 1.60. This tension — compressed authority vs. generous readability — defines the portfolio's rhythm.
 
-Maximum confidence through minimum decoration. Warm cream buttons instead of bright CTAs. Lavender accent as the sole color departure. Projects sell themselves through screenshots and clean cards.
+The current experience layer adds controlled character instead of generic decoration: a floating glass navigation, orbital profile visual, technical signal strip, WebGL constellation and asymmetric project index. These elements are progressive enhancement; the content and routes remain usable without motion or WebGL support.
 
 **Key Characteristics:**
-- Midnight gradient hero (`#1b1938`) with white compressed headlines
-- Pure white content canvas with charcoal ink text
-- Warm cream CTAs (`#e9e5dd`) — understated luxury
-- Lavender glow (`#cbb7fb`) as the singular accent
-- Only 2 border radii: 8px (buttons), 16px (cards)
+- Midnight grid hero (`#10143a` → `#050713`) with white compressed headlines
+- Cool white content canvas with charcoal ink text and alternating `#f4f3fa` bands
+- Lavender glow (`#c7b7ff`) as the primary hero accent
+- Floating glass navigation that resolves to a readable surface on scroll
+- Orbital profile visual and ambient layers, disabled under reduced motion
+- Lightweight Three.js constellation behind the portrait, loaded after first paint with WebGL fallback
+- GSAP/ScrollTrigger choreography for project entry, card tilt and project-scroll meter; native scroll remains authoritative
+- Signal marquee for stack context and an asymmetric featured-project grid
 - Project screenshots as primary visual content
-- Generous whitespace, progressive density
+- Generous whitespace, progressive density and recruiter-first CTAs
 
 ## 2. Color Palette
 
@@ -38,7 +41,7 @@ Maximum confidence through minimum decoration. Warm cream buttons instead of bri
 | Caption | `#8a8580` | Captions, metadata, labels |
 | Warm Cream | `#e9e5dd` | Button backgrounds, subtle surfaces |
 | Parchment Border | `#dcd7d3` | Card borders, dividers |
-| Surface Soft | `#f7f5f2` | Alternating section backgrounds |
+| Surface Soft | `#f4f3fa` | Alternating section background |
 | Lavender Glow | `#cbb7fb` | Accent (consistent across modes) |
 | Amethyst | `#714cb6` | Link text, interactive elements |
 | Emerald Muted | `#4a9d6e` | "Available" badge, success states |
@@ -56,8 +59,8 @@ Maximum confidence through minimum decoration. Warm cream buttons instead of bri
 ## 3. Typography
 
 ### Font Stack
-- **Display & Headlines**: `Inter`, system-ui, sans-serif (weight 500–700, tight tracking)
-- **Body & UI**: `Inter`, system-ui, sans-serif (weight 400–500, normal tracking)
+- **Display & Headlines**: `Syne`, system-ui, sans-serif (weight 600–700, tight tracking)
+- **Body & UI**: `Manrope`, system-ui, sans-serif (weight 400–700, normal tracking)
 - **Code / Accent**: `'JetBrains Mono'`, monospace (used for tech labels, inline code, role badges)
 
 ### Hierarchy
@@ -96,13 +99,13 @@ Maximum confidence through minimum decoration. Warm cream buttons instead of bri
 - **Project Card**: White bg, 1px `#dcd7d3` border, 16px radius, screenshot-dominant
 - **Feature Card**: Surface Soft bg, no border, 16px radius
 - **Dark Card**: Night Surface bg, Night Border, 16px radius
-- Hover: Subtle translateY(-2px) + shadow increase — no color transformations
+- Hover: Subtle lift/spotlight; fine pointers may add a bounded 2.5° tilt, never replacing focus or readable actions
 
 ### Navigation
-- Fixed top, transparent on hero → white/translucent on scroll
+- Fixed top, dark glass on hero → readable card surface on scroll
 - Nav links: Inter 14px, weight 500
 - Active indicator: Lavender Glow underline
-- CTA: Warm Cream pill, 8px radius
+- CTA: Lavender primary action with explicit contact destination
 - Mobile: Hamburger with slide-down panel
 
 ### Section Container
@@ -126,7 +129,7 @@ Maximum confidence through minimum decoration. Warm cream buttons instead of bri
 - Max content: 1200px
 - Hero: Full-width gradient, content centered
 - Feature grids: 2–3 columns desktop, 1 column mobile
-- Projects: 2 columns desktop, 1 column mobile
+- Projects: 12-column desktop index with one featured card, 1 column mobile
 
 ### Whitespace
 - Confident emptiness between sections
@@ -147,9 +150,9 @@ Maximum confidence through minimum decoration. Warm cream buttons instead of bri
 ### Do
 - Use tight line-height (0.92–0.96) on all display text
 - Use Warm Cream for primary buttons — not white, not gray
-- Keep border-radius to 8px and 16px only
+- Keep radii bounded and purposeful; use larger rounding only for circular/orbital visual elements
 - Let project screenshots be the primary visual content
-- Use Lavender Glow as the only accent color
+- Use Lavender Glow as the primary accent; reserve emerald/blue for status or telemetry cues
 - Maintain the hero gradient as a singular dramatic gesture
 - Use monospace for tech/developer identity elements
 
@@ -157,8 +160,8 @@ Maximum confidence through minimum decoration. Warm cream buttons instead of bri
 - Use saturated multi-color palettes — one accent only
 - Apply shadows generously — depth from borders and contrast
 - Use tight line-height on body text
-- Add decorative illustrations or icons — let content speak
-- Use pill-shaped buttons — 8px radius, not rounded
+- Add decorative layers only when they reinforce the technical narrative and remain non-blocking
+- Do not use ornamental motion as a substitute for content or focus states
 - Use pure black (`#000000`) — Charcoal Ink is warmer
 
 ## 8. Responsive
@@ -178,3 +181,45 @@ Maximum confidence through minimum decoration. Warm cream buttons instead of bri
 - Warm Cream buttons become Warm Cream Dark
 - Lavender Glow accent stays consistent across both modes
 - No jarring transitions — smooth 300ms shifts on toggle
+
+## 10. Motion Architecture
+
+Motion is layered, not required for understanding the page:
+
+1. **CSS baseline:** hero reveal, orbital rings, marquee and reduced-motion fallback.
+2. **GSAP layer:** dynamically loaded after the initial render; `matchMedia()` gates fine-pointer and `prefers-reduced-motion`, while `ScrollTrigger` follows the native document scroll instead of replacing it.
+3. **Three.js layer:** a small deterministic point/line constellation with no external model or texture. It is loaded only when the device is not in Save-Data/2G/low-memory mode, pauses offscreen/hidden tabs, caps its pixel ratio and disposes renderer resources on Astro navigation.
+
+The canvas is `aria-hidden`, pointer-transparent and decorative. The portrait, availability link, CTAs and project content remain HTML. If WebGL2 is unavailable, the existing CSS orbital visual is the fallback.
+
+## 11. Maintainability & delivery limits
+
+The source surface has explicit size gates so visual iteration does not turn
+into unreviewable files:
+
+| Extension | Limit | Gate |
+|---|---:|---|
+| `.astro` | 250 lines | `pnpm verify:limits` |
+| `.ts` | 300 lines | `pnpm verify:limits` |
+| `.css` | 1500 lines | `pnpm verify:limits` |
+
+The documented exceptions are the shared `Layout` shell, the content-heavy
+certification carousel and privacy documents, plus the canonical technology
+color registry. The former monolithic stylesheet is split into base, hero,
+content, responsive and header layers. Repeated icons use the immutable
+`public/icons/sprite.svg` instead of embedding the same paths in every page.
+
+## 12. Reference Decisions
+
+The visual direction borrows interaction principles—not copied layouts—from the reviewed Chinese, Korean and Japanese references:
+
+- **Chinese:** Chang Liu's unified carousel/menu and restrained distortion; Du Haihang's WebGL typography that still supports drag, swipe and scroll on mobile; Lan Zhang's people-centered work index; Lyfar Studio's Astro/Three.js approach that keeps the stack small.
+- **Korean:** Portfoli-oh's bilingual/theme-aware onboarding and measurable performance; VibeLabs' description of a 3D world where projects become the narrative instead of a decorative resume.
+- **Japanese:** Koh Fukuzawa's explicit performance/accessibility discipline; Tao Tajima's shader illusion that creates depth without a heavy 3D model.
+
+### Tool selection
+
+- `three@0.185.1` + `@types/three@0.185.1`: selected for one bounded WebGL scene, not a 3D model or full-screen takeover.
+- `gsap@3.15.0`: selected for deterministic pointer/scroll interpolation and cleanup through `matchMedia()`.
+- **ScrollXUI:** audited as a Next.js/TypeScript/Tailwind/Motion registry. Its cursor, spotlight, stagger and parallax patterns are useful references, but importing its React-oriented registry would widen this Astro static site's runtime unnecessarily.
+- **shadcn CLI:** audited as Astro-compatible, but it is a component source/registry rather than an animation system. The repo already has native Astro `Button` and `DropdownMenu` primitives; adding a React integration or remote registry component would add surface without improving this home.

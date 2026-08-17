@@ -3,18 +3,42 @@ import { getCollection, render } from 'astro:content'
 import type { GetStaticPaths } from 'astro'
 import Layout from "@/layouts/Layout.astro"
 import { personalInfo } from "@/lib/data"
+import { getTranslations } from "@/lib/i18n"
 
 export const getStaticPaths = (async () => {
   const posts = await getCollection('blog')
   return posts
-    .filter((p) => (p.data.locale ?? 'es') === 'en')
-    .map((p) => ({ params: { slug: p.id }, props: { post: p } }))
+    .filter((p) => ['en', 'es'].includes(p.data.locale ?? 'es'))
+    .map((p) => ({
+      params: { slug: p.id },
+      props: { post: p, isFallback: (p.data.locale ?? 'es') !== 'en' },
+    }))
 }) satisfies GetStaticPaths
 
-const { post } = Astro.props
+const { post, isFallback } = Astro.props
 const { Content } = await render(post)
 const locale = 'en'
-const canonicalUrl = `https://sebita.dev/en/blog/${post.id}`
+const t = getTranslations(locale)
+const englishUrl = `https://sebita.dev/en/blog/${post.id}`
+const spanishUrl = `https://sebita.dev/blog/${post.id}`
+const canonicalUrl = isFallback ? spanishUrl : englishUrl
+const articleJsonLd = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  headline: post.data.title,
+  description: post.data.description,
+  ...(post.data.image && { image: new URL(`/screenshots/${post.data.image}.webp`, "https://sebita.dev").toString() }),
+  datePublished: post.data.publishDate.toISOString(),
+  author: {
+    "@type": "Person",
+    name: personalInfo.name,
+    url: "https://sebita.dev",
+  },
+  publisher: {
+    "@type": "Organization",
+    name: personalInfo.name,
+  },
+}).replace(/</g, "\\u003c")
 ---
 
 <Layout
@@ -24,9 +48,9 @@ const canonicalUrl = `https://sebita.dev/en/blog/${post.id}`
   locale={locale}
   canonicalUrl={canonicalUrl}
   alternates={[
-    { hreflang: 'en', href: canonicalUrl },
-    { hreflang: 'es', href: `https://sebita.dev/blog/${post.id}` },
-    { hreflang: 'x-default', href: `https://sebita.dev/blog/${post.id}` },
+    { hreflang: 'en', href: englishUrl },
+    { hreflang: 'es', href: spanishUrl },
+    { hreflang: 'x-default', href: spanishUrl },
   ]}
 >
   <main id="main-content" class="mx-auto max-w-[780px] px-4 py-12 sm:py-16 lg:py-20">
@@ -41,8 +65,13 @@ const canonicalUrl = `https://sebita.dev/en/blog/${post.id}`
       </ol>
     </nav>
 
-    <article>
+    <article lang={isFallback ? 'es' : 'en'}>
       <header class="mb-10">
+        {isFallback && (
+          <aside class="mb-6 rounded-xl border border-[hsl(var(--primary)/0.25)] bg-[hsl(var(--primary)/0.06)] px-4 py-3 text-sm text-foreground/75" role="note">
+            {t.blog.fallbackNotice}
+          </aside>
+        )}
         <div class="flex flex-wrap gap-2 mb-4">
           {post.data.tags.map((tag) => (
             <span class="rounded-md border border-[hsl(var(--parchment))] bg-[hsl(var(--muted))] px-2 py-0.5 text-xs font-mono text-foreground/60">{tag}</span>
@@ -63,7 +92,7 @@ const canonicalUrl = `https://sebita.dev/en/blog/${post.id}`
     <footer class="mt-16 pt-8 border-t border-[hsl(var(--parchment))]">
       <nav class="flex flex-wrap items-center justify-between gap-4" aria-label="Post navigation">
         <a href="/en/blog" class="text-sm text-[hsl(var(--primary))] hover:underline">
-          ← Back to blog
+          ← {t.blog.back}
         </a>
         <a href="/en" class="text-sm text-foreground/55 hover:text-foreground transition-colors">
           Home →
@@ -72,21 +101,5 @@ const canonicalUrl = `https://sebita.dev/en/blog/${post.id}`
     </footer>
   </main>
 
-  <script is:inline type="application/ld+json" set:html={JSON.stringify({
-    "@context": "https://schema.org",
-    "@type": "Article",
-    headline: post.data.title,
-    description: post.data.description,
-    ...(post.data.image && { image: new URL(`/screenshots/${post.data.image}.webp`, "https://sebita.dev").toString() }),
-    datePublished: post.data.publishDate.toISOString(),
-    author: {
-      "@type": "Person",
-      name: personalInfo.name,
-      url: "https://sebita.dev",
-    },
-    publisher: {
-      "@type": "Organization",
-      name: personalInfo.name,
-    },
-  })} />
+  <script is:inline type="application/ld+json" set:html={articleJsonLd}></script>
 </Layout>

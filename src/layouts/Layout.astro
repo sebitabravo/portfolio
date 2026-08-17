@@ -1,6 +1,6 @@
 ---
 import { ClientRouter } from "astro:transitions"
-import { Font } from "astro:assets"
+import { Font, getImage } from "astro:assets"
 import { SEO } from "astro-seo"
 import Analytics from "@vercel/analytics/astro"
 import SpeedInsights from "@vercel/speed-insights/astro"
@@ -35,6 +35,11 @@ const {
 } = Astro.props
 
 const description = pageDescription ?? (locale === 'en' ? personalInfo.descriptionEn : personalInfo.description)
+
+const isHome = Astro.url.pathname === '/' || Astro.url.pathname === '/en' || Astro.url.pathname === '/en/'
+const heroPortrait = isHome
+  ? await getImage({ src: perfilImage, width: 320, height: 320, format: "webp", quality: 90 })
+  : undefined
 
 const profileUrl = locale === "es" ? "https://sebita.dev/" : "https://sebita.dev/en/"
 const dynamicOgImage = new URL(
@@ -123,6 +128,7 @@ const jsonLd = {
     },
   ],
 }
+const jsonLdString = JSON.stringify(jsonLd).replace(/</g, "\\u003c")
 ---
 
 <!doctype html>
@@ -131,15 +137,17 @@ const jsonLd = {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="preload" as="image" href={perfilImage.src} />
+    {heroPortrait && (
+      <link rel="preload" as="image" href={heroPortrait.src} fetchpriority="high" />
+    )}
     {import.meta.env.VERCEL && (
       <>
         <link rel="preconnect" href="https://cdn.vercel-insights.com" />
         <link rel="preconnect" href="https://vitals.vercel-insights.com" />
       </>
     )}
-    <Font cssVariable="--font-manrope" />
-    <Font cssVariable="--font-syne" />
+    <Font cssVariable="--font-manrope" preload />
+    <Font cssVariable="--font-syne" preload />
     <Font cssVariable="--font-jetbrains-mono" />
 
     {alternates.map(({ hreflang, href }) => (
@@ -204,7 +212,7 @@ const jsonLd = {
 
     <ClientRouter fallback="swap" />
 
-    <script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd)}></script>
+    <script is:inline type="application/ld+json" set:html={jsonLdString}></script>
 
     <script is:inline>
       (function() {
@@ -233,33 +241,55 @@ const jsonLd = {
     </script>
 
   </head>
-  <body class="bg-background text-foreground">
+  <body class="bg-background text-foreground" data-page={isHome ? 'home' : 'inner'}>
     <a href="#main-content" class="skip-link">
       {locale === 'es' ? 'Saltar al contenido' : 'Skip to content'}
     </a>
-    <Header locale={locale} />
+    <div class="reading-progress" aria-hidden="true">
+      <span data-reading-progress></span>
+    </div>
+    <Header locale={locale} home={isHome} />
     <slot />
     <Footer locale={locale} />
     <script is:inline>
       let revealObserver = null
+
       function initScrollReveal() {
         revealObserver?.disconnect()
+
+        const targets = Array.from(document.querySelectorAll('[data-animate]'))
+        if (!('IntersectionObserver' in window)) return
+
         const observer = new IntersectionObserver(
           (entries) => {
             entries.forEach((entry) => {
-              if (entry.isIntersecting) {
-                entry.target.classList.add('animate-in')
-                observer.unobserve(entry.target)
-              }
+              if (!entry.isIntersecting) return
+
+              const element = entry.target
+              element.classList.add('reveal-pending')
+              requestAnimationFrame(() => element.classList.add('animate-in'))
+              observer.unobserve(element)
             })
           },
-          { threshold: 0.1, rootMargin: '0px 0px -50px 0px' }
+          { threshold: 0.08, rootMargin: '0px 0px -8% 0px' },
         )
-        document.querySelectorAll('[data-animate]').forEach((el) => {
-          observer.observe(el)
+
+        targets.forEach((element) => {
+          element.classList.remove('animate-in', 'reveal-pending')
+
+          // Keep the first viewport polished, but do not hide the entire
+          // document: full-page captures and JS-off users must still see it.
+          const rect = element.getBoundingClientRect()
+          if (rect.top <= window.innerHeight * 1.1) {
+            element.classList.add('reveal-pending')
+          }
+
+          observer.observe(element)
         })
+
         revealObserver = observer
       }
+
       document.addEventListener('DOMContentLoaded', initScrollReveal)
       document.addEventListener('astro:page-load', initScrollReveal)
       document.addEventListener('astro:before-swap', () => {
@@ -279,6 +309,50 @@ const jsonLd = {
           el.scrollIntoView({ block: 'start' })
         } catch {
           // hash con caracteres especiales que querySelector no puede parsear
+        }
+      })
+    </script>
+    <script is:inline>
+      let progressFrame = null
+      let progressScrollHandler = null
+
+      function initReadingProgress() {
+        const progress = document.querySelector('[data-reading-progress]')
+        if (!progress) return
+
+        if (progressScrollHandler) {
+          window.removeEventListener('scroll', progressScrollHandler)
+        }
+        if (progressFrame) {
+          cancelAnimationFrame(progressFrame)
+          progressFrame = null
+        }
+
+        const update = () => {
+          if (progressFrame) return
+          progressFrame = requestAnimationFrame(() => {
+            const maxScroll = document.documentElement.scrollHeight - window.innerHeight
+            const ratio = maxScroll > 0 ? Math.min(window.scrollY / maxScroll, 1) : 0
+            progress.style.transform = `scaleX(${ratio})`
+            progressFrame = null
+          })
+        }
+
+        progressScrollHandler = update
+        window.addEventListener('scroll', update, { passive: true })
+        update()
+      }
+
+      document.addEventListener('DOMContentLoaded', initReadingProgress)
+      document.addEventListener('astro:page-load', initReadingProgress)
+      document.addEventListener('astro:before-swap', () => {
+        if (progressScrollHandler) {
+          window.removeEventListener('scroll', progressScrollHandler)
+          progressScrollHandler = null
+        }
+        if (progressFrame) {
+          cancelAnimationFrame(progressFrame)
+          progressFrame = null
         }
       })
     </script>

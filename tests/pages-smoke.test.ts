@@ -22,4 +22,12 @@ describe("home pages smoke", () => {
     expect(englishPage).toContain('id="about"')
     expect(englishPage).toContain('id="contact"')
   })
+
+  it("uses full-bleed bands and one canonical stack marquee", () => {
+    expect(spanishPage).toContain("SectionBand")
+    expect(spanishPage).toContain('tone="tinted"')
+    expect(spanishPage).not.toContain("<hr class=\"section-divider")
+    expect(englishPage).toContain("SectionBand")
+    expect(englishPage).not.toContain("<hr class=\"section-divider")
+  })
 })

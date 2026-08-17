@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest"
 import en from "../src/lib/i18n/en.json"
 import es from "../src/lib/i18n/es.json"
+import { defaultLocale, getTranslations, locales } from "../src/lib/i18n"
 
 function getDeepKeys(
   input: Record<string, unknown>,
@@ -28,5 +29,13 @@ describe("i18n dictionaries", () => {
     const spanishKeys = getDeepKeys(es).sort()
 
     expect(englishKeys).toEqual(spanishKeys)
+  })
+
+  it("exposes the supported locales and falls back to Spanish", () => {
+    expect(locales).toEqual(["es", "en"])
+    expect(defaultLocale).toBe("es")
+    expect(getTranslations("en")).toBe(en)
+    expect(getTranslations("es")).toBe(es)
+    expect(getTranslations("fr" as never)).toBe(es)
   })
 })

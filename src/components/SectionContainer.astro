@@ -1,9 +1,8 @@
 ---
-// Section Container — Superhuman generous spacing
-// Max-width 1200px, clean sections
+// Shared reading column for the public portfolio sections.
 const { class: className, headingId, ...rest } = Astro.props
 ---
 
-<section {...rest} aria-labelledby={headingId} class:list={["w-full mx-auto max-w-[1200px] scroll-mt-24 md:scroll-mt-28", className]}>
+<section {...rest} aria-labelledby={headingId} class:list={["portfolio-section w-full mx-auto max-w-[1200px] scroll-mt-24 md:scroll-mt-28", className]}>
   <slot />
 </section>

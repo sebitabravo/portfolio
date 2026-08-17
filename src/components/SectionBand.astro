@@ -1,0 +1,18 @@
+---
+import SectionContainer from "./SectionContainer.astro"
+
+interface Props {
+  id: string
+  headingId: string
+  tone?: "base" | "tinted"
+  class?: string
+}
+
+const { id, headingId, tone = "base", class: className, ...attributes } = Astro.props
+---
+
+<div class:list={["section-band", `section-band-${tone}`, className]} data-section-band={tone}>
+  <SectionContainer id={id} headingId={headingId} {...attributes}>
+    <slot />
+  </SectionContainer>
+</div>

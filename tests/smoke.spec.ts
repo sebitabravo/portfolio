@@ -90,6 +90,37 @@ test.describe("Temutel — descripción reducida", () => {
     await expect(page.locator("[data-project='rapido-sur'] .project-eyebrow")).toContainText("Código disponible")
     await expect(page.locator("[data-project='rapido-sur']")).toContainText("45 vehículos")
   })
+
+  test("el email de contacto se ajusta sin desbordar su tarjeta", async ({ page }) => {
+    for (const viewport of [
+      { width: 1349, height: 900 },
+      { width: 390, height: 844 },
+    ]) {
+      await page.setViewportSize(viewport)
+      await page.goto("/")
+
+      const emailCard = page.locator("#contacto a[href^='mailto:']")
+      await emailCard.scrollIntoViewIfNeeded()
+
+      const metrics = await emailCard.evaluate((card) => {
+        const label = card.querySelector("span")
+        if (!label) return null
+
+        const cardRect = card.getBoundingClientRect()
+        const labelRect = label.getBoundingClientRect()
+        return {
+          cardRight: cardRect.right,
+          labelRight: labelRect.right,
+          cardClientWidth: card.clientWidth,
+          cardScrollWidth: card.scrollWidth,
+        }
+      })
+
+      expect(metrics).not.toBeNull()
+      expect(metrics!.labelRight).toBeLessThanOrEqual(metrics!.cardRight + 1)
+      expect(metrics!.cardScrollWidth).toBeLessThanOrEqual(metrics!.cardClientWidth + 1)
+    }
+  })
 })
 
 test.describe("Layout general", () => {

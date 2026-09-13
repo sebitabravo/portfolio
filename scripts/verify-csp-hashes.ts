@@ -1,62 +1,283 @@
-import { createHash } from "node:crypto"
-import { readFile, readdir } from "node:fs/promises"
-import { join } from "node:path"
+import { createHash } from "node:crypto";
+import { readFile, readdir } from "node:fs/promises";
+import { fileURLToPath } from "node:url";
+import { join, resolve } from "node:path";
 
-type VercelConfig = {
-  headers?: Array<{ headers?: Array<{ key?: string; value?: string }> }>
+type Header = { key?: unknown; value?: unknown };
+type HeaderRule = { source?: unknown; headers?: unknown };
+type VercelConfig = { headers?: unknown };
+
+export type ValidatedPolicy = {
+  source: string;
+  directives: Map<string, string[]>;
+  scriptHashes: Set<string>;
+};
+
+const requiredHeaders = new Map([
+  ["x-frame-options", "DENY"],
+  ["x-content-type-options", "nosniff"],
+  ["referrer-policy", "strict-origin-when-cross-origin"],
+  [
+    "permissions-policy",
+    "camera=(), microphone=(), geolocation=(), payment=(), usb=(), accelerometer=(), gyroscope=(), magnetometer=(), browsing-topics=()",
+  ],
+  ["strict-transport-security", "max-age=63072000; includeSubDomains; preload"],
+  ["cross-origin-opener-policy", "same-origin"],
+  ["cross-origin-resource-policy", "same-origin"],
+]);
+
+const fixedDirectives = new Map([
+  ["default-src", ["'self'"]],
+  ["script-src-attr", ["'none'"]],
+  ["style-src", ["'self'", "'unsafe-inline'"]],
+  ["img-src", ["'self'", "data:"]],
+  ["font-src", ["'self'", "data:"]],
+  [
+    "connect-src",
+    [
+      "'self'",
+      "https://vitals.vercel-insights.com",
+      "https://va.vercel-scripts.com",
+    ],
+  ],
+  ["worker-src", ["'self'"]],
+  ["frame-ancestors", ["'none'"]],
+  ["base-uri", ["'self'"]],
+  ["form-action", ["'self'"]],
+  ["object-src", ["'none'"]],
+  ["manifest-src", ["'self'"]],
+  ["upgrade-insecure-requests", []],
+]);
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null;
+}
+
+function sameTokens(actual: string[], expected: string[]): boolean {
+  return (
+    actual.length === expected.length &&
+    [...actual]
+      .sort()
+      .every((token, index) => token === [...expected].sort()[index])
+  );
+}
+
+function parseCsp(value: string): {
+  directives: Map<string, string[]>;
+  errors: string[];
+} {
+  const directives = new Map<string, string[]>();
+  const errors: string[] = [];
+
+  for (const part of value.split(";")) {
+    const tokens = part.trim().split(/\s+/).filter(Boolean);
+    if (tokens.length === 0) continue;
+    const [name, ...sources] = tokens;
+    const normalized = name.toLowerCase();
+    if (directives.has(normalized)) {
+      errors.push(`duplicate CSP directive: ${normalized}`);
+    } else {
+      directives.set(normalized, sources);
+    }
+  }
+
+  return { directives, errors };
+}
+
+export function validateVercelConfig(input: unknown): {
+  errors: string[];
+  policy?: ValidatedPolicy;
+} {
+  const errors: string[] = [];
+  const config = input as VercelConfig;
+  const rules =
+    isRecord(config) && Array.isArray(config.headers)
+      ? (config.headers as HeaderRule[])
+      : [];
+  const globalRules = rules.filter(
+    (rule) => isRecord(rule) && rule.source === "/(.*)",
+  );
+
+  if (globalRules.length !== 1) {
+    return {
+      errors: [
+        `expected exactly one global /(.*) rule, found ${globalRules.length}`,
+      ],
+    };
+  }
+
+  const rawHeaders = globalRules[0].headers;
+  if (!Array.isArray(rawHeaders))
+    return { errors: ["global /(.*) rule must contain a headers array"] };
+
+  const headers = new Map<string, string>();
+  for (const rawHeader of rawHeaders as Header[]) {
+    if (
+      !isRecord(rawHeader) ||
+      typeof rawHeader.key !== "string" ||
+      typeof rawHeader.value !== "string" ||
+      !rawHeader.value.trim()
+    ) {
+      errors.push("global header must have a non-empty key and value");
+      continue;
+    }
+    const key = rawHeader.key.toLowerCase();
+    if (headers.has(key)) errors.push(`duplicate header: ${key}`);
+    else headers.set(key, rawHeader.value);
+  }
+
+  for (const [key, value] of requiredHeaders) {
+    if (headers.get(key) !== value)
+      errors.push(`required header ${key} must equal ${value}`);
+  }
+
+  const csp = headers.get("content-security-policy");
+  if (!csp)
+    return { errors: [...errors, "missing content-security-policy header"] };
+
+  const parsed = parseCsp(csp);
+  errors.push(...parsed.errors);
+  for (const [directive, expected] of fixedDirectives) {
+    const actual = parsed.directives.get(directive);
+    if (!actual || !sameTokens(actual, expected)) {
+      errors.push(
+        `CSP directive ${directive} must contain exactly: ${expected.join(" ") || "no values"}`,
+      );
+    }
+  }
+
+  const scriptSources = parsed.directives.get("script-src");
+  const scriptHashes = new Set<string>();
+  if (scriptSources) {
+    const fixedSources = ["'self'", "https://va.vercel-scripts.com"];
+    for (const source of scriptSources) {
+      const hash = source.match(/^'sha256-([A-Za-z0-9+/]{43}=)'$/);
+      if (hash) scriptHashes.add(hash[1]);
+      else if (!fixedSources.includes(source))
+        errors.push(
+          `CSP directive script-src contains unexpected source: ${source}`,
+        );
+    }
+    if (
+      !sameTokens(
+        scriptSources.filter((source) => !source.startsWith("'sha256-")),
+        fixedSources,
+      )
+    ) {
+      errors.push(
+        "CSP directive script-src must contain only the approved non-hash sources",
+      );
+    }
+  } else {
+    errors.push("CSP directive script-src is required");
+  }
+
+  return {
+    errors,
+    policy: { source: "/(.*)", directives: parsed.directives, scriptHashes },
+  };
+}
+
+export function hashScript(content: string): string {
+  return createHash("sha256").update(content).digest("base64");
+}
+
+export function extractExecutableScriptBodies(html: string): string[] {
+  const bodies: string[] = [];
+  for (const match of html.matchAll(
+    /<script\b([^>]*)>([\s\S]*?)<\/script>/gi,
+  )) {
+    const [, attributes, content] = match;
+    if (
+      /\bsrc\s*=/i.test(attributes) ||
+      /\btype\s*=\s*(?:["']application\/ld\+json["']|application\/ld\+json)(?:\s|$)/i.test(
+        attributes,
+      )
+    )
+      continue;
+    bodies.push(content);
+  }
+  return bodies;
+}
+
+export function compareCspHashParity(
+  configured: Set<string>,
+  htmlDocuments: string[],
+) {
+  const generated = new Set(
+    htmlDocuments.flatMap(extractExecutableScriptBodies).map(hashScript),
+  );
+  return {
+    generated: [...generated].sort(),
+    missing: [...generated].filter((hash) => !configured.has(hash)).sort(),
+    unused: [...configured].filter((hash) => !generated.has(hash)).sort(),
+    executableScripts: htmlDocuments.flatMap(extractExecutableScriptBodies)
+      .length,
+  };
 }
 
 async function collectHtml(directory: string): Promise<string[]> {
-  const entries = await readdir(directory, { withFileTypes: true })
-  const files: string[] = []
+  const entries = await readdir(directory, { withFileTypes: true });
+  const files = await Promise.all(
+    entries.map(async (entry) => {
+      const path = join(directory, entry.name);
+      return entry.isDirectory()
+        ? collectHtml(path)
+        : entry.name.endsWith(".html")
+          ? [path]
+          : [];
+    }),
+  );
+  return files.flat();
+}
 
-  for (const entry of entries) {
-    const path = join(directory, entry.name)
-    if (entry.isDirectory()) {
-      files.push(...await collectHtml(path))
-    } else if (entry.name.endsWith(".html")) {
-      files.push(path)
-    }
+async function main(): Promise<void> {
+  let config: unknown;
+  let htmlFiles: string[];
+  try {
+    config = JSON.parse(await readFile("vercel.json", "utf8"));
+    htmlFiles = await collectHtml("dist");
+  } catch (error) {
+    console.error(
+      `CSP verification could not read configuration or dist/: ${(error as Error).message}`,
+    );
+    process.exitCode = 1;
+    return;
+  }
+  if (htmlFiles.length === 0) {
+    console.error("CSP verification found no HTML files in dist/");
+    process.exitCode = 1;
+    return;
   }
 
-  return files
+  const validation = validateVercelConfig(config);
+  if (validation.errors.length > 0 || !validation.policy) {
+    console.error("Security-header contract failed:");
+    for (const error of validation.errors) console.error(`  ${error}`);
+    process.exitCode = 1;
+    return;
+  }
+
+  const parity = compareCspHashParity(
+    validation.policy.scriptHashes,
+    await Promise.all(htmlFiles.map((file) => readFile(file, "utf8"))),
+  );
+  if (parity.missing.length || parity.unused.length) {
+    console.error("CSP exact hash parity failed:");
+    for (const hash of parity.missing)
+      console.error(`  missing authorization: 'sha256-${hash}'`);
+    for (const hash of parity.unused)
+      console.error(`  unused authorization: 'sha256-${hash}'`);
+    process.exitCode = 1;
+    return;
+  }
+  console.log(
+    `CSP exact hash parity passed: ${htmlFiles.length} HTML files, ${parity.executableScripts} executable inline scripts, ${parity.generated.length} unique hashes.`,
+  );
 }
 
-function hashScript(content: string): string {
-  return createHash("sha256").update(content).digest("base64")
-}
-
-const config = JSON.parse(await readFile("vercel.json", "utf8")) as VercelConfig
-const csp = config.headers
-  ?.flatMap((entry) => entry.headers ?? [])
-  .find((header) => header.key?.toLowerCase() === "content-security-policy")
-  ?.value ?? ""
-const allowedHashes = new Set(
-  [...csp.matchAll(/'sha256-([^']+)'/g)].map((match) => match[1]),
+if (
+  process.argv[1] &&
+  resolve(process.argv[1]) === fileURLToPath(import.meta.url)
 )
-const htmlFiles = await collectHtml("dist")
-const missing = new Set<string>()
-let executableScripts = 0
-
-for (const file of htmlFiles) {
-  const html = await readFile(file, "utf8")
-  for (const match of html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)) {
-    const attributes = match[1]
-    const content = match[2]
-    if (/\bsrc\s*=/.test(attributes) || /\btype\s*=\s*["']application\/ld\+json["']/i.test(attributes)) {
-      continue
-    }
-
-    executableScripts += 1
-    const hash = hashScript(content)
-    if (!allowedHashes.has(hash)) missing.add(hash)
-  }
-}
-
-if (missing.size > 0) {
-  console.error(`CSP hash coverage failed: ${missing.size} executable inline script hash(es) missing from vercel.json`)
-  for (const hash of missing) console.error(`  'sha256-${hash}'`)
-  process.exit(1)
-}
-
-console.log(`CSP hash coverage passed: ${executableScripts} executable inline scripts covered.`)
+  void main();

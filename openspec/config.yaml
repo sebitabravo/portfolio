@@ -1,0 +1,86 @@
+schema: spec-driven
+
+context: |
+  Project: portfolio, an Astro static portfolio website.
+  Stack: Astro 7, TypeScript, Tailwind CSS 4, MDX, GSAP, and Three.js.
+  Architecture: Static pages and content under src/ with reusable components,
+    data modules, and scripts.
+  Package manager: pnpm 10.30.1; required Node.js: 22.x.
+  Artifacts and structural headings MUST be written in English.
+  Requested work branch: fix/contact-card-email-overflow.
+
+strict_tdd: true
+
+projects:
+  - path: .
+    stack: Astro 7 / TypeScript / Tailwind CSS 4 / MDX
+    test_command: pnpm test
+    test_layers:
+      unit: vitest run (tests/**/*.test.ts)
+      e2e: pnpm test:e2e (Playwright, tests/**/*.spec.ts)
+    coverage_command: pnpm test:coverage
+    quality_commands:
+      type_checker: pnpm check
+      formatter: none configured
+      linter: none configured
+    workspace_test_command: pnpm test
+
+# Testing capability inventory for this workspace.
+testing:
+  workspace_test_command: pnpm test
+  unit:
+    available: true
+    command: pnpm test
+    tool: Vitest 3.2.6
+    scope: tests/**/*.test.ts
+  integration:
+    available: false
+    command: null
+    tool: null
+  e2e:
+    available: true
+    command: pnpm test:e2e
+    tool: Playwright
+    scope: tests/**/*.spec.ts
+  coverage:
+    available: true
+    command: pnpm test:coverage
+    provider: v8
+    thresholds: statements 90, branches 70, functions 90, lines 90
+  type_check:
+    available: true
+    command: pnpm check
+    tool: astro check
+  lint:
+    available: false
+    command: null
+    tool: null
+  formatter:
+    available: false
+    command: null
+    tool: null
+  additional_checks:
+    - command: pnpm build
+      purpose: production build, source limits, bundle size, and CSP validation
+    - command: pnpm validate:links
+      purpose: validate project links
+
+rules:
+  proposal:
+    - Define scope, non-goals, acceptance criteria, and rollback considerations.
+  specs:
+    - Use Given/When/Then scenarios and RFC 2119 keywords.
+  design:
+    - Document affected Astro components and responsive behavior with rationale.
+  tasks:
+    - Group tasks by reviewable work unit and include focused verification
+      commands.
+  apply:
+    - Preserve existing Astro, TypeScript, and CSS conventions.
+    - Follow strict TDD with RED, GREEN, TRIANGULATE, and REFACTOR evidence.
+    - Run `pnpm test` for focused and regression verification.
+  verify:
+    - Run `pnpm test` and `pnpm build` before reporting completion.
+    - Confirm coverage thresholds from `pnpm test:coverage` when applicable.
+  archive:
+    - Preserve the completed change as an audit trail.

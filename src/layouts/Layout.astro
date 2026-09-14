@@ -1,5 +1,4 @@
 ---
-import { ClientRouter } from "astro:transitions"
 import { Font, getImage } from "astro:assets"
 import { SEO } from "astro-seo"
 import Analytics from "@vercel/analytics/astro"
@@ -146,7 +145,7 @@ const jsonLdString = JSON.stringify(jsonLd).replace(/</g, "\\u003c")
         <link rel="preconnect" href="https://vitals.vercel-insights.com" />
       </>
     )}
-    <Font cssVariable="--font-manrope" preload />
+    <Font cssVariable="--font-manrope" />
     <Font cssVariable="--font-syne" preload />
     <Font cssVariable="--font-jetbrains-mono" />
 
@@ -209,8 +208,6 @@ const jsonLdString = JSON.stringify(jsonLd).replace(/</g, "\\u003c")
         link: [],
       }}
     />
-
-    <ClientRouter fallback="swap" />
 
     <script is:inline type="application/ld+json" set:html={jsonLdString}></script>
 
@@ -290,28 +287,10 @@ const jsonLdString = JSON.stringify(jsonLd).replace(/</g, "\\u003c")
         revealObserver = observer
       }
 
-      document.addEventListener('DOMContentLoaded', initScrollReveal)
-      document.addEventListener('astro:page-load', initScrollReveal)
-      document.addEventListener('astro:before-swap', () => {
-        revealObserver?.disconnect()
-        revealObserver = null
-      })
+      initScrollReveal()
     </script>
     {import.meta.env.VERCEL && <Analytics />}
     {import.meta.env.VERCEL && <SpeedInsights />}
-    <script>
-      document.addEventListener("astro:page-load", () => {
-        const hash = window.location.hash
-        if (!hash) return
-        try {
-          const el = document.querySelector(hash)
-          if (!el) return
-          el.scrollIntoView({ block: 'start' })
-        } catch {
-          // hash con caracteres especiales que querySelector no puede parsear
-        }
-      })
-    </script>
     <script is:inline>
       let progressFrame = null
       let progressScrollHandler = null
@@ -343,18 +322,7 @@ const jsonLdString = JSON.stringify(jsonLd).replace(/</g, "\\u003c")
         update()
       }
 
-      document.addEventListener('DOMContentLoaded', initReadingProgress)
-      document.addEventListener('astro:page-load', initReadingProgress)
-      document.addEventListener('astro:before-swap', () => {
-        if (progressScrollHandler) {
-          window.removeEventListener('scroll', progressScrollHandler)
-          progressScrollHandler = null
-        }
-        if (progressFrame) {
-          cancelAnimationFrame(progressFrame)
-          progressFrame = null
-        }
-      })
+      initReadingProgress()
     </script>
   </body>
 </html>

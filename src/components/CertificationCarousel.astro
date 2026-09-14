@@ -355,6 +355,7 @@ const duplicatedCerts = [...certifications, ...certifications]
 
     let animationId: number | null = null
     let lastTime = 0
+    let isInViewport = false
     const scrollSpeed = 40 // px per second
     const navScrollAmount = 350
     let scrollEndPending = false
@@ -381,7 +382,7 @@ const duplicatedCerts = [...certifications, ...certifications]
     }
 
     function startAutoScroll() {
-      if (animationId) return
+      if (animationId || !isInViewport || isHovered() || document.visibilityState === 'hidden') return
       lastTime = 0
       animationId = requestAnimationFrame(autoScroll)
     }
@@ -422,11 +423,20 @@ const duplicatedCerts = [...certifications, ...certifications]
     }
     document.addEventListener('visibilitychange', handleVisibilityChange, { signal })
 
-    startAutoScroll()
+    const intersectionObserver = new IntersectionObserver(([entry]) => {
+      isInViewport = entry?.isIntersecting ?? false
+      if (isInViewport) {
+        startAutoScroll()
+      } else {
+        stopAutoScroll()
+      }
+    })
+    intersectionObserver.observe(container)
 
     // Registrar cleanup para la próxima navegación
     certCleanup = () => {
       ac.abort()
+      intersectionObserver.disconnect()
       if (animationId) {
         cancelAnimationFrame(animationId)
         animationId = null

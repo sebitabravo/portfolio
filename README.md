@@ -24,7 +24,7 @@ un puntaje estático como garantía permanente.
 - **Progressive Motion** - CSS baseline plus deferred GSAP/Three.js enhancements with reduced-motion and WebGL fallbacks
 - **SEO Ready** - Automatic sitemap + robots + JSON-LD schema
 - **Quality Gates** - Vitest smoke tests + link validation in CI
-- **Security Gates** - Production dependency audit, CSP hash coverage and source-size limits
+- **Security Gates** - Production dependency audit, security-header contract and exact CSP hash parity, and source-size limits
 
 ## Tech Stack
 
@@ -61,6 +61,20 @@ pnpm validate:links
 - **Lighthouse audit:** `.github/workflows/lighthouse.yml` runs as an informational workflow with `continue-on-error: true` and manual trigger support via `workflow_dispatch`.
 - **Official deployment source:** Vercel native GitHub integration (no GitHub Actions deploy workflow).
 
+### Deployment security headers
+
+`vercel.json` is the authority for Vercel response headers; Astro application code and
+`pnpm preview` neither apply nor prove those deployed headers. After changing an
+executable inline script, inspect the generated change and run `pnpm build`: it
+regenerates `dist/` and verifies exact CSP hash parity in both directions. Review a
+reported hash before updating the global `script-src` policy; never blindly authorize
+unknown generated output.
+
+After a Vercel release, a separate observer must inspect `/`, `/en`, one blog page,
+`/.well-known/security.txt`, one `/_astro/` asset, and `/og/es.svg`. Confirm global
+security headers coexist with route cache rules where applicable and that the browser
+reports no CSP console violations. Local preview cannot prove Vercel-delivered headers.
+
 ## Project Structure
 
 ```
@@ -96,5 +110,5 @@ pnpm preview
 ## Contact
 
 - **GitHub:** [@sebitabravo](https://github.com/sebitabravo)
-- **Email:** sebitabravocontacto@gmail.com
+- **Email:** <sebitabravocontacto@gmail.com>
 - **LinkedIn:** [Sebastian Bravo](https://linkedin.com/in/sebitabravo)

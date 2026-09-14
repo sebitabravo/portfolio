@@ -57,13 +57,7 @@ const toggleLabel = locale === 'es' ? `Cambiar idioma (actual: ${currentLangCode
 </div>
 
 <script>
-  import { navigate } from 'astro:transitions/client'
-
-  let langCleanup: (() => void) | null = null
-
   function initLanguageToggle() {
-    // Limpiar listeners de navegaciones anteriores (View Transitions)
-    langCleanup?.()
     const ac = new AbortController()
     const { signal } = ac
     const LANG_KEY = 'language-preference'
@@ -112,10 +106,10 @@ const toggleLabel = locale === 'es' ? `Cambiar idioma (actual: ${currentLangCode
       const isEnglish = (currentPath === '/en' || currentPath.startsWith('/en/'))
 
       if (lang === 'en' && !isEnglish) {
-        navigate('/en' + (currentPath === '/' ? '/' : currentPath))
+        window.location.href = '/en' + (currentPath === '/' ? '/' : currentPath)
       } else if (lang === 'es' && isEnglish) {
         const targetPath = currentPath.replace(/^\/en/, '') || '/'
-        navigate(targetPath)
+        window.location.href = targetPath
       }
     }
 
@@ -201,11 +195,6 @@ const toggleLabel = locale === 'es' ? `Cambiar idioma (actual: ${currentLangCode
           break
       }
     }, { signal })
-
-    // Registrar cleanup para la próxima navegación
-    langCleanup = () => {
-      ac.abort()
-    }
   }
 
   if (document.readyState === 'loading') {
@@ -214,5 +203,4 @@ const toggleLabel = locale === 'es' ? `Cambiar idioma (actual: ${currentLangCode
     initLanguageToggle()
   }
 
-  document.addEventListener('astro:after-swap', initLanguageToggle)
 </script>

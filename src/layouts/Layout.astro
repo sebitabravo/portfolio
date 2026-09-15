@@ -41,6 +41,7 @@ const heroPortrait = isHome
   : undefined
 
 const profileUrl = locale === "es" ? "https://sebita.dev/" : "https://sebita.dev/en/"
+const canonical = canonicalUrl ?? profileUrl
 const dynamicOgImage = new URL(
   `/og/${locale}.svg?title=${encodeURIComponent(title)}`,
   "https://sebita.dev",
@@ -125,6 +126,13 @@ const jsonLd = {
       inLanguage: locale,
       description: description,
     },
+    ...(!noindex ? [{
+      "@type": "WebPage",
+      name: title,
+      description: description,
+      url: canonical,
+      inLanguage: locale,
+    }] : []),
   ],
 }
 const jsonLdString = JSON.stringify(jsonLd).replace(/</g, "\\u003c")
@@ -156,7 +164,7 @@ const jsonLdString = JSON.stringify(jsonLd).replace(/</g, "\\u003c")
     <SEO
       title={title}
       description={description}
-      canonical={canonicalUrl ?? profileUrl}
+      canonical={canonical}
       noindex={noindex}
       nofollow={noindex}
       openGraph={{
@@ -194,7 +202,7 @@ const jsonLdString = JSON.stringify(jsonLd).replace(/</g, "\\u003c")
           },
           {
             property: "og:url",
-            content: canonicalUrl ?? profileUrl,
+            content: canonical,
           },
           {
             property: "og:locale",

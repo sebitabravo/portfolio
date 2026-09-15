@@ -52,11 +52,30 @@ test.describe("Home Page", () => {
       await page.getByRole("menuitemradio", { name: "English", exact: true }).click()
       await page.waitForURL("**/en/")
       await expect(page).toHaveURL(/\/en\/?$/)
-    },
-  )
+        },
+      )
 
-  test(
-    "light theme keeps hero and navigation coherent",
+      test(
+        "switching from English restores Spanish navigation anchors",
+        { tag: ["@e2e", "@home", "@HOME-E2E-008"] },
+        async ({ page }) => {
+          await page.goto("/en/")
+
+          await page.locator("#language-toggle").click()
+          await page.getByRole("menuitemradio", { name: "Español", exact: true }).click()
+          await page.waitForURL("**/")
+          await expect(page).toHaveURL(/\/$/)
+
+          const navigation = page.getByRole("navigation", { name: "Navegación principal" })
+          await expect(navigation.locator("[data-section='blog']")).toHaveAttribute("href", "/blog")
+          await expect(navigation.locator("[data-section='proyectos']")).toHaveAttribute("href", "/#proyectos")
+          await expect(navigation.locator("[data-section='experiencia']")).toHaveAttribute("href", "/#experiencia")
+          await expect(navigation.locator("[data-section='educacion']")).toHaveAttribute("href", "/#educacion")
+        },
+      )
+
+      test(
+        "light theme keeps hero and navigation coherent",
     { tag: ["@critical", "@e2e", "@a11y", "@HOME-E2E-006"] },
     async ({ page }) => {
       await page.addInitScript(() => localStorage.setItem("theme", "light"))

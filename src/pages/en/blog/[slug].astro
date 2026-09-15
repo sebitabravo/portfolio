@@ -3,6 +3,7 @@ import { getCollection, render } from 'astro:content'
 import type { GetStaticPaths } from 'astro'
 import Layout from "@/layouts/Layout.astro"
 import { personalInfo } from "@/lib/data"
+import { getBlogImageUrl } from "@/lib/blog-image"
 import { getTranslations } from "@/lib/i18n"
 
 export const getStaticPaths = (async () => {
@@ -22,12 +23,13 @@ const t = getTranslations(locale)
 const englishUrl = `https://sebita.dev/en/blog/${post.id}`
 const spanishUrl = `https://sebita.dev/blog/${post.id}`
 const canonicalUrl = isFallback ? spanishUrl : englishUrl
+const imageUrl = getBlogImageUrl(post.data.image)
 const articleJsonLd = JSON.stringify({
   "@context": "https://schema.org",
   "@type": "Article",
   headline: post.data.title,
   description: post.data.description,
-  ...(post.data.image && { image: new URL(`/screenshots/${post.data.image}.webp`, "https://sebita.dev").toString() }),
+  ...(imageUrl && { image: new URL(imageUrl, "https://sebita.dev").toString() }),
   datePublished: post.data.publishDate.toISOString(),
   author: {
     "@type": "Person",
@@ -44,7 +46,7 @@ const articleJsonLd = JSON.stringify({
 <Layout
   title={`${post.data.title} - ${personalInfo.name}`}
   description={post.data.description}
-  image={post.data.image ? `/screenshots/${post.data.image}.webp` : undefined}
+  image={imageUrl}
   locale={locale}
   canonicalUrl={canonicalUrl}
   alternates={[

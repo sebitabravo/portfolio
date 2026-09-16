@@ -52,7 +52,7 @@ const description =
               <p>
                 Correo electrónico:
                 <a
-                  href="mailto:{personalInfo.email}"
+                  href={`mailto:${personalInfo.email}`}
                   class="link-inline"
                 >
                   {personalInfo.email}
@@ -308,7 +308,7 @@ const description =
               </p>
               <p>
                 <a
-                  href="mailto:{personalInfo.email}"
+                  href={`mailto:${personalInfo.email}`}
                   class="link-inline font-medium"
                 >
                   {personalInfo.email}

@@ -23,7 +23,7 @@ const headingId = `post-title-${id}`
           <span class="rounded-md border border-[hsl(var(--parchment))] bg-[hsl(var(--muted))] px-2 py-0.5 text-xs font-mono text-foreground/60">{tag}</span>
         ))}
       </div>
-      <time datetime={publishDate.toISOString()} class="text-xs text-foreground/45 font-mono shrink-0">
+      <time datetime={publishDate.toISOString()} class="text-xs text-muted-foreground font-mono shrink-0">
         {new Intl.DateTimeFormat(dateLocale, { year: 'numeric', month: 'long', day: 'numeric' }).format(publishDate)}
       </time>
     </div>

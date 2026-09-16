@@ -51,7 +51,7 @@ const articleJsonLd = JSON.stringify({
   <main id="main-content" class="mx-auto max-w-[780px] px-4 py-12 sm:py-16 lg:py-20">
     <!-- Breadcrumb -->
     <nav class="mb-8" aria-label="Breadcrumb">
-      <ol class="flex flex-wrap items-center gap-2 text-sm text-foreground/55">
+      <ol class="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
         <li><a href="/" class="hover:text-foreground transition-colors">Inicio</a></li>
         <li aria-hidden="true">/</li>
         <li><a href="/blog" class="hover:text-foreground transition-colors">Blog</a></li>
@@ -69,7 +69,7 @@ const articleJsonLd = JSON.stringify({
         </div>
         <h1 class="text-3xl sm:text-4xl font-bold tracking-tight mb-4 leading-tight">{post.data.title}</h1>
         <p class="text-foreground/65 text-base sm:text-lg leading-relaxed max-w-2xl">{post.data.description}</p>
-        <time datetime={post.data.publishDate.toISOString()} class="mt-4 inline-block text-sm text-foreground/40 font-mono">
+        <time datetime={post.data.publishDate.toISOString()} class="mt-4 inline-block text-sm text-muted-foreground font-mono">
           {new Intl.DateTimeFormat('es-CL', { year: 'numeric', month: 'long', day: 'numeric' }).format(post.data.publishDate)}
         </time>
       </header>

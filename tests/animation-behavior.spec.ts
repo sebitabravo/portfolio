@@ -28,6 +28,25 @@ test("no-preference renders different orbit pixels at two CSS animation position
   expect(startPixels.equals(advancedPixels)).toBe(false)
 })
 
+test("live reduced-motion changes retain the static hero and only activate optional motion while allowed", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" })
+  await page.goto("/")
+  const hero = page.locator("[data-portfolio-motion]")
+  const canvas = hero.locator("[data-hero-webgl]")
+  await expect(hero).toHaveAttribute("data-motion-status", "reduced")
+  await expect(canvas).toHaveAttribute("data-webgl-status", "reduced")
+
+  await page.emulateMedia({ reducedMotion: "no-preference" })
+  await expect(hero).toHaveAttribute("data-motion-status", "active")
+  await page.emulateMedia({ reducedMotion: "reduce" })
+  await expect(hero).toHaveAttribute("data-motion-status", "reduced")
+  await expect(canvas).toHaveAttribute("data-webgl-status", "reduced")
+  await expect(page.locator(".hero-orbit-one")).toBeVisible()
+
+  await page.emulateMedia({ reducedMotion: "no-preference" })
+  await expect(hero).toHaveAttribute("data-motion-status", "active")
+})
+
 test("reduced motion keeps the hero visible without orbit or reveal animation", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" })
   await page.goto("/")

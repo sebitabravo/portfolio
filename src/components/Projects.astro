@@ -4,8 +4,7 @@ import { getProjects, type Project } from "@/lib/data"
 import { getProjectScreenshot } from "@/lib/portfolio-images"
 import { getTranslations, type Locale } from "@/lib/i18n"
 import { homeSectionFragment } from "@/lib/home-sections"
-import { getTechStyle } from "@/lib/tech-colors"
-import { getTechIcon } from "@/lib/tech-icons-map"
+import { getTechBadge } from "@/lib/tech-badges"
 import { projectGradient } from "@/lib/visual-gradients"
 import GitHubIcon from "./icons/GitHub.astro"
 import LinkIcon from "./icons/Link.astro"
@@ -138,11 +137,11 @@ const statusColors: Record<Project["status"], string> = {
 
             <div class="project-tags" aria-label={t.projects.technologiesLabel}>
               {visibleTags.map((tag) => {
-                const style = getTechStyle(tag)
-                const Icon = getTechIcon(tag)
+                const badge = getTechBadge(tag)
+                const Icon = badge.icon
 
                 return (
-                  <span class:list={["tech-badge project-tech-badge flex items-center gap-1.5", style.bg, style.border, style.text]}>
+                  <span class:list={["tech-badge project-tech-badge flex items-center gap-1.5", badge.className]} style={badge.style}>
                     {Icon && <Icon class="size-3.5" />}
                     {tag}
                   </span>

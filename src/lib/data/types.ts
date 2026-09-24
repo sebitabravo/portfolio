@@ -1,3 +1,5 @@
+import type { ImageMetadata } from "astro"
+
 /**
  * Datos del Portfolio - Sebastian Bravo
  *
@@ -6,7 +8,7 @@
  */
 
 export interface ExperienceLogo {
-  src: string
+  src: ImageMetadata
   alt: string
   url: string
 }

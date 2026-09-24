@@ -1,5 +1,7 @@
 ---
+import { Picture } from "astro:assets"
 import { getProjects, type Project } from "@/lib/data"
+import { getProjectScreenshot } from "@/lib/portfolio-images"
 import { getTranslations, type Locale } from "@/lib/i18n"
 import { homeSectionFragment } from "@/lib/home-sections"
 import { getTechStyle } from "@/lib/tech-colors"
@@ -65,6 +67,7 @@ const statusColors: Record<Project["status"], string> = {
       const statusColor = status ? statusColors[status] : ""
       const publicStatusColor = !liveUrl && githubUrl ? "project-status-code" : statusColor
       const gradient = projectGradient(slug)
+      const screenshot = getProjectScreenshot(slug)
       const resolvedBlogSlug = blogSlug || slug
       const projectUrl = locale === 'en' ? `/en/blog/${resolvedBlogSlug}` : `/blog/${resolvedBlogSlug}`
       const visibleTags = tags.slice(0, 5)
@@ -81,18 +84,21 @@ const statusColors: Record<Project["status"], string> = {
           data-project-tags={tags.join(",")}
         >
           <div class="project-media" style={`background:${gradient};`}>
-            <img
-              src={`/screenshots/${slug}-800.webp`}
-              srcset={`/screenshots/${slug}-800.webp 800w, /screenshots/${slug}-1600.webp 1600w`}
+            {screenshot && <Picture
+              src={screenshot}
+              formats={["avif"]}
+              fallbackFormat="webp"
+              widths={[800, 1600]}
+              quality={90}
+              width={800}
+              height={500}
               sizes="(max-width: 767px) 100vw, (max-width: 1280px) 50vw, 800px"
               alt={`${title} screenshot`}
-              width="800"
-              height="500"
               class="project-image"
               loading="lazy"
               decoding="async"
               data-img-fallback
-            />
+            />}
             <div class="project-media-shade" aria-hidden="true"></div>
             <div class="project-media-grid" aria-hidden="true"></div>
             <div class="project-media-topline">

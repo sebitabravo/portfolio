@@ -1,24 +1,29 @@
 import { readFileSync } from "node:fs";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
+import { getWorkExperience } from "../src/lib/data/work";
 
-const projectsMarkup = readFileSync("src/components/Projects.astro", "utf8");
+// Vitest does not apply Astro's image metadata loader to WebP imports.
+vi.mock("../src/assets/experience/mimasoft.webp", () => ({ default: { src: "mimasoft.webp", width: 768, height: 166, format: "webp" } }))
+vi.mock("../src/assets/experience/temutel.webp", () => ({ default: { src: "temutel.webp", width: 225, height: 225, format: "webp" } }))
+vi.mock("../src/assets/experience/telsur.webp", () => ({ default: { src: "telsur.webp", width: 334, height: 151, format: "webp" } }))
+
+
 const carouselMarkup = readFileSync(
   "src/components/CertificationCarousel.astro",
   "utf8",
 );
 
 describe("performance contracts", () => {
-  it("lazy-loads project screenshots without dropping responsive image attributes", () => {
-    expect(projectsMarkup).toContain('loading="lazy"');
-    expect(projectsMarkup).not.toContain(
-      'loading={i === 0 ? "eager" : "lazy"}',
-    );
-    expect(projectsMarkup).toContain(
-      "srcset={`/screenshots/${slug}-800.webp 800w, /screenshots/${slug}-1600.webp 1600w`}",
-    );
-    expect(projectsMarkup).toContain('width="800"');
-    expect(projectsMarkup).toContain('height="500"');
-    expect(projectsMarkup).toContain('decoding="async"');
+  it("provides local image metadata rather than public URL strings for all experience logos", () => {
+    for (const locale of ["es", "en"] as const) {
+      const logos = getWorkExperience(locale).flatMap((experience) => experience.logos);
+      expect(logos).toHaveLength(3);
+      for (const logo of logos) {
+        expect(logo.src).toEqual(expect.objectContaining({
+          src: expect.any(String), width: expect.any(Number), height: expect.any(Number),
+        }));
+      }
+    }
   });
 
   it("runs carousel auto-scroll only while the carousel is in the viewport", () => {

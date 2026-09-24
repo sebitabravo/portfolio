@@ -46,13 +46,89 @@ test.describe("Hero — mensaje y conversión", () => {
 })
 
 test.describe("Projects — screenshots con fallback", () => {
+  test("rendered project pictures offer responsive AVIF with a responsive WebP img fallback", async ({ page }) => {
+    for (const route of ["/", "/en/"]) {
+      await page.goto(route)
+      for (const slug of ["vulcania", "wenuke", "manttoai", "rapido-sur"]) {
+        const picture = page.locator(`[data-project="${slug}"] .project-media picture`)
+        await expect(picture).toHaveCount(1)
+        await expect(picture.locator('source[type="image/avif"]')).toHaveAttribute("srcset", /\/_astro\/[^,]+\.avif 800w, \/_astro\/[^,]+\.avif 1600w/)
+        const fallback = picture.locator("img.project-image")
+        await expect(fallback).toHaveAttribute("src", /\/_astro\/[^/]+\.webp$/)
+        await expect(fallback).toHaveAttribute("srcset", /\/_astro\/[^,]+\.webp 800w, \/_astro\/[^,]+\.webp 1600w/)
+        await expect(fallback).toHaveAttribute("width", "800")
+        await expect(fallback).toHaveAttribute("height", "500")
+        await expect(fallback).toHaveAttribute("data-img-fallback", /^(|true)$/)
+        await expect(fallback).toHaveAttribute("loading", "lazy")
+        await expect(fallback).toHaveAttribute("decoding", "async")
+        await expect(fallback).toHaveAttribute("alt", /screenshot$/)
+      }
+    }
+  })
+  test("a browser without the AVIF candidate loads the WebP picture fallback", async ({ page }) => {
+    await page.goto("/")
+    const picture = page.locator('[data-project="vulcania"] picture')
+    const image = picture.locator("img.project-image")
+    await image.scrollIntoViewIfNeeded()
+    await picture.locator('source[type="image/avif"]').evaluate((source) => source.remove())
+    await expect.poll(() => image.evaluate((img) => (img as HTMLImageElement).currentSrc)).toMatch(/\/_astro\/[^/]+\.webp$/)
+    await expect.poll(() => image.evaluate((img) => (img as HTMLImageElement).naturalWidth)).toBeGreaterThan(0)
+  })
+
   test("Wenuke tiene imagen de screenshot", async ({ page }) => {
     await page.goto("/")
     const wenukeCard = page.locator("[data-project='wenuke']")
     await wenukeCard.scrollIntoViewIfNeeded()
     const img = wenukeCard.locator("img").first()
-    await expect(img).toHaveAttribute("src", "/screenshots/wenuke-800.webp")
+    await expect(img).toHaveAttribute("src", /\/_astro\/[^/]+\.webp$/)
+    await expect(img).toHaveAttribute("srcset", /800w.*1600w/)
+    await expect(img).toHaveAttribute("alt", /screenshot$/)
+    await expect(img).toHaveAttribute("loading", "lazy")
+    await expect(img).toHaveAttribute("decoding", "async")
     await expect.poll(() => img.evaluate((image) => (image as HTMLImageElement).naturalWidth)).toBeGreaterThan(0)
+  })
+
+  test("all localized project cards render Astro-generated responsive images", async ({ page }) => {
+    for (const route of ["/", "/en/"]) {
+      await page.goto(route)
+      for (const slug of ["vulcania", "wenuke", "manttoai", "rapido-sur"]) {
+        const image = page.locator(`[data-project="${slug}"] .project-image`)
+        await expect(image).toHaveAttribute("src", /\/_astro\/[^/]+\.webp$/)
+        await expect(image).toHaveAttribute("srcset", /800w.*1600w/)
+        await expect(image).toHaveAttribute("sizes", "(max-width: 767px) 100vw, (max-width: 1280px) 50vw, 800px")
+        await expect(image).toHaveAttribute("alt", /screenshot$/)
+        await image.scrollIntoViewIfNeeded()
+        await expect.poll(() => image.evaluate((img) => (img as HTMLImageElement).naturalWidth)).toBeGreaterThan(0)
+      }
+    }
+  })
+
+  test("valid blog images use optimized social and JSON-LD URLs; missing keys retain OG fallback", async ({ page }) => {
+    await page.goto("/blog/rapido-sur-erp-mantenimiento-flotas")
+    const social = await page.locator('meta[property="og:image"]').getAttribute("content")
+    expect(social).toMatch(/^https:\/\/sebita\.dev\/_astro\/[^/]+\.webp$/)
+    const article = await page.locator('script[type="application/ld+json"]').last().textContent()
+    expect(JSON.parse(article!).image).toBe(social)
+
+    await page.goto("/blog/bot-discord-moderacion-musica")
+    const missing = await page.locator('script[type="application/ld+json"]').last().textContent()
+    expect(JSON.parse(missing!)).not.toHaveProperty("image")
+    await expect(page.locator('meta[property="og:image"]')).toHaveAttribute("content", /\/og\/es\.svg\?title=/)
+  })
+
+  test("failed optimized screenshots still reveal the card gradient", async ({ page }) => {
+    await page.goto("/")
+    const card = page.locator('[data-project="vulcania"]')
+    const image = card.locator(".project-image")
+    await card.scrollIntoViewIfNeeded()
+    await image.evaluate((element: HTMLImageElement) => {
+      // Remove source candidates so the intentionally broken WebP fallback is selected.
+      element.closest("picture")?.querySelectorAll("source").forEach((source) => { source.srcset = "" })
+      element.srcset = ""
+      element.src = "/missing-optimized-screenshot.webp"
+    })
+    await expect(image).toHaveCSS("display", "none")
+    await expect(card.locator(".project-media")).toHaveAttribute("style", /linear-gradient/)
   })
 
   test("4 project cards renderizados", async ({ page }) => {
@@ -68,6 +144,44 @@ test.describe("Projects — screenshots con fallback", () => {
     for (let i = 0; i < count; i++) {
       const bgDiv = cards.nth(i).locator("[style*='linear-gradient']").first()
       await expect(bgDiv).toBeVisible()
+    }
+  })
+})
+
+test.describe("Experience — Astro-managed logos", () => {
+  test("rendered experience pictures offer AVIF sources with WebP img fallbacks", async ({ page }) => {
+    for (const route of ["/", "/en/"]) {
+      await page.goto(route)
+      const logos = page.locator(".experience-item a:has(picture)")
+      await expect(logos).toHaveCount(3)
+      for (const logo of await logos.all()) {
+        const picture = logo.locator("picture")
+        await expect(picture.locator('source[type="image/avif"]')).toHaveAttribute("srcset", /\/_astro\/[^,]+\.avif 1x, \/_astro\/[^,]+\.avif 2x/)
+        const fallback = picture.locator("img")
+        await expect(fallback).toHaveAttribute("src", /\/_astro\/[^/]+\.webp$/)
+        await expect(fallback).toHaveAttribute("srcset", /\/_astro\/[^,]+\.webp 1x, \/_astro\/[^,]+\.webp 2x/)
+        await expect(fallback).toHaveAttribute("width", "48")
+        await expect(fallback).toHaveAttribute("height", "48")
+        await expect(fallback).toHaveAttribute("loading", "lazy")
+        await expect(fallback).toHaveAttribute("decoding", "async")
+        expect(await fallback.getAttribute("alt")).toBe(await logo.getAttribute("aria-label"))
+      }
+    }
+  })
+  test("renders the three linked logos with generated local images in both locales", async ({ page }) => {
+    for (const route of ["/", "/en/"]) {
+      await page.goto(route)
+      const logos = page.locator(".experience-item a:has(img)")
+      await expect(logos).toHaveCount(3)
+      for (const logo of await logos.all()) {
+        const image = logo.locator("img")
+        await expect(image).toHaveAttribute("src", /\/_astro\/[^/]+\.webp$/)
+        await expect(image).toHaveAttribute("loading", "lazy")
+        await expect(image).toHaveAttribute("decoding", "async")
+        expect(await image.getAttribute("alt")).toBe(await logo.getAttribute("aria-label"))
+        await image.scrollIntoViewIfNeeded()
+        await expect.poll(() => image.evaluate((img) => (img as HTMLImageElement).naturalWidth)).toBeGreaterThan(0)
+      }
     }
   })
 })

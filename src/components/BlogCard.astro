@@ -1,12 +1,14 @@
 ---
+import type { Locale } from "@/lib/i18n"
+
 interface Props {
   id: string
   title: string
   description: string
   publishDate: Date
   tags: string[]
-  locale: 'es' | 'en'
-  contentLocale: 'es' | 'en'
+  locale: Locale
+  contentLocale: Locale
   fallbackLabel?: string
 }
 

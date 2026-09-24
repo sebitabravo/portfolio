@@ -1,6 +1,7 @@
 import { expect, test, type Page } from "@playwright/test"
+import type { Locale } from "../src/lib/i18n"
 
-async function switchLanguage(page: Page, language: "es" | "en") {
+async function switchLanguage(page: Page, language: Locale) {
   await page.locator("#language-toggle").click()
   await page.locator(`#language-menu [data-lang="${language}"]`).click()
 }
@@ -11,6 +12,27 @@ async function expectArticle(page: Page, path: string, heading: string, body: st
   await expect(article.locator("header h1")).toHaveText(heading)
   await expect(article.locator(".prose-custom")).toContainText(body)
 }
+
+test("blog index alternates keep locale-first order and the Spanish default target", async ({ page }) => {
+  for (const [route, expected] of [
+    ["/blog", [
+      { hreflang: "es", href: "https://sebita.dev/blog" },
+      { hreflang: "en", href: "https://sebita.dev/en/blog" },
+      { hreflang: "x-default", href: "https://sebita.dev/blog" },
+    ]],
+    ["/en/blog", [
+      { hreflang: "en", href: "https://sebita.dev/en/blog" },
+      { hreflang: "es", href: "https://sebita.dev/blog" },
+      { hreflang: "x-default", href: "https://sebita.dev/blog" },
+    ]],
+  ] as const) {
+    await page.goto(route)
+    const links = await page.locator('head link[rel="alternate"][hreflang]').evaluateAll((elements) =>
+      elements.map((element) => ({ hreflang: element.getAttribute("hreflang"), href: element.getAttribute("href") })),
+    )
+    expect(links).toEqual(expected)
+  }
+})
 
 test("Spanish translated article switches to the paired English slug on the preview origin", async ({ page }) => {
   await page.goto("/blog/manttoai-ml-iot-random-forest")

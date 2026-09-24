@@ -3,7 +3,7 @@ import { getCollection } from 'astro:content'
 import Layout from "@/layouts/Layout.astro"
 import BlogCard from "@/components/BlogCard.astro"
 import { personalInfo } from "@/lib/data"
-import { getTranslations, type Locale } from "@/lib/i18n"
+import { createStaticAlternates, getTranslations, type Locale } from "@/lib/i18n"
 
 interface Props {
   locale: Locale
@@ -19,17 +19,7 @@ const hasFallbackPosts = isEnglish && posts.some((post) => (post.data.locale ?? 
 const spanishUrl = 'https://sebita.dev/blog'
 const englishUrl = 'https://sebita.dev/en/blog'
 const canonicalUrl = isEnglish ? englishUrl : spanishUrl
-const alternates = isEnglish
-  ? [
-      { hreflang: 'en', href: englishUrl },
-      { hreflang: 'es', href: spanishUrl },
-      { hreflang: 'x-default', href: spanishUrl },
-    ]
-  : [
-      { hreflang: 'es', href: spanishUrl },
-      { hreflang: 'en', href: englishUrl },
-      { hreflang: 'x-default', href: spanishUrl },
-    ]
+const alternates = createStaticAlternates(locale, spanishUrl, englishUrl)
 ---
 
 <Layout

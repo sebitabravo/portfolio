@@ -1,7 +1,7 @@
 ---
 import Layout from "@/layouts/Layout.astro"
 import { personalInfo } from "@/lib/data"
-import { getTranslations, type Locale } from "@/lib/i18n"
+import { createStaticAlternates, getTranslations, type Locale } from "@/lib/i18n"
 import { homeSectionIds } from "@/lib/home-sections"
 import Hero from "@/components/Hero.astro"
 import SignalStrip from "@/components/SignalStrip.astro"
@@ -27,17 +27,7 @@ interface Props {
 const { locale } = Astro.props
 const t = getTranslations(locale)
 const canonicalUrl = locale === 'es' ? 'https://sebita.dev' : 'https://sebita.dev/en/'
-const alternates = locale === 'es'
-  ? [
-      { hreflang: 'es', href: 'https://sebita.dev' },
-      { hreflang: 'en', href: 'https://sebita.dev/en/' },
-      { hreflang: 'x-default', href: 'https://sebita.dev' },
-    ]
-  : [
-      { hreflang: 'en', href: 'https://sebita.dev/en/' },
-      { hreflang: 'es', href: 'https://sebita.dev' },
-      { hreflang: 'x-default', href: 'https://sebita.dev' },
-    ]
+const alternates = createStaticAlternates(locale, 'https://sebita.dev', 'https://sebita.dev/en/')
 const ids = homeSectionIds[locale]
 ---
 

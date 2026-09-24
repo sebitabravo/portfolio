@@ -412,6 +412,39 @@ test.describe("Home Page", () => {
     },
   )
 
+  test("deferred motion startup settles to fallback when observer never activates", async ({ page }) => {
+    await page.addInitScript(() => {
+      const getBoundingClientRect = Element.prototype.getBoundingClientRect
+      Element.prototype.getBoundingClientRect = function () {
+        if (this.matches("[data-portfolio-motion]")) {
+          return new DOMRect(0, window.innerHeight + 400, 100, 100)
+        }
+        return getBoundingClientRect.call(this)
+      }
+
+      const NativeObserver = window.IntersectionObserver
+      window.IntersectionObserver = class extends NativeObserver {
+        constructor(callback: IntersectionObserverCallback, options?: IntersectionObserverInit) {
+          super((entries, observer) => {
+            if (options?.rootMargin !== "200px") return callback(entries, observer)
+            const otherEntries = entries.filter((entry) => !entry.target.matches("[data-portfolio-motion]"))
+            if (otherEntries.length) callback(otherEntries, observer)
+          }, options)
+        }
+
+        observe(target: Element) {
+          if (target.matches("[data-portfolio-motion]")) {
+            ;(window as typeof window & { heroMotionObserved?: boolean }).heroMotionObserved = true
+          }
+          super.observe(target)
+        }
+      }
+    })
+    await page.goto("/")
+    await expect.poll(() => page.evaluate(() => (window as typeof window & { heroMotionObserved?: boolean }).heroMotionObserved)).toBe(true)
+    await expect(page.locator("[data-portfolio-motion]")).toHaveAttribute("data-motion-status", "fallback", { timeout: 5000 })
+  })
+
   test(
     "availability stays a single hero status instead of covering the visual",
     { tag: ["@e2e", "@home", "@HOME-E2E-005"] },

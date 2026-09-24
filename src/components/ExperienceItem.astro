@@ -77,7 +77,7 @@ const dateText = current
         <p class="text-[0.95rem] leading-[1.60]">{description}</p>
 
         {highlights.length > 0 && (
-          <div class="experience-highlights" aria-label={locale === 'es' ? 'Evidencia del trabajo' : 'Work evidence'}>
+          <div class="experience-highlights" aria-label={t.work.evidenceLabel}>
             {highlights.map((highlight) => (
               <div class="experience-highlight">
                 <span>{highlight.label}</span>

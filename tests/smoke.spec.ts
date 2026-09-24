@@ -52,6 +52,7 @@ test.describe("Projects — screenshots con fallback", () => {
     await wenukeCard.scrollIntoViewIfNeeded()
     const img = wenukeCard.locator("img").first()
     await expect(img).toHaveAttribute("src", "/screenshots/wenuke-800.webp")
+    await expect.poll(() => img.evaluate((image) => (image as HTMLImageElement).naturalWidth)).toBeGreaterThan(0)
   })
 
   test("4 project cards renderizados", async ({ page }) => {

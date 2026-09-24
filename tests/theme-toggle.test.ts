@@ -39,11 +39,12 @@ function renderThemeToggle() {
         <span id="current-theme">Sistema</span>
       </button>
       <div id="theme-menu" class="hidden" role="menu">
-        <button class="theme-option" data-theme="light" aria-checked="false">Claro<span class="check-light hidden"></span></button>
-        <button class="theme-option" data-theme="dark" aria-checked="false">Oscuro<span class="check-dark hidden"></span></button>
-        <button class="theme-option" data-theme="system" aria-checked="true">Sistema<span class="check-system hidden"></span></button>
+        <button class="theme-option" role="menuitemradio" data-theme="light" aria-checked="false">Claro<span class="check-light hidden"></span></button>
+        <button class="theme-option" role="menuitemradio" data-theme="dark" aria-checked="false">Oscuro<span class="check-dark hidden"></span></button>
+        <button class="theme-option" role="menuitemradio" data-theme="system" aria-checked="true">Sistema<span class="check-system hidden"></span></button>
       </div>
     </div>
+    <button id="next-control" type="button">Next control</button>
   `
 }
 
@@ -115,6 +116,64 @@ describe("theme toggle lifecycle", () => {
     media.matches = true
     media.emitChange()
     expect(document.documentElement.classList.contains("dark")).toBe(true)
+  })
+
+  it("keeps only the selected theme option in the sequential tab order", () => {
+    initThemeToggle()
+
+    const options = [...document.querySelectorAll<HTMLButtonElement>('#theme-menu [role="menuitemradio"]')]
+    expect(options.map((option) => option.tabIndex)).toEqual([-1, -1, 0])
+    expect(options.filter((option) => option.tabIndex === 0)).toHaveLength(1)
+  })
+
+  it("moves the roving tab stop with arrow-key focus", () => {
+    initThemeToggle()
+
+    const toggle = document.querySelector<HTMLButtonElement>("#theme-toggle")!
+    const menu = document.querySelector<HTMLElement>("#theme-menu")!
+    const options = [...menu.querySelectorAll<HTMLButtonElement>('[role="menuitemradio"]')]
+
+    toggle.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowDown", bubbles: true }))
+    expect(document.activeElement).toBe(options[0])
+    expect(options.map((option) => option.tabIndex)).toEqual([0, -1, -1])
+
+    menu.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowDown", bubbles: true }))
+    expect(document.activeElement).toBe(options[1])
+    expect(options.map((option) => option.tabIndex)).toEqual([-1, 0, -1])
+  })
+
+  it("closes when focus leaves the menu without restoring trigger focus", () => {
+    initThemeToggle()
+
+    const toggle = document.querySelector<HTMLButtonElement>("#theme-toggle")!
+    const menu = document.querySelector<HTMLElement>("#theme-menu")!
+    const option = menu.querySelector<HTMLButtonElement>('[role="menuitemradio"]')!
+    const nextControl = document.querySelector<HTMLButtonElement>("#next-control")!
+
+    toggle.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowDown", bubbles: true }))
+    expect(document.activeElement).toBe(option)
+    nextControl.focus()
+
+    expect(document.activeElement).toBe(nextControl)
+    expect(menu.classList.contains("hidden")).toBe(true)
+    expect(toggle.getAttribute("aria-expanded")).toBe("false")
+  })
+
+  it("restores trigger focus when selecting the already-current theme", () => {
+    initThemeToggle()
+
+    const toggle = document.querySelector<HTMLButtonElement>("#theme-toggle")!
+    const menu = document.querySelector<HTMLElement>("#theme-menu")!
+    const system = menu.querySelector<HTMLButtonElement>('[role="menuitemradio"][data-theme="system"]')!
+
+    toggle.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowDown", bubbles: true }))
+    system.focus()
+    system.click()
+
+    expect(localStorage.getItem("theme")).toBe("system")
+    expect(menu.classList.contains("hidden")).toBe(true)
+    expect(toggle.getAttribute("aria-expanded")).toBe("false")
+    expect(document.activeElement).toBe(toggle)
   })
 
   it("fails closed when the toggle markup is absent", () => {

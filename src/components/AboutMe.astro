@@ -1,6 +1,7 @@
 ---
 import { getAboutMe } from "@/lib/data"
 import { getTranslations, type Locale } from "@/lib/i18n"
+import { homeSectionFragment } from "@/lib/home-sections"
 
 interface Props {
   locale?: Locale
@@ -9,7 +10,7 @@ interface Props {
 const { locale = 'es' } = Astro.props
 const aboutMe = getAboutMe(locale)
 const t = getTranslations(locale)
-const contactId = locale === 'es' ? '#contacto' : '#contact'
+const contactId = homeSectionFragment(locale, 'contact')
 ---
 
 <div class="about-layout">

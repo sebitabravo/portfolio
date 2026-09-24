@@ -1,6 +1,9 @@
 {
   "nav": {
     "home": "Home",
+    "mainNavigation": "Main navigation",
+    "brandHome": "Home — Sebastian Bravo",
+    "breadcrumb": "Breadcrumb",
     "menu": "Menu",
     "experience": "Experience",
     "projects": "Projects",
@@ -41,6 +44,9 @@
     "contactCta": "Let's talk",
     "viewMoreGithub": "More projects on GitHub",
     "featured": "Featured",
+    "cardLabel": "PROJECT",
+    "evidenceLabel": "Project evidence",
+    "technologiesLabel": "Technologies",
     "statusProduction": "In production",
     "statusCodeAvailable": "Code available",
     "statusDevelopment": "In development",
@@ -56,8 +62,16 @@
     "currently": "Currently...",
     "viewMore": "View more →",
     "viewCaseStudy": "Read case study",
+    "evidenceLabel": "Work evidence",
     "timeline": "Between contracts: 2023–2026 · Computer Engineering at INACAP and production personal projects.",
     "noExperience": "Work experience coming soon..."
+  },
+  "contact": {
+    "mailSubject": "Contact from your portfolio",
+    "responseTime": "I'll reply within 24h",
+    "linkedinDescription": "Let's connect professionally",
+    "githubDescription": "Check my open source code",
+    "cvHelper": "Download the CV for the full experience overview."
   },
   "education": {
     "title": "Education",
@@ -83,10 +97,22 @@
     "system": "System"
   },
   "footer": {
+    "professionalProfiles": "Professional profiles",
+    "links": "Footer links",
     "madeWith": "Made with",
     "privacy": "Privacy"
   },
+  "language": {
+    "toggleLabel": "Toggle language (current: {code})"
+  },
+  "error404": {
+    "description": "The page you requested does not exist.",
+    "heading": "This page got lost in deployment",
+    "message": "We could not find what you asked for. Jump back home and keep exploring.",
+    "backHome": "Back to home"
+  },
   "blog": {
+    "postNavigation": "Post navigation",
     "title": "Blog",
     "description": "Articles on full-stack development, IoT, Machine Learning, and lessons from building software in production.",
     "intro": "I write about what I learn while building. Full-stack, IoT, Machine Learning, and production code lessons.",

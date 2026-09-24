@@ -15,28 +15,24 @@ interface Props {
 const { locale = 'es' } = Astro.props
 const t = getTranslations(locale)
 
-const mailSubject = locale === 'es'
-  ? 'Contacto desde tu portfolio'
-  : 'Contact from your portfolio'
-
 const contactLinks = [
   {
-    href: `mailto:${personalInfo.email}?subject=${encodeURIComponent(mailSubject)}`,
+    href: `mailto:${personalInfo.email}?subject=${encodeURIComponent(t.contact.mailSubject)}`,
     label: personalInfo.email,
     icon: 'mail',
-    description: locale === 'es' ? 'Te respondo en menos de 24h' : "I'll reply within 24h",
+    description: t.contact.responseTime,
   },
   {
     href: social.linkedin,
     label: 'LinkedIn',
     icon: 'linkedin',
-    description: locale === 'es' ? 'Conectemos profesionalmente' : "Let's connect professionally",
+    description: t.contact.linkedinDescription,
   },
   {
     href: social.github,
     label: 'GitHub',
     icon: 'github',
-    description: locale === 'es' ? 'Mirá mi código abierto' : 'Check my open source code',
+    description: t.contact.githubDescription,
   },
 ]
 ---
@@ -75,6 +71,6 @@ const contactLinks = [
       <span>{t.hero.downloadCv}</span>
       <span aria-hidden="true">↗</span>
     </a>
-    <p>{locale === 'es' ? 'CV disponible para revisar mi experiencia completa.' : 'Download the CV for the full experience overview.'}</p>
+    <p>{t.contact.cvHelper}</p>
   </div>
 </div>

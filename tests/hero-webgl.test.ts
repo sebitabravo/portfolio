@@ -38,7 +38,12 @@ vi.mock("three/addons/capabilities/WebGL.js", () => ({
 }))
 
 describe("hero WebGL primitives", () => {
+  let matchMediaDescriptor: PropertyDescriptor | undefined
+  let devicePixelRatioDescriptor: PropertyDescriptor | undefined
+
   beforeEach(() => {
+    matchMediaDescriptor = Object.getOwnPropertyDescriptor(window, "matchMedia")
+    devicePixelRatioDescriptor = Object.getOwnPropertyDescriptor(window, "devicePixelRatio")
     vi.clearAllMocks()
     heroHarness.WebGLRenderer.mockImplementation(() => heroHarness.renderer)
   })
@@ -46,6 +51,16 @@ describe("hero WebGL primitives", () => {
   afterEach(() => {
     vi.restoreAllMocks()
     vi.unstubAllGlobals()
+    if (matchMediaDescriptor) {
+      Object.defineProperty(window, "matchMedia", matchMediaDescriptor)
+    } else {
+      Reflect.deleteProperty(window, "matchMedia")
+    }
+    if (devicePixelRatioDescriptor) {
+      Object.defineProperty(window, "devicePixelRatio", devicePixelRatioDescriptor)
+    } else {
+      Reflect.deleteProperty(window, "devicePixelRatio")
+    }
   })
 
   it("generates deterministic constellation positions with the requested shape", () => {
@@ -205,6 +220,121 @@ describe("hero WebGL primitives", () => {
     expect(heroHarness.renderer.forceContextLoss).toHaveBeenCalled()
     expect(canvas.dataset.webglStatus).toBe("disposed")
     expect(cancelAnimationFrame).toHaveBeenCalled()
+  })
+
+  it("ignores queued observer, media and animation callbacks after cleanup", () => {
+    vi.mocked(WebGL.isWebGL2Available).mockReturnValue(true)
+
+    let queuedFrame: FrameRequestCallback | undefined
+    const requestAnimationFrame = vi.fn((callback: FrameRequestCallback) => {
+      queuedFrame = callback
+      return 1
+    })
+    vi.stubGlobal("requestAnimationFrame", requestAnimationFrame)
+    vi.stubGlobal("cancelAnimationFrame", vi.fn())
+
+    let resizeCallback: ResizeObserverCallback | undefined
+    let intersectionCallback: IntersectionObserverCallback | undefined
+    class TestResizeObserver {
+      constructor(callback: ResizeObserverCallback) {
+        resizeCallback = callback
+      }
+      observe = vi.fn()
+      disconnect = vi.fn()
+    }
+    class TestIntersectionObserver {
+      constructor(callback: IntersectionObserverCallback) {
+        intersectionCallback = callback
+      }
+      observe = vi.fn()
+      disconnect = vi.fn()
+    }
+    vi.stubGlobal("ResizeObserver", TestResizeObserver)
+    vi.stubGlobal("IntersectionObserver", TestIntersectionObserver)
+
+    let visibilityCallback: EventListener | undefined
+    const addDocumentListener = document.addEventListener.bind(document)
+    vi.spyOn(document, "addEventListener").mockImplementation((type, listener, options) => {
+      if (type === "visibilitychange") visibilityCallback = listener as EventListener
+      addDocumentListener(type, listener, options)
+    })
+
+    let compactChange: ((event: MediaQueryListEvent) => void) | undefined
+    vi.stubGlobal("matchMedia", vi.fn(() => ({
+      matches: false,
+      addEventListener: vi.fn((_type: string, listener: EventListenerOrEventListenerObject) => {
+        compactChange = listener as (event: MediaQueryListEvent) => void
+      }),
+      removeEventListener: vi.fn(),
+    })))
+
+    const root = document.createElement("section")
+    const canvas = document.createElement("canvas")
+    root.append(canvas)
+    const cleanup = createHeroScene(canvas, root as Parameters<typeof createHeroScene>[1])
+    expect(cleanup).toEqual(expect.any(Function))
+    expect(resizeCallback).toEqual(expect.any(Function))
+    expect(compactChange).toEqual(expect.any(Function))
+    expect(intersectionCallback).toEqual(expect.any(Function))
+    expect(visibilityCallback).toEqual(expect.any(Function))
+    expect(queuedFrame).toEqual(expect.any(Function))
+
+    const savedFrame = queuedFrame
+    cleanup?.()
+    const sizeCalls = heroHarness.renderer.setSize.mock.calls.length
+    const renderCalls = heroHarness.renderer.render.mock.calls.length
+    const frameCalls = requestAnimationFrame.mock.calls.length
+
+    resizeCallback?.([] as ResizeObserverEntry[], {} as ResizeObserver)
+    compactChange?.({ matches: true } as MediaQueryListEvent)
+    intersectionCallback?.(
+      [{ isIntersecting: true } as IntersectionObserverEntry],
+      {} as IntersectionObserver,
+    )
+    visibilityCallback?.(new Event("visibilitychange"))
+    savedFrame?.(64)
+
+    expect(heroHarness.renderer.setSize).toHaveBeenCalledTimes(sizeCalls)
+    expect(heroHarness.renderer.render).toHaveBeenCalledTimes(renderCalls)
+    expect(requestAnimationFrame).toHaveBeenCalledTimes(frameCalls)
+  })
+
+  it("ignores a queued window resize callback after cleanup without ResizeObserver", () => {
+    vi.mocked(WebGL.isWebGL2Available).mockReturnValue(true)
+    vi.stubGlobal("ResizeObserver", undefined)
+    vi.stubGlobal("IntersectionObserver", undefined)
+    vi.stubGlobal("matchMedia", vi.fn(() => ({
+      matches: false,
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+    })))
+    const requestAnimationFrame = vi.fn(() => 1)
+    vi.stubGlobal("requestAnimationFrame", requestAnimationFrame)
+    vi.stubGlobal("cancelAnimationFrame", vi.fn())
+
+    let resizeCallback: EventListener | undefined
+    const addWindowListener = window.addEventListener.bind(window)
+    vi.spyOn(window, "addEventListener").mockImplementation((type, listener, options) => {
+      if (type === "resize") resizeCallback = listener as EventListener
+      addWindowListener(type, listener, options)
+    })
+
+    const root = document.createElement("section")
+    const canvas = document.createElement("canvas")
+    root.append(canvas)
+    const cleanup = createHeroScene(canvas, root as Parameters<typeof createHeroScene>[1])
+    expect(cleanup).toEqual(expect.any(Function))
+    expect(resizeCallback).toEqual(expect.any(Function))
+
+    const sizeCalls = heroHarness.renderer.setSize.mock.calls.length
+    const renderCalls = heroHarness.renderer.render.mock.calls.length
+    const frameCalls = requestAnimationFrame.mock.calls.length
+    cleanup?.()
+    resizeCallback?.(new Event("resize"))
+
+    expect(heroHarness.renderer.setSize).toHaveBeenCalledTimes(sizeCalls)
+    expect(heroHarness.renderer.render).toHaveBeenCalledTimes(renderCalls)
+    expect(requestAnimationFrame).toHaveBeenCalledTimes(frameCalls)
   })
 
   it("falls back when renderer initialization throws", () => {

@@ -92,7 +92,7 @@ const { id, triggerLabel, class: className } = Astro.props
         }
 
         if (!target.closest("[data-dropdown-root]")) {
-          closeAllDropdowns()
+          closeAllDropdowns(false)
         }
       }, { signal })
 

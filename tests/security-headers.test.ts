@@ -127,6 +127,43 @@ describe("Vercel security-header contract", () => {
 });
 
 describe("executable inline script parity", () => {
+  it("counts only browser-executable script types, honoring the first type attribute", () => {
+    const html = [
+      "<script>classic()</script>",
+      '<script type="">emptyType()</script>',
+      '<script type="module">module()</script>',
+      '<script type="text/javascript">textJs()</script>',
+      '<script TYPE="APPLICATION/JAVASCRIPT; charset=utf-8">applicationJs()</script>',
+      '<script type="application/json">json()</script>',
+      '<script type="text/plain">plainText()</script>',
+      '<script type="importmap">importMap()</script>',
+      '<script type="speculationrules">speculationRules()</script>',
+      '<script type="application/ld+json">jsonLd()</script>',
+      '<script type="application/json" type="module">firstData()</script>',
+      '<script type="text/plain; charset=utf-8">parameterizedData()</script>',
+      '<script type="module" type="application/json">firstModule()</script>',
+      '<script type type="application/json">firstEmpty()</script>',
+    ].join("");
+    const expected = [
+      "classic()",
+      "emptyType()",
+      "module()",
+      "textJs()",
+      "applicationJs()",
+      "firstModule()",
+      "firstEmpty()",
+    ];
+
+    expect(extractExecutableScriptBodies(html)).toEqual(expected);
+    expect(
+      compareCspHashParity(new Set(expected.map(hashScript)), [html]),
+    ).toMatchObject({
+      executableScripts: expected.length,
+      missing: [],
+      unused: [],
+    });
+  });
+
   it("hashes classic and module bodies once while excluding external and JSON-LD scripts", () => {
     const html = `<script>classic()</script><script type="module">module()</script><script>classic()</script><script SRC="bundle.js"></script><script TYPE="APPLICATION/LD+JSON">{}</script>`;
     const bodies = extractExecutableScriptBodies(html);
@@ -144,6 +181,48 @@ describe("executable inline script parity", () => {
     expect(parity.generated).toEqual(
       [hashScript("classic()"), hashScript("module()")].sort(),
     );
+  });
+
+  it("only excludes scripts with a real src attribute", () => {
+    const html = `<script data-src="bundle.js" data-note="src=decoy.js" data-mode=src=other.js>inline()</script><script SRC = "external.js">external()</script>`;
+
+    expect(extractExecutableScriptBodies(html)).toEqual(["inline()"]);
+  });
+
+  it("skips single-quoted and unquoted attribute values before reading src", () => {
+    const html = `<script data-note='src=quoted.js' data-value=src=unquoted.js>inline()</script><script data-value=src=decoy.js src=actual.js>external()</script>`;
+
+    expect(extractExecutableScriptBodies(html)).toEqual(["inline()"]);
+  });
+
+  it("keeps inline scripts when a quoted > precedes a decoy src", () => {
+    const html = `<script data-note="quoted > src=decoy.js">inline()</script>`;
+
+    expect(extractExecutableScriptBodies(html)).toEqual(["inline()"]);
+  });
+
+  it("excludes external scripts when real SRC follows a quoted >", () => {
+    const html = `<script data-note="quoted > value" SRC="bundle.js">external()</script><script>inline()</script>`;
+
+    expect(extractExecutableScriptBodies(html)).toEqual(["inline()"]);
+  });
+
+  it("keeps executable scripts with only a data-type JSON-LD value", () => {
+    const html = `<script data-type="application/ld+json">inline()</script>`;
+
+    expect(extractExecutableScriptBodies(html)).toEqual(["inline()"]);
+  });
+
+  it("excludes scripts with an actual JSON-LD type attribute", () => {
+    const html = `<script type="application/ld+json">{"@context":"https://schema.org"}</script><script>inline()</script>`;
+
+    expect(extractExecutableScriptBodies(html)).toEqual(["inline()"]);
+  });
+
+  it("distinguishes single-quoted type decoys from an unquoted real type", () => {
+    const html = `<script data-note='quoted > type=application/ld+json' data-type=application/ld+json>inline()</script><script data-note='quoted > value' TYPE = application/ld+json>json()</script>`;
+
+    expect(extractExecutableScriptBodies(html)).toEqual(["inline()"]);
   });
 
   it("preserves raw whitespace and reports missing and unused hashes separately", () => {

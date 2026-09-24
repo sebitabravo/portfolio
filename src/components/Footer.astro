@@ -2,6 +2,7 @@
 // Footer Component (Superhuman-inspired)
 import { personalInfo, social } from "@/lib/data"
 import { getTranslations, type Locale } from "@/lib/i18n"
+import { homeSectionFragment } from "@/lib/home-sections"
 import GitHubIcon from "./icons/GitHub.astro"
 import LinkedInIcon from "./icons/LinkedIn.astro"
 
@@ -12,8 +13,9 @@ interface Props {
 const { locale = 'es' } = Astro.props
 const t = getTranslations(locale)
 const currentYear = new Date().getFullYear()
-const aboutUrl = locale === 'es' ? '/#sobre-mi' : '/en/#about'
-const contactUrl = locale === 'es' ? '/#contacto' : '/en/#contact'
+const homeUrl = locale === 'es' ? '/' : '/en/'
+const aboutUrl = `${homeUrl}${homeSectionFragment(locale, 'about')}`
+const contactUrl = `${homeUrl}${homeSectionFragment(locale, 'contact')}`
 const blogUrl = locale === 'es' ? '/blog' : '/en/blog'
 const privacyUrl = locale === 'es' ? '/privacy' : '/en/privacy'
 ---
@@ -26,7 +28,7 @@ const privacyUrl = locale === 'es' ? '/privacy' : '/en/privacy'
      </div>
 
     <div class="flex flex-wrap items-center gap-4">
-      <nav aria-label={locale === 'es' ? 'Perfiles profesionales' : 'Professional profiles'}>
+      <nav aria-label={t.footer.professionalProfiles}>
         <ul class="footer-socials flex items-center gap-2">
           <li>
             <a
@@ -64,7 +66,7 @@ const privacyUrl = locale === 'es' ? '/privacy' : '/en/privacy'
 
       <span class="text-[hsl(var(--caption-color))]/30" aria-hidden="true">&middot;</span>
 
-      <nav aria-label={locale === 'es' ? 'Enlaces del pie' : 'Footer links'}>
+      <nav aria-label={t.footer.links}>
         <ul class="flex items-center gap-4">
           <li>
             <a href={blogUrl} class="text-[hsl(var(--caption-color))] hover:text-foreground transition-colors focus-ring rounded">{t.nav.blog}</a>

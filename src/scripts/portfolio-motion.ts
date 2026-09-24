@@ -35,19 +35,30 @@ export function setupPortfolioMotion(): void {
 	const motionRoot = root;
 	const heroCanvas = canvas;
 
+	// The inline 3-second fallback owns startup only until this module takes over.
+	root.dispatchEvent(new Event("portfolio-motion:claimed"));
+
 	let matchMediaCleanup: Cleanup | null = null;
 	let activationObserver: IntersectionObserver | null = null;
 	let disposed = false;
 	let loadingStarted = false;
 	let fallbackTimer: number | null = null;
+	let activationTimedOut = false;
 
 	root.dataset.motionStatus = "loading";
 	canvas.dataset.webglStatus = "pending";
+
+	const checkProximity = () => {
+		const { top, bottom } = root.getBoundingClientRect();
+		if (top <= window.innerHeight + 200 && bottom >= -200) startLoading();
+	};
 
 	const stopDeferredStartup = () => {
 		root.removeEventListener("pointerenter", startLoading);
 		root.removeEventListener("focusin", startLoading);
 		root.removeEventListener("touchstart", startLoading);
+		window.removeEventListener("scroll", checkProximity);
+		window.removeEventListener("resize", checkProximity);
 		activationObserver?.disconnect();
 		activationObserver = null;
 	};
@@ -61,8 +72,9 @@ export function setupPortfolioMotion(): void {
 		}
 		matchMediaCleanup?.();
 		matchMediaCleanup = null;
-		if (sequence === setupSequence) {
-			root.dataset.motionStatus = "idle";
+		root.dataset.motionStatus = "idle";
+		if (canvas.dataset.webglStatus === "pending") {
+			canvas.dataset.webglStatus = "idle";
 		}
 	};
 
@@ -72,7 +84,7 @@ export function setupPortfolioMotion(): void {
 			canLoadWebGLEnhancement();
 		void loadMotionLayer(shouldLoadWebGL)
 			.then(({ gsap, ScrollTrigger, webgl }) => {
-				if (disposed || sequence !== setupSequence) return;
+				if (disposed || sequence !== setupSequence || activationTimedOut) return;
 				if (fallbackTimer !== null) {
 					window.clearTimeout(fallbackTimer);
 					fallbackTimer = null;
@@ -87,6 +99,7 @@ export function setupPortfolioMotion(): void {
 						finePointer: "(pointer: fine)",
 					},
 					(context) => {
+						if (disposed || sequence !== setupSequence) return undefined;
 						const conditions = context.conditions as {
 							reduceMotion?: boolean;
 							finePointer?: boolean;
@@ -100,11 +113,8 @@ export function setupPortfolioMotion(): void {
 
 						root.dataset.motionStatus = "active";
 						let sceneCleanup: Cleanup | null = null;
-						let callbackDisposed = false;
 						if (webgl) {
-							if (!callbackDisposed && !disposed && sequence === setupSequence) {
-								sceneCleanup = webgl.createHeroScene(canvas, root);
-							}
+							sceneCleanup = webgl.createHeroScene(canvas, root);
 						} else {
 							canvas.dataset.webglStatus = "fallback";
 						}
@@ -114,7 +124,6 @@ export function setupPortfolioMotion(): void {
 						const scrollCleanup = createScrollMotion(gsap, ScrollTrigger);
 
 						return () => {
-							callbackDisposed = true;
 							scrollCleanup?.();
 							interactionCleanup?.();
 							sceneCleanup?.();
@@ -125,7 +134,7 @@ export function setupPortfolioMotion(): void {
 				matchMediaCleanup = () => media.revert();
 			})
 			.catch(() => {
-				if (disposed || sequence !== setupSequence) return;
+				if (disposed || sequence !== setupSequence || activationTimedOut) return;
 				if (fallbackTimer !== null) {
 					window.clearTimeout(fallbackTimer);
 					fallbackTimer = null;
@@ -145,6 +154,7 @@ export function setupPortfolioMotion(): void {
 		fallbackTimer = window.setTimeout(() => {
 			fallbackTimer = null;
 			if (disposed || sequence !== setupSequence) return;
+			activationTimedOut = true;
 			if (motionRoot.dataset.motionStatus === "loading")
 				motionRoot.dataset.motionStatus = "fallback";
 			if (heroCanvas.dataset.webglStatus === "pending")
@@ -171,6 +181,12 @@ export function setupPortfolioMotion(): void {
 			{ rootMargin: "200px" },
 		);
 		activationObserver.observe(root);
+	} else {
+		checkProximity();
+		if (!loadingStarted) {
+			window.addEventListener("scroll", checkProximity, { passive: true });
+			window.addEventListener("resize", checkProximity);
+		}
 	}
 }
 

@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test"
-import { getProjects } from "../src/lib/data"
+import { getProjects } from "../src/lib/data/projects"
 
 for (const { locale, dataLocale, home, blogPrefix } of [
   { locale: "español", dataLocale: "es", home: "/", blogPrefix: "/blog/" },

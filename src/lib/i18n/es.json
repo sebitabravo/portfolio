@@ -80,6 +80,7 @@
   },
   "certifications": {
     "title": "Certificaciones",
+    "carouselLabel": "Carrusel de certificaciones",
     "professional": "Profesional",
     "academic": "Académico",
     "previous": "Anterior",

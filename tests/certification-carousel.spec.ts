@@ -1,14 +1,15 @@
 import { expect, test } from "@playwright/test"
 
-for (const { path, label } of [
-  { path: "/", label: "Certificaciones" },
-  { path: "/en/", label: "Certifications" },
+for (const { path, sectionId, sectionName, carouselName } of [
+  { path: "/", sectionId: "certificaciones", sectionName: "Certificaciones", carouselName: "Carrusel de certificaciones" },
+  { path: "/en/", sectionId: "certifications", sectionName: "Certifications", carouselName: "Certifications carousel" },
 ]) {
   test(`accessible named region for ${path}`, async ({ page }) => {
     await page.goto(path)
 
+    await expect(page.locator(`section#${sectionId}`).and(page.getByRole("region", { name: sectionName, exact: true }))).toBeVisible()
     const carousel = page.locator("#certCarouselContainer")
-    await expect(carousel.and(page.getByRole("region", { name: label, exact: true }))).toBeVisible()
+    await expect(carousel.and(page.getByRole("region", { name: carouselName, exact: true }))).toBeVisible()
     await expect(carousel.getByRole("button")).toHaveCount(2)
     await expect(carousel.locator(".cert-placeholder")).toHaveCount(10)
     await expect(carousel.locator(".cert-logo")).toHaveCount(0)

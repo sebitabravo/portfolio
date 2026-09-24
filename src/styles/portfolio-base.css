@@ -1,4 +1,5 @@
-@import "tailwindcss";
+/* Scan only src/: docs, task notes and tests quote class names that must not ship as CSS. */
+@import "tailwindcss" source("..");
 
 /* Tailwind v4 reads the theme from CSS. Keep the manual toggle authoritative. */
 @custom-variant dark (&:where(.dark, .dark *));

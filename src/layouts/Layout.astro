@@ -11,6 +11,7 @@ import Header from "@/components/Header.astro"
 import { siteConfig } from "@/lib/config"
 import { personalInfo, social } from "@/lib/data"
 import type { Locale } from "@/lib/i18n"
+import { getWebPageSchema } from "@/lib/seo-structured-data"
 import perfilImage from "@/assets/perfil.jpeg"
 
 interface Props {
@@ -126,13 +127,7 @@ const jsonLd = {
       inLanguage: locale,
       description: description,
     },
-    ...(!noindex ? [{
-      "@type": "WebPage",
-      name: title,
-      description: description,
-      url: canonical,
-      inLanguage: locale,
-    }] : []),
+    ...getWebPageSchema(noindex, { title, description, canonical, locale }),
   ],
 }
 const jsonLdString = JSON.stringify(jsonLd).replace(/</g, "\\u003c")

@@ -1,7 +1,9 @@
+import type { Locale } from './i18n'
+
 /**
  * Format a date to a readable string
  */
-export function formatDate(date: Date, locale: 'es' | 'en' = 'es'): string {
+export function formatDate(date: Date, locale: Locale = 'es'): string {
   const localeCode = locale === 'es' ? 'es-ES' : 'en-US'
   return date.toLocaleDateString(localeCode, { year: "numeric", month: "long" })
 }

@@ -24,10 +24,13 @@ test.describe("Judgment Day regression contracts", () => {
     await expect(page.locator("#language-toggle")).toHaveAttribute("aria-controls", "language-menu")
     await expect(page.locator("#theme-toggle")).toHaveAttribute("aria-controls", "theme-menu")
     await expect(page.locator(".project-card-featured")).toHaveCount(1)
-    await expect(page.locator("img[data-img-fallback]").first()).toHaveAttribute(
-      "srcset",
-      /-800\.webp 800w/,
-    )
+    const projectPicture = page.locator(".project-card-featured picture")
+    const avifSource = projectPicture.locator('source[type="image/avif"]')
+    const webpFallback = projectPicture.locator("img[data-img-fallback]")
+    await expect(avifSource).toHaveAttribute("srcset", /\/_astro\/[^,\s]+\.avif 800w(?:,|$)/)
+    await expect(avifSource).toHaveAttribute("srcset", /\/_astro\/[^,\s]+\.avif 1600w(?:,|$)/)
+    await expect(webpFallback).toHaveAttribute("srcset", /\/_astro\/[^,\s]+\.webp 800w(?:,|$)/)
+    await expect(webpFallback).toHaveAttribute("srcset", /\/_astro\/[^,\s]+\.webp 1600w(?:,|$)/)
   })
 
   test("English blog and project case studies never render the empty state", async ({ page }) => {

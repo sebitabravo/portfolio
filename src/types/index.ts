@@ -1,3 +1,5 @@
+import type { ImageMetadata } from "astro"
+
 export interface SiteConfig {
   name: string
   title: string
@@ -8,7 +10,7 @@ export interface CarouselCertification {
   data: {
     name: string
     organization: string
-    logo?: string
+    logo?: ImageMetadata
     pdfUrl?: string
     category?: 'professional' | 'academic'
   }

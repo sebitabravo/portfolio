@@ -21,13 +21,14 @@ const spanishUrl = `https://sebita.dev/blog/${post.id}`
 const englishUrl = `https://sebita.dev/en/blog/${post.id}`
 const canonicalUrl = isEnglish && !isFallback ? englishUrl : spanishUrl
 const alternates = createBlogAlternates({ locale, postId: post.id, translationId, isFallback })
-const imageUrl = getBlogImageUrl(post.data.image)
+const optimizedImageUrl = await getBlogImageUrl(post.data.image)
+const imageUrl = optimizedImageUrl && new URL(optimizedImageUrl, "https://sebita.dev").toString()
 const articleJsonLd = JSON.stringify({
   "@context": "https://schema.org",
   "@type": "Article",
   headline: post.data.title,
   description: post.data.description,
-  ...(imageUrl && { image: new URL(imageUrl, "https://sebita.dev").toString() }),
+  ...(imageUrl && { image: imageUrl }),
   datePublished: post.data.publishDate.toISOString(),
   author: {
     "@type": "Person",

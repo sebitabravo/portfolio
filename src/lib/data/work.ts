@@ -1,4 +1,7 @@
 import type { Locale } from "@/lib/i18n"
+import mimasoft from "../../assets/experience/mimasoft.webp"
+import temutel from "../../assets/experience/temutel.webp"
+import telsur from "../../assets/experience/telsur.webp"
 
 // EXPERIENCIA LABORAL
 // ============================================
@@ -22,7 +25,7 @@ const workExperienceData = {
       ],
       url: "/blog/mimasoft-landing-wordpress-mu-plugin",
       logos: [
-        { src: "/experience/mimasoft.webp", alt: "MIMASOFT", url: "https://www.mimasoft.com" },
+        { src: mimasoft, alt: "MIMASOFT", url: "https://www.mimasoft.com" },
       ],
     },
     {
@@ -36,8 +39,8 @@ const workExperienceData = {
       employmentType: "Contrato temporal",
       skills: ["Mantenimiento de Redes", "Instalación de Equipos", "Configuración de Routers", "Soporte Técnico"],
       logos: [
-        { src: "/experience/temutel.webp", alt: "Temutel Telecomunicaciones", url: "https://www.temutel.cl" },
-        { src: "/experience/telsur.webp", alt: "Telsur GTD", url: "https://www.telsur.cl" },
+        { src: temutel, alt: "Temutel Telecomunicaciones", url: "https://www.temutel.cl" },
+        { src: telsur, alt: "Telsur GTD", url: "https://www.telsur.cl" },
       ],
     }
   ],
@@ -59,7 +62,7 @@ const workExperienceData = {
       ],
       url: "/en/blog/mimasoft-landing-wordpress-mu-plugin",
       logos: [
-        { src: "/experience/mimasoft.webp", alt: "MIMASOFT", url: "https://www.mimasoft.com" },
+        { src: mimasoft, alt: "MIMASOFT", url: "https://www.mimasoft.com" },
       ],
     },
     {
@@ -73,8 +76,8 @@ const workExperienceData = {
       employmentType: "Temporary contract",
       skills: ["Network Maintenance", "Equipment Installation", "Router Configuration", "Technical Support"],
       logos: [
-        { src: "/experience/temutel.webp", alt: "Temutel Telecomunicaciones", url: "https://www.temutel.cl" },
-        { src: "/experience/telsur.webp", alt: "Telsur GTD", url: "https://www.telsur.cl" },
+        { src: temutel, alt: "Temutel Telecomunicaciones", url: "https://www.temutel.cl" },
+        { src: telsur, alt: "Telsur GTD", url: "https://www.telsur.cl" },
       ],
     }
   ]

@@ -1,5 +1,6 @@
 ---
 // Experience Item — Superhuman clean timeline with lavender accent
+import { Picture } from "astro:assets"
 import { formatDate } from "@/lib/utils"
 import { getTranslations, type Locale } from "@/lib/i18n"
 import type { ExperienceLogo } from "@/lib/data"
@@ -57,11 +58,15 @@ const dateText = current
                 aria-label={logo.alt}
                 class="group flex size-14 items-center justify-center rounded-lg border border-[hsl(var(--parchment))] bg-[hsl(var(--card))] p-2 transition-opacity duration-200 hover:opacity-100 opacity-75"
               >
-                <img
+                <Picture
                   src={logo.src}
+                  formats={["avif"]}
+                  fallbackFormat="webp"
                   alt={logo.alt}
                   width={48}
                   height={48}
+                  densities={[1, 2]}
+                  fit="contain"
                   loading="lazy"
                   decoding="async"
                   class="size-full object-contain"

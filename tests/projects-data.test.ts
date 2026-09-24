@@ -1,6 +1,6 @@
-import { existsSync, statSync } from "node:fs"
 import { describe, expect, it } from "vitest"
 import { getProjects } from "../src/lib/data"
+import { getProjectScreenshot } from "../src/lib/portfolio-images"
 
 describe("projects data", () => {
   it("keeps Spanish and English project slugs aligned", () => {
@@ -88,16 +88,12 @@ describe("projects data", () => {
     }
   })
 
-  it("keeps every project's responsive screenshots and plain fallback locally available", () => {
+  it("registers a local screenshot for every project slug in both locales", () => {
     for (const locale of ["es", "en"] as const) {
       for (const { slug } of getProjects(locale)) {
-        for (const variant of ["-800", "-1600", ""]) {
-          const asset = new URL(`../public/screenshots/${slug}${variant}.webp`, import.meta.url)
-          const filename = `${slug}${variant}.webp (${locale})`
-          expect(existsSync(asset), `Missing screenshot ${filename}`).toBe(true)
-          expect(statSync(asset).size, `Empty screenshot ${filename}`).toBeGreaterThan(0)
-        }
+        expect(getProjectScreenshot(slug), `Missing screenshot for ${slug} (${locale})`).toBeDefined()
       }
     }
+    expect(getProjectScreenshot("not-a-project")).toBeUndefined()
   })
 })

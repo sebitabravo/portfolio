@@ -10,6 +10,8 @@ for (const { path, label } of [
     const carousel = page.locator("#certCarouselContainer")
     await expect(carousel.and(page.getByRole("region", { name: label, exact: true }))).toBeVisible()
     await expect(carousel.getByRole("button")).toHaveCount(2)
+    await expect(carousel.locator(".cert-placeholder")).toHaveCount(10)
+    await expect(carousel.locator(".cert-logo")).toHaveCount(0)
   })
 }
 

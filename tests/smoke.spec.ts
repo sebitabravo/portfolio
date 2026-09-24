@@ -89,6 +89,7 @@ test.describe("Projects — screenshots con fallback", () => {
   })
 
   test("all localized project cards render Astro-generated responsive images", async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: "reduce" })
     for (const route of ["/", "/en/"]) {
       await page.goto(route)
       for (const slug of ["vulcania", "wenuke", "manttoai", "rapido-sur"]) {
@@ -97,6 +98,7 @@ test.describe("Projects — screenshots con fallback", () => {
         await expect(image).toHaveAttribute("srcset", /800w.*1600w/)
         await expect(image).toHaveAttribute("sizes", "(max-width: 767px) 100vw, (max-width: 1280px) 50vw, 800px")
         await expect(image).toHaveAttribute("alt", /screenshot$/)
+        await expect(image).toHaveAttribute("loading", "lazy")
         await image.scrollIntoViewIfNeeded()
         await expect.poll(() => image.evaluate((img) => (img as HTMLImageElement).naturalWidth)).toBeGreaterThan(0)
       }

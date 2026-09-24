@@ -56,17 +56,17 @@ El scheduler es un loop `asyncio` que cada 6 horas evalúa las reglas por cultiv
 
 <div class="grid gap-4 sm:grid-cols-2 not-prose my-6">
 
-<div class="rounded-xl border border-[hsl(var(--parchment))] bg-[hsl(var(--card))] p-5">
+<div class="rounded-xl border border-parchment bg-card p-5">
   <h3 class="font-mono text-sm font-semibold text-foreground mb-2">Formato de mensajes WhatsApp</h3>
   <p class="text-sm text-foreground/75 leading-relaxed">WhatsApp limita mensajes a 4096 caracteres y no soporta markdown completo. Diseñamos respuestas concisas con formato simple (emojis, saltos de línea, negritas limitadas) priorizando información accionable sobre exhaustividad. Un agricultor no necesita el forecast completo de 7 días — necesita saber si hay helada mañana.</p>
 </div>
 
-<div class="rounded-xl border border-[hsl(var(--parchment))] bg-[hsl(var(--card))] p-5">
+<div class="rounded-xl border border-parchment bg-card p-5">
   <h3 class="font-mono text-sm font-semibold text-foreground mb-2">Latencia del LLM en conversación</h3>
   <p class="text-sm text-foreground/75 leading-relaxed">Llama 3.1 70B en Groq tarda 2-4 segundos en generar respuestas. Para no hacer esperar al agricultor, implementamos streaming de respuesta con actualizaciones parciales y un mensaje de "escribiendo..." vía WhatsApp typing indicator.</p>
 </div>
 
-<div class="rounded-xl border border-[hsl(var(--parchment))] bg-[hsl(var(--card))] p-5">
+<div class="rounded-xl border border-parchment bg-card p-5">
   <h3 class="font-mono text-sm font-semibold text-foreground mb-2">Terminología agrícola en español chileno</h3>
   <p class="text-sm text-foreground/75 leading-relaxed">Los LLMs genéricos no conocen bien términos agrícolas chilenos ("rulo" para secano, "chacra", "media sombra"). Fine-tuneamos prompts con glosario de términos y ejemplos de conversaciones reales de agricultores. "Harta helada pa' mañana, cubra las papas" conecta más que "Alta probabilidad de heladas".</p>
 </div>
@@ -75,7 +75,7 @@ El scheduler es un loop `asyncio` que cada 6 horas evalúa las reglas por cultiv
 
 ## Arquitectura
 
-<div class="not-prose my-6 rounded-xl border border-[hsl(var(--parchment))] bg-[hsl(var(--muted))] p-5 font-mono text-sm leading-relaxed text-foreground/85">
+<div class="not-prose my-6 rounded-xl border border-parchment bg-muted p-5 font-mono text-sm leading-relaxed text-foreground/85">
   <p class="mb-1"><strong>FastAPI (webhook handler + REST API)</strong> → Twilio WhatsApp Business API → Groq LLM (Llama 3.1 70B) → Open-Meteo API (datos climáticos) → Turso DB (libsql, edge).</p>
   <p class="mb-1">APScheduler para alertas programadas cada 6 horas.</p>
   <p class="mb-1">Fallback offline con reglas expertas si no hay API key de Groq disponible.</p>

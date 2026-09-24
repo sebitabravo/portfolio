@@ -33,18 +33,18 @@ const dateText = current
     : formatDate(startDate, locale)
 ---
 
-<div data-animate data-animate-delay={String(index + 1)} class:list={["experience-item relative pl-8 pb-8 before:absolute before:left-0 before:block before:h-full before:border-l before:border-[hsl(var(--parchment))] before:content-['']", { "experience-item-secondary": index > 0 }]}>
+<div data-animate data-animate-delay={String(index + 1)} class:list={["experience-item relative pl-8 pb-8 before:absolute before:left-0 before:block before:h-full before:border-l before:border-parchment before:content-['']", { "experience-item-secondary": index > 0 }]}>
   <!-- Timeline dot — Lavender glow -->
-  <span class="absolute -left-[5px] top-1 size-[10px] rounded-full bg-[hsl(var(--primary))] ring-4 ring-[hsl(var(--background))]"></span>
+  <span class="absolute -left-[5px] top-1 size-[10px] rounded-full bg-primary ring-4 ring-background"></span>
 
-  <div class="experience-item-card section-card rounded-2xl border border-[hsl(var(--parchment))] bg-[hsl(var(--card))]">
+  <div class="experience-item-card section-card rounded-2xl border border-parchment bg-card">
     <div class="grid md:grid-cols-5 md:gap-8">
       <!-- Meta info -->
       <div class="md:col-span-2 mb-4 md:mb-0">
         <h3 class="font-semibold text-foreground">{position}</h3>
-        <h4 class="text-[hsl(var(--caption-color))] mt-0.5">{company}</h4>
-        <time class="text-xs text-[hsl(var(--caption-color))] mt-2 block">{dateText}</time>
-        {location && <p class="text-xs leading-[1.60] text-[hsl(var(--caption-color))]">{location}</p>}
+        <h4 class="text-caption-color mt-0.5">{company}</h4>
+        <time class="text-xs text-caption-color mt-2 block">{dateText}</time>
+        {location && <p class="text-xs leading-[1.60] text-caption-color">{location}</p>}
         {employmentType && <p class="experience-employment-type">{employmentType}</p>}
 
         {logos && logos.length > 0 && (
@@ -56,7 +56,7 @@ const dateText = current
                 rel="noopener noreferrer"
                 title={logo.alt}
                 aria-label={logo.alt}
-                class="group flex size-14 items-center justify-center rounded-lg border border-[hsl(var(--parchment))] bg-[hsl(var(--card))] p-2 transition-opacity duration-200 hover:opacity-100 opacity-75"
+                class="group flex size-14 items-center justify-center rounded-lg border border-parchment bg-card p-2 transition-opacity duration-200 hover:opacity-100 opacity-75"
               >
                 <Picture
                   src={logo.src}

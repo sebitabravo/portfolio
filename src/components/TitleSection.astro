@@ -18,7 +18,7 @@ const sectionTotal = String(total).padStart(2, '0')
     <span class="section-heading-index">{sectionIndex} / {sectionTotal}</span>
     <span>SEBITA / {currentYear}</span>
   </div>
-  <h2 id={id} class="flex items-center gap-x-3 text-foreground [&>svg]:text-[hsl(var(--primary))]">
+  <h2 id={id} class="flex items-center gap-x-3 text-foreground [&>svg]:text-primary">
     <slot />
   </h2>
   <div class="section-heading-rule mt-4" aria-hidden="true"><span></span></div>

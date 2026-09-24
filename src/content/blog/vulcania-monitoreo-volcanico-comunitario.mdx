@@ -48,17 +48,17 @@ Las notificaciones de navegador usan `document.visibilityState`: solo disparan c
 
 <div class="grid gap-4 sm:grid-cols-2 not-prose my-6">
 
-<div class="rounded-xl border border-[hsl(var(--parchment))] bg-[hsl(var(--card))] p-5">
+<div class="rounded-xl border border-parchment bg-card p-5">
   <h3 class="font-mono text-sm font-semibold text-foreground mb-2">Sincronización en tiempo real multi-usuario</h3>
   <p class="text-sm text-foreground/75 leading-relaxed">El chat y las alertas debían reflejarse instantáneamente para todos los usuarios. Supabase Realtime resolvió el canal de broadcast, pero tuvimos que manejar race conditions en mensajes concurrentes con ordenamiento por timestamp del servidor.</p>
 </div>
 
-<div class="rounded-xl border border-[hsl(var(--parchment))] bg-[hsl(var(--card))] p-5">
+<div class="rounded-xl border border-parchment bg-card p-5">
   <h3 class="font-mono text-sm font-semibold text-foreground mb-2">Diseño mobile-first para uso en campo</h3>
   <p class="text-sm text-foreground/75 leading-relaxed">Los usuarios acceden principalmente desde smartphones en zonas con señal irregular. La PWA debía funcionar offline con datos cacheados y sincronizar al reconectar. La arquitectura dual demo/completo fue la clave: cualquiera clona el repo, hace <code>pnpm dev</code> y ve la experiencia completa en 30 segundos.</p>
 </div>
 
-<div class="rounded-xl border border-[hsl(var(--parchment))] bg-[hsl(var(--card))] p-5">
+<div class="rounded-xl border border-parchment bg-card p-5">
   <h3 class="font-mono text-sm font-semibold text-foreground mb-2">Notificaciones push confiables</h3>
   <p class="text-sm text-foreground/75 leading-relaxed">Las alertas de actividad volcánica son críticas. Implementamos reintentos exponenciales, suscripción a tópicos por nivel de urgencia, y notificaciones de navegador que solo disparan cuando la pestaña no está visible — usando <code>document.visibilityState</code>.</p>
 </div>
@@ -67,7 +67,7 @@ Las notificaciones de navegador usan `document.visibilityState`: solo disparan c
 
 ## Arquitectura
 
-<div class="not-prose my-6 rounded-xl border border-[hsl(var(--parchment))] bg-[hsl(var(--muted))] p-5 font-mono text-sm leading-relaxed text-foreground/85">
+<div class="not-prose my-6 rounded-xl border border-parchment bg-muted p-5 font-mono text-sm leading-relaxed text-foreground/85">
   <p class="mb-1"><strong>Next.js 14 App Router</strong> → Supabase (PostgreSQL + PostGIS + Realtime) → Leaflet mapa interactivo → PWA Service Worker.</p>
   <p class="mb-1">Autenticación con Supabase Auth (OAuth + email). Row Level Security para datos comunitarios.</p>
   <p>Vercel para hosting con Edge Functions.</p>

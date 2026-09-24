@@ -1,5 +1,18 @@
 import { expect, test } from "@playwright/test"
 
+for (const { path, label } of [
+  { path: "/", label: "Certificaciones" },
+  { path: "/en/", label: "Certifications" },
+]) {
+  test(`accessible named region for ${path}`, async ({ page }) => {
+    await page.goto(path)
+
+    const carousel = page.locator("#certCarouselContainer")
+    await expect(carousel.and(page.getByRole("region", { name: label, exact: true }))).toBeVisible()
+    await expect(carousel.getByRole("button")).toHaveCount(2)
+  })
+}
+
 test("auto-scroll pauses on hover and keyboard focus, then resumes after focus leaves", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "no-preference" })
   await page.goto("/")

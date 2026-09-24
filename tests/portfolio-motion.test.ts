@@ -96,6 +96,27 @@ function installActivationObserver() {
   };
 }
 
+function installLivePreference(initiallyReduced: boolean) {
+  let reduced = initiallyReduced;
+  const listeners = new Set<(event: MediaQueryListEvent) => void>();
+  const preference = {
+    get matches() { return reduced; },
+    addEventListener: vi.fn((_type: string, listener: (event: MediaQueryListEvent) => void) => listeners.add(listener)),
+    removeEventListener: vi.fn((_type: string, listener: (event: MediaQueryListEvent) => void) => listeners.delete(listener)),
+  };
+  vi.stubGlobal("matchMedia", vi.fn((query: string) =>
+    query === "(prefers-reduced-motion: reduce)" ? preference : { matches: false },
+  ));
+  return {
+    preference,
+    listeners,
+    change(next: boolean) {
+      reduced = next;
+      for (const listener of [...listeners]) listener({ matches: next } as MediaQueryListEvent);
+    },
+  };
+}
+
 function setHeroOffscreen(root: HTMLElement) {
   vi.spyOn(root, "getBoundingClientRect").mockReturnValue({
     top: window.innerHeight + 300,
@@ -550,6 +571,121 @@ describe("portfolio motion gates", () => {
     expect(canvas.dataset.webglStatus).toBe("ready");
     expect(motionHarness.createHeroScene).not.toHaveBeenCalled();
     expect(motionHarness.createPointerMotion).not.toHaveBeenCalled();
+  });
+
+  it("live reduced-motion initial reduction defers activation until allowed and removes preference listener on teardown", async () => {
+    document.body.innerHTML = `<section data-portfolio-motion><canvas data-hero-webgl></canvas></section>`;
+    const { observer, triggerProximity } = installActivationObserver();
+    const preference = installLivePreference(true);
+    const root = document.querySelector<HTMLElement>("[data-portfolio-motion]")!;
+    const canvas = root.querySelector<HTMLCanvasElement>("canvas")!;
+    setHeroOffscreen(root);
+
+    setupPortfolioMotion();
+    expect(root.dataset.motionStatus).toBe("reduced");
+    root.dispatchEvent(new Event("pointerenter"));
+    expect(motionHarness.gsap.registerPlugin).not.toHaveBeenCalled();
+    expect(preference.listeners.size).toBe(1);
+
+    preference.change(false);
+    expect(root.dataset.motionStatus).toBe("loading");
+    expect(canvas.dataset.webglStatus).toBe("pending");
+    expect(observer.observe).toHaveBeenCalledWith(root);
+    expect(motionHarness.gsap.registerPlugin).not.toHaveBeenCalled();
+    triggerProximity();
+    await vi.waitFor(() => expect(root.dataset.motionStatus).toBe("active"));
+    expect(motionHarness.createHeroScene).toHaveBeenCalledTimes(1);
+
+    teardownPortfolioMotion();
+    expect(preference.listeners.size).toBe(0);
+    expect(preference.preference.removeEventListener).toHaveBeenCalledWith("change", expect.any(Function));
+    preference.change(true);
+    preference.change(false);
+    root.dispatchEvent(new Event("pointerenter"));
+    expect(root.dataset.motionStatus).toBe("idle");
+    expect(motionHarness.createHeroScene).toHaveBeenCalledTimes(1);
+  });
+
+  it("live reduced-motion permits motion on coarse pointers when preference allows it", async () => {
+    document.body.innerHTML = `<section data-portfolio-motion><canvas data-hero-webgl></canvas></section>`;
+    installActivationObserver();
+    installLivePreference(false);
+    motionHarness.conditions.finePointer = false;
+    motionHarness.media.add.mockImplementation((queries, callback) => {
+      if (queries.allowMotion === "(prefers-reduced-motion: no-preference)") {
+        const cleanup = callback({ conditions: motionHarness.conditions });
+        motionHarness.media.revert.mockImplementation(() => cleanup?.());
+      }
+    });
+    const root = document.querySelector<HTMLElement>("[data-portfolio-motion]")!;
+    setHeroOffscreen(root);
+    setupPortfolioMotion();
+    root.dispatchEvent(new Event("pointerenter"));
+    await vi.waitFor(() => expect(motionHarness.media.add).toHaveBeenCalled());
+    expect(motionHarness.media.add.mock.calls[0]?.[0]).toHaveProperty(
+      "allowMotion", "(prefers-reduced-motion: no-preference)",
+    );
+    expect(root.dataset.motionStatus).toBe("active");
+    expect(motionHarness.createPointerMotion).not.toHaveBeenCalled();
+  });
+
+  it("live reduced-motion invalidates an in-flight activation without leaving a timer or scene", async () => {
+    document.body.innerHTML = `<section data-portfolio-motion><canvas data-hero-webgl></canvas></section>`;
+    installActivationObserver();
+    const preference = installLivePreference(false);
+    const root = document.querySelector<HTMLElement>("[data-portfolio-motion]")!;
+    const canvas = root.querySelector<HTMLCanvasElement>("canvas")!;
+    setHeroOffscreen(root);
+    vi.useFakeTimers();
+    try {
+      setupPortfolioMotion();
+      root.dispatchEvent(new Event("pointerenter"));
+      preference.change(true);
+      await vi.dynamicImportSettled();
+      await Promise.resolve();
+      await Promise.resolve();
+      vi.advanceTimersByTime(4000);
+      expect(root.dataset.motionStatus).toBe("reduced");
+      expect(canvas.dataset.webglStatus).toBe("reduced");
+      expect(motionHarness.gsap.registerPlugin).not.toHaveBeenCalled();
+      expect(motionHarness.createHeroScene).not.toHaveBeenCalled();
+      teardownPortfolioMotion();
+      expect(preference.listeners.size).toBe(0);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it("live reduced-motion stops active GSAP and WebGL before rearming the visibility gate", async () => {
+    document.body.innerHTML = `<section data-portfolio-motion><canvas data-hero-webgl></canvas></section>
+      <section id="projects"><div data-projects-list><article data-project-card></article></div></section>`;
+    installActivationObserver();
+    const preference = installLivePreference(false);
+    const root = document.querySelector<HTMLElement>("[data-portfolio-motion]")!;
+    const canvas = root.querySelector<HTMLCanvasElement>("canvas")!;
+    setHeroOffscreen(root);
+
+    setupPortfolioMotion();
+    root.dispatchEvent(new Event("pointerenter"));
+    await vi.waitFor(() => expect(root.dataset.motionStatus).toBe("active"));
+    preference.change(true);
+    expect(root.dataset.motionStatus).toBe("reduced");
+    expect(canvas.dataset.webglStatus).toBe("reduced");
+    expect(motionHarness.media.revert).toHaveBeenCalledTimes(1);
+    expect(motionHarness.sceneCleanup).toHaveBeenCalledTimes(1);
+    expect(motionHarness.timeline.kill).toHaveBeenCalledTimes(1);
+    expect(motionHarness.sectionTrigger.kill).toHaveBeenCalledTimes(1);
+    root.dispatchEvent(new Event("pointerenter"));
+    expect(motionHarness.createHeroScene).toHaveBeenCalledTimes(1);
+
+    preference.change(false);
+    expect(root.dataset.motionStatus).toBe("loading");
+    expect(motionHarness.createHeroScene).toHaveBeenCalledTimes(1);
+    root.dispatchEvent(new Event("pointerenter"));
+    await vi.waitFor(() => expect(motionHarness.createHeroScene).toHaveBeenCalledTimes(2));
+    teardownPortfolioMotion();
+    expect(motionHarness.sceneCleanup).toHaveBeenCalledTimes(2);
+    expect(preference.listeners.size).toBe(0);
   });
 
   it("marks the layer reduced and skips enhancements when reduced motion is active", async () => {

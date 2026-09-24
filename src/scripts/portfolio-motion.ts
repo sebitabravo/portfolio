@@ -37,8 +37,10 @@ export function setupPortfolioMotion(): void {
 
 	root.dispatchEvent(new Event("portfolio-motion:claimed"));
 
+	const motionPreference = window.matchMedia("(prefers-reduced-motion: reduce)");
 	let matchMediaCleanup: Cleanup | null = null;
 	let activationObserver: IntersectionObserver | null = null;
+	let activationSequence = 0;
 	let disposed = false;
 	let loadingStarted = false;
 	let fallbackTimer: number | null = null;
@@ -69,23 +71,20 @@ export function setupPortfolioMotion(): void {
 
 	activeCleanup = () => {
 		disposed = true;
+		activationSequence += 1;
+		motionPreference.removeEventListener?.("change", onPreferenceChange);
 		stopDeferredStartup();
 		clearFallbackTimer();
 		matchMediaCleanup?.();
 		matchMediaCleanup = null;
 		root.dataset.motionStatus = "idle";
-		if (canvas.dataset.webglStatus === "pending") {
-			canvas.dataset.webglStatus = "idle";
-		}
+		if (canvas.dataset.webglStatus === "pending") canvas.dataset.webglStatus = "idle";
 	};
 
-	const load = () => {
-		const shouldLoadWebGL =
-			!window.matchMedia("(prefers-reduced-motion: reduce)").matches &&
-			canLoadWebGLEnhancement();
-		void loadMotionLayer(shouldLoadWebGL)
+	const load = (activation: number) => {
+		void loadMotionLayer(!motionPreference.matches && canLoadWebGLEnhancement())
 			.then(({ gsap, ScrollTrigger, webgl }) => {
-				if (disposed || sequence !== setupSequence || activationTimedOut) return;
+				if (disposed || sequence !== setupSequence || activation !== activationSequence || activationTimedOut || motionPreference.matches) return;
 
 				gsap.registerPlugin(ScrollTrigger);
 				const media = gsap.matchMedia();
@@ -93,17 +92,15 @@ export function setupPortfolioMotion(): void {
 				media.add(
 					{
 						reduceMotion: "(prefers-reduced-motion: reduce)",
+						allowMotion: "(prefers-reduced-motion: no-preference)",
 						finePointer: "(pointer: fine)",
 					},
 					(context) => {
-						if (disposed || sequence !== setupSequence || activationTimedOut)
+						if (disposed || sequence !== setupSequence || activation !== activationSequence || activationTimedOut)
 							return undefined;
-						const conditions = context.conditions as {
-							reduceMotion?: boolean;
-							finePointer?: boolean;
-						};
+						const conditions = context.conditions as { reduceMotion?: boolean; finePointer?: boolean };
 
-						if (conditions.reduceMotion) {
+						if (motionPreference.matches || conditions.reduceMotion) {
 							root.dataset.motionStatus = "reduced";
 							canvas.dataset.webglStatus = "reduced";
 							clearFallbackTimer();
@@ -113,14 +110,9 @@ export function setupPortfolioMotion(): void {
 						root.dataset.motionStatus = "active";
 						clearFallbackTimer();
 						let sceneCleanup: Cleanup | null = null;
-						if (webgl) {
-							sceneCleanup = webgl.createHeroScene(canvas, root);
-						} else {
-							canvas.dataset.webglStatus = "fallback";
-						}
-						const interactionCleanup = conditions.finePointer
-							? createPointerMotion(gsap, root)
-							: null;
+						if (webgl) sceneCleanup = webgl.createHeroScene(canvas, root);
+						else canvas.dataset.webglStatus = "fallback";
+						const interactionCleanup = conditions.finePointer ? createPointerMotion(gsap, root) : null;
 						const scrollCleanup = createScrollMotion(gsap, ScrollTrigger);
 
 						return () => {
@@ -134,7 +126,7 @@ export function setupPortfolioMotion(): void {
 				matchMediaCleanup = () => media.revert();
 			})
 			.catch(() => {
-				if (disposed || sequence !== setupSequence || activationTimedOut) return;
+				if (disposed || sequence !== setupSequence || activation !== activationSequence || activationTimedOut || motionPreference.matches) return;
 				clearFallbackTimer();
 				root.dataset.motionStatus = "fallback";
 				canvas.dataset.webglStatus = "fallback";
@@ -142,8 +134,9 @@ export function setupPortfolioMotion(): void {
 	};
 
 	function startLoading(): void {
-		if (loadingStarted || disposed || sequence !== setupSequence) return;
+		if (loadingStarted || disposed || sequence !== setupSequence || motionPreference.matches) return;
 		loadingStarted = true;
+		const activation = ++activationSequence;
 		stopDeferredStartup();
 		motionRoot.dispatchEvent(new Event("portfolio-motion:started"));
 
@@ -151,7 +144,7 @@ export function setupPortfolioMotion(): void {
 		// a valid fallback state instead of leaving the contract stuck at loading.
 		fallbackTimer = window.setTimeout(() => {
 			fallbackTimer = null;
-			if (disposed || sequence !== setupSequence) return;
+			if (disposed || sequence !== setupSequence || activation !== activationSequence) return;
 			activationTimedOut = true;
 			if (motionRoot.dataset.motionStatus === "loading")
 				motionRoot.dataset.motionStatus = "fallback";
@@ -159,33 +152,54 @@ export function setupPortfolioMotion(): void {
 				heroCanvas.dataset.webglStatus = "fallback";
 		}, MOTION_FALLBACK_TIMEOUT);
 
-		load();
+		load(activation);
 	}
 
-	if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-		root.dataset.motionStatus = "reduced";
-		canvas.dataset.webglStatus = "reduced";
-		return;
-	}
-
-	root.addEventListener("pointerenter", startLoading);
-	root.addEventListener("focusin", startLoading);
-	root.addEventListener("touchstart", startLoading);
-	if (window.IntersectionObserver) {
-		activationObserver = new window.IntersectionObserver(
-			(entries) => {
-				if (entries.some((entry) => entry.isIntersecting)) startLoading();
-			},
-			{ rootMargin: "200px" },
-		);
-		activationObserver.observe(root);
-		checkProximity();
-	} else {
-		checkProximity();
-		if (!loadingStarted) {
-			window.addEventListener("scroll", checkProximity, { passive: true });
-			window.addEventListener("resize", checkProximity);
+	function onPreferenceChange(): void {
+		if (disposed || sequence !== setupSequence) return;
+		if (motionPreference.matches) {
+			activationSequence += 1;
+			loadingStarted = false;
+			stopDeferredStartup();
+			clearFallbackTimer();
+			matchMediaCleanup?.();
+			matchMediaCleanup = null;
+			motionRoot.dataset.motionStatus = "reduced";
+			heroCanvas.dataset.webglStatus = "reduced";
+		} else {
+			activationTimedOut = false;
+			motionRoot.dataset.motionStatus = "loading";
+			heroCanvas.dataset.webglStatus = "pending";
+			armActivation();
 		}
+	}
+
+	function armActivation(): void {
+		motionRoot.addEventListener("pointerenter", startLoading);
+		motionRoot.addEventListener("focusin", startLoading);
+		motionRoot.addEventListener("touchstart", startLoading);
+		if (window.IntersectionObserver) {
+			activationObserver = new window.IntersectionObserver(
+				(entries) => { if (entries.some((entry) => entry.isIntersecting)) startLoading(); },
+				{ rootMargin: "200px" },
+			);
+			activationObserver.observe(motionRoot);
+			checkProximity();
+		} else {
+			checkProximity();
+			if (!loadingStarted) {
+				window.addEventListener("scroll", checkProximity, { passive: true });
+				window.addEventListener("resize", checkProximity);
+			}
+		}
+	}
+
+	motionPreference.addEventListener?.("change", onPreferenceChange);
+	if (motionPreference.matches) {
+		motionRoot.dataset.motionStatus = "reduced";
+		heroCanvas.dataset.webglStatus = "reduced";
+	} else {
+		armActivation();
 	}
 }
 
@@ -196,9 +210,7 @@ export function teardownPortfolioMotion(): void {
 }
 
 async function loadMotionLayer(shouldLoadWebGL: boolean) {
-	const webglPromise = shouldLoadWebGL
-		? import("./hero-webgl").catch(() => null)
-		: Promise.resolve(null);
+	const webglPromise = shouldLoadWebGL ? import("./hero-webgl").catch(() => null) : Promise.resolve(null);
 	const [{ gsap }, { ScrollTrigger }, webgl] = await Promise.all([
 		import("gsap"),
 		import("gsap/ScrollTrigger"),
@@ -209,22 +221,13 @@ async function loadMotionLayer(shouldLoadWebGL: boolean) {
 }
 
 function canLoadWebGLEnhancement(): boolean {
-	const connection = (navigator as Navigator & { connection?: MotionConnection })
-		.connection;
-	const deviceMemory = (navigator as Navigator & { deviceMemory?: number })
-		.deviceMemory;
+	const connection = (navigator as Navigator & { connection?: MotionConnection }).connection;
+	const deviceMemory = (navigator as Navigator & { deviceMemory?: number }).deviceMemory;
 	return shouldLoadWebGLEnhancement(connection, deviceMemory);
 }
 
-export function shouldLoadWebGLEnhancement(
-	connection?: MotionConnection,
-	deviceMemory?: number,
-): boolean {
-	if (
-		connection?.saveData ||
-		connection?.effectiveType === "slow-2g" ||
-		connection?.effectiveType === "2g"
-	) {
+export function shouldLoadWebGLEnhancement(connection?: MotionConnection, deviceMemory?: number): boolean {
+	if (connection?.saveData || connection?.effectiveType === "slow-2g" || connection?.effectiveType === "2g") {
 		return false;
 	}
 
@@ -235,21 +238,14 @@ function createScrollMotion(
 	gsap: typeof import("gsap")["gsap"],
 	ScrollTrigger: typeof import("gsap/ScrollTrigger")["ScrollTrigger"],
 ): Cleanup {
-	const projectGrid = document.querySelector<HTMLElement>(
-		"[data-projects-list]",
-	);
+	const projectGrid = document.querySelector<HTMLElement>("[data-projects-list]");
 	if (!projectGrid) return () => undefined;
 
-	const cards = Array.from(
-		projectGrid.querySelectorAll<HTMLElement>("[data-project-card]"),
-	);
+	const cards = Array.from(projectGrid.querySelectorAll<HTMLElement>("[data-project-card]"));
 	if (cards.length === 0) return () => undefined;
 
-	const projectSection =
-		projectGrid.closest<HTMLElement>("section[id]") ?? projectGrid;
-	const meter = projectGrid.parentElement?.querySelector<HTMLElement>(
-		"[data-project-scroll-meter] span",
-	);
+	const projectSection = projectGrid.closest<HTMLElement>("section[id]") ?? projectGrid;
+	const meter = projectGrid.parentElement?.querySelector<HTMLElement>("[data-project-scroll-meter] span");
 	const projectTimeline = gsap.fromTo(
 		cards,
 		{

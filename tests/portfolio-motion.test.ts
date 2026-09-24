@@ -96,6 +96,13 @@ function installActivationObserver() {
   };
 }
 
+function setHeroOffscreen(root: HTMLElement) {
+  vi.spyOn(root, "getBoundingClientRect").mockReturnValue({
+    top: window.innerHeight + 300,
+    bottom: window.innerHeight + 400,
+  } as DOMRect);
+}
+
 describe("portfolio motion gates", () => {
   beforeEach(() => {
     document.body.innerHTML = "";
@@ -138,18 +145,19 @@ describe("portfolio motion gates", () => {
       "matchMedia",
       vi.fn(() => ({ matches: false })),
     );
+    const root = document.querySelector<HTMLElement>("[data-portfolio-motion]")!;
+    setHeroOffscreen(root);
 
     setupPortfolioMotion();
 
-    const root = document.querySelector<HTMLElement>(
-      "[data-portfolio-motion]",
-    )!;
     const canvas =
       document.querySelector<HTMLCanvasElement>("[data-hero-webgl]")!;
     expect(root.dataset.motionStatus).toBe("loading");
     expect(canvas.dataset.webglStatus).toBe("pending");
     expect(requestIdleCallback).not.toHaveBeenCalled();
     expect(observer.observe).toHaveBeenCalledWith(root);
+    await Promise.resolve();
+    expect(root.dataset.motionStatus).toBe("loading");
     expect(motionHarness.gsap.registerPlugin).not.toHaveBeenCalled();
 
     root.dispatchEvent(new Event("pointerenter"));
@@ -170,12 +178,11 @@ describe("portfolio motion gates", () => {
       "matchMedia",
       vi.fn(() => ({ matches: false })),
     );
+    const root = document.querySelector<HTMLElement>("[data-portfolio-motion]")!;
+    setHeroOffscreen(root);
 
     setupPortfolioMotion();
 
-    const root = document.querySelector<HTMLElement>(
-      "[data-portfolio-motion]",
-    )!;
     expect(IntersectionObserverMock).toHaveBeenCalledWith(
       expect.any(Function),
       { rootMargin: "200px" },
@@ -186,6 +193,23 @@ describe("portfolio motion gates", () => {
     teardownPortfolioMotion();
 
     expect(observer.disconnect).toHaveBeenCalled();
+  });
+
+  it("activates an initially near hero before IntersectionObserver delivers a callback", async () => {
+    document.body.innerHTML = `<section data-portfolio-motion><canvas data-hero-webgl></canvas></section>`;
+    const { observer } = installActivationObserver();
+    vi.stubGlobal("matchMedia", vi.fn(() => ({ matches: false })));
+    const root = document.querySelector<HTMLElement>("[data-portfolio-motion]")!;
+    vi.spyOn(root, "getBoundingClientRect").mockReturnValue({
+      top: window.innerHeight + 150,
+      bottom: window.innerHeight + 250,
+    } as DOMRect);
+
+    setupPortfolioMotion();
+
+    expect(observer.observe).toHaveBeenCalledWith(root);
+    await vi.waitFor(() => expect(root.dataset.motionStatus).toBe("active"));
+    expect(motionHarness.gsap.registerPlugin).toHaveBeenCalledTimes(1);
   });
 
   it("activates an initially near hero without IntersectionObserver", async () => {
@@ -264,11 +288,10 @@ describe("portfolio motion gates", () => {
       </section>
     `;
     const { observer } = installActivationObserver();
+    const root = document.querySelector<HTMLElement>("[data-portfolio-motion]")!;
+    setHeroOffscreen(root);
 
     setupPortfolioMotion();
-    const root = document.querySelector<HTMLElement>(
-      "[data-portfolio-motion]",
-    )!;
     const canvas = root.querySelector<HTMLCanvasElement>("[data-hero-webgl]")!;
     expect(root.dataset.motionStatus).toBe("loading");
     expect(canvas.dataset.webglStatus).toBe("pending");
@@ -318,6 +341,8 @@ describe("portfolio motion gates", () => {
       </section>
     `;
     const { triggerProximity } = installActivationObserver();
+    const root = document.querySelector<HTMLElement>("[data-portfolio-motion]")!;
+    setHeroOffscreen(root);
     vi.useFakeTimers();
 
     setupPortfolioMotion();
@@ -344,10 +369,11 @@ describe("portfolio motion gates", () => {
     `;
     installActivationObserver();
     vi.stubGlobal("matchMedia", vi.fn(() => ({ matches: false })));
+    const root = document.querySelector<HTMLElement>("[data-portfolio-motion]")!;
+    setHeroOffscreen(root);
     vi.useFakeTimers();
 
     setupPortfolioMotion();
-    const root = document.querySelector<HTMLElement>("[data-portfolio-motion]")!;
     const canvas = root.querySelector<HTMLCanvasElement>("[data-hero-webgl]")!;
     root.dispatchEvent(new Event("pointerenter"));
     vi.advanceTimersByTime(4000);
@@ -383,11 +409,10 @@ describe("portfolio motion gates", () => {
       configurable: true,
       value: vi.fn(() => ({ matches: false })),
     });
+    const root = document.querySelector<HTMLElement>("[data-portfolio-motion]")!;
+    setHeroOffscreen(root);
 
     setupPortfolioMotion();
-    const root = document.querySelector<HTMLElement>(
-      "[data-portfolio-motion]",
-    )!;
     const canvas =
       document.querySelector<HTMLCanvasElement>("[data-hero-webgl]")!;
     const grid = document.querySelector<HTMLElement>("[data-projects-list]")!;
@@ -445,9 +470,10 @@ describe("portfolio motion gates", () => {
     `;
     installActivationObserver();
     vi.stubGlobal("matchMedia", vi.fn(() => ({ matches: false })));
+    const root = document.querySelector<HTMLElement>("[data-portfolio-motion]")!;
+    setHeroOffscreen(root);
 
     setupPortfolioMotion();
-    const root = document.querySelector<HTMLElement>("[data-portfolio-motion]")!;
     const canvas = root.querySelector<HTMLCanvasElement>("[data-hero-webgl]")!;
     root.dispatchEvent(new Event("pointerenter"));
     await vi.waitFor(() => expect(root.dataset.motionStatus).toBe("active"));
@@ -520,8 +546,9 @@ describe("portfolio motion gates", () => {
       `;
       installActivationObserver();
       vi.stubGlobal("matchMedia", vi.fn(() => ({ matches: false })));
-      setupPortfolioMotion();
       const root = document.querySelector<HTMLElement>("[data-portfolio-motion]")!;
+      setHeroOffscreen(root);
+      setupPortfolioMotion();
       const canvas = root.querySelector<HTMLCanvasElement>("[data-hero-webgl]")!;
       expect(canvas.dataset.webglStatus).toBe("pending");
       canvas.dataset.webglStatus = status;

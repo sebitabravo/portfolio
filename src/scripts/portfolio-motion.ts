@@ -51,6 +51,11 @@ export function setupPortfolioMotion(): void {
 		const { top, bottom } = root.getBoundingClientRect();
 		if (top <= window.innerHeight + 200 && bottom >= -200) startLoading();
 	};
+	const clearFallbackTimer = () => {
+		if (fallbackTimer === null) return;
+		window.clearTimeout(fallbackTimer);
+		fallbackTimer = null;
+	};
 
 	const stopDeferredStartup = () => {
 		root.removeEventListener("pointerenter", startLoading);
@@ -65,10 +70,7 @@ export function setupPortfolioMotion(): void {
 	activeCleanup = () => {
 		disposed = true;
 		stopDeferredStartup();
-		if (fallbackTimer !== null) {
-			window.clearTimeout(fallbackTimer);
-			fallbackTimer = null;
-		}
+		clearFallbackTimer();
 		matchMediaCleanup?.();
 		matchMediaCleanup = null;
 		root.dataset.motionStatus = "idle";
@@ -84,10 +86,6 @@ export function setupPortfolioMotion(): void {
 		void loadMotionLayer(shouldLoadWebGL)
 			.then(({ gsap, ScrollTrigger, webgl }) => {
 				if (disposed || sequence !== setupSequence || activationTimedOut) return;
-				if (fallbackTimer !== null) {
-					window.clearTimeout(fallbackTimer);
-					fallbackTimer = null;
-				}
 
 				gsap.registerPlugin(ScrollTrigger);
 				const media = gsap.matchMedia();
@@ -98,7 +96,8 @@ export function setupPortfolioMotion(): void {
 						finePointer: "(pointer: fine)",
 					},
 					(context) => {
-						if (disposed || sequence !== setupSequence) return undefined;
+						if (disposed || sequence !== setupSequence || activationTimedOut)
+							return undefined;
 						const conditions = context.conditions as {
 							reduceMotion?: boolean;
 							finePointer?: boolean;
@@ -107,10 +106,12 @@ export function setupPortfolioMotion(): void {
 						if (conditions.reduceMotion) {
 							root.dataset.motionStatus = "reduced";
 							canvas.dataset.webglStatus = "reduced";
+							clearFallbackTimer();
 							return undefined;
 						}
 
 						root.dataset.motionStatus = "active";
+						clearFallbackTimer();
 						let sceneCleanup: Cleanup | null = null;
 						if (webgl) {
 							sceneCleanup = webgl.createHeroScene(canvas, root);
@@ -134,10 +135,7 @@ export function setupPortfolioMotion(): void {
 			})
 			.catch(() => {
 				if (disposed || sequence !== setupSequence || activationTimedOut) return;
-				if (fallbackTimer !== null) {
-					window.clearTimeout(fallbackTimer);
-					fallbackTimer = null;
-				}
+				clearFallbackTimer();
 				root.dataset.motionStatus = "fallback";
 				canvas.dataset.webglStatus = "fallback";
 			});

@@ -181,6 +181,7 @@ export function setupPortfolioMotion(): void {
 			{ rootMargin: "200px" },
 		);
 		activationObserver.observe(root);
+		checkProximity();
 	} else {
 		checkProximity();
 		if (!loadingStarted) {

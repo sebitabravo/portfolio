@@ -1,4 +1,4 @@
-import { getProjects } from "../src/lib/data"
+import { getProjects } from "../src/lib/data/projects"
 
 const locales = ["es", "en"] as const
 const timeoutMs = 12000

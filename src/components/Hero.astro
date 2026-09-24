@@ -91,24 +91,19 @@ const heroTitleId = `hero-title-${locale}`
 </section>
 
 <script is:inline>
-  // Fallback de contrato: si el modulo de motion no logra cargar (gates de
-  // red, parse lento del chunk de three.js, browser sin soporte), el estado
-  // pasa a fallback en vez de quedar en loading indefinidamente. Inline a
-  // proposito: no depende de imports dinamicos ni de APIs opcionales.
+  // Bound startup even if the motion module claims the hero but never activates.
+  // Keep this independent of dynamic imports and optional browser APIs.
   ;(() => {
     const root = document.querySelector("[data-portfolio-motion]")
     const canvas = root?.querySelector("[data-hero-webgl]")
     if (!root) return
     if (!root.dataset.motionStatus) root.dataset.motionStatus = "loading"
     if (canvas && !canvas.dataset.webglStatus) canvas.dataset.webglStatus = "pending"
-    let claimed = false
     const timer = window.setTimeout(() => {
-      if (claimed) return
       if (root.dataset.motionStatus === "loading") root.dataset.motionStatus = "fallback"
       if (canvas?.dataset.webglStatus === "pending") canvas.dataset.webglStatus = "fallback"
     }, 3000)
-    root.addEventListener("portfolio-motion:claimed", () => {
-      claimed = true
+    root.addEventListener("portfolio-motion:started", () => {
       window.clearTimeout(timer)
     }, { once: true })
   })()

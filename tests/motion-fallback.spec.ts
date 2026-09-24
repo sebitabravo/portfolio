@@ -38,7 +38,7 @@ test("an old inline timer cannot settle a newer owned loading state", async ({ p
   await expect(canvas).toHaveAttribute("data-webgl-status", "pending")
 
   await root.evaluate((element) => {
-    element.dispatchEvent(new Event("portfolio-motion:claimed"))
+    element.dispatchEvent(new Event("portfolio-motion:started"))
     element.dataset.motionStatus = "idle"
     element.querySelector<HTMLElement>("[data-hero-webgl]")!.dataset.webglStatus = "idle"
     element.dataset.motionStatus = "loading"

@@ -35,7 +35,6 @@ export function setupPortfolioMotion(): void {
 	const motionRoot = root;
 	const heroCanvas = canvas;
 
-	// The inline 3-second fallback owns startup only until this module takes over.
 	root.dispatchEvent(new Event("portfolio-motion:claimed"));
 
 	let matchMediaCleanup: Cleanup | null = null;
@@ -148,6 +147,7 @@ export function setupPortfolioMotion(): void {
 		if (loadingStarted || disposed || sequence !== setupSequence) return;
 		loadingStarted = true;
 		stopDeferredStartup();
+		motionRoot.dispatchEvent(new Event("portfolio-motion:started"));
 
 		// Enhancement loading is bounded: slow Firefox/CI imports must settle into
 		// a valid fallback state instead of leaving the contract stuck at loading.

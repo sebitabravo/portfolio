@@ -85,6 +85,9 @@ export function initThemeToggle() {
     optionLight?.setAttribute('aria-checked', String(theme === 'light'))
     optionDark?.setAttribute('aria-checked', String(theme === 'dark'))
     optionSystem?.setAttribute('aria-checked', String(theme === 'system'))
+    menu.querySelectorAll<HTMLButtonElement>('.theme-option').forEach(option => {
+      option.tabIndex = option.dataset.theme === theme ? 0 : -1
+    })
   }
 
   function applyTheme(theme: ThemePreference) {
@@ -131,9 +134,17 @@ export function initThemeToggle() {
         applyTheme(theme)
         menu.classList.add('hidden')
         toggle.setAttribute('aria-expanded', 'false')
+        toggle.focus()
       }
     }, { signal })
   })
+
+  menu.addEventListener('focusout', (e) => {
+    if (!menu.contains(e.relatedTarget as Node | null)) {
+      menu.classList.add('hidden')
+      toggle.setAttribute('aria-expanded', 'false')
+    }
+  }, { signal })
 
   // Listen for system theme changes
   const mql = window.matchMedia('(prefers-color-scheme: dark)')
@@ -145,11 +156,19 @@ export function initThemeToggle() {
   mql.addEventListener('change', mqHandler)
 
   // Keyboard navigation
+  function focusOption(option: HTMLButtonElement | undefined) {
+    if (!option) return
+    menu.querySelectorAll<HTMLButtonElement>('.theme-option').forEach(item => {
+      item.tabIndex = item === option ? 0 : -1
+    })
+    option.focus()
+  }
+
   function openMenu() {
     menu.classList.remove('hidden')
     toggle.setAttribute('aria-expanded', 'true')
     const items = menu.querySelectorAll<HTMLButtonElement>('.theme-option')
-    items[0]?.focus()
+    focusOption(items[0])
   }
 
   function closeMenu() {
@@ -173,19 +192,19 @@ export function initThemeToggle() {
     switch (e.key) {
       case 'ArrowDown':
         e.preventDefault()
-        items[(idx + 1) % items.length]?.focus()
+        focusOption(items[(idx + 1) % items.length])
         break
       case 'ArrowUp':
         e.preventDefault()
-        items[(idx - 1 + items.length) % items.length]?.focus()
+        focusOption(items[(idx - 1 + items.length) % items.length])
         break
       case 'Home':
         e.preventDefault()
-        items[0]?.focus()
+        focusOption(items[0])
         break
       case 'End':
         e.preventDefault()
-        items[items.length - 1]?.focus()
+        focusOption(items[items.length - 1])
         break
       case 'Escape':
         e.preventDefault()

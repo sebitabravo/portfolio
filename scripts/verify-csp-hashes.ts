@@ -182,20 +182,108 @@ export function hashScript(content: string): string {
   return createHash("sha256").update(content).digest("base64");
 }
 
+function openingTagEnd(html: string, start: number): number {
+  let quote: string | undefined;
+  for (let index = start; index < html.length; index++) {
+    const char = html[index];
+    if (quote) {
+      if (char === quote) quote = undefined;
+    } else if (char === '"' || char === "'") {
+      quote = char;
+    } else if (char === ">") {
+      return index;
+    }
+  }
+  return -1;
+}
+
+const javascriptMimeTypes = new Set([
+  "application/ecmascript",
+  "application/javascript",
+  "application/x-ecmascript",
+  "application/x-javascript",
+  "text/ecmascript",
+  "text/javascript",
+  "text/javascript1.0",
+  "text/javascript1.1",
+  "text/javascript1.2",
+  "text/javascript1.3",
+  "text/javascript1.4",
+  "text/javascript1.5",
+  "text/jscript",
+  "text/livescript",
+  "text/x-ecmascript",
+  "text/x-javascript",
+]);
+
+function isExecutableScriptType(type: string | undefined): boolean {
+  if (type === undefined) return true;
+  const normalized = type.trim().toLowerCase();
+  return (
+    normalized === "" ||
+    normalized === "module" ||
+    javascriptMimeTypes.has(normalized.split(";", 1)[0].trim())
+  );
+}
+
+function scriptAttributes(attributes: string): {
+  hasSrc: boolean;
+  type: string | undefined;
+} {
+  let hasSrc = false;
+  let type: string | undefined;
+  let index = 0;
+  while (index < attributes.length) {
+    while (index < attributes.length && /[\s/]/.test(attributes[index])) index++;
+    const start = index;
+    while (index < attributes.length && !/[\s=/>]/.test(attributes[index])) index++;
+    const name = attributes.slice(start, index).toLowerCase();
+    if (!name) {
+      index++;
+      continue;
+    }
+    if (name === "src") hasSrc = true;
+
+    while (index < attributes.length && /\s/.test(attributes[index])) index++;
+    if (attributes[index] !== "=") {
+      if (name === "type" && type === undefined) type = "";
+      continue;
+    }
+    index++;
+    while (index < attributes.length && /\s/.test(attributes[index])) index++;
+    const quote = attributes[index];
+    let value: string;
+    if (quote === '"' || quote === "'") {
+      index++;
+      const valueStart = index;
+      while (index < attributes.length && attributes[index] !== quote) index++;
+      value = attributes.slice(valueStart, index);
+      if (index < attributes.length) index++;
+    } else {
+      const valueStart = index;
+      while (index < attributes.length && !/\s/.test(attributes[index])) index++;
+      value = attributes.slice(valueStart, index);
+    }
+    if (name === "type" && type === undefined) type = value;
+  }
+  return { hasSrc, type };
+}
+
 export function extractExecutableScriptBodies(html: string): string[] {
   const bodies: string[] = [];
-  for (const match of html.matchAll(
-    /<script\b([^>]*)>([\s\S]*?)<\/script>/gi,
-  )) {
-    const [, attributes, content] = match;
-    if (
-      /\bsrc\s*=/i.test(attributes) ||
-      /\btype\s*=\s*(?:["']application\/ld\+json["']|application\/ld\+json)(?:\s|$)/i.test(
-        attributes,
-      )
-    )
-      continue;
-    bodies.push(content);
+  const opening = /<script\b/gi;
+  const closing = /<\/script>/gi;
+  while (opening.exec(html)) {
+    const end = openingTagEnd(html, opening.lastIndex);
+    if (end < 0) break;
+    closing.lastIndex = end + 1;
+    const close = closing.exec(html);
+    if (!close) break;
+    const attributes = html.slice(opening.lastIndex, end);
+    const { hasSrc, type } = scriptAttributes(attributes);
+    if (!hasSrc && isExecutableScriptType(type))
+      bodies.push(html.slice(end + 1, close.index));
+    opening.lastIndex = closing.lastIndex;
   }
   return bodies;
 }

@@ -96,6 +96,7 @@ export function createHeroScene(
 	const pointer = { x: 0, y: 0 }
 	const target = { x: 0, y: 0 }
 	let animationFrame = 0
+	let disposed = false
 	let lastFrame = 0
 	let isVisible = true
 	let isRunning = false
@@ -103,6 +104,7 @@ export function createHeroScene(
 	let pointerBounds = pointerTarget.getBoundingClientRect()
 
 	const resize = () => {
+		if (disposed) return
 		const bounds = canvas.getBoundingClientRect()
 		pointerBounds = pointerTarget.getBoundingClientRect()
 		const width = Math.max(1, Math.round(bounds.width))
@@ -113,13 +115,14 @@ export function createHeroScene(
 		camera.updateProjectionMatrix()
 	}
 	const onCompactChange = (event: MediaQueryListEvent) => {
+		if (disposed) return
 		isCompact = event.matches
 		pointsMaterial.size = isCompact ? 0.035 : 0.042
 		resize()
 	}
 
 	const render = (time: number) => {
-		if (!isRunning) return
+		if (disposed || !isRunning) return
 		animationFrame = requestAnimationFrame(render)
 		if (!isVisible || document.visibilityState === "hidden" || time - lastFrame < 32) return
 
@@ -137,7 +140,7 @@ export function createHeroScene(
 	}
 
 	const start = () => {
-		if (isRunning || !isVisible) return
+		if (disposed || isRunning || !isVisible) return
 		isRunning = true
 		animationFrame = requestAnimationFrame(render)
 	}
@@ -147,6 +150,7 @@ export function createHeroScene(
 		animationFrame = 0
 	}
 	const setVisibility = (visible: boolean) => {
+		if (disposed) return
 		isVisible = visible
 		if (visible) start()
 		else stop()
@@ -182,6 +186,7 @@ export function createHeroScene(
 	start()
 
 	return () => {
+		disposed = true
 		stop()
 		resizeObserver?.disconnect()
 		if (!resizeObserver) window.removeEventListener("resize", resize)

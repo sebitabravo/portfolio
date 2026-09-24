@@ -3,6 +3,7 @@
 import { Image } from "astro:assets"
 import { personalInfo } from "@/lib/data"
 import { getTranslations, type Locale } from "@/lib/i18n"
+import { homeSectionFragment } from "@/lib/home-sections"
 import profileImage from "@/assets/perfil.jpeg"
 import MailIcon from "./icons/Mail.astro"
 
@@ -12,7 +13,7 @@ interface Props {
 
 const { locale = 'es' } = Astro.props
 const t = getTranslations(locale)
-const contactUrl = locale === 'es' ? '#contacto' : '#contact'
+const contactUrl = homeSectionFragment(locale, 'contact')
 const heroTitleId = `hero-title-${locale}`
 ---
 
@@ -98,10 +99,18 @@ const heroTitleId = `hero-title-${locale}`
     const root = document.querySelector("[data-portfolio-motion]")
     const canvas = root?.querySelector("[data-hero-webgl]")
     if (!root) return
-    window.setTimeout(() => {
+    if (!root.dataset.motionStatus) root.dataset.motionStatus = "loading"
+    if (canvas && !canvas.dataset.webglStatus) canvas.dataset.webglStatus = "pending"
+    let claimed = false
+    const timer = window.setTimeout(() => {
+      if (claimed) return
       if (root.dataset.motionStatus === "loading") root.dataset.motionStatus = "fallback"
       if (canvas?.dataset.webglStatus === "pending") canvas.dataset.webglStatus = "fallback"
     }, 3000)
+    root.addEventListener("portfolio-motion:claimed", () => {
+      claimed = true
+      window.clearTimeout(timer)
+    }, { once: true })
   })()
 </script>
 

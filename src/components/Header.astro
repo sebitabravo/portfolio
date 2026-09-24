@@ -2,6 +2,7 @@
 // Floating navigation: the home gets a theme-aware glass treatment, while
 // inner pages keep the same layout with a surface-colored fallback.
 import { getTranslations, type Locale } from "@/lib/i18n"
+import { homeSectionFragment, homeSectionIds } from "@/lib/home-sections"
 import { social } from "@/lib/data"
 import ThemeToggle from "./ThemeToggle.astro"
 import LanguageToggle from "./LanguageToggle.astro"
@@ -19,21 +20,16 @@ const { locale = 'es', home = false } = Astro.props
 const t = getTranslations(locale)
 const prefix = locale === 'es' ? '' : '/en'
 
-const sectionIds = {
-  es: { experience: 'experiencia', projects: 'proyectos', education: 'educacion', about: 'sobre-mi', contact: 'contacto' },
-  en: { experience: 'experience', projects: 'projects', education: 'education', about: 'about', contact: 'contact' },
-} as const
-
-const ids = sectionIds[locale]
+const ids = homeSectionIds[locale]
 const mobileMenuId = `mobile-nav-${locale}`
 const homeUrl = prefix || '/'
-const contactUrl = `${homeUrl}#${ids.contact}`
+const contactUrl = `${homeUrl}${homeSectionFragment(locale, 'contact')}`
 
 const desktopNavItems = [
   { title: t.nav.blog, label: 'blog', url: `${prefix}/blog` },
-  { title: t.nav.projects, label: ids.projects, url: `${homeUrl}#${ids.projects}` },
-  { title: t.nav.experience, label: ids.experience, url: `${homeUrl}#${ids.experience}` },
-  { title: t.nav.formation, label: ids.education, url: `${homeUrl}#${ids.education}` },
+  { title: t.nav.projects, label: ids.projects, url: `${homeUrl}${homeSectionFragment(locale, 'projects')}` },
+  { title: t.nav.experience, label: ids.experience, url: `${homeUrl}${homeSectionFragment(locale, 'experience')}` },
+  { title: t.nav.formation, label: ids.education, url: `${homeUrl}${homeSectionFragment(locale, 'education')}` },
 ]
 
 const mobileNavItems = [
@@ -50,12 +46,12 @@ const isCurrentRoute = (url: string) => {
 ---
 
 <header class="site-header" data-home={home ? 'true' : 'false'}>
-  <div class="mx-auto max-w-[1280px] px-3 sm:px-4">
+  <div class="mx-auto max-w-[1200px] px-3 sm:px-4">
     <nav
-      aria-label={locale === 'es' ? 'Navegación principal' : 'Main navigation'}
+      aria-label={t.nav.mainNavigation}
       class:list={["site-nav mx-auto flex min-h-14 items-center justify-between gap-3 px-3 py-2 text-sm font-medium transition-all duration-300 sm:px-4", { "site-nav-home": home }]}
     >
-      <a href={homeUrl} class="brand-mark-link shrink-0 focus-ring" aria-label={locale === 'es' ? 'Inicio — Sebastian Bravo' : 'Home — Sebastian Bravo'}>
+      <a href={homeUrl} class="brand-mark-link shrink-0 focus-ring" aria-label={t.nav.brandHome}>
         <span class="brand-mark" aria-hidden="true">SB</span>
         <span class="hidden whitespace-nowrap sm:inline">Sebastian <span class="brand-lastname">Bravo</span></span>
       </a>
@@ -159,13 +155,17 @@ const isCurrentRoute = (url: string) => {
     const controller = new AbortController()
     headerController = controller
     const { signal } = controller
-    const sections = Array.from(document.querySelectorAll('section[id]'))
     const navLinks = Array.from(document.querySelectorAll('.site-nav .nav-link'))
+    const navigableIds = new Set(navLinks.map((link) => link.getAttribute('data-section')))
+    const sections = document.querySelector('.site-header[data-home="true"]')
+      ? Array.from(document.querySelectorAll('section[id]')).filter((section) => navigableIds.has(section.id))
+      : []
     const siteNav = document.querySelector('.site-nav')
 
     if (!siteNav) return
 
     const setActive = (sectionId: string) => {
+      if (document.querySelector('.site-header')?.getAttribute('data-home') !== 'true' || !navigableIds.has(sectionId)) return
       navLinks.forEach((link) => {
         const isActive = link.getAttribute('data-section') === sectionId
         link.classList.toggle('nav-active', isActive)

@@ -348,13 +348,13 @@ const duplicatedCerts = [...certifications, ...certifications]
 
     if (!container || !wrapper || !carousel || !prevBtn || !nextBtn) return
 
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
-
+    const motionPreference = window.matchMedia('(prefers-reduced-motion: reduce)')
     const ac = new AbortController()
     const { signal } = ac
 
     let animationId: number | null = null
     let lastTime = 0
+    let scrollPosition = wrapper.scrollLeft
     let isInViewport = false
     const scrollSpeed = 40 // px per second
     const navScrollAmount = 350
@@ -369,12 +369,14 @@ const duplicatedCerts = [...certifications, ...certifications]
       const delta = (timestamp - lastTime) / 1000
       lastTime = timestamp
 
-      if (!isHovered()) {
+      if (!isHovered() && !container!.contains(document.activeElement)) {
         const w = wrapper!
-        w.scrollLeft += scrollSpeed * delta
+        scrollPosition += scrollSpeed * delta
+        w.scrollLeft = scrollPosition
         const halfWidth = w.scrollWidth / 2
         if (w.scrollLeft >= halfWidth) {
           w.scrollLeft = 0
+          scrollPosition = w.scrollLeft
         }
       }
 
@@ -382,8 +384,9 @@ const duplicatedCerts = [...certifications, ...certifications]
     }
 
     function startAutoScroll() {
-      if (animationId || !isInViewport || isHovered() || document.visibilityState === 'hidden') return
+      if (signal.aborted || animationId || !isInViewport || isHovered() || container!.contains(document.activeElement) || document.visibilityState === 'hidden' || motionPreference.matches) return
       lastTime = 0
+      scrollPosition = wrapper!.scrollLeft
       animationId = requestAnimationFrame(autoScroll)
     }
 
@@ -392,7 +395,14 @@ const duplicatedCerts = [...certifications, ...certifications]
         cancelAnimationFrame(animationId)
         animationId = null
       }
+      scrollPosition = wrapper!.scrollLeft
     }
+
+    function handleMotionChange() {
+      if (motionPreference.matches) stopAutoScroll()
+      else startAutoScroll()
+    }
+    motionPreference.addEventListener('change', handleMotionChange, { signal })
 
     prevBtn.addEventListener('click', () => {
       wrapper!.scrollBy({ left: -navScrollAmount, behavior: 'smooth' })
@@ -406,13 +416,16 @@ const duplicatedCerts = [...certifications, ...certifications]
         w.addEventListener('scrollend', () => {
           w.scrollLeft = w.scrollLeft - halfWidth
           scrollEndPending = false
-        }, { once: true })
+        }, { once: true, signal })
       }
       w.scrollBy({ left: navScrollAmount, behavior: 'smooth' })
     }, { signal })
 
     container.addEventListener('mouseenter', stopAutoScroll, { signal })
     container.addEventListener('mouseleave', startAutoScroll, { signal })
+    container.addEventListener('focusin', stopAutoScroll, { signal })
+    // Let focus settle before checking whether it moved to another descendant.
+    container.addEventListener('focusout', () => queueMicrotask(startAutoScroll), { signal })
 
     function handleVisibilityChange() {
       if (document.visibilityState === 'hidden') {

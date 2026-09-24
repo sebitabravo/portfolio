@@ -1,9 +1,10 @@
 {
   "ci": {
     "collect": {
+      "staticDistDir": "./dist",
       "url": [
-        "https://sebita.dev",
-        "https://sebita.dev/en"
+        "http://localhost/",
+        "http://localhost/en/"
       ],
       "numberOfRuns": 3,
       "settings": {

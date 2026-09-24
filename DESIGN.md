@@ -3,34 +3,38 @@
 
 ## 1. Visual Theme & Atmosphere
 
-A developer portfolio that feels like opening a precision tool — confident, restrained, every element intentional. The hero is a cinematic midnight gradient (`#1b1938` → `#0d0d1a`), overlaid with compressed white typography that hits like a statement. Below, the same language continues through full-bleed lavender-neutral bands, glass surfaces and technical section markers instead of reverting to a flat resume canvas.
+A developer portfolio that feels like opening a precision tool — confident, restrained, every element intentional. By default, the hero uses a pale lavender gradient (`#f6f5ff` → `#eef0ff` → `#fbfcff`) with dark ink; `.dark` switches it to a dark-indigo gradient (`#10143a` → `#090d29` → `#050713`) with light text. Below, the same language continues through full-bleed lavender-neutral bands, glass surfaces and technical section markers instead of reverting to a flat resume canvas.
 
-The typography is the voice: headlines compress into dense, powerful blocks (line-height 0.92–0.96), while body text breathes at 1.60. This tension — compressed authority vs. generous readability — defines the portfolio's rhythm.
+The typography is the voice: the hero title compresses to line-height 0.82 on desktop (0.84 on mobile) and section headings to 0.98, while body text breathes at 1.60. This tension — compressed authority vs. generous readability — defines the portfolio's rhythm.
 
 The current experience layer adds controlled character instead of generic decoration: a floating glass navigation, orbital profile visual, technical signal strip, WebGL constellation and asymmetric project index. These elements are progressive enhancement; the content and routes remain usable without motion or WebGL support.
 
 **Key Characteristics:**
-- Midnight grid hero (`#10143a` → `#050713`) with white compressed headlines
+- Light-first lavender grid hero with compressed dark-ink headlines; dark-indigo gradient and light text under `.dark`
 - Cool white content canvas with charcoal ink text and alternating `#f4f3fa` bands
 - Lavender glow (`#c7b7ff`) as the primary hero accent
 - Floating glass navigation that resolves to a readable surface on scroll
 - Orbital profile visual and ambient layers, disabled under reduced motion
-- Lightweight Three.js constellation behind the portrait, loaded after first paint with WebGL fallback
-- GSAP/ScrollTrigger choreography for project entry, card tilt and project-scroll meter; native scroll remains authoritative
+- Optional Three.js constellation behind the portrait, loaded progressively when eligible with WebGL fallback
+- GSAP/ScrollTrigger choreography, dynamically imported after hero proximity or interaction, for project entry, card tilt and project-scroll meter; native scroll remains authoritative
 - Signal marquee for stack context and an asymmetric featured-project grid
 - Project screenshots as primary visual content
 - Generous whitespace, progressive density and recruiter-first CTAs
 
 ## 2. Color Palette
 
-### Dark Mode First (Hero / Dark Sections)
+### Hero (Light by Default; Dark with `.dark`)
 | Name | Hex | Role |
 |---|---|---|
-| Midnight | `#1b1938` | Hero gradient base, dark surfaces |
-| Midnight Deep | `#0d0d1a` | Hero gradient end |
-| Translucent White 95% | `rgba(255,255,255,0.95)` | Primary text on dark |
-| Translucent White 70% | `rgba(255,255,255,0.70)` | Secondary text on dark |
-| Lavender Glow | `#cbb7fb` | Accent, highlights, badges on dark |
+| Lavender Mist | `#f6f5ff` | Default hero gradient start |
+| Lavender Haze | `#eef0ff` | Default hero gradient middle |
+| Cool White | `#fbfcff` | Default hero gradient end |
+| Dark Ink | `#171329` | Default hero text |
+| Dark Indigo | `#10143a` | `.dark` hero gradient start |
+| Indigo Night | `#090d29` | `.dark` hero gradient middle |
+| Deep Night | `#050713` | `.dark` hero gradient end |
+| Light Ink | `#f7f8ff` | `.dark` hero text |
+| Lavender Glow | `#c7b7ff` | `.dark` hero accent |
 
 ### Light Mode (Content Sections)
 | Name | Hex | Role |
@@ -38,7 +42,7 @@ The current experience layer adds controlled character instead of generic decora
 | Pure White | `#ffffff` | Page canvas |
 | Charcoal Ink | `#292827` | Headlines, primary text |
 | Body Muted | `#5c5955` | Running body text |
-| Caption | `#8a8580` | Captions, metadata, labels |
+| Caption | `#69645f` | Captions, metadata, labels on light surfaces (WCAG AA small text) |
 | Warm Cream | `#e9e5dd` | Button backgrounds, subtle surfaces |
 | Parchment Border | `#dcd7d3` | Card borders, dividers |
 | Surface Soft | `#f4f3fa` | Alternating section background |
@@ -67,8 +71,8 @@ The current experience layer adds controlled character instead of generic decora
 
 | Token | Size | Weight | Line Height | Letter Spacing | Use |
 |---|---|---|---|---|---|
-| Display Hero | 56px | 700 | 0.92 | -2px | Hero headline — name |
-| Display Section | 40px | 600 | 0.96 | -1.5px | Section headings |
+| Display Hero | `clamp(3.7rem, 8vw, 8rem)` | 700 | 0.82 | `-0.085em` | Hero headline — name |
+| Display Section | `clamp(2.25rem, 4.5vw, 3.75rem)` | 600 | 0.98 | `-0.065em` | Section headings |
 | Display Card | 24px | 600 | 1.10 | -0.5px | Card titles, project names |
 | Title Large | 20px | 600 | 1.20 | 0 | Subsection headings |
 | Title | 18px | 500 | 1.30 | 0 | Card subtitles |
@@ -80,7 +84,7 @@ The current experience layer adds controlled character instead of generic decora
 | Monospace | 13px | 500 | 1.40 | 0 | Tech badges, code references |
 
 ### Principles
-- Display headlines at tight line-height create dense typographic blocks — architectural confidence
+- Hero title line-height is 0.82 on desktop and 0.84 on mobile; section headings use 0.98 — component-specific compression creates architectural confidence
 - Body at 1.60 line-height ensures comfortable reading after headline impact
 - Negative letter-spacing on headlines only — body stays at 0
 - Monospace for tech/role labels adds developer identity without decoration
@@ -91,7 +95,7 @@ The current experience layer adds controlled character instead of generic decora
 - **Warm Cream Primary**: `#e9e5dd` bg, `#292827` text, 8px radius, no border — the signature CTA
 - **Dark Primary**: `#292827` bg, white text, 8px radius — inverse variant
 - **Ghost**: No background, underline decoration, Amethyst color
-- **Hero CTA**: Warm Cream on midnight gradient — pops dramatically
+- **Hero CTA**: Amethyst on the pale hero; `.dark` adapts its contrast on the indigo gradient
 - Height: 44px, Padding: 12px 24px
 
 ### Cards
@@ -102,8 +106,8 @@ The current experience layer adds controlled character instead of generic decora
 - Hover: Subtle lift/spotlight; fine pointers may add a bounded 2.5° tilt, never replacing focus or readable actions
 
 ### Navigation
-- Fixed top, dark glass on hero → readable card surface on scroll
-- Nav links: Inter 14px, weight 500
+- Fixed top, glass on hero → readable card surface on scroll
+- Nav links: Manrope 14px, weight 500
 - Active indicator: Lavender Glow underline
 - CTA: Lavender primary action with explicit contact destination
 - Mobile: Hamburger with slide-down panel
@@ -127,7 +131,7 @@ The current experience layer adds controlled character instead of generic decora
 
 ### Grid
 - Max content: 1200px
-- Hero: Full-width gradient, content centered
+- Hero: Full-width light lavender gradient by default, dark indigo under `.dark`; content centered
 - Feature grids: 2–3 columns desktop, 1 column mobile
 - Projects: 12-column desktop index with one featured card, 1 column mobile
 
@@ -148,7 +152,7 @@ The current experience layer adds controlled character instead of generic decora
 ## 7. Do's and Don'ts
 
 ### Do
-- Use tight line-height (0.92–0.96) on all display text
+- Keep the hero title at 0.82 line-height on desktop (0.84 on mobile) and section headings at 0.98
 - Use Warm Cream for primary buttons — not white, not gray
 - Keep radii bounded and purposeful; use larger rounding only for circular/orbital visual elements
 - Let project screenshots be the primary visual content
@@ -168,15 +172,15 @@ The current experience layer adds controlled character instead of generic decora
 
 | Breakpoint | Width | Key Changes |
 |---|---|---|
-| Mobile | <768px | Single column, hero 36px, hamburger nav |
-| Tablet | 768–1024px | 2-column projects, hero 48px |
-| Desktop | 1024–1440px | Full layout, hero 56px |
-| Wide | >1440px | Max-width 1200px centered |
+| Mobile | <768px | Single column, hamburger nav; hero `clamp(3.45rem, 17vw, 5.3rem)` (`3.35rem` at ≤420px) |
+| Tablet | 768–1023px | 2-column projects; hero `clamp(3.6rem, 8vw, 6rem)` |
+| Desktop | 1024–1440px | Full layout; hero `clamp(3.7rem, 8vw, 8rem)` |
+| Wide | >1440px | Max-width 1200px centered; desktop hero clamp continues |
 
 ## 9. Dark Mode Strategy
 
 - Dark mode is a FIRST-CLASS citizen, not an afterthought
-- Hero gradient serves as the natural dark anchor
+- Light lavender hero is the default; `.dark` gives the hero its dark-indigo anchor
 - Light → Dark: Canvas becomes Night Canvas, borders become Night Border
 - Warm Cream buttons become Warm Cream Dark
 - Lavender Glow accent stays consistent across both modes
@@ -187,8 +191,8 @@ The current experience layer adds controlled character instead of generic decora
 Motion is layered, not required for understanding the page:
 
 1. **CSS baseline:** hero reveal, orbital rings, marquee and reduced-motion fallback.
-2. **GSAP layer:** dynamically loaded after the initial render; `matchMedia()` gates fine-pointer and `prefers-reduced-motion`, while `ScrollTrigger` follows the native document scroll instead of replacing it.
-3. **Three.js layer:** a small deterministic point/line constellation with no external model or texture. It is loaded only when the device is not in Save-Data/2G/low-memory mode, pauses offscreen/hidden tabs, caps its pixel ratio and disposes renderer resources on Astro navigation.
+2. **GSAP layer:** GSAP and ScrollTrigger are dynamically imported only after hero proximity (within 200px of the viewport) or pointer, focus or touch interaction. `matchMedia()` gates fine-pointer and `prefers-reduced-motion`, while `ScrollTrigger` follows the native document scroll instead of replacing it.
+3. **Three.js layer:** an optional, progressively loaded small deterministic point/line constellation with no external model or texture. It is skipped for Save-Data/2G/low-memory or reduced-motion preferences, pauses offscreen/hidden tabs, caps its pixel ratio and disposes renderer resources on Astro navigation.
 
 The canvas is `aria-hidden`, pointer-transparent and decorative. The portrait, availability link, CTAs and project content remain HTML. If WebGL2 is unavailable, the existing CSS orbital visual is the fallback.
 
@@ -208,6 +212,10 @@ certification carousel and privacy documents, plus the canonical technology
 color registry. The former monolithic stylesheet is split into base, hero,
 content, responsive and header layers. Repeated icons use the immutable
 `public/icons/sprite.svg` instead of embedding the same paths in every page.
+
+No general formatter or linter is currently configured. The size, test and
+build gates do not replace lint or format rules. Defer new tooling and
+dependencies until a concrete recurring formatting or lint gap justifies them.
 
 ## 12. Reference Decisions
 

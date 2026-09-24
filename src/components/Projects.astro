@@ -1,6 +1,7 @@
 ---
 import { getProjects, type Project } from "@/lib/data"
 import { getTranslations, type Locale } from "@/lib/i18n"
+import { homeSectionFragment } from "@/lib/home-sections"
 import { getTechStyle } from "@/lib/tech-colors"
 import { getTechIcon } from "@/lib/tech-icons-map"
 import { projectGradient } from "@/lib/visual-gradients"
@@ -15,7 +16,7 @@ interface Props {
 
 const { locale = "es" } = Astro.props
 const t = getTranslations(locale)
-const contactUrl = locale === "es" ? "#contacto" : "#contact"
+const contactUrl = homeSectionFragment(locale, 'contact')
 
 const projects = getProjects(locale)
   .slice()
@@ -102,7 +103,7 @@ const statusColors: Record<Project["status"], string> = {
               <span class="project-media-link-label">{t.projects.readMore} <span aria-hidden="true">↗</span></span>
             </a>
             <div class="project-media-title" aria-hidden="true">
-              <span class="project-media-kicker">{featured ? t.projects.featured : 'PROJECT'}</span>
+              <span class="project-media-kicker">{featured ? t.projects.featured : t.projects.cardLabel}</span>
               <span class="project-media-name">{title}</span>
             </div>
           </div>
@@ -119,7 +120,7 @@ const statusColors: Record<Project["status"], string> = {
             <p class="project-description">{description}</p>
 
             {visualStats.length > 0 && (
-              <div class="project-metrics" aria-label={locale === 'es' ? 'Evidencia del proyecto' : 'Project evidence'}>
+              <div class="project-metrics" aria-label={t.projects.evidenceLabel}>
                 {visualStats.map((metric) => (
                   <div class="project-metric">
                     <span>{metric.label}</span>
@@ -129,7 +130,7 @@ const statusColors: Record<Project["status"], string> = {
               </div>
             )}
 
-            <div class="project-tags" aria-label={locale === 'es' ? 'Tecnologías' : 'Technologies'}>
+            <div class="project-tags" aria-label={t.projects.technologiesLabel}>
               {visibleTags.map((tag) => {
                 const style = getTechStyle(tag)
                 const Icon = getTechIcon(tag)

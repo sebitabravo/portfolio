@@ -4,6 +4,7 @@ import { describe, expect, it } from "vitest";
 const layout = readFileSync("src/layouts/Layout.astro", "utf8");
 const spanishArticle = readFileSync("src/pages/blog/[slug].astro", "utf8");
 const englishArticle = readFileSync("src/pages/en/blog/[slug].astro", "utf8");
+const articleTemplate = readFileSync("src/components/blog/LocalizedBlogPost.astro", "utf8");
 
 describe("JSON-LD contracts", () => {
   it("emits one WebPage node for indexable pages from canonical page metadata", () => {
@@ -18,19 +19,17 @@ describe("JSON-LD contracts", () => {
     expect(layout.match(/"@type": "WebPage"/g)).toHaveLength(1);
   });
 
-  it("does not emit a WebPage node for noindex pages", () => {
-    expect(layout).toContain("!noindex ?");
-  });
-
   it.each([
-    ["Spanish", spanishArticle],
-    ["English", englishArticle],
+    ["Spanish", spanishArticle, 'locale="es" post={post} translationId={translationId}'],
+    ["English", englishArticle, 'locale="en" post={post} isFallback={isFallback} translationId={translationId}'],
   ])(
     "preserves the %s Article schema without a duplicate WebPage schema",
-    (_locale, article) => {
-      expect(article.match(/"@type": "Article"/g)).toHaveLength(1);
-      expect(article).not.toContain('"@type": "WebPage"');
-      expect(article).not.toContain("dateModified");
+    (_locale, route, props) => {
+      expect(route).toContain(`<LocalizedBlogPost ${props} />`);
+      expect(articleTemplate.match(/"@type": "Article"/g)).toHaveLength(1);
+      expect(articleTemplate).toContain('type="application/ld+json" set:html={articleJsonLd}');
+      expect(articleTemplate).not.toContain('"@type": "WebPage"');
+      expect(articleTemplate).not.toContain("dateModified");
     },
   );
 

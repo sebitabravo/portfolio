@@ -4,7 +4,7 @@
 - Approved issue: #35 — https://github.com/sebitabravo/portfolio/issues/35
 - The user explicitly approved publishing the accumulated portfolio work as one PR and accepted `size:exception` because the 400-line slicing budget is infeasible for this integrated refactor.
 - Final PR: #37, retargeted to `main`, open for review, and not merged: https://github.com/sebitabravo/portfolio/pull/37
-- PR #37 contains 6,162 changed lines across 115 files (4,747 additions + 1,415 deletions) locally; confirm GitHub's exact totals after pushing. The user explicitly accepted `size:exception`.
+- The current local three-dot diff to `main` is 6,162 changed lines across 115 files (4,747 additions + 1,415 deletions); after pushing head `96d2155`, GitHub still reported the prior 5,158/84 totals, so refresh its exact statistics after the next update. The user explicitly accepted `size:exception`.
 - Superseded tracker PR #36 is closed; no merge was performed.
 
 ## Scope

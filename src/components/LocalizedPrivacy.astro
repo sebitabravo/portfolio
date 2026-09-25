@@ -95,7 +95,7 @@ const PRIVACY_COPY: Record<Locale, PrivacyLocaleCopy> = {
     noCollectLeadStrong: "100% estático",
     noCollectLeadB:
       ". No tiene formularios de contacto, no utiliza cookies propias, no tiene bases de datos ni almacena información de visitantes en el servidor.",
-    noCollectListLead: "Especificamente, NO recolectamos:",
+    noCollectListLead: "Específicamente, NO recolectamos:",
     noCollectBullets: [
       "Nombres, correos electrónicos ni datos de contacto",
       "Cookies de sesión o persistentes propias",
@@ -410,7 +410,7 @@ const alternates = createStaticAlternates(locale, spanishUrl, englishUrl)
                 {c.controllerCountry}
               </p>
               <p>
-                {c.emailLead}
+                {c.emailLead}{" "}
                 <a
                   href={`mailto:${personalInfo.email}`}
                   class="link-inline"

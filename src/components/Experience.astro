@@ -14,8 +14,11 @@ const workExperience = getWorkExperience(locale)
 
 {workExperience.length > 0 ? (
   <>
-    <div class="experience-timeline-note" data-experience-timeline>
-      <span class="experience-timeline-note-mark" aria-hidden="true">↳</span>
+    <div
+      class="experience-timeline-note flex items-baseline gap-[0.65rem] mt-5 -mb-3 py-3 px-[0.9rem] border-l-2 border-hero-accent text-foreground/78 bg-primary/5 text-[0.86rem] leading-normal"
+      data-experience-timeline
+    >
+      <span class="experience-timeline-note-mark flex-none text-hero-accent font-code" aria-hidden="true">↳</span>
       <p>{t.work.timeline}</p>
     </div>
     <ol class="relative mt-8 pl-4">

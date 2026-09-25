@@ -9,7 +9,7 @@ import Header from "@/components/Header.astro"
 import { siteConfig } from "@/lib/config"
 import { personalInfo, social } from "@/lib/data"
 import type { Locale } from "@/lib/i18n"
-import { getWebPageSchema } from "@/lib/seo-structured-data"
+import { buildLayoutJsonLd } from "@/lib/seo-structured-data"
 import perfilImage from "@/assets/perfil.jpeg"
 
 interface Props {
@@ -50,85 +50,20 @@ const sameAsProfiles = [social.github, social.linkedin].filter(
   (url): url is string => Boolean(url),
 )
 
-const jsonLd = {
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "Person",
-      name: personalInfo.name,
-      alternateName: "sebitabravo",
-      url: profileUrl,
-      jobTitle: personalInfo.title,
-      email: `mailto:${personalInfo.email}`,
-      image: new URL(perfilImage.src, "https://sebita.dev").toString(),
-      sameAs: sameAsProfiles,
-      nationality: {
-        "@type": "Country",
-        name: "Chile",
-      },
-      address: {
-        "@type": "PostalAddress",
-        addressCountry: "CL",
-      },
-      alumniOf: [
-        {
-          "@type": "CollegeOrUniversity",
-          name: "INACAP",
-        },
-        {
-          "@type": "HighSchool",
-          name: "Liceo Politécnico Pueblo Nuevo",
-        },
-      ],
-      hasCredential: [
-        {
-          "@type": "EducationalOccupationalCredential",
-          name: "AWS Academy Cloud Foundations",
-          credentialCategory: "Certification",
-          recognizedBy: {
-            "@type": "Organization",
-            name: "Amazon Web Services (AWS)",
-          },
-        },
-      ],
-      hasOccupation: {
-        "@type": "Occupation",
-        name: personalInfo.title,
-        occupationLocation: {
-          "@type": "Country",
-          name: "Chile",
-        },
-      },
-      knowsAbout: [
-        "React",
-        "TypeScript",
-        "Astro",
-        "Next.js",
-        "Django",
-        "NestJS",
-        "FastAPI",
-        "PostgreSQL",
-        "Docker",
-        "Tailwind CSS",
-        "REST APIs",
-        "Frontend Development",
-        "Web Performance",
-        "Accessibility",
-        "WCAG",
-      ],
-      description: description,
-    },
-    {
-      "@type": "WebSite",
-      name: siteConfig.title,
-      url: "https://sebita.dev",
-      inLanguage: locale,
-      description: description,
-    },
-    ...getWebPageSchema(noindex, { title, description, canonical, locale }),
-  ],
-}
-const jsonLdString = JSON.stringify(jsonLd).replace(/</g, "\\u003c")
+const jsonLdString = buildLayoutJsonLd({
+  title,
+  siteName: siteConfig.title,
+  description,
+  canonical,
+  locale,
+  profileUrl,
+  personName: personalInfo.name,
+  jobTitle: personalInfo.title,
+  email: personalInfo.email,
+  imageUrl: new URL(perfilImage.src, "https://sebita.dev").toString(),
+  sameAs: sameAsProfiles,
+  noindex,
+})
 ---
 
 <!doctype html>
@@ -206,6 +141,9 @@ const jsonLdString = JSON.stringify(jsonLd).replace(/</g, "\\u003c")
 
     <script is:inline type="application/ld+json" set:html={jsonLdString}></script>
 
+    <!-- Theme bootstrap stays inline by design: it must run synchronously in
+      <head> before first paint to avoid a flash of the wrong theme. An
+      external or bundled (deferred) script runs after parsing, too late. -->
     <script is:inline>
       (function() {
         function getThemePreference() {
@@ -243,79 +181,25 @@ const jsonLdString = JSON.stringify(jsonLd).replace(/</g, "\\u003c")
     <Header locale={locale} home={isHome} />
     <slot />
     <Footer locale={locale} />
-    <script is:inline>
-      let revealObserver = null
+    <script>
+      import { initScrollReveal } from "@/scripts/scroll-reveal"
 
-      function initScrollReveal() {
-        revealObserver?.disconnect()
-
-        const targets = Array.from(document.querySelectorAll('[data-animate]'))
-        if (!('IntersectionObserver' in window)) return
-
-        const observer = new IntersectionObserver(
-          (entries) => {
-            entries.forEach((entry) => {
-              if (!entry.isIntersecting) return
-
-              const element = entry.target
-              element.classList.add('reveal-pending')
-              requestAnimationFrame(() => element.classList.add('animate-in'))
-              observer.unobserve(element)
-            })
-          },
-          { threshold: 0.08, rootMargin: '0px 0px -8% 0px' },
-        )
-
-        targets.forEach((element) => {
-          element.classList.remove('animate-in', 'reveal-pending')
-
-          // Keep the first viewport polished, but do not hide the entire
-          // document: full-page captures and JS-off users must still see it.
-          const rect = element.getBoundingClientRect()
-          if (rect.top <= window.innerHeight * 1.1) {
-            element.classList.add('reveal-pending')
-          }
-
-          observer.observe(element)
-        })
-
-        revealObserver = observer
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", initScrollReveal, { once: true })
+      } else {
+        initScrollReveal()
       }
-
-      initScrollReveal()
+      document.addEventListener("astro:after-swap", initScrollReveal)
     </script>
-    <script is:inline>
-      let progressFrame = null
-      let progressScrollHandler = null
+    <script>
+      import { initReadingProgress } from "@/scripts/reading-progress"
 
-      function initReadingProgress() {
-        const progress = document.querySelector('[data-reading-progress]')
-        if (!progress) return
-
-        if (progressScrollHandler) {
-          window.removeEventListener('scroll', progressScrollHandler)
-        }
-        if (progressFrame) {
-          cancelAnimationFrame(progressFrame)
-          progressFrame = null
-        }
-
-        const update = () => {
-          if (progressFrame) return
-          progressFrame = requestAnimationFrame(() => {
-            const maxScroll = document.documentElement.scrollHeight - window.innerHeight
-            const ratio = maxScroll > 0 ? Math.min(window.scrollY / maxScroll, 1) : 0
-            progress.style.transform = `scaleX(${ratio})`
-            progressFrame = null
-          })
-        }
-
-        progressScrollHandler = update
-        window.addEventListener('scroll', update, { passive: true })
-        update()
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", initReadingProgress, { once: true })
+      } else {
+        initReadingProgress()
       }
-
-      initReadingProgress()
+      document.addEventListener("astro:after-swap", initReadingProgress)
     </script>
   </body>
 </html>

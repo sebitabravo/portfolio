@@ -3,9 +3,6 @@ import mimasoft from "../../assets/experience/mimasoft.webp"
 import temutel from "../../assets/experience/temutel.webp"
 import telsur from "../../assets/experience/telsur.webp"
 
-// EXPERIENCIA LABORAL
-// ============================================
-
 const workExperienceData = {
   es: [
     {
@@ -86,5 +83,3 @@ const workExperienceData = {
 export function getWorkExperience(locale: Locale = 'es') {
   return workExperienceData[locale]
 }
-
-// ============================================

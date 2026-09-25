@@ -1,12 +1,5 @@
 import type { ImageMetadata } from "astro"
 
-/**
- * Datos del Portfolio - Sebastian Bravo
- *
- * Archivo centralizado con todos los datos del portfolio.
- * Diseñado con la estética Superhuman: projects sell themselves.
- */
-
 export interface ExperienceLogo {
   src: ImageMetadata
   alt: string
@@ -63,5 +56,3 @@ export interface Certification {
   order: number
   category: "professional" | "academic"
 }
-
-// ============================================

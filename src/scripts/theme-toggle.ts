@@ -3,7 +3,7 @@ type ThemePreference = 'light' | 'dark' | 'system'
 let themeCleanup: (() => void) | null = null
 
 export function initThemeToggle() {
-  // Limpiar listeners de navegaciones anteriores (View Transitions)
+  // Clear listeners from a previous navigation (View Transitions)
   themeCleanup?.()
   const ac = new AbortController()
   const { signal } = ac
@@ -103,11 +103,9 @@ export function initThemeToggle() {
     updateThemeIcon(theme)
   }
 
-  // Initialize theme
   const currentTheme = getThemePreference()
   applyTheme(currentTheme)
 
-  // Toggle menu
   toggle.addEventListener('click', (e) => {
     e.preventDefault()
     e.stopPropagation()
@@ -115,7 +113,6 @@ export function initThemeToggle() {
     toggle.setAttribute('aria-expanded', String(isOpen))
   }, { signal })
 
-  // Close menu when clicking outside
   document.addEventListener('click', (e) => {
     if (!wrapper.contains(e.target as Node)) {
       menu.classList.add('hidden')
@@ -123,7 +120,6 @@ export function initThemeToggle() {
     }
   }, { signal })
 
-  // Theme selection
   const themeButtons = menu.querySelectorAll('.theme-option')
   themeButtons.forEach(button => {
     button.addEventListener('click', (e) => {
@@ -146,7 +142,6 @@ export function initThemeToggle() {
     }
   }, { signal })
 
-  // Listen for system theme changes
   const mql = window.matchMedia('(prefers-color-scheme: dark)')
   const mqHandler = () => {
     if (getThemePreference() === 'system') {
@@ -155,7 +150,6 @@ export function initThemeToggle() {
   }
   mql.addEventListener('change', mqHandler)
 
-  // Keyboard navigation
   function focusOption(option: HTMLButtonElement | undefined) {
     if (!option) return
     menu.querySelectorAll<HTMLButtonElement>('.theme-option').forEach(item => {
@@ -213,7 +207,7 @@ export function initThemeToggle() {
     }
   }, { signal })
 
-  // Registrar cleanup para la próxima navegación
+  // Register cleanup for the next navigation
   themeCleanup = () => {
     ac.abort()
     mql.removeEventListener('change', mqHandler)

@@ -1,6 +1,3 @@
-// HABILIDADES TÉCNICAS
-// ============================================
-
 export const skills = {
   frontend: ["React", "Next.js", "TypeScript", "JavaScript", "Tailwind CSS"],
   backend: ["Django", "FastAPI", "NestJS", "Python", "Node.js", "REST API"],
@@ -13,5 +10,3 @@ export const skills = {
 export const canonicalTechnologies = Object.freeze([
   ...new Set(Object.values(skills).flat()),
 ])
-
-// ============================================

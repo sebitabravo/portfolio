@@ -1,8 +1,5 @@
 import type { Locale } from "@/lib/i18n"
 
-// CERTIFICACIONES
-// ============================================
-
 const certificationsData = {
   es: [
     {
@@ -83,5 +80,3 @@ const certificationsData = {
 export function getCertifications(locale: Locale = 'es') {
   return certificationsData[locale]
 }
-
-// ============================================

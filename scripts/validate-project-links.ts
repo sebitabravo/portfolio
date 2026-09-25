@@ -25,7 +25,7 @@ async function checkUrl(url: string): Promise<LinkCheckResult> {
       return { ok: true, status: headResponse.status }
     }
   } catch {
-    // Ignorar para intentar GET como fallback
+    // Ignore and fall back to a GET request
   }
 
   try {

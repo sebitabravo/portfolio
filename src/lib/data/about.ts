@@ -1,8 +1,5 @@
 import type { Locale } from "@/lib/i18n"
 
-// SOBRE MÍ
-// ============================================
-
 const aboutMeData = {
   es: {
     intro: `Me gusta convertir problemas concretos en productos web que se puedan usar, mantener y explicar sin humo. Trabajo entre producto, interfaz y backend, con especial cuidado por los detalles que sostienen una buena experiencia.`,

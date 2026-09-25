@@ -115,7 +115,7 @@ test.describe("Projects — screenshots con fallback", () => {
     await page.goto("/blog/bot-discord-moderacion-musica")
     const missing = await page.locator('script[type="application/ld+json"]').last().textContent()
     expect(JSON.parse(missing!)).not.toHaveProperty("image")
-    await expect(page.locator('meta[property="og:image"]')).toHaveAttribute("content", /\/og\/es\.svg\?title=/)
+    await expect(page.locator('meta[property="og:image"]')).toHaveAttribute("content", /\/og\/es\.png/)
   })
 
   test("failed optimized screenshots still reveal the card gradient", async ({ page }) => {

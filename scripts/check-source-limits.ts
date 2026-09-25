@@ -12,7 +12,6 @@ const exceptions = new Map([
   ["src/components/CertificationCarousel.astro", "content-rich carousel with scoped interaction styles"],
   ["src/pages/privacy.astro", "legal content document"],
   ["src/pages/en/privacy.astro", "legal content document"],
-  ["src/lib/tech-colors.ts", "canonical technology color registry"],
 ])
 
 async function collectFiles(directory: string): Promise<string[]> {

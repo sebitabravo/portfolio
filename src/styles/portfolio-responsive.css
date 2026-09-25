@@ -67,15 +67,6 @@
 }
 
 @media (max-width: 1023px) {
-  .hero-layout {
-    gap: 2.5rem;
-    grid-template-columns: minmax(0, 1fr) minmax(250px, 0.75fr);
-  }
-
-  .hero-title {
-    font-size: clamp(3.6rem, 8vw, 6rem);
-  }
-
   .project-card {
     grid-column: span 6;
   }
@@ -86,50 +77,6 @@
 }
 
 @media (max-width: 767px) {
-  .hero-inner {
-    min-height: auto;
-    padding-top: 7.5rem;
-    padding-bottom: 1.1rem;
-  }
-
-  .hero-layout {
-    display: flex;
-    min-height: 0;
-    flex-direction: column;
-    align-items: stretch;
-    gap: 2.5rem;
-  }
-
-  .hero-title {
-    font-size: clamp(3.45rem, 17vw, 5.3rem);
-    line-height: 0.84;
-  }
-
-  .hero-lede {
-    font-size: 1rem;
-  }
-
-  .hero-actions {
-    align-items: stretch;
-  }
-
-  .hero-btn-primary {
-    flex: 0 0 auto;
-  }
-
-  .hero-art {
-    width: min(100%, 360px);
-    align-self: center;
-  }
-
-  .hero-art-frame {
-    border-radius: 1rem;
-  }
-
-  .hero-portrait-shell {
-    width: 56%;
-  }
-
   .project-outcomes {
     grid-template-columns: 1fr;
     gap: 1rem;
@@ -201,16 +148,6 @@
   .projects-github-link {
     font-size: 0.68rem;
     text-align: center;
-  }
-}
-
-@media (max-width: 420px) {
-  .hero-title {
-    font-size: 3.35rem;
-  }
-
-  .hero-btn-primary {
-    width: 100%;
   }
 }
 

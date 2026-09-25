@@ -16,33 +16,36 @@ const technologyCount = String(technologies.length).padStart(2, '0')
 ---
 
 <div
-  class="signal-strip"
+  class="signal-strip relative overflow-hidden bg-surface-soft/76 backdrop-blur-[12px] backdrop-saturate-[108%]"
   data-animate
   role="region"
   aria-label={label}
   data-signal-pause={t.signal.pause}
   data-signal-resume={t.signal.resume}
 >
-  <div class="signal-strip-inner">
-    <div class="signal-strip-label">
-      <span class="signal-strip-dot" aria-hidden="true"></span>
+  <div class="signal-strip-inner mx-auto grid max-w-7xl min-h-[3.7rem] md:min-h-[4.25rem] grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-[0.65rem] md:gap-5 px-4 md:px-5">
+    <div class="signal-strip-label inline-flex items-center gap-[0.55rem] text-muted-foreground text-[0.68rem] uppercase tracking-[0.12em] whitespace-normal md:whitespace-nowrap">
+      <span class="signal-strip-dot size-[0.42rem] rounded-full bg-primary" aria-hidden="true"></span>
       <span>{label}</span>
     </div>
-    <div class="signal-marquee-window" aria-hidden="true">
-      <div class="signal-marquee">
+    <div class="signal-marquee-window overflow-hidden" aria-hidden="true">
+      <div class="signal-marquee flex w-max items-center gap-4 md:gap-[1.7rem]">
         {repeatedTechnologies.map((technology, index) => (
-          <span class="signal-tech" data-duplicate={index >= technologies.length ? 'true' : undefined}>
-            <span class="signal-tech-mark">✳</span>
+          <span
+            class="signal-tech inline-flex items-center gap-[0.45rem] text-foreground/78 text-[0.68rem] md:text-[0.7rem] uppercase tracking-[0.12em] whitespace-nowrap"
+            data-duplicate={index >= technologies.length ? 'true' : undefined}
+          >
+            <span class="signal-tech-mark text-primary text-xs">✳</span>
             {technology}
           </span>
         ))}
       </div>
     </div>
-    <div class="signal-strip-actions">
-      <span class="signal-strip-index" aria-hidden="true">{technologyCount} / {technologyCount}</span>
+    <div class="signal-strip-actions inline-flex items-center gap-[0.65rem]">
+      <span class="signal-strip-index hidden md:inline text-[0.68rem] uppercase tracking-[0.12em] whitespace-nowrap" aria-hidden="true">{technologyCount} / {technologyCount}</span>
       <button
         type="button"
-        class="signal-marquee-toggle focus-ring"
+        class="signal-marquee-toggle focus-ring inline-flex size-8 items-center justify-center rounded-[0.45rem] border border-border bg-card/50 text-muted-foreground text-[0.68rem] cursor-pointer transition-colors duration-[180ms] hover:border-primary/55 hover:bg-muted hover:text-primary"
         data-signal-toggle
         aria-pressed="false"
         aria-label={t.signal.pause}
@@ -56,53 +59,38 @@ const technologyCount = String(technologies.length).padStart(2, '0')
 
 <style>
   .signal-strip {
-    position: relative;
-    overflow: hidden;
+    /* hero-line is a runtime token outside @theme inline; promoting it needs portfolio-base.css */
     border-top: 1px solid var(--hero-line);
     border-bottom: 1px solid var(--hero-line);
-    background: hsl(var(--surface-soft) / 0.76);
+    /* one-off ambient shadow, no matching card-shadow token */
     box-shadow: 0 12px 30px rgb(45 42 105 / 0.04);
-    backdrop-filter: blur(12px) saturate(1.08);
-  }
-
-  .signal-strip-inner {
-    display: grid;
-    max-width: 1280px;
-    min-height: 4.25rem;
-    margin: 0 auto;
-    grid-template-columns: auto minmax(0, 1fr) auto;
-    align-items: center;
-    gap: 1.25rem;
-    padding: 0 1.25rem;
-  }
-
-  .signal-strip-label {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.55rem;
-    color: hsl(var(--muted-foreground));
-    font-size: 0.68rem;
-    white-space: nowrap;
   }
 
   .signal-strip-dot {
-    width: 0.42rem;
-    height: 0.42rem;
-    border-radius: 50%;
-    background: hsl(var(--primary));
+    /* Tailwind's ring opacity modifier compiles to color-mix(), which shifts this hairline halo's color */
     box-shadow: 0 0 0 4px hsl(var(--primary) / 0.12);
   }
 
+  .signal-strip-label,
+  .signal-strip-index,
+  .signal-tech {
+    font-family: var(--font-jetbrains-mono), ui-monospace, monospace;
+  }
+
+  .signal-marquee-toggle {
+    font-family: var(--font-jetbrains-mono), monospace;
+  }
+
+  .signal-strip-index {
+    /* hero-faint is a runtime token outside @theme inline; promoting it needs portfolio-base.css */
+    color: var(--hero-faint);
+  }
+
   .signal-marquee-window {
-    overflow: hidden;
     mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
   }
 
   .signal-marquee {
-    display: flex;
-    width: max-content;
-    align-items: center;
-    gap: 1.7rem;
     animation: signal-marquee 32s linear infinite;
   }
 
@@ -110,63 +98,6 @@ const technologyCount = String(technologies.length).padStart(2, '0')
   .signal-marquee-window:focus-within .signal-marquee,
   .signal-strip.is-paused .signal-marquee {
     animation-play-state: paused;
-  }
-
-  .signal-tech {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.45rem;
-    color: hsl(var(--foreground) / 0.78);
-    font-family: var(--font-jetbrains-mono), monospace;
-    font-size: 0.7rem;
-    white-space: nowrap;
-  }
-
-  .signal-strip-label,
-  .signal-strip-index,
-  .signal-tech {
-    font-family: var(--font-jetbrains-mono), ui-monospace, monospace;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-  }
-
-  .signal-tech-mark {
-    color: hsl(var(--primary));
-    font-size: 0.75rem;
-  }
-
-  .signal-strip-index {
-    color: var(--hero-faint);
-    font-size: 0.68rem;
-    white-space: nowrap;
-  }
-
-  .signal-strip-actions {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.65rem;
-  }
-
-  .signal-marquee-toggle {
-    display: inline-flex;
-    width: 2rem;
-    height: 2rem;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid hsl(var(--border));
-    border-radius: 0.45rem;
-    color: hsl(var(--muted-foreground));
-    background: hsl(var(--card) / 0.5);
-    font-family: var(--font-jetbrains-mono), monospace;
-    font-size: 0.68rem;
-    cursor: pointer;
-    transition: color 180ms ease, border-color 180ms ease, background 180ms ease;
-  }
-
-  .signal-marquee-toggle:hover {
-    border-color: hsl(var(--primary) / 0.55);
-    color: hsl(var(--primary));
-    background: hsl(var(--muted));
   }
 
   @keyframes signal-marquee {
@@ -177,43 +108,13 @@ const technologyCount = String(technologies.length).padStart(2, '0')
   @media (prefers-reduced-motion: reduce) {
     .signal-marquee {
       animation: none;
+      flex-wrap: nowrap;
+      transform: none;
     }
 
     .signal-marquee-window {
       overflow-x: auto;
       mask-image: none;
-    }
-
-    .signal-marquee {
-      width: max-content;
-      flex-wrap: nowrap;
-      transform: none;
-    }
-  }
-
-  @media (max-width: 767px) {
-    .signal-strip-inner {
-      min-height: 3.7rem;
-      grid-template-columns: auto minmax(0, 1fr) auto;
-      gap: 0.65rem;
-      padding: 0 1rem;
-    }
-
-    .signal-strip-index {
-      display: none;
-    }
-
-    .signal-strip-label {
-      font-size: 0.68rem;
-      white-space: normal;
-    }
-
-    .signal-marquee {
-      gap: 1rem;
-    }
-
-    .signal-tech {
-      font-size: 0.68rem;
     }
   }
 </style>

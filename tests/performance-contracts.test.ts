@@ -9,6 +9,11 @@ vi.mock("../src/assets/experience/telsur.webp", () => ({ default: { src: "telsur
 
 
 const carouselMarkup = readFileSync(
+  "src/scripts/cert-carousel.ts",
+  "utf8",
+);
+
+const carouselWiring = readFileSync(
   "src/components/CertificationCarousel.astro",
   "utf8",
 );
@@ -27,13 +32,14 @@ describe("performance contracts", () => {
   });
 
   it("runs carousel auto-scroll only while the carousel is in the viewport", () => {
+    expect(carouselWiring).toContain('import { initCertCarousel } from "@/scripts/cert-carousel"');
     expect(carouselMarkup).toContain(
       "const intersectionObserver = new IntersectionObserver",
     );
     expect(carouselMarkup).toContain("intersectionObserver.observe(container)");
     expect(carouselMarkup).toContain("intersectionObserver.disconnect()");
     const startGuard = carouselMarkup.match(
-      /function startAutoScroll\(\)\s*\{\s*if \(([^\n]+)\) return/,
+      /function startAutoScroll\([^)]*\)(?:\s*:\s*void)?\s*\{\s*if \(([^\n]+)\) return/,
     )?.[1];
     expect(startGuard).toBeDefined();
     expect(startGuard).toContain("signal.aborted");
@@ -54,7 +60,7 @@ describe("performance contracts", () => {
       "motionPreference.addEventListener('change', handleMotionChange, { signal })",
     );
     expect(carouselMarkup).toMatch(
-      /function handleMotionChange\(\)\s*\{[^}]*stopAutoScroll\(\)[^}]*startAutoScroll\(\)/s,
+      /function handleMotionChange\([^)]*\)(?:\s*:\s*void)?\s*\{[^}]*stopAutoScroll\(\)[^}]*startAutoScroll\(\)/s,
     );
     expect(carouselMarkup).not.toMatch(
       /if \(window\.matchMedia\('\(prefers-reduced-motion: reduce\)'\)\.matches\) return/,

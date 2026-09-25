@@ -102,6 +102,25 @@ describe("documented light-theme semantic palette", () => {
   });
 });
 
+describe("certification carousel badge tokens", () => {
+  const carousel = readFileSync("src/components/CertificationCarousel.astro", "utf8");
+  const themeInline = css.match(/@theme inline\s*\{([^}]*)\}/)?.[1] ?? "";
+
+  it("promotes professional badge greens to named theme utilities", () => {
+    expect(carousel).not.toMatch(/hsl\(144/);
+    expect(carousel).toContain("bg-cert-pro-bg");
+    expect(carousel).toContain("text-cert-pro-text");
+    expect(carousel).toContain("border-cert-pro-border");
+    expect(themeInline).toMatch(/--color-cert-pro-bg:\s*hsl\(var\(--cert-pro\) \/ 0\.12\);/);
+    expect(themeInline).toMatch(/--color-cert-pro-text:\s*hsl\(var\(--cert-pro-text\)\);/);
+    expect(themeInline).toMatch(/--color-cert-pro-border:\s*hsl\(var\(--cert-pro\) \/ 0\.25\);/);
+    for (const palette of [lightPalette, darkPalette]) {
+      expect(token("cert-pro", palette)).toMatch(/^[\d.]+\s+[\d.]+%\s+[\d.]+%$/);
+      expect(token("cert-pro-text", palette)).toMatch(/^[\d.]+\s+[\d.]+%\s+[\d.]+%$/);
+    }
+  });
+});
+
 describe("unused theme declarations", () => {
   it("does not define obsolete hero gradient or navigation tokens in either palette", () => {
     for (const palette of [lightPalette, darkPalette]) {

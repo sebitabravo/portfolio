@@ -51,7 +51,7 @@ export function setupProjects() {
     if (img.dataset.fallbackBound === "true") return
     img.dataset.fallbackBound = "true"
     img.addEventListener("error", () => {
-      img.style.display = "none"
+      img.classList.add("hidden")
     })
   })
 }

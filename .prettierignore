@@ -21,10 +21,7 @@ src/scripts/cert-carousel.ts
 src/scripts/language-toggle.ts
 pnpm-workspace.yaml
 # Would exceed the source line limits once formatted; split them first.
-src/components/Header.astro
 src/components/Projects.astro
-src/components/SignalStrip.astro
-src/scripts/portfolio-motion.ts
 # Inline scripts are CSP hash-pinned in vercel.json and the Astro plugin cannot skip embedded code.
 src/layouts/Layout.astro
 src/components/Hero.astro

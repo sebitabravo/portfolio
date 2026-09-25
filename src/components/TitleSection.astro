@@ -13,13 +13,13 @@ const sectionTotal = String(total).padStart(2, '0')
 ---
 
 <div class="section-heading mb-10">
-  <div class="section-heading-meta" aria-hidden="true">
-    <span class="section-heading-meta-line"></span>
-    <span class="section-heading-index">{sectionIndex} / {sectionTotal}</span>
+  <div class="section-heading-meta flex items-center gap-[0.65rem] mb-3 text-caption-color text-[0.68rem]" aria-hidden="true">
+    <span class="section-heading-meta-line inline-block w-[1.6rem] h-px bg-hero-accent shadow-section-meta-line"></span>
+    <span class="section-heading-index text-hero-accent text-[0.64rem]">{sectionIndex} / {sectionTotal}</span>
     <span>SEBITA / {currentYear}</span>
   </div>
-  <h2 id={id} class="flex items-center gap-x-3 text-foreground [&>svg]:text-primary">
+  <h2 id={id} class="flex items-center gap-x-3 text-foreground [&>svg]:text-primary text-[clamp(2.25rem,4.5vw,3.75rem)] tracking-[-0.065em] leading-[0.98]">
     <slot />
   </h2>
-  <div class="section-heading-rule mt-4" aria-hidden="true"><span></span></div>
+  <div class="section-heading-rule mt-4 flex items-center gap-[0.4rem] h-px bg-hero-line" aria-hidden="true"><span class="w-24 h-0.5 bg-hero-accent shadow-section-rule"></span></div>
 </div>

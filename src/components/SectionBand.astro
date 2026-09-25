@@ -11,7 +11,14 @@ interface Props {
 const { id, headingId, tone = "base", class: className, ...attributes } = Astro.props
 ---
 
-<div class:list={["section-band", `section-band-${tone}`, className]} data-section-band={tone}>
+<div
+  class:list={[
+    "section-band relative isolate w-full px-4 py-[clamp(4.25rem,7vw,7rem)]",
+    { "section-band-tinted overflow-hidden border-y border-section-band-line bg-section-band-bg": tone === "tinted" },
+    className,
+  ]}
+  data-section-band={tone}
+>
   <SectionContainer id={id} headingId={headingId} {...attributes}>
     <slot />
   </SectionContainer>

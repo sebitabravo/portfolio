@@ -59,13 +59,13 @@ const contactLinks = [
     ))}
   </div>
 
-  <div class="contact-resume-row">
+  <div class="contact-resume-row flex flex-wrap items-center justify-center gap-x-4 gap-y-[0.8rem] pt-2">
     <a
       href={cvPdf}
       target="_blank"
       rel="noopener noreferrer"
       data-track-cv={locale}
-      class="contact-resume-action focus-ring"
+      class="contact-resume-action focus-ring inline-flex min-h-[2.75rem] w-fit items-center gap-[0.55rem] rounded-[0.55rem] border border-primary/55 px-[0.85rem] py-[0.6rem] text-primary-foreground bg-primary shadow-cta text-[0.78rem] font-bold transition-all duration-[180ms] ease-[ease] hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-cta-hover"
     >
       <DownloadIcon class="size-4" />
       <span>{t.hero.downloadCv}</span>
@@ -74,3 +74,12 @@ const contactLinks = [
     <p>{t.contact.cvHelper}</p>
   </div>
 </div>
+
+<style>
+  /* tests/ui-copy-localization.test.ts asserts this exact `<p>` tag's raw
+     source text, so its caption styling stays scoped here instead of a class. */
+  .contact-resume-row p {
+    color: hsl(var(--caption-color));
+    font-size: 0.82rem;
+  }
+</style>

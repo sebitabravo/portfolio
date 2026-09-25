@@ -35,14 +35,19 @@ const dateText = current
 <div data-animate data-animate-delay={String(index + 1)} class:list={["experience-item relative pl-8 pb-8 before:absolute before:left-0 before:block before:h-full before:border-l before:border-parchment before:content-['']", { "experience-item-secondary": index > 0 }]}>
   <span class="absolute -left-[5px] top-1 size-[10px] rounded-full bg-primary ring-4 ring-background"></span>
 
-  <div class="experience-item-card section-card rounded-2xl border border-parchment bg-card">
+  <div
+    class:list={[
+      "experience-item-card section-card rounded-2xl border border-parchment bg-card",
+      index > 0 ? "py-4 px-[1.1rem] md:py-[1.15rem] md:px-6" : "p-6",
+    ]}
+  >
     <div class="grid md:grid-cols-5 md:gap-8">
       <div class="md:col-span-2 mb-4 md:mb-0">
         <h3 class="font-semibold text-foreground">{position}</h3>
         <h4 class="text-caption-color mt-0.5">{company}</h4>
         <time class="text-xs text-caption-color mt-2 block">{dateText}</time>
         {location && <p class="text-xs leading-[1.60] text-caption-color">{location}</p>}
-        {employmentType && <p class="experience-employment-type">{employmentType}</p>}
+        {employmentType && <p class="experience-employment-type mt-[0.35rem] text-foreground/72 text-[0.76rem] font-semibold">{employmentType}</p>}
 
         {logos && logos.length > 0 && (
           <div class="flex flex-wrap items-center gap-3 mt-4">
@@ -74,15 +79,20 @@ const dateText = current
         )}
       </div>
 
-      <div class="experience-description flex flex-col gap-2 text-foreground/85 md:col-span-3">
+      <div
+        class:list={[
+          "experience-description flex flex-col gap-2 text-foreground/85 md:col-span-3",
+          { "items-start justify-center": index > 0 },
+        ]}
+      >
         <p class="text-[0.95rem] leading-[1.60]">{description}</p>
 
         {highlights.length > 0 && (
-          <div class="experience-highlights" aria-label={t.work.evidenceLabel}>
+          <div class="experience-highlights grid grid-cols-1 md:grid-cols-3 gap-[0.45rem] mt-[0.35rem]" aria-label={t.work.evidenceLabel}>
             {highlights.map((highlight) => (
-              <div class="experience-highlight">
+              <div class="experience-highlight flex min-w-0 flex-col gap-1 py-[0.6rem] px-[0.7rem] border border-hero-line rounded-[0.55rem] bg-surface-soft/62">
                 <span>{highlight.label}</span>
-                <strong>{highlight.value}</strong>
+                <strong class="overflow-hidden text-foreground/90 text-[0.78rem] text-ellipsis whitespace-nowrap">{highlight.value}</strong>
               </div>
             ))}
           </div>
@@ -111,3 +121,21 @@ const dateText = current
     </div>
   </div>
 </div>
+
+<style>
+  /* tests/ui-copy-localization.test.ts asserts this exact `<span>` tag's raw
+     source text, so its label styling stays scoped here instead of a class. */
+  .experience-highlight span {
+    color: var(--hero-accent-strong);
+    font-family: var(--font-jetbrains-mono), monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  /* .dark lives on <html>, outside this component's scoped tree, so Astro's
+     scoping must not attach its cid attribute to it. */
+  :global(.dark) .experience-highlight span {
+    color: var(--hero-accent);
+  }
+</style>

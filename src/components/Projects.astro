@@ -30,41 +30,49 @@ const statusLabels: Record<Project["status"], string> = {
   demo: t.projects.statusDemo,
 }
 
+// `.project-media-status` sits inside `.project-media-topline`, whose
+// `span:last-child` white-text rule always outranked these by specificity —
+// the status color was never anything but background. Match that verified
+// computed behavior instead of the unreachable text-color intent.
 const statusColors: Record<Project["status"], string> = {
-  production: "project-status-production",
-  development: "project-status-development",
-  demo: "project-status-demo",
+  production: "bg-status-production-bg",
+  development: "bg-status-development-bg",
+  demo: "bg-status-demo-bg",
 }
+
+const actionBase = "project-action focus-ring inline-flex min-h-[2.55rem] flex-[1_1_auto] md:flex-none items-center justify-center gap-[0.42rem] rounded-[0.5rem] py-[0.55rem] px-[0.75rem] text-[0.72rem] font-semibold transition-all duration-[180ms] ease-[ease] hover:-translate-y-0.5"
+const actionSecondary = `${actionBase} project-action-secondary border border-border text-foreground/82 bg-transparent hover:border-primary/50 hover:bg-muted`
+const actionPrimary = `${actionBase} project-action-primary border border-primary/80 text-primary-foreground bg-primary shadow-action-primary hover:border-primary hover:shadow-action-primary-hover`
 ---
 
 <div class="projects-shell">
-  <div class="project-scroll-meter" data-project-scroll-meter aria-hidden="true">
-    <span></span>
+  <div class="project-scroll-meter w-[min(100%,22rem)] h-0.5 -mt-4 mr-0 mb-5 ml-auto overflow-hidden bg-border" data-project-scroll-meter aria-hidden="true">
+    <span class="block w-full h-full origin-left scale-x-0 bg-gradient-to-r from-primary to-primary/18 shadow-meter-glow transition-transform duration-[120ms] ease-linear"></span>
   </div>
   <div
-    class="project-outcomes"
+    class="project-outcomes grid grid-cols-1 gap-4 mb-6 pt-5 pb-6 border-y border-hero-line items-start md:grid-cols-[minmax(12rem,0.72fr)_minmax(0,1.28fr)] md:gap-[clamp(1.25rem,4vw,3.5rem)] md:mb-8"
     data-project-outcomes
     aria-labelledby={`project-outcomes-title-${locale}`}
   >
     <div class="project-outcomes-heading">
-      <p class="project-outcomes-kicker">{t.projects.outcomesLabel}</p>
-      <h3 id={`project-outcomes-title-${locale}`}>{t.projects.outcomesTitle}</h3>
+      <p class="project-outcomes-kicker text-hero-accent font-code text-[0.68rem] tracking-[0.12em] uppercase">{t.projects.outcomesLabel}</p>
+      <h3 id={`project-outcomes-title-${locale}`} class="max-w-none mt-[0.55rem] text-foreground text-[clamp(1.35rem,2.5vw,2rem)] tracking-tighter leading-[1.05] md:max-w-[12rem]">{t.projects.outcomesTitle}</h3>
     </div>
-    <ul class="project-outcomes-list">
+    <ul class="project-outcomes-list grid gap-[0.6rem] m-0 p-0 list-none">
       {t.projects.outcomes.map((outcome: string, index: number) => (
-        <li>
-          <span class="project-outcome-index" aria-hidden="true">0{index + 1}</span>
+        <li class="grid grid-cols-[2rem_minmax(0,1fr)] gap-[0.7rem] items-baseline py-[0.55rem] text-foreground/84 text-[0.92rem] leading-[1.45]">
+          <span class="project-outcome-index font-code tracking-[0.12em] uppercase text-hero-faint text-[0.62rem]" aria-hidden="true">0{index + 1}</span>
           <span>{outcome}</span>
         </li>
       ))}
     </ul>
   </div>
-  <div class="project-grid" data-projects-list>
+  <div class="project-grid grid grid-cols-12 gap-4" data-projects-list>
     {projects.map(({ slug, title, description, tags, liveUrl, githubUrl, featured, status, metrics, blogSlug }, i) => {
       const statusLabel = status ? statusLabels[status] : undefined
       const publicStatusLabel = !liveUrl && githubUrl ? t.projects.statusCodeAvailable : statusLabel
       const statusColor = status ? statusColors[status] : ""
-      const publicStatusColor = !liveUrl && githubUrl ? "project-status-code" : statusColor
+      const publicStatusColor = !liveUrl && githubUrl ? "bg-status-code-bg" : statusColor
       const gradient = projectGradient(slug)
       const screenshot = getProjectScreenshot(slug)
       const resolvedBlogSlug = blogSlug || slug
@@ -73,16 +81,28 @@ const statusColors: Record<Project["status"], string> = {
       const visualStats = metrics?.slice(0, 2) ?? []
       const projectNumber = String(i + 1).padStart(2, '0')
 
+      const cardSpanClasses = featured ? "col-span-full" : "col-span-full md:col-span-6 lg:col-span-4"
+      const mediaClasses = featured
+        ? "min-h-[270px] border-b border-white/16 md:min-h-[390px] md:border-r md:border-b-0"
+        : "min-h-[230px] border-b border-white/16 md:min-h-[265px]"
+      const descriptionClasses = featured
+        ? "min-h-0 text-[0.9rem] md:min-h-[4.8rem] md:max-w-[48rem] md:text-[0.98rem]"
+        : "min-h-0 text-[0.9rem] md:min-h-[4.8rem] md:text-[0.95rem]"
+
       return (
         <article
           data-animate
           data-animate-delay={String((i % 4) + 1)}
-          class:list={["project-card group", { "project-card-featured": featured }]}
+          class:list={[
+            "project-card group relative flex min-w-0 flex-col overflow-hidden isolate rounded-2xl",
+            cardSpanClasses,
+            { "project-card-featured grid md:grid-cols-[minmax(0,1.32fr)_minmax(300px,0.68fr)]": featured },
+          ]}
           data-project-card
           data-project={slug}
           data-project-tags={tags.join(",")}
         >
-          <div class="project-media" style={`background:${gradient};`}>
+          <div class:list={["project-media relative overflow-hidden isolate", mediaClasses]} style={`background:${gradient};`}>
             {screenshot && <Picture
               src={screenshot}
               formats={["avif"]}
@@ -93,55 +113,55 @@ const statusColors: Record<Project["status"], string> = {
               height={500}
               sizes="(max-width: 767px) 100vw, (max-width: 1280px) 50vw, 800px"
               alt={`${title} screenshot`}
-              class="project-image"
+              class="project-image absolute inset-0 z-10 w-full h-full object-cover object-top transition-[transform_700ms_cubic-bezier(0.16,1,0.3,1),filter_350ms_ease] group-hover:scale-[1.055] group-hover:saturate-[1.08] group-hover:contrast-[1.03] group-focus-within:scale-[1.055] group-focus-within:saturate-[1.08] group-focus-within:contrast-[1.03]"
               loading="lazy"
               decoding="async"
               data-img-fallback
             />}
-            <div class="project-media-shade" aria-hidden="true"></div>
-            <div class="project-media-grid" aria-hidden="true"></div>
-            <div class="project-media-topline">
+            <div class="project-media-shade absolute inset-0 z-20 pointer-events-none" aria-hidden="true"></div>
+            <div class="project-media-grid absolute inset-0 z-20 pointer-events-none" aria-hidden="true"></div>
+            <div class="project-media-topline absolute top-4 right-4 left-4 z-50 flex justify-between text-white/72 text-[0.68rem]">
               <span>{projectNumber} / {projectCount}</span>
-              <span class:list={["project-media-status", publicStatusColor]}>{publicStatusLabel}</span>
+              <span class:list={["project-media-status rounded-full py-1 px-[0.55rem] text-[0.68rem] text-white/90", publicStatusColor]}>{publicStatusLabel}</span>
             </div>
-            <a href={projectUrl} class="project-media-link focus-ring" aria-label={`${title} — ${t.projects.readMore}`}>
-              <span class="project-media-link-label">{t.projects.readMore} <span aria-hidden="true">↗</span></span>
+            <a href={projectUrl} class="project-media-link group/media-link focus-ring absolute inset-0 z-40" aria-label={`${title} — ${t.projects.readMore}`}>
+              <span class="project-media-link-label absolute top-4 left-4 py-[0.45rem] px-[0.65rem] border border-white/32 rounded-[0.45rem] text-white bg-media-label-bg font-code text-[0.68rem] tracking-[0.06em] opacity-0 translate-y-1 backdrop-blur-[8px] transition-[opacity,transform] duration-[220ms] ease-[ease] group-hover:opacity-100 group-hover:translate-y-0 group-focus-visible/media-link:opacity-100 group-focus-visible/media-link:translate-y-0">{t.projects.readMore} <span aria-hidden="true">↗</span></span>
             </a>
-            <div class="project-media-title" aria-hidden="true">
-              <span class="project-media-kicker">{featured ? t.projects.featured : t.projects.cardLabel}</span>
-              <span class="project-media-name">{title}</span>
+            <div class="project-media-title absolute right-[1.1rem] bottom-4 left-[1.1rem] z-30 flex flex-col gap-1 pointer-events-none" aria-hidden="true">
+              <span class="project-media-kicker text-white/68 text-[0.68rem]">{featured ? t.projects.featured : t.projects.cardLabel}</span>
+              <span class="project-media-name text-white font-hero-heading text-[clamp(1.45rem,3vw,2.3rem)] font-bold tracking-[-0.055em] leading-none text-shadow-media-name">{title}</span>
             </div>
           </div>
 
-          <div class="project-body">
-            <div class="project-heading-row">
+          <div class="project-body flex min-w-0 flex-1 flex-col gap-[0.85rem] p-[clamp(1rem,2.2vw,1.55rem)]">
+            <div class="project-heading-row flex items-start justify-between gap-4">
               <div>
-                <p class="project-eyebrow">{projectNumber} — {publicStatusLabel}</p>
-                <h3>{title}</h3>
+                <p class="project-eyebrow mb-[0.45rem] text-caption-color text-[0.68rem]">{projectNumber} — {publicStatusLabel}</p>
+                <h3 class="text-[clamp(1.35rem,2vw,1.85rem)] tracking-[-0.05em]">{title}</h3>
               </div>
-              {featured && <span class="project-featured-mark" aria-hidden="true">✳</span>}
+              {featured && <span class="project-featured-mark inline-flex size-8 flex-none items-center justify-center rounded-full border border-primary/38 text-primary text-[0.85rem]" aria-hidden="true">✳</span>}
             </div>
 
-            <p class="project-description">{description}</p>
+            <p class:list={["project-description text-foreground/84 leading-[1.62]", descriptionClasses]}>{description}</p>
 
             {visualStats.length > 0 && (
-              <div class="project-metrics" aria-label={t.projects.evidenceLabel}>
+              <div class="project-metrics grid grid-cols-2 gap-[0.5rem]" aria-label={t.projects.evidenceLabel}>
                 {visualStats.map((metric) => (
-                  <div class="project-metric">
+                  <div class="project-metric flex min-w-0 flex-col gap-[0.28rem] py-[0.65rem] px-[0.75rem] border border-hero-line rounded-[0.6rem] bg-surface-soft/72 backdrop-blur-[8px]">
                     <span>{metric.label}</span>
-                    <strong>{metric.value}</strong>
+                    <strong class="overflow-hidden text-hero-accent-strong dark:text-hero-accent text-[0.84rem] text-ellipsis whitespace-nowrap">{metric.value}</strong>
                   </div>
                 ))}
               </div>
             )}
 
-            <div class="project-tags" aria-label={t.projects.technologiesLabel}>
+            <div class="project-tags flex flex-wrap gap-[0.4rem]" aria-label={t.projects.technologiesLabel}>
               {visibleTags.map((tag) => {
                 const badge = getTechBadge(tag)
                 const Icon = badge.icon
 
                 return (
-                  <span class:list={["tech-badge project-tech-badge flex items-center gap-1.5", badge.className]} style={badge.style}>
+                  <span class:list={["tech-badge project-tech-badge flex items-center gap-1.5 text-[0.68rem] py-[0.26rem] px-2", badge.className]} style={badge.style}>
                     {Icon && <Icon class="size-3.5" />}
                     {tag}
                   </span>
@@ -149,41 +169,22 @@ const statusColors: Record<Project["status"], string> = {
               })}
             </div>
 
-            <footer class="project-actions">
+            <footer class="project-actions flex flex-wrap gap-[0.45rem] mt-auto pt-1">
               {githubUrl && (
-                <a
-                  href={githubUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  data-track-project={slug}
-                  data-track-action="code"
-                  class="project-action project-action-secondary focus-ring"
-                >
+                <a href={githubUrl} target="_blank" rel="noopener noreferrer" data-track-project={slug} data-track-action="code" class={actionSecondary}>
                   <GitHubIcon class="size-4" />
                   {t.projects.viewCode}
                 </a>
               )}
 
               {liveUrl && (
-                <a
-                  href={liveUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  data-track-project={slug}
-                  data-track-action="live"
-                  class="project-action project-action-secondary focus-ring"
-                >
+                <a href={liveUrl} target="_blank" rel="noopener noreferrer" data-track-project={slug} data-track-action="live" class={actionSecondary}>
                   <LinkIcon class="size-4" />
                   {t.projects.viewProject}
                 </a>
               )}
 
-              <a
-                href={projectUrl}
-                data-track-project={slug}
-                data-track-action="casestudy"
-                class="project-action project-action-primary focus-ring"
-              >
+              <a href={projectUrl} data-track-project={slug} data-track-action="casestudy" class={actionPrimary}>
                 <BookOpen class="size-4" />
                 {t.projects.readMore}
               </a>
@@ -194,28 +195,28 @@ const statusColors: Record<Project["status"], string> = {
     })}
   </div>
 
-  <div class="projects-contact-cta">
-    <p>{t.projects.contactPrompt}</p>
-    <a href={contactUrl} class="projects-contact-link focus-ring">
+  <div class="projects-contact-cta flex flex-col items-stretch justify-center gap-x-4 gap-y-[0.8rem] mt-10 py-[1.1rem] border-y border-hero-line md:flex-row md:items-center">
+    <p class="text-foreground/78 text-[0.92rem]">{t.projects.contactPrompt}</p>
+    <a href={contactUrl} class="projects-contact-link focus-ring inline-flex min-h-10 items-center justify-center gap-2 py-[0.65rem] px-[0.9rem] border border-primary/70 rounded-[0.55rem] text-primary-foreground bg-primary text-[0.82rem] font-bold transition-all duration-[180ms] ease-[ease] hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-action-primary-hover">
       <MailIcon class="size-4" />
       <span>{t.projects.contactCta}</span>
       <span aria-hidden="true">↗</span>
     </a>
   </div>
 
-  <div class="projects-endcap">
-    <span class="projects-endcap-line" aria-hidden="true"></span>
+  <div class="projects-endcap grid grid-cols-[minmax(2rem,1fr)_auto_minmax(2rem,1fr)] items-center gap-[0.65rem] mt-[2.3rem] md:gap-4">
+    <span class="projects-endcap-line h-px bg-hero-line" aria-hidden="true"></span>
     <a
       href="https://github.com/sebitabravo?tab=repositories"
       target="_blank"
       rel="noopener noreferrer"
-      class="projects-github-link focus-ring"
+      class="projects-github-link focus-ring inline-flex items-center gap-[0.55rem] text-muted-foreground font-code text-[0.68rem] tracking-[0.02em] text-center transition-all duration-[180ms] ease-[ease] hover:text-primary hover:-translate-y-0.5 md:text-left"
     >
       <GitHubIcon class="size-4" />
       {t.projects.viewMoreGithub}
       <span aria-hidden="true">↗</span>
     </a>
-    <span class="projects-endcap-line" aria-hidden="true"></span>
+    <span class="projects-endcap-line h-px bg-hero-line" aria-hidden="true"></span>
   </div>
 </div>
 
@@ -226,3 +227,12 @@ const statusColors: Record<Project["status"], string> = {
   document.addEventListener("astro:page-load", setupProjects)
   document.addEventListener("astro:before-swap", teardownProjects)
 </script>
+
+<style>
+  /* tests/ui-copy-localization.test.ts asserts this exact `<span>` tag's raw
+     source text, so its label styling stays scoped here instead of a class. */
+  .project-metric span {
+    color: hsl(var(--caption-color));
+    font-size: 0.68rem;
+  }
+</style>

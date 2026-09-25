@@ -22,7 +22,7 @@ const requiredHeaders = [
 ] as const;
 
 const csp =
-  "default-src 'self'; script-src 'self' https://va.vercel-scripts.com 'sha256-YWJjZA=='; script-src-attr 'none'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'self' https://vitals.vercel-insights.com https://va.vercel-scripts.com; worker-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'; manifest-src 'self'; upgrade-insecure-requests";
+  "default-src 'self'; script-src 'self' 'sha256-YWJjZA=='; script-src-attr 'none'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'self'; worker-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'; manifest-src 'self'; upgrade-insecure-requests";
 
 function validConfig() {
   return {
@@ -48,10 +48,11 @@ describe("Vercel security-header contract", () => {
     expect(result.policy?.directives.get("script-src-attr")).toEqual([
       "'none'",
     ]);
-    expect(result.policy?.directives.get("script-src")).toContain(
+    expect(result.policy?.directives.get("script-src")).not.toContain(
       "https://va.vercel-scripts.com",
     );
-    expect([...result.policy!.scriptHashes]).toHaveLength(10);
+    expect(result.policy?.directives.get("connect-src")).toEqual(["'self'"]);
+    expect([...result.policy!.scriptHashes]).toHaveLength(11);
   });
 
   it.each([
@@ -107,8 +108,8 @@ describe("Vercel security-header contract", () => {
       "unexpected script source",
       (config: ReturnType<typeof validConfig>) => {
         config.headers[0].headers[0].value = csp.replace(
-          "https://va.vercel-scripts.com",
-          "https://unsafe.example",
+          "script-src 'self'",
+          "script-src 'self' https://unsafe.example",
         );
       },
       "script-src",

@@ -1,20 +1,8 @@
-import { trackEvent } from "@/lib/analytics"
-
 let spotlightCleanup: (() => void) | null = null
 
 export function setupProjects() {
   spotlightCleanup?.()
   spotlightCleanup = null
-
-  document.querySelectorAll<HTMLElement>("[data-track-project]").forEach((button) => {
-    if (button.dataset.trackBound === "true") return
-    button.dataset.trackBound = "true"
-    button.addEventListener("click", () => {
-      const project = button.dataset.trackProject ?? ""
-      const action = (button.dataset.trackAction ?? "code") as "live" | "code" | "casestudy"
-      trackEvent({ name: "project_view", props: { project, action } })
-    })
-  })
 
   const cardCleanups: Array<() => void> = []
   document.querySelectorAll<HTMLElement>("[data-project-card]").forEach((card) => {

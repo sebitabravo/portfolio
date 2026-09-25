@@ -1,10 +1,5 @@
-import { describe, expect, it, vi } from "vitest"
+import { describe, expect, it } from "vitest"
 
-const { track } = vi.hoisted(() => ({ track: vi.fn() }))
-
-vi.mock("@vercel/analytics", () => ({ track }))
-
-import { trackEvent } from "../src/lib/analytics"
 import { siteConfig } from "../src/lib/config"
 import { projectGradient } from "../src/lib/visual-gradients"
 import { cn, formatDate } from "../src/lib/utils"
@@ -28,16 +23,5 @@ describe("shared library contracts", () => {
     expect(formatDate(date, "es")).toContain("2024")
     expect(formatDate(date, "en")).toContain("2024")
     expect(cn("px-2", false && "py-1", "px-4")).toBe("px-4")
-  })
-
-  it("tracks analytics without leaking provider failures", () => {
-    track.mockReset()
-    trackEvent({ name: "social_click", props: { platform: "github" } })
-    expect(track).toHaveBeenCalledWith("social_click", { platform: "github" })
-
-    track.mockImplementationOnce(() => {
-      throw new Error("analytics unavailable")
-    })
-    expect(() => trackEvent({ name: "cv_download", props: { locale: "es" } })).not.toThrow()
   })
 })

@@ -1,8 +1,6 @@
 ---
 import { Font, getImage } from "astro:assets"
 import { SEO } from "astro-seo"
-import Analytics from "@vercel/analytics/astro"
-import SpeedInsights from "@vercel/speed-insights/astro"
 
 import "@/styles/global.css"
 
@@ -141,12 +139,6 @@ const jsonLdString = JSON.stringify(jsonLd).replace(/</g, "\\u003c")
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     {heroPortrait && (
       <link rel="preload" as="image" href={heroPortrait.src} fetchpriority="high" />
-    )}
-    {import.meta.env.VERCEL && (
-      <>
-        <link rel="preconnect" href="https://cdn.vercel-insights.com" />
-        <link rel="preconnect" href="https://vitals.vercel-insights.com" />
-      </>
     )}
     <Font cssVariable="--font-manrope" />
     <Font cssVariable="--font-syne" preload />
@@ -292,8 +284,6 @@ const jsonLdString = JSON.stringify(jsonLd).replace(/</g, "\\u003c")
 
       initScrollReveal()
     </script>
-    {import.meta.env.VERCEL && <Analytics />}
-    {import.meta.env.VERCEL && <SpeedInsights />}
     <script is:inline>
       let progressFrame = null
       let progressScrollHandler = null

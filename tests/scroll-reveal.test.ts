@@ -84,7 +84,7 @@ describe("scroll reveal lifecycle", () => {
     initScrollReveal()
 
     instances[0].callback(
-      [{ isIntersecting: true, target: el } as IntersectionObserverEntry],
+      [{ isIntersecting: true, target: el } as unknown as IntersectionObserverEntry],
       instances[0] as unknown as IntersectionObserver,
     )
 
@@ -100,7 +100,7 @@ describe("scroll reveal lifecycle", () => {
     initScrollReveal()
 
     instances[0].callback(
-      [{ isIntersecting: false, target: el } as IntersectionObserverEntry],
+      [{ isIntersecting: false, target: el } as unknown as IntersectionObserverEntry],
       instances[0] as unknown as IntersectionObserver,
     )
 

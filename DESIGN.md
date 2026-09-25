@@ -208,8 +208,9 @@ into unreviewable files:
 | `.css` | 1500 lines | `pnpm verify:limits` |
 
 The documented exceptions are the shared `Layout` shell, the content-heavy
-certification carousel and privacy documents, plus the canonical technology
-color registry. The former monolithic stylesheet is split into base, hero,
+certification carousel and privacy documents. Technology badges use the
+`src/lib/tech-badges.ts` registry (brand color per technology through CSS
+variables, one static utility set). The former monolithic stylesheet is split into base, hero,
 content, responsive and header layers. Repeated icons use the immutable
 `public/icons/sprite.svg` instead of embedding the same paths in every page.
 

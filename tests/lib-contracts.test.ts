@@ -6,7 +6,6 @@ vi.mock("@vercel/analytics", () => ({ track }))
 
 import { trackEvent } from "../src/lib/analytics"
 import { siteConfig } from "../src/lib/config"
-import { getTechStyle } from "../src/lib/tech-colors"
 import { projectGradient } from "../src/lib/visual-gradients"
 import { cn, formatDate } from "../src/lib/utils"
 
@@ -17,17 +16,6 @@ describe("shared library contracts", () => {
       title: expect.stringContaining("Full-Stack Developer"),
     })
     expect(siteConfig.description.length).toBeGreaterThan(40)
-  })
-
-  it("normalizes known and unknown technology styles", () => {
-    expect(getTechStyle("React").text).toContain("text-foreground")
-    expect(getTechStyle("React").text).toContain("dark:")
-    expect(getTechStyle("Unknown technology")).toEqual({
-      bg: "bg-neutral-100 dark:bg-neutral-800",
-      text: "text-foreground dark:text-neutral-100",
-      border: "border-neutral-300 dark:border-neutral-700",
-      hoverBg: "hover:bg-neutral-200 dark:hover:bg-neutral-700",
-    })
   })
 
   it("returns project gradients with a safe fallback", () => {

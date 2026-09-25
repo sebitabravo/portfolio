@@ -34,7 +34,7 @@ function createFrameQueue(): FrameQueue {
   }
 }
 
-type MotionQuery = MediaQueryList & { emitChange: () => void }
+type MotionQuery = Omit<MediaQueryList, "matches"> & { matches: boolean; emitChange: () => void }
 
 function createMotionQuery(initialMatches: boolean): MotionQuery {
   let matches = initialMatches
@@ -93,13 +93,16 @@ function renderCarousel() {
 function setScrollMetrics(wrapper: HTMLElement, scrollWidth: number, scrollLeft = 0) {
   Object.defineProperty(wrapper, "scrollWidth", { configurable: true, value: scrollWidth })
   wrapper.scrollLeft = scrollLeft
-  wrapper.scrollBy = vi.fn(({ left = 0 }: ScrollToOptions) => {
-    wrapper.scrollLeft += left
+  Object.defineProperty(wrapper, "scrollBy", {
+    configurable: true,
+    value: vi.fn(({ left = 0 }: ScrollToOptions) => {
+      wrapper.scrollLeft += left
+    }),
   })
 }
 
 function stubHover(container: HTMLElement, hovered: () => boolean) {
-  container.matches = vi.fn(() => hovered()) as typeof container.matches
+  Object.defineProperty(container, "matches", { configurable: true, value: () => hovered() })
 }
 
 describe("certification carousel lifecycle", () => {

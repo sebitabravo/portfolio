@@ -1,6 +1,6 @@
 // @vitest-environment happy-dom
 
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
+import { afterEach, describe, expect, it, vi } from "vitest"
 import { initReadingProgress } from "../src/scripts/reading-progress"
 
 function renderBar() {

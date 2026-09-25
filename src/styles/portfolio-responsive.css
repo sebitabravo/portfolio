@@ -1,7 +1,5 @@
 @layer components {
 
-/* Reduced motion --------------------------------------------------------- */
-
 /* Reveal is an enhancement, never the source of truth for visibility. */
 [data-animate] {
   opacity: 1;
@@ -67,8 +65,6 @@
     transition: none;
   }
 }
-
-/* Responsive ------------------------------------------------------------- */
 
 @media (max-width: 1023px) {
   .hero-layout {

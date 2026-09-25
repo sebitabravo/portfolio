@@ -1,7 +1,3 @@
-/* ============================================
-   Portfolio Experience Layer — motion-first, recruiter-safe
-   ============================================ */
-
 :root {
   --hero-ink: #171329;
   --hero-muted: rgb(45 48 82 / 0.78);
@@ -43,8 +39,6 @@
   box-shadow: 0 0 14px rgb(155 130 255 / 0.8);
   transition: transform 120ms linear;
 }
-
-/* Hero ------------------------------------------------------------------- */
 
 .hero-gradient {
   position: relative;
@@ -104,8 +98,6 @@
 .hero-gradient > * {
   position: relative;
 }
-
-/* Light canvas details --------------------------------------------------- */
 
 :root:not(.dark) .hero-ambient-one {
   border-color: rgb(91 82 214 / 0.18);
@@ -384,8 +376,6 @@
   color: var(--hero-line);
   content: "/";
 }
-
-/* Hero visual ------------------------------------------------------------ */
 
 .hero-art {
   width: min(100%, 500px);

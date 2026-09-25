@@ -135,7 +135,6 @@ export function initLanguageToggle() {
     if (!languageMenu.contains(e.relatedTarget as Node | null)) setMenuOpen(false)
   }, { signal })
 
-  // Keyboard navigation
   function focusOption(option: HTMLButtonElement | undefined) {
     if (!option) return
     languageMenu.querySelectorAll<HTMLButtonElement>('.language-option').forEach(item => {

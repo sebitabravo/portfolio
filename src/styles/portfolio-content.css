@@ -1,7 +1,5 @@
 @layer components {
 
-/* Full-bleed reading bands ----------------------------------------------- */
-
 .home-sections {
   width: 100%;
 }
@@ -74,8 +72,6 @@
   border-color: hsl(var(--primary) / 0.55) !important;
   box-shadow: var(--card-shadow-hover), 0 0 28px hsl(var(--primary) / 0.08);
 }
-
-/* Reading sections ------------------------------------------------------- */
 
 .portfolio-section {
   position: relative;
@@ -330,8 +326,6 @@
   color: hsl(var(--caption-color));
   font-size: 0.82rem;
 }
-
-/* Projects --------------------------------------------------------------- */
 
 .project-outcomes {
   display: grid;

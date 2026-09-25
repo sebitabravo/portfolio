@@ -1,13 +1,4 @@
 ---
-/**
- * CertificationCarousel Component
- *
- * Auto-scrolling carousel showing all certifications with logos and names.
- * Features:
- * - Infinite scroll animation
- * - Clickable to view PDF certificate
- * - Responsive design
- */
 import { Picture } from "astro:assets"
 import type { CarouselCertification } from "@/types"
 import { getTranslations, type Locale } from "@/lib/i18n"
@@ -84,7 +75,6 @@ const duplicatedCerts = [...certifications, ...certifications]
     position: relative;
     padding: 2rem 0;
 
-    /* Gradient masks for smooth fade */
     -webkit-mask-image: linear-gradient(
       to right,
       transparent,
@@ -217,7 +207,6 @@ const duplicatedCerts = [...certifications, ...certifications]
     border: 1px solid hsl(var(--border));
   }
 
-  /* Navigation buttons */
   .cert-nav-btn {
     position: absolute;
     top: 50%;
@@ -268,7 +257,6 @@ const duplicatedCerts = [...certifications, ...certifications]
     transform: translateY(-50%) scale(0.92);
   }
 
-  /* Responsive adjustments */
   @media (max-width: 768px) {
     .cert-carousel {
       gap: 1.5rem;
@@ -300,7 +288,7 @@ const duplicatedCerts = [...certifications, ...certifications]
     }
   }
 
-  /* Reduced motion: grid estático con todas las certificaciones */
+  /* Reduced motion: static grid with every certification */
   @media (prefers-reduced-motion: reduce) {
     .cert-carousel-container {
       overflow: visible;
@@ -338,7 +326,7 @@ const duplicatedCerts = [...certifications, ...certifications]
   let certCleanup: (() => void) | null = null
 
   function initCertCarousel() {
-    // Limpiar rAF y listeners de navegaciones anteriores
+    // Clear rAF and listeners from a previous navigation
     certCleanup?.()
 
     const container = document.getElementById('certCarouselContainer')
@@ -447,7 +435,7 @@ const duplicatedCerts = [...certifications, ...certifications]
     })
     intersectionObserver.observe(container)
 
-    // Registrar cleanup para la próxima navegación
+    // Register cleanup for the next navigation
     certCleanup = () => {
       ac.abort()
       intersectionObserver.disconnect()

@@ -14,9 +14,6 @@ const translations = {
 
 type TranslationKeys = typeof es
 
-/**
- * Get translations for a given locale
- */
 export function getTranslations(locale: Locale): TranslationKeys {
   return translations[locale] || translations[defaultLocale]
 }

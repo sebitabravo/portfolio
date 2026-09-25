@@ -1,6 +1,3 @@
-// INFORMACIÓN PERSONAL Y CONFIGURACIÓN
-// ============================================
-
 export const personalInfo = {
   name: "Sebastian Bravo",
   title: "Full-Stack Developer",
@@ -15,5 +12,3 @@ export const social = {
   github: "https://github.com/sebitabravo",
   linkedin: "https://linkedin.com/in/sebitabravo",
 }
-
-// ============================================

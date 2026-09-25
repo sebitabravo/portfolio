@@ -1,8 +1,5 @@
 import type { Locale } from "@/lib/i18n"
 
-// EDUCACIÓN
-// ============================================
-
 const educationData = {
   es: [
     {
@@ -61,5 +58,3 @@ const educationData = {
 export function getEducation(locale: Locale = 'es') {
   return educationData[locale]
 }
-
-// ============================================

@@ -10,8 +10,7 @@ const limits = new Map([
 const exceptions = new Map([
   ["src/layouts/Layout.astro", "shared SEO/document shell"],
   ["src/components/CertificationCarousel.astro", "content-rich carousel with scoped interaction styles"],
-  ["src/pages/privacy.astro", "legal content document"],
-  ["src/pages/en/privacy.astro", "legal content document"],
+  ["src/components/LocalizedPrivacy.astro", "legal content document"],
 ])
 
 async function collectFiles(directory: string): Promise<string[]> {

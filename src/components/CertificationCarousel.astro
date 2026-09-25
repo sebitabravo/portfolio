@@ -1,13 +1,5 @@
 ---
-/**
- * CertificationCarousel Component
- *
- * Auto-scrolling carousel showing all certifications with logos and names.
- * Features:
- * - Infinite scroll animation
- * - Clickable to view PDF certificate
- * - Responsive design
- */
+import { Picture } from "astro:assets"
 import type { CarouselCertification } from "@/types"
 import { getTranslations, type Locale } from "@/lib/i18n"
 
@@ -16,115 +8,141 @@ interface Props {
   locale?: Locale
 }
 
-const { certifications, locale = 'es' } = Astro.props
+const { certifications, locale = "es" } = Astro.props
 const t = getTranslations(locale)
 
 // Duplicate the array for seamless infinite scroll
 const duplicatedCerts = [...certifications, ...certifications]
 ---
 
-<div class="cert-carousel-container" id="certCarouselContainer">
-  <button class="cert-nav-btn cert-nav-prev" id="certNavPrev" aria-label={t.certifications.previous} type="button">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+<div
+  class="cert-carousel-container relative w-full overflow-hidden py-8"
+  id="certCarouselContainer"
+  role="region"
+  aria-label={t.certifications.carouselLabel}
+>
+  <button
+    class="cert-nav-btn cert-nav-prev absolute top-1/2 left-2 z-10 flex h-11 w-11 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border border-border bg-card/92 text-foreground opacity-70"
+    id="certNavPrev"
+    aria-label={t.certifications.previous}
+    type="button"
+  >
+    <svg
+      width="20"
+      height="20"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg
+    >
   </button>
 
-  <div class="cert-carousel-wrapper scrollbar-hidden" id="certCarouselWrapper">
-    <div class="cert-carousel" id="certCarousel">
-      {duplicatedCerts.map((cert, index) => {
-        const { name, organization, logo, pdfUrl, category } = cert.data
-        const isDuplicate = index >= certifications.length
+  <div class="cert-carousel-wrapper scrollbar-hidden overflow-x-auto" id="certCarouselWrapper">
+    <div class="cert-carousel flex w-fit gap-6 md:gap-8" id="certCarousel">
+      {
+        duplicatedCerts.map((cert, index) => {
+          const { name, organization, logo, pdfUrl, category } = cert.data
+          const isDuplicate = index >= certifications.length
 
-        return (
-          <a
-            href={pdfUrl ?? undefined}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="cert-item"
-            title={pdfUrl ? `${name} - ${organization}` : name}
-            aria-hidden={isDuplicate ? "true" : undefined}
-            tabindex={isDuplicate ? "-1" : pdfUrl ? undefined : "-1"}
-            data-duplicate={isDuplicate ? "true" : undefined}
-            role={pdfUrl ? undefined : "presentation"}
-          >
-            {logo ? (
-              <div class="cert-logo-wrapper">
-                <img src={logo} alt={organization} class="cert-logo" width={80} height={80} loading="lazy" decoding="async" />
-              </div>
-            ) : (
-              <div class="cert-placeholder">
-                <svg class="cert-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
-              </div>
-            )}
-            <span class="cert-name">{name}</span>
-            <span class="cert-org">{organization}</span>
-            {category === 'professional' && (
-              <span class="cert-badge cert-badge-pro">{t.certifications.professional}</span>
-            )}
-            {category === 'academic' && (
-              <span class="cert-badge cert-badge-acad">{t.certifications.academic}</span>
-            )}
-          </a>
-        )
-      })}
+          return (
+            <a
+              href={pdfUrl ?? undefined}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="cert-item flex max-w-[160px] min-w-[140px] cursor-pointer flex-col items-center gap-3 rounded-2xl border border-border bg-card px-3 py-4 no-underline outline-none md:max-w-[200px] md:min-w-[160px] md:px-4 md:py-6"
+              title={pdfUrl ? `${name} - ${organization}` : name}
+              aria-hidden={isDuplicate ? "true" : undefined}
+              tabindex={isDuplicate ? "-1" : pdfUrl ? undefined : "-1"}
+              data-duplicate={isDuplicate ? "true" : undefined}
+              role={pdfUrl ? undefined : "presentation"}
+            >
+              {logo ? (
+                <div class="cert-logo-wrapper flex h-16 w-16 items-center justify-center rounded-lg bg-background p-2 md:h-20 md:w-20">
+                  <Picture
+                    src={logo}
+                    formats={["avif"]}
+                    fallbackFormat="webp"
+                    alt={organization}
+                    class="cert-logo h-full w-full object-contain"
+                    width={80}
+                    height={80}
+                    densities={[1, 2]}
+                    fit="contain"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </div>
+              ) : (
+                <div class="cert-placeholder flex h-16 w-16 items-center justify-center rounded-lg md:h-20 md:w-20">
+                  <svg
+                    class="cert-icon h-10 w-10 text-primary md:h-12 md:w-12"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                    />
+                  </svg>
+                </div>
+              )}
+              <span class="cert-name text-center text-[0.8rem] leading-[1.3] font-semibold text-foreground md:text-sm">
+                {name}
+              </span>
+              <span class="cert-org text-center text-[0.7rem] leading-[1.2] font-medium text-muted-foreground md:text-xs">
+                {organization}
+              </span>
+              {category === "professional" && (
+                <span class="cert-badge cert-badge-pro rounded-full border border-cert-pro-border bg-cert-pro-bg px-2 py-[0.15rem] text-[0.65rem] font-semibold tracking-[0.05em] text-cert-pro-text uppercase">
+                  {t.certifications.professional}
+                </span>
+              )}
+              {category === "academic" && (
+                <span class="cert-badge cert-badge-acad rounded-full border border-border bg-muted px-2 py-[0.15rem] text-[0.65rem] font-semibold tracking-[0.05em] text-muted-foreground uppercase">
+                  {t.certifications.academic}
+                </span>
+              )}
+            </a>
+          )
+        })
+      }
     </div>
   </div>
 
-  <button class="cert-nav-btn cert-nav-next" id="certNavNext" aria-label={t.certifications.next} type="button">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+  <button
+    class="cert-nav-btn cert-nav-next absolute top-1/2 right-2 z-10 flex h-11 w-11 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border border-border bg-card/92 text-foreground opacity-70"
+    id="certNavNext"
+    aria-label={t.certifications.next}
+    type="button"
+  >
+    <svg
+      width="20"
+      height="20"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg
+    >
   </button>
 </div>
 
 <style>
+  /* Edge fade masks stay scoped: they shape this carousel only. */
   .cert-carousel-container {
-    width: 100%;
-    overflow: hidden;
-    position: relative;
-    padding: 2rem 0;
-
-    /* Gradient masks for smooth fade */
-    -webkit-mask-image: linear-gradient(
-      to right,
-      transparent,
-      black 10%,
-      black 90%,
-      transparent
-    );
-    mask-image: linear-gradient(
-      to right,
-      transparent,
-      black 10%,
-      black 90%,
-      transparent
-    );
+    -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+    mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
   }
 
-  .cert-carousel-wrapper {
-    overflow-x: auto;
-  }
-
-  .cert-carousel {
-    display: flex;
-    gap: 2rem;
-    width: fit-content;
-  }
-
+  /* Layout sizing lives in utilities above; interaction visuals stay scoped. */
   .cert-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.75rem;
-    min-width: 160px;
-    max-width: 200px;
-    padding: 1.5rem 1rem;
-    background: hsl(var(--card));
-    border: 1px solid hsl(var(--border));
-    border-radius: 1rem;
     transition: all 0.3s ease;
-    outline: none;
-    text-decoration: none;
-    cursor: pointer;
   }
 
   .cert-item:hover {
@@ -140,38 +158,12 @@ const duplicatedCerts = [...certifications, ...certifications]
   }
 
   .cert-logo-wrapper {
-    width: 80px;
-    height: 80px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 0.5rem;
-    background: hsl(var(--background));
-    padding: 0.5rem;
     transition: transform 0.3s ease;
-  }
-
-  .cert-logo {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
   }
 
   .cert-placeholder {
-    width: 80px;
-    height: 80px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 0.5rem;
     background: linear-gradient(135deg, hsl(var(--primary) / 0.1), hsl(var(--secondary) / 0.1));
     transition: transform 0.3s ease;
-  }
-
-  .cert-icon {
-    width: 48px;
-    height: 48px;
-    color: hsl(var(--primary));
   }
 
   .cert-item:hover .cert-logo-wrapper,
@@ -179,61 +171,11 @@ const duplicatedCerts = [...certifications, ...certifications]
     transform: scale(1.1) rotate(2deg);
   }
 
-  .cert-name {
-    font-size: 0.875rem;
-    font-weight: 600;
-    text-align: center;
-    color: hsl(var(--foreground));
-    line-height: 1.3;
-  }
-
-  .cert-org {
-    font-size: 0.75rem;
-    font-weight: 500;
-    text-align: center;
-    color: hsl(var(--muted-foreground));
-    line-height: 1.2;
-  }
-
-  .cert-badge {
-    font-size: 0.65rem;
-    font-weight: 600;
-    padding: 0.15rem 0.5rem;
-    border-radius: 9999px;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-
-  .cert-badge-pro {
-    background: hsl(144 37% 35% / 0.12);
-    color: hsl(144 45% 32%);
-    border: 1px solid hsl(144 37% 35% / 0.25);
-  }
-
-  .cert-badge-acad {
-    background: hsl(var(--muted));
-    color: hsl(var(--muted-foreground));
-    border: 1px solid hsl(var(--border));
-  }
-
-  /* Navigation buttons */
   .cert-nav-btn {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 10;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    border: 1px solid hsl(var(--border));
-    background: hsl(var(--card) / 0.92);
-    color: hsl(var(--foreground));
-    cursor: pointer;
-    opacity: 0.7;
-    transition: opacity 0.3s ease, background 0.2s ease, transform 0.2s ease;
+    transition:
+      opacity 0.3s ease,
+      background 0.2s ease,
+      transform 0.2s ease;
     backdrop-filter: blur(6px);
     -webkit-backdrop-filter: blur(6px);
   }
@@ -251,14 +193,6 @@ const duplicatedCerts = [...certifications, ...certifications]
     opacity: 1;
   }
 
-  .cert-nav-prev {
-    left: 8px;
-  }
-
-  .cert-nav-next {
-    right: 8px;
-  }
-
   .cert-carousel-container:hover .cert-nav-btn {
     opacity: 1;
   }
@@ -267,39 +201,7 @@ const duplicatedCerts = [...certifications, ...certifications]
     transform: translateY(-50%) scale(0.92);
   }
 
-  /* Responsive adjustments */
-  @media (max-width: 768px) {
-    .cert-carousel {
-      gap: 1.5rem;
-    }
-
-    .cert-item {
-      min-width: 140px;
-      max-width: 160px;
-      padding: 1rem 0.75rem;
-    }
-
-    .cert-logo-wrapper,
-    .cert-placeholder {
-      width: 64px;
-      height: 64px;
-    }
-
-    .cert-icon {
-      width: 40px;
-      height: 40px;
-    }
-
-    .cert-name {
-      font-size: 0.8rem;
-    }
-
-    .cert-org {
-      font-size: 0.7rem;
-    }
-  }
-
-  /* Reduced motion: grid estático con todas las certificaciones */
+  /* Reduced motion: static grid with every certification */
   @media (prefers-reduced-motion: reduce) {
     .cert-carousel-container {
       overflow: visible;
@@ -334,116 +236,12 @@ const duplicatedCerts = [...certifications, ...certifications]
 </style>
 
 <script>
-  let certCleanup: (() => void) | null = null
+  import { initCertCarousel } from "@/scripts/cert-carousel"
 
-  function initCertCarousel() {
-    // Limpiar rAF y listeners de navegaciones anteriores
-    certCleanup?.()
-
-    const container = document.getElementById('certCarouselContainer')
-    const wrapper = document.getElementById('certCarouselWrapper')
-    const carousel = document.getElementById('certCarousel')
-    const prevBtn = document.getElementById('certNavPrev')
-    const nextBtn = document.getElementById('certNavNext')
-
-    if (!container || !wrapper || !carousel || !prevBtn || !nextBtn) return
-
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
-
-    const ac = new AbortController()
-    const { signal } = ac
-
-    let animationId: number | null = null
-    let lastTime = 0
-    let isInViewport = false
-    const scrollSpeed = 40 // px per second
-    const navScrollAmount = 350
-    let scrollEndPending = false
-
-    function isHovered() {
-      return container!.matches(':hover')
-    }
-
-    function autoScroll(timestamp: number) {
-      if (!lastTime) lastTime = timestamp
-      const delta = (timestamp - lastTime) / 1000
-      lastTime = timestamp
-
-      if (!isHovered()) {
-        const w = wrapper!
-        w.scrollLeft += scrollSpeed * delta
-        const halfWidth = w.scrollWidth / 2
-        if (w.scrollLeft >= halfWidth) {
-          w.scrollLeft = 0
-        }
-      }
-
-      animationId = requestAnimationFrame(autoScroll)
-    }
-
-    function startAutoScroll() {
-      if (animationId || !isInViewport || isHovered() || document.visibilityState === 'hidden') return
-      lastTime = 0
-      animationId = requestAnimationFrame(autoScroll)
-    }
-
-    function stopAutoScroll() {
-      if (animationId) {
-        cancelAnimationFrame(animationId)
-        animationId = null
-      }
-    }
-
-    prevBtn.addEventListener('click', () => {
-      wrapper!.scrollBy({ left: -navScrollAmount, behavior: 'smooth' })
-    }, { signal })
-
-    nextBtn.addEventListener('click', () => {
-      const w = wrapper!
-      const halfWidth = w.scrollWidth / 2
-      if (w.scrollLeft + navScrollAmount >= halfWidth && !scrollEndPending) {
-        scrollEndPending = true
-        w.addEventListener('scrollend', () => {
-          w.scrollLeft = w.scrollLeft - halfWidth
-          scrollEndPending = false
-        }, { once: true })
-      }
-      w.scrollBy({ left: navScrollAmount, behavior: 'smooth' })
-    }, { signal })
-
-    container.addEventListener('mouseenter', stopAutoScroll, { signal })
-    container.addEventListener('mouseleave', startAutoScroll, { signal })
-
-    function handleVisibilityChange() {
-      if (document.visibilityState === 'hidden') {
-        stopAutoScroll()
-      } else if (!isHovered()) {
-        startAutoScroll()
-      }
-    }
-    document.addEventListener('visibilitychange', handleVisibilityChange, { signal })
-
-    const intersectionObserver = new IntersectionObserver(([entry]) => {
-      isInViewport = entry?.isIntersecting ?? false
-      if (isInViewport) {
-        startAutoScroll()
-      } else {
-        stopAutoScroll()
-      }
-    })
-    intersectionObserver.observe(container)
-
-    // Registrar cleanup para la próxima navegación
-    certCleanup = () => {
-      ac.abort()
-      intersectionObserver.disconnect()
-      if (animationId) {
-        cancelAnimationFrame(animationId)
-        animationId = null
-      }
-    }
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initCertCarousel, { once: true })
+  } else {
+    initCertCarousel()
   }
-
-  document.addEventListener('DOMContentLoaded', initCertCarousel)
-  document.addEventListener('astro:page-load', initCertCarousel)
+  document.addEventListener("astro:page-load", initCertCarousel)
 </script>

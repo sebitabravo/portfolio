@@ -3,6 +3,10 @@
 const { class: className, headingId, ...rest } = Astro.props
 ---
 
-<section {...rest} aria-labelledby={headingId} class:list={["portfolio-section w-full mx-auto max-w-[1200px] scroll-mt-24 md:scroll-mt-28", className]}>
+<section
+  {...rest}
+  aria-labelledby={headingId}
+  class:list={["portfolio-section relative z-10 mx-auto w-full max-w-[1200px] scroll-mt-24 md:scroll-mt-28", className]}
+>
   <slot />
 </section>

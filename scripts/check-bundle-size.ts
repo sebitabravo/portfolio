@@ -45,6 +45,6 @@ if (violations.length > 0) {
 
 const largest = measurements.toSorted((a, b) => b.rawBytes - a.rawBytes)[0]
 console.log(
-  `Bundle size limits passed: ${measurements.length} JS chunks; largest ${largest.file} `
-  + `(${toKib(largest.rawBytes).toFixed(1)} KiB raw / ${toKib(largest.gzipBytes).toFixed(1)} KiB gzip).`,
+  `Bundle size limits passed: ${measurements.length} JS chunks; largest ${largest.file} ` +
+    `(${toKib(largest.rawBytes).toFixed(1)} KiB raw / ${toKib(largest.gzipBytes).toFixed(1)} KiB gzip).`,
 )

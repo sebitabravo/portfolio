@@ -1,80 +1,87 @@
 ---
-// Contact — Direct links (no form)
+// No contact form by design — direct links only.
 import { personalInfo, social } from "@/lib/data"
 import { getTranslations, type Locale } from "@/lib/i18n"
 import MailIcon from "./icons/Mail.astro"
 import LinkedInIcon from "./icons/LinkedIn.astro"
 import GitHubIcon from "./icons/GitHub.astro"
 import DownloadIcon from "./icons/Download.astro"
-import cvPdf from "@/assets/Sebastian_Bravo_CV.pdf"
 
 interface Props {
   locale?: Locale
 }
 
-const { locale = 'es' } = Astro.props
+const { locale = "es" } = Astro.props
 const t = getTranslations(locale)
-
-const mailSubject = locale === 'es'
-  ? 'Contacto desde tu portfolio'
-  : 'Contact from your portfolio'
+const cvHref = "/cv/Sebastian_Bravo_CV.pdf"
 
 const contactLinks = [
   {
-    href: `mailto:${personalInfo.email}?subject=${encodeURIComponent(mailSubject)}`,
+    href: `mailto:${personalInfo.email}?subject=${encodeURIComponent(t.contact.mailSubject)}`,
     label: personalInfo.email,
-    icon: 'mail',
-    description: locale === 'es' ? 'Te respondo en menos de 24h' : "I'll reply within 24h",
+    icon: "mail",
+    description: t.contact.responseTime,
   },
   {
     href: social.linkedin,
-    label: 'LinkedIn',
-    icon: 'linkedin',
-    description: locale === 'es' ? 'Conectemos profesionalmente' : "Let's connect professionally",
+    label: "LinkedIn",
+    icon: "linkedin",
+    description: t.contact.linkedinDescription,
   },
   {
     href: social.github,
-    label: 'GitHub',
-    icon: 'github',
-    description: locale === 'es' ? 'Mirá mi código abierto' : 'Check my open source code',
+    label: "GitHub",
+    icon: "github",
+    description: t.contact.githubDescription,
   },
 ]
 ---
 
 <div class="space-y-8">
   <div class="mx-auto grid max-w-xl gap-4 sm:grid-cols-3">
-    {contactLinks.map(({ href, label, icon, description }, i) => (
-      <a
-        href={href}
-        data-animate
-        data-animate-delay={String(i + 1)}
-        target={icon !== 'mail' ? '_blank' : undefined}
-        rel={icon !== 'mail' ? 'noopener noreferrer' : undefined}
-        class="section-card group flex min-w-0 flex-col items-center gap-3 rounded-2xl border border-[hsl(var(--parchment))] bg-[hsl(var(--card))] p-6 text-center transition-all duration-300 hover:-translate-y-1 hover:shadow-[var(--shadow-card-hover)] focus-ring"
-      >
-        <div class="flex size-12 items-center justify-center rounded-xl bg-[hsl(var(--primary))]/10 text-[hsl(var(--primary))] transition-transform duration-200 group-hover:scale-110">
-          {icon === 'mail' && <MailIcon class="size-5" />}
-          {icon === 'linkedin' && <LinkedInIcon class="size-5" />}
-          {icon === 'github' && <GitHubIcon class="size-5" />}
-        </div>
-        <span class="w-full break-words text-sm font-semibold text-foreground">{label}</span>
-        <span class="text-xs text-[hsl(var(--caption-color))]">{description}</span>
-      </a>
-    ))}
+    {
+      contactLinks.map(({ href, label, icon, description }, i) => (
+        <a
+          href={href}
+          data-animate
+          data-animate-delay={String(i + 1)}
+          target={icon !== "mail" ? "_blank" : undefined}
+          rel={icon !== "mail" ? "noopener noreferrer" : undefined}
+          class="section-card group flex min-w-0 flex-col items-center gap-3 rounded-2xl border border-parchment bg-card p-6 text-center focus-ring transition-all duration-300 hover:-translate-y-1 hover:shadow-card-hover"
+        >
+          <div class="flex size-12 items-center justify-center rounded-xl bg-primary/10 text-primary transition-transform duration-200 group-hover:scale-110">
+            {icon === "mail" && <MailIcon class="size-5" />}
+            {icon === "linkedin" && <LinkedInIcon class="size-5" />}
+            {icon === "github" && <GitHubIcon class="size-5" />}
+          </div>
+          <span class="w-full text-sm font-semibold break-words text-foreground">{label}</span>
+          <span class="text-xs text-caption-color">{description}</span>
+        </a>
+      ))
+    }
   </div>
 
-  <div class="contact-resume-row">
+  <div class="contact-resume-row flex flex-wrap items-center justify-center gap-x-4 gap-y-[0.8rem] pt-2">
     <a
-      href={cvPdf}
+      href={cvHref}
       target="_blank"
       rel="noopener noreferrer"
       data-track-cv={locale}
-      class="contact-resume-action focus-ring"
+      class="contact-resume-action inline-flex min-h-[2.75rem] w-fit items-center gap-[0.55rem] rounded-[0.55rem] border border-primary/55 bg-primary px-[0.85rem] py-[0.6rem] text-[0.78rem] font-bold text-primary-foreground shadow-cta focus-ring transition-all duration-[180ms] ease-[ease] hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-cta-hover"
     >
       <DownloadIcon class="size-4" />
       <span>{t.hero.downloadCv}</span>
       <span aria-hidden="true">↗</span>
     </a>
-    <p>{locale === 'es' ? 'CV disponible para revisar mi experiencia completa.' : 'Download the CV for the full experience overview.'}</p>
+    <p>{t.contact.cvHelper}</p>
   </div>
 </div>
+
+<style>
+  /* tests/ui-copy-localization.test.ts asserts this exact `<p>` tag's raw
+     source text, so its caption styling stays scoped here instead of a class. */
+  .contact-resume-row p {
+    color: hsl(var(--caption-color));
+    font-size: 0.82rem;
+  }
+</style>

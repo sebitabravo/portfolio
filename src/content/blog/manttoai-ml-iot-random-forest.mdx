@@ -4,6 +4,7 @@ description: "FastAPI, React 18, MQTT, MySQL 8 y Random Forest con 5 features de
 publishDate: 2026-05-10
 tags: ["Python", "FastAPI", "React", "MQTT", "ML", "IoT", "Docker"]
 image: "manttoai"
+translationKey: "manttoai"
 ---
 
 ManttoAI fue mi proyecto de título en Gestión de Proyectos Informáticos en INACAP. La pauta era clara: aplicar metodología PMBOK a un sistema real. No un paper, no un prototipo teórico — un sistema que integrara hardware, software y machine learning, corriendo en Docker, documentado y testeado.
@@ -50,17 +51,17 @@ El comando `make ml-report` que genera JSON + Markdown con métricas del modelo 
 
 <div class="grid gap-4 sm:grid-cols-2 not-prose my-6">
 
-<div class="rounded-xl border border-[hsl(var(--parchment))] bg-[hsl(var(--card))] p-5">
+<div class="rounded-xl border border-parchment bg-card p-5">
   <h3 class="font-mono text-sm font-semibold text-foreground mb-2">Procesamiento de datos en tiempo real</h3>
   <p class="text-sm text-foreground/75 leading-relaxed">Los sensores transmiten a 1Hz. Con 10+ sensores, son 864.000 registros/día. Implementamos ventanas de agregación y downsampling para mantener queries rápidos.</p>
 </div>
 
-<div class="rounded-xl border border-[hsl(var(--parchment))] bg-[hsl(var(--card))] p-5">
+<div class="rounded-xl border border-parchment bg-card p-5">
   <h3 class="font-mono text-sm font-semibold text-foreground mb-2">Precisión del modelo en equipos diversos</h3>
   <p class="text-sm text-foreground/75 leading-relaxed">Un mismo modelo para distintos tipos de equipo (bombas, motores, compresores) tiende a generalizar mal. Usamos feature engineering específico por tipo de equipo y validación cruzada estratificada.</p>
 </div>
 
-<div class="rounded-xl border border-[hsl(var(--parchment))] bg-[hsl(var(--card))] p-5">
+<div class="rounded-xl border border-parchment bg-card p-5">
   <h3 class="font-mono text-sm font-semibold text-foreground mb-2">UX para operadores no técnicos</h3>
   <p class="text-sm text-foreground/75 leading-relaxed">El dashboard debía ser intuitivo para personal de planta sin experiencia en ML. Diseñamos indicadores visuales simples (verde/amarillo/rojo) con drill-down progresivo hacia datos técnicos.</p>
 </div>
@@ -69,7 +70,7 @@ El comando `make ml-report` que genera JSON + Markdown con métricas del modelo 
 
 ## Arquitectura
 
-<div class="not-prose my-6 rounded-xl border border-[hsl(var(--parchment))] bg-[hsl(var(--muted))] p-5 font-mono text-sm leading-relaxed text-foreground/85">
+<div class="not-prose my-6 rounded-xl border border-parchment bg-muted p-5 font-mono text-sm leading-relaxed text-foreground/85">
   <p class="mb-1"><strong>Microservicios con Docker Compose:</strong> broker MQTT (Mosquitto) → FastAPI ingestion worker → PostgreSQL (timeseries) → FastAPI REST API → React SPA.</p>
   <p class="mb-1">El modelo ML se sirve como un servicio independiente con joblib.</p>
   <p class="mb-1">Nginx como reverse proxy.</p>

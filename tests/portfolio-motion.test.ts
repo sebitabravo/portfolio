@@ -96,6 +96,34 @@ function installActivationObserver() {
   };
 }
 
+function installLivePreference(initiallyReduced: boolean) {
+  let reduced = initiallyReduced;
+  const listeners = new Set<(event: MediaQueryListEvent) => void>();
+  const preference = {
+    get matches() { return reduced; },
+    addEventListener: vi.fn((_type: string, listener: (event: MediaQueryListEvent) => void) => listeners.add(listener)),
+    removeEventListener: vi.fn((_type: string, listener: (event: MediaQueryListEvent) => void) => listeners.delete(listener)),
+  };
+  vi.stubGlobal("matchMedia", vi.fn((query: string) =>
+    query === "(prefers-reduced-motion: reduce)" ? preference : { matches: false },
+  ));
+  return {
+    preference,
+    listeners,
+    change(next: boolean) {
+      reduced = next;
+      for (const listener of [...listeners]) listener({ matches: next } as MediaQueryListEvent);
+    },
+  };
+}
+
+function setHeroOffscreen(root: HTMLElement) {
+  vi.spyOn(root, "getBoundingClientRect").mockReturnValue({
+    top: window.innerHeight + 300,
+    bottom: window.innerHeight + 400,
+  } as DOMRect);
+}
+
 describe("portfolio motion gates", () => {
   beforeEach(() => {
     document.body.innerHTML = "";
@@ -138,18 +166,19 @@ describe("portfolio motion gates", () => {
       "matchMedia",
       vi.fn(() => ({ matches: false })),
     );
+    const root = document.querySelector<HTMLElement>("[data-portfolio-motion]")!;
+    setHeroOffscreen(root);
 
     setupPortfolioMotion();
 
-    const root = document.querySelector<HTMLElement>(
-      "[data-portfolio-motion]",
-    )!;
     const canvas =
       document.querySelector<HTMLCanvasElement>("[data-hero-webgl]")!;
     expect(root.dataset.motionStatus).toBe("loading");
     expect(canvas.dataset.webglStatus).toBe("pending");
     expect(requestIdleCallback).not.toHaveBeenCalled();
     expect(observer.observe).toHaveBeenCalledWith(root);
+    await Promise.resolve();
+    expect(root.dataset.motionStatus).toBe("loading");
     expect(motionHarness.gsap.registerPlugin).not.toHaveBeenCalled();
 
     root.dispatchEvent(new Event("pointerenter"));
@@ -170,12 +199,11 @@ describe("portfolio motion gates", () => {
       "matchMedia",
       vi.fn(() => ({ matches: false })),
     );
+    const root = document.querySelector<HTMLElement>("[data-portfolio-motion]")!;
+    setHeroOffscreen(root);
 
     setupPortfolioMotion();
 
-    const root = document.querySelector<HTMLElement>(
-      "[data-portfolio-motion]",
-    )!;
     expect(IntersectionObserverMock).toHaveBeenCalledWith(
       expect.any(Function),
       { rootMargin: "200px" },
@@ -188,24 +216,139 @@ describe("portfolio motion gates", () => {
     expect(observer.disconnect).toHaveBeenCalled();
   });
 
-  it("cancels deferred activation on teardown", () => {
+  it("activates an initially near hero before IntersectionObserver delivers a callback", async () => {
+    document.body.innerHTML = `<section data-portfolio-motion><canvas data-hero-webgl></canvas></section>`;
+    const { observer } = installActivationObserver();
+    vi.stubGlobal("matchMedia", vi.fn(() => ({ matches: false })));
+    const root = document.querySelector<HTMLElement>("[data-portfolio-motion]")!;
+    vi.spyOn(root, "getBoundingClientRect").mockReturnValue({
+      top: window.innerHeight + 150,
+      bottom: window.innerHeight + 250,
+    } as DOMRect);
+
+    setupPortfolioMotion();
+
+    expect(observer.observe).toHaveBeenCalledWith(root);
+    await vi.waitFor(() => expect(root.dataset.motionStatus).toBe("active"));
+    expect(motionHarness.gsap.registerPlugin).toHaveBeenCalledTimes(1);
+  });
+
+  it("activates an initially near hero without IntersectionObserver", async () => {
+    document.body.innerHTML = `<section data-portfolio-motion><canvas data-hero-webgl></canvas></section>`;
+    vi.stubGlobal("IntersectionObserver", undefined);
+    vi.stubGlobal("matchMedia", vi.fn(() => ({ matches: false })));
+    const root = document.querySelector<HTMLElement>("[data-portfolio-motion]")!;
+    vi.spyOn(root, "getBoundingClientRect").mockReturnValue({
+      top: window.innerHeight + 150,
+      bottom: window.innerHeight + 250,
+    } as DOMRect);
+
+    setupPortfolioMotion();
+    await vi.waitFor(() => expect(root.dataset.motionStatus).toBe("active"));
+    expect(motionHarness.gsap.registerPlugin).toHaveBeenCalledTimes(1);
+  });
+
+  it("waits for a near scroll without IntersectionObserver and starts only once", async () => {
+    document.body.innerHTML = `<section data-portfolio-motion><canvas data-hero-webgl></canvas></section>`;
+    vi.stubGlobal("IntersectionObserver", undefined);
+    vi.stubGlobal("matchMedia", vi.fn(() => ({ matches: false })));
+    const root = document.querySelector<HTMLElement>("[data-portfolio-motion]")!;
+    let top = window.innerHeight + 300;
+    vi.spyOn(root, "getBoundingClientRect").mockImplementation(() => ({
+      top,
+      bottom: top + 100,
+    } as DOMRect));
+
+    setupPortfolioMotion();
+    expect(root.dataset.motionStatus).toBe("loading");
+    window.dispatchEvent(new Event("scroll"));
+    expect(motionHarness.gsap.registerPlugin).not.toHaveBeenCalled();
+
+    top = window.innerHeight + 150;
+    window.dispatchEvent(new Event("scroll"));
+    await vi.waitFor(() => expect(root.dataset.motionStatus).toBe("active"));
+    window.dispatchEvent(new Event("resize"));
+    expect(motionHarness.gsap.registerPlugin).toHaveBeenCalledTimes(1);
+  });
+
+  it("removes no-IntersectionObserver scroll and resize listeners on teardown and re-setup", async () => {
+    document.body.innerHTML = `<section data-portfolio-motion><canvas data-hero-webgl></canvas></section>`;
+    vi.stubGlobal("IntersectionObserver", undefined);
+    vi.stubGlobal("matchMedia", vi.fn(() => ({ matches: false })));
+    const root = document.querySelector<HTMLElement>("[data-portfolio-motion]")!;
+    let top = window.innerHeight + 300;
+    vi.spyOn(root, "getBoundingClientRect").mockImplementation(() => ({
+      top,
+      bottom: top + 100,
+    } as DOMRect));
+    const removeListener = vi.spyOn(window, "removeEventListener");
+
+    setupPortfolioMotion();
+    teardownPortfolioMotion();
+    expect(removeListener).toHaveBeenCalledWith("scroll", expect.any(Function));
+    expect(removeListener).toHaveBeenCalledWith("resize", expect.any(Function));
+    top = window.innerHeight + 150;
+    window.dispatchEvent(new Event("scroll"));
+    window.dispatchEvent(new Event("resize"));
+    expect(motionHarness.gsap.registerPlugin).not.toHaveBeenCalled();
+
+    top = window.innerHeight + 300;
+    setupPortfolioMotion();
+    expect(root.dataset.motionStatus).toBe("loading");
+    top = window.innerHeight + 150;
+    window.dispatchEvent(new Event("resize"));
+    await vi.waitFor(() => expect(root.dataset.motionStatus).toBe("active"));
+    expect(motionHarness.gsap.registerPlugin).toHaveBeenCalledTimes(1);
+    removeListener.mockRestore();
+  });
+
+  it("cancels deferred activation and resets only pending status on teardown and re-setup", () => {
     document.body.innerHTML = `
       <section data-portfolio-motion>
         <canvas data-hero-webgl></canvas>
       </section>
     `;
     const { observer } = installActivationObserver();
+    const root = document.querySelector<HTMLElement>("[data-portfolio-motion]")!;
+    setHeroOffscreen(root);
 
     setupPortfolioMotion();
-    const root = document.querySelector<HTMLElement>(
-      "[data-portfolio-motion]",
-    )!;
+    const canvas = root.querySelector<HTMLCanvasElement>("[data-hero-webgl]")!;
+    expect(root.dataset.motionStatus).toBe("loading");
+    expect(canvas.dataset.webglStatus).toBe("pending");
+
     teardownPortfolioMotion();
     root.dispatchEvent(new Event("pointerenter"));
 
     expect(observer.disconnect).toHaveBeenCalled();
     expect(motionHarness.gsap.registerPlugin).not.toHaveBeenCalled();
+    expect(root.dataset.motionStatus).toBe("idle");
+    expect(canvas.dataset.webglStatus).toBe("idle");
+
+    setupPortfolioMotion();
     expect(root.dataset.motionStatus).toBe("loading");
+    expect(canvas.dataset.webglStatus).toBe("pending");
+    expect(observer.observe).toHaveBeenCalledTimes(2);
+  });
+
+  it("announces ownership on the root for every setup", () => {
+    document.body.innerHTML = `
+      <section data-portfolio-motion>
+        <canvas data-hero-webgl></canvas>
+      </section>
+    `;
+    installActivationObserver();
+    vi.stubGlobal("matchMedia", vi.fn(() => ({ matches: false })));
+    const root = document.querySelector<HTMLElement>("[data-portfolio-motion]")!;
+    const onOwnership = vi.fn();
+    root.addEventListener("portfolio-motion:claimed", onOwnership);
+
+    setupPortfolioMotion();
+    teardownPortfolioMotion();
+    setupPortfolioMotion();
+
+    expect(onOwnership).toHaveBeenCalledTimes(2);
+    expect(onOwnership.mock.calls.every(([event]) => event.target === root)).toBe(true);
   });
 
   it("does nothing when the motion root is not present", () => {
@@ -219,6 +362,8 @@ describe("portfolio motion gates", () => {
       </section>
     `;
     const { triggerProximity } = installActivationObserver();
+    const root = document.querySelector<HTMLElement>("[data-portfolio-motion]")!;
+    setHeroOffscreen(root);
     vi.useFakeTimers();
 
     setupPortfolioMotion();
@@ -237,6 +382,97 @@ describe("portfolio motion gates", () => {
     vi.useRealTimers();
   });
 
+  it("keeps the activation fallback terminal when imports resolve after the timeout", async () => {
+    document.body.innerHTML = `
+      <section data-portfolio-motion>
+        <canvas data-hero-webgl></canvas>
+      </section>
+    `;
+    installActivationObserver();
+    vi.stubGlobal("matchMedia", vi.fn(() => ({ matches: false })));
+    const root = document.querySelector<HTMLElement>("[data-portfolio-motion]")!;
+    setHeroOffscreen(root);
+    vi.useFakeTimers();
+
+    setupPortfolioMotion();
+    const canvas = root.querySelector<HTMLCanvasElement>("[data-hero-webgl]")!;
+    root.dispatchEvent(new Event("pointerenter"));
+    vi.advanceTimersByTime(4000);
+
+    expect(root.dataset.motionStatus).toBe("fallback");
+    expect(canvas.dataset.webglStatus).toBe("fallback");
+
+    await vi.dynamicImportSettled();
+    await Promise.resolve();
+    await Promise.resolve();
+
+    expect(root.dataset.motionStatus).toBe("fallback");
+    expect(canvas.dataset.webglStatus).toBe("fallback");
+    expect(motionHarness.gsap.registerPlugin).not.toHaveBeenCalled();
+    expect(motionHarness.createHeroScene).not.toHaveBeenCalled();
+    vi.useRealTimers();
+  });
+
+  it("falls back if imports resolve but the GSAP media callback never runs", async () => {
+    document.body.innerHTML = `<section data-portfolio-motion><canvas data-hero-webgl></canvas></section>`;
+    installActivationObserver();
+    vi.stubGlobal("matchMedia", vi.fn(() => ({ matches: false })));
+    const root = document.querySelector<HTMLElement>("[data-portfolio-motion]")!;
+    const canvas = root.querySelector<HTMLCanvasElement>("[data-hero-webgl]")!;
+    setHeroOffscreen(root);
+    motionHarness.media.add.mockImplementation(() => undefined);
+    vi.useFakeTimers();
+
+    setupPortfolioMotion();
+    root.dispatchEvent(new Event("pointerenter"));
+    await vi.dynamicImportSettled();
+    await Promise.resolve();
+    await Promise.resolve();
+    expect(motionHarness.media.add).toHaveBeenCalledTimes(1);
+    expect(root.dataset.motionStatus).toBe("loading");
+    expect(canvas.dataset.webglStatus).toBe("pending");
+
+    vi.advanceTimersByTime(4000);
+    expect(root.dataset.motionStatus).toBe("fallback");
+    expect(canvas.dataset.webglStatus).toBe("fallback");
+
+    const callback = motionHarness.media.add.mock.calls[0]?.[1] as (
+      context: { conditions: typeof motionHarness.conditions },
+    ) => void;
+    callback({ conditions: motionHarness.conditions });
+    expect(root.dataset.motionStatus).toBe("fallback");
+    expect(canvas.dataset.webglStatus).toBe("fallback");
+    expect(motionHarness.createHeroScene).not.toHaveBeenCalled();
+    vi.useRealTimers();
+  });
+
+  it.each(["active", "reduced"] as const)(
+    "cancels the startup fallback once the media callback sets %s",
+    async (status) => {
+      document.body.innerHTML = `<section data-portfolio-motion><canvas data-hero-webgl></canvas></section>`;
+      installActivationObserver();
+      vi.stubGlobal("matchMedia", vi.fn(() => ({ matches: false })));
+      motionHarness.conditions.reduceMotion = status === "reduced";
+      const root = document.querySelector<HTMLElement>("[data-portfolio-motion]")!;
+      const canvas = root.querySelector<HTMLCanvasElement>("[data-hero-webgl]")!;
+      setHeroOffscreen(root);
+      vi.useFakeTimers();
+
+      setupPortfolioMotion();
+      root.dispatchEvent(new Event("pointerenter"));
+      await vi.dynamicImportSettled();
+      await Promise.resolve();
+      await Promise.resolve();
+      expect(motionHarness.media.add).toHaveBeenCalledTimes(1);
+      expect(root.dataset.motionStatus).toBe(status);
+
+      vi.advanceTimersByTime(4000);
+      expect(root.dataset.motionStatus).toBe(status);
+      expect(canvas.dataset.webglStatus).toBe(status === "reduced" ? "reduced" : "ready");
+      vi.useRealTimers();
+    },
+  );
+
   it("loads the active motion layer and tears down GSAP, WebGL and scroll state", async () => {
     document.body.innerHTML = `
       <section data-portfolio-motion>
@@ -254,11 +490,10 @@ describe("portfolio motion gates", () => {
       configurable: true,
       value: vi.fn(() => ({ matches: false })),
     });
+    const root = document.querySelector<HTMLElement>("[data-portfolio-motion]")!;
+    setHeroOffscreen(root);
 
     setupPortfolioMotion();
-    const root = document.querySelector<HTMLElement>(
-      "[data-portfolio-motion]",
-    )!;
     const canvas =
       document.querySelector<HTMLCanvasElement>("[data-hero-webgl]")!;
     const grid = document.querySelector<HTMLElement>("[data-projects-list]")!;
@@ -295,6 +530,8 @@ describe("portfolio motion gates", () => {
 
     teardownPortfolioMotion();
 
+    expect(root.dataset.motionStatus).toBe("idle");
+    expect(canvas.dataset.webglStatus).toBe("ready");
     expect(motionHarness.media.revert).toHaveBeenCalled();
     expect(motionHarness.timeline.scrollTrigger.kill).toHaveBeenCalled();
     expect(motionHarness.timeline.kill).toHaveBeenCalled();
@@ -304,6 +541,151 @@ describe("portfolio motion gates", () => {
     expect(motionHarness.cardCleanup).toHaveBeenCalled();
     expect(grid.style.getPropertyValue("--project-progress")).toBe("");
     expect(meter.style.transform).toBe("scaleX(0)");
+  });
+
+  it("ignores a stale GSAP media callback after teardown", async () => {
+    document.body.innerHTML = `
+      <section data-portfolio-motion>
+        <canvas data-hero-webgl></canvas>
+      </section>
+    `;
+    installActivationObserver();
+    vi.stubGlobal("matchMedia", vi.fn(() => ({ matches: false })));
+    const root = document.querySelector<HTMLElement>("[data-portfolio-motion]")!;
+    setHeroOffscreen(root);
+
+    setupPortfolioMotion();
+    const canvas = root.querySelector<HTMLCanvasElement>("[data-hero-webgl]")!;
+    root.dispatchEvent(new Event("pointerenter"));
+    await vi.waitFor(() => expect(root.dataset.motionStatus).toBe("active"));
+    const callback = motionHarness.media.add.mock.calls[0]?.[1] as (
+      context: { conditions: typeof motionHarness.conditions },
+    ) => void;
+
+    teardownPortfolioMotion();
+    motionHarness.createHeroScene.mockClear();
+    motionHarness.createPointerMotion.mockClear();
+    callback({ conditions: motionHarness.conditions });
+
+    expect(root.dataset.motionStatus).toBe("idle");
+    expect(canvas.dataset.webglStatus).toBe("ready");
+    expect(motionHarness.createHeroScene).not.toHaveBeenCalled();
+    expect(motionHarness.createPointerMotion).not.toHaveBeenCalled();
+  });
+
+  it("live reduced-motion initial reduction defers activation until allowed and removes preference listener on teardown", async () => {
+    document.body.innerHTML = `<section data-portfolio-motion><canvas data-hero-webgl></canvas></section>`;
+    const { observer, triggerProximity } = installActivationObserver();
+    const preference = installLivePreference(true);
+    const root = document.querySelector<HTMLElement>("[data-portfolio-motion]")!;
+    const canvas = root.querySelector<HTMLCanvasElement>("canvas")!;
+    setHeroOffscreen(root);
+
+    setupPortfolioMotion();
+    expect(root.dataset.motionStatus).toBe("reduced");
+    root.dispatchEvent(new Event("pointerenter"));
+    expect(motionHarness.gsap.registerPlugin).not.toHaveBeenCalled();
+    expect(preference.listeners.size).toBe(1);
+
+    preference.change(false);
+    expect(root.dataset.motionStatus).toBe("loading");
+    expect(canvas.dataset.webglStatus).toBe("pending");
+    expect(observer.observe).toHaveBeenCalledWith(root);
+    expect(motionHarness.gsap.registerPlugin).not.toHaveBeenCalled();
+    triggerProximity();
+    await vi.waitFor(() => expect(root.dataset.motionStatus).toBe("active"));
+    expect(motionHarness.createHeroScene).toHaveBeenCalledTimes(1);
+
+    teardownPortfolioMotion();
+    expect(preference.listeners.size).toBe(0);
+    expect(preference.preference.removeEventListener).toHaveBeenCalledWith("change", expect.any(Function));
+    preference.change(true);
+    preference.change(false);
+    root.dispatchEvent(new Event("pointerenter"));
+    expect(root.dataset.motionStatus).toBe("idle");
+    expect(motionHarness.createHeroScene).toHaveBeenCalledTimes(1);
+  });
+
+  it("live reduced-motion permits motion on coarse pointers when preference allows it", async () => {
+    document.body.innerHTML = `<section data-portfolio-motion><canvas data-hero-webgl></canvas></section>`;
+    installActivationObserver();
+    installLivePreference(false);
+    motionHarness.conditions.finePointer = false;
+    motionHarness.media.add.mockImplementation((queries, callback) => {
+      if (queries.allowMotion === "(prefers-reduced-motion: no-preference)") {
+        const cleanup = callback({ conditions: motionHarness.conditions });
+        motionHarness.media.revert.mockImplementation(() => cleanup?.());
+      }
+    });
+    const root = document.querySelector<HTMLElement>("[data-portfolio-motion]")!;
+    setHeroOffscreen(root);
+    setupPortfolioMotion();
+    root.dispatchEvent(new Event("pointerenter"));
+    await vi.waitFor(() => expect(motionHarness.media.add).toHaveBeenCalled());
+    expect(motionHarness.media.add.mock.calls[0]?.[0]).toHaveProperty(
+      "allowMotion", "(prefers-reduced-motion: no-preference)",
+    );
+    expect(root.dataset.motionStatus).toBe("active");
+    expect(motionHarness.createPointerMotion).not.toHaveBeenCalled();
+  });
+
+  it("live reduced-motion invalidates an in-flight activation without leaving a timer or scene", async () => {
+    document.body.innerHTML = `<section data-portfolio-motion><canvas data-hero-webgl></canvas></section>`;
+    installActivationObserver();
+    const preference = installLivePreference(false);
+    const root = document.querySelector<HTMLElement>("[data-portfolio-motion]")!;
+    const canvas = root.querySelector<HTMLCanvasElement>("canvas")!;
+    setHeroOffscreen(root);
+    vi.useFakeTimers();
+    try {
+      setupPortfolioMotion();
+      root.dispatchEvent(new Event("pointerenter"));
+      preference.change(true);
+      await vi.dynamicImportSettled();
+      await Promise.resolve();
+      await Promise.resolve();
+      vi.advanceTimersByTime(4000);
+      expect(root.dataset.motionStatus).toBe("reduced");
+      expect(canvas.dataset.webglStatus).toBe("reduced");
+      expect(motionHarness.gsap.registerPlugin).not.toHaveBeenCalled();
+      expect(motionHarness.createHeroScene).not.toHaveBeenCalled();
+      teardownPortfolioMotion();
+      expect(preference.listeners.size).toBe(0);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it("live reduced-motion stops active GSAP and WebGL before rearming the visibility gate", async () => {
+    document.body.innerHTML = `<section data-portfolio-motion><canvas data-hero-webgl></canvas></section>
+      <section id="projects"><div data-projects-list><article data-project-card></article></div></section>`;
+    installActivationObserver();
+    const preference = installLivePreference(false);
+    const root = document.querySelector<HTMLElement>("[data-portfolio-motion]")!;
+    const canvas = root.querySelector<HTMLCanvasElement>("canvas")!;
+    setHeroOffscreen(root);
+
+    setupPortfolioMotion();
+    root.dispatchEvent(new Event("pointerenter"));
+    await vi.waitFor(() => expect(root.dataset.motionStatus).toBe("active"));
+    preference.change(true);
+    expect(root.dataset.motionStatus).toBe("reduced");
+    expect(canvas.dataset.webglStatus).toBe("reduced");
+    expect(motionHarness.media.revert).toHaveBeenCalledTimes(1);
+    expect(motionHarness.sceneCleanup).toHaveBeenCalledTimes(1);
+    expect(motionHarness.timeline.kill).toHaveBeenCalledTimes(1);
+    expect(motionHarness.sectionTrigger.kill).toHaveBeenCalledTimes(1);
+    root.dispatchEvent(new Event("pointerenter"));
+    expect(motionHarness.createHeroScene).toHaveBeenCalledTimes(1);
+
+    preference.change(false);
+    expect(root.dataset.motionStatus).toBe("loading");
+    expect(motionHarness.createHeroScene).toHaveBeenCalledTimes(1);
+    root.dispatchEvent(new Event("pointerenter"));
+    await vi.waitFor(() => expect(motionHarness.createHeroScene).toHaveBeenCalledTimes(2));
+    teardownPortfolioMotion();
+    expect(motionHarness.sceneCleanup).toHaveBeenCalledTimes(2);
+    expect(preference.listeners.size).toBe(0);
   });
 
   it("marks the layer reduced and skips enhancements when reduced motion is active", async () => {
@@ -338,5 +720,39 @@ describe("portfolio motion gates", () => {
     expect(motionHarness.gsap.registerPlugin).not.toHaveBeenCalled();
     expect(motionHarness.createHeroScene).not.toHaveBeenCalled();
     expect(motionHarness.createPointerMotion).not.toHaveBeenCalled();
+
+    teardownPortfolioMotion();
+    expect(
+      document.querySelector<HTMLElement>("[data-portfolio-motion]")?.dataset
+        .motionStatus,
+    ).toBe("idle");
+    expect(
+      document.querySelector<HTMLCanvasElement>("[data-hero-webgl]")?.dataset
+        .webglStatus,
+    ).toBe("reduced");
   });
+
+  it.each(["fallback", "disposed"])(
+    "preserves a terminal %s canvas state on teardown",
+    (status) => {
+      document.body.innerHTML = `
+        <section data-portfolio-motion>
+          <canvas data-hero-webgl></canvas>
+        </section>
+      `;
+      installActivationObserver();
+      vi.stubGlobal("matchMedia", vi.fn(() => ({ matches: false })));
+      const root = document.querySelector<HTMLElement>("[data-portfolio-motion]")!;
+      setHeroOffscreen(root);
+      setupPortfolioMotion();
+      const canvas = root.querySelector<HTMLCanvasElement>("[data-hero-webgl]")!;
+      expect(canvas.dataset.webglStatus).toBe("pending");
+      canvas.dataset.webglStatus = status;
+
+      teardownPortfolioMotion();
+
+      expect(root.dataset.motionStatus).toBe("idle");
+      expect(canvas.dataset.webglStatus).toBe(status);
+    },
+  );
 });

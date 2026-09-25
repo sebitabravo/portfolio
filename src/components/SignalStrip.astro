@@ -7,12 +7,12 @@ interface Props {
   locale?: Locale
 }
 
-const { locale = 'es' } = Astro.props
+const { locale = "es" } = Astro.props
 const t = getTranslations(locale)
 const technologies = [...canonicalTechnologies]
 const repeatedTechnologies = [...technologies, ...technologies]
 const label = t.signal.label
-const technologyCount = String(technologies.length).padStart(2, '0')
+const technologyCount = String(technologies.length).padStart(2, "0")
 ---
 
 <div
@@ -30,12 +30,14 @@ const technologyCount = String(technologies.length).padStart(2, '0')
     </div>
     <div class="signal-marquee-window" aria-hidden="true">
       <div class="signal-marquee">
-        {repeatedTechnologies.map((technology, index) => (
-          <span class="signal-tech" data-duplicate={index >= technologies.length ? 'true' : undefined}>
-            <span class="signal-tech-mark">✳</span>
-            {technology}
-          </span>
-        ))}
+        {
+          repeatedTechnologies.map((technology, index) => (
+            <span class="signal-tech" data-duplicate={index >= technologies.length ? "true" : undefined}>
+              <span class="signal-tech-mark">✳</span>
+              {technology}
+            </span>
+          ))
+        }
       </div>
     </div>
     <div class="signal-strip-actions">
@@ -160,7 +162,10 @@ const technologyCount = String(technologies.length).padStart(2, '0')
     font-family: var(--font-jetbrains-mono), monospace;
     font-size: 0.68rem;
     cursor: pointer;
-    transition: color 180ms ease, border-color 180ms ease, background 180ms ease;
+    transition:
+      color 180ms ease,
+      border-color 180ms ease,
+      background 180ms ease;
   }
 
   .signal-marquee-toggle:hover {
@@ -170,8 +175,12 @@ const technologyCount = String(technologies.length).padStart(2, '0')
   }
 
   @keyframes signal-marquee {
-    from { transform: translateX(0); }
-    to { transform: translateX(-50%); }
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -219,24 +228,8 @@ const technologyCount = String(technologies.length).padStart(2, '0')
 </style>
 
 <script>
-  const setupSignalStrip = () => {
-    const strip = document.querySelector<HTMLElement>('.signal-strip')
-    const toggle = strip?.querySelector<HTMLButtonElement>('[data-signal-toggle]')
-    if (!strip || !toggle || toggle.dataset.bound === 'true') return
-
-    toggle.dataset.bound = 'true'
-    toggle.addEventListener('click', () => {
-      const paused = strip.classList.toggle('is-paused')
-      const label = paused ? strip.dataset.signalResume : strip.dataset.signalPause
-      toggle.setAttribute('aria-pressed', String(paused))
-      if (label) toggle.setAttribute('aria-label', label)
-      const srText = toggle.querySelector('.sr-only')
-      if (srText && label) srText.textContent = label
-      const icon = toggle.querySelector('[aria-hidden="true"]')
-      if (icon) icon.textContent = paused ? '▶' : 'Ⅱ'
-    })
-  }
+  import { setupSignalStrip } from "@/scripts/signal-strip"
 
   setupSignalStrip()
-  document.addEventListener('astro:page-load', setupSignalStrip)
+  document.addEventListener("astro:page-load", setupSignalStrip)
 </script>

@@ -1,5 +1,4 @@
 ---
-// Experience Component
 import { getWorkExperience } from "@/lib/data"
 import { getTranslations, type Locale } from "@/lib/i18n"
 import ExperienceItem from "./ExperienceItem.astro"
@@ -8,27 +7,34 @@ interface Props {
   locale?: Locale
 }
 
-const { locale = 'es' } = Astro.props
+const { locale = "es" } = Astro.props
 const t = getTranslations(locale)
 const workExperience = getWorkExperience(locale)
 ---
 
-{workExperience.length > 0 ? (
-  <>
-    <div class="experience-timeline-note" data-experience-timeline>
-      <span class="experience-timeline-note-mark" aria-hidden="true">↳</span>
-      <p>{t.work.timeline}</p>
+{
+  workExperience.length > 0 ? (
+    <>
+      <div
+        class="experience-timeline-note mt-5 -mb-3 flex items-baseline gap-[0.65rem] border-l-2 border-hero-accent bg-primary/5 px-[0.9rem] py-3 text-[0.86rem] leading-normal text-foreground/78"
+        data-experience-timeline
+      >
+        <span class="experience-timeline-note-mark flex-none font-code text-hero-accent" aria-hidden="true">
+          ↳
+        </span>
+        <p>{t.work.timeline}</p>
+      </div>
+      <ol class="relative mt-8 pl-4">
+        {workExperience.map((experience, i) => (
+          <li>
+            <ExperienceItem {...experience} locale={locale} index={i} />
+          </li>
+        ))}
+      </ol>
+    </>
+  ) : (
+    <div class="mt-8 text-center text-foreground/80">
+      <p>{t.work.noExperience}</p>
     </div>
-    <ol class="relative mt-8 pl-4">
-      {workExperience.map((experience, i) => (
-        <li>
-          <ExperienceItem {...experience} locale={locale} index={i} />
-        </li>
-      ))}
-    </ol>
-  </>
-) : (
-  <div class="text-center text-foreground/80 mt-8">
-    <p>{t.work.noExperience}</p>
-  </div>
-)}
+  )
+}

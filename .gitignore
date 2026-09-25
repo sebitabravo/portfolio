@@ -18,7 +18,7 @@ pnpm-debug.log*
 lerna-debug.log*
 *.log
 logs
-specs
+/specs/
 
 # environment variables
 .env
@@ -63,3 +63,9 @@ qa-*.png
 *-menu-open.md
 lighthouse-scores.png
 .codegraph/
+
+# ODD working docs (kept out of PRs; active tracker stays tracked until archived)
+odd/*
+!odd/tasks
+odd/tasks/*
+!odd/tasks/portfolio-perfection.md

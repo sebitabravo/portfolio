@@ -17,3 +17,5 @@ lighthouse-scores.png
 lighthouserc.json
 playwright.config.ts
 vitest.config.ts
+odd/
+openspec/

@@ -6,7 +6,6 @@ import MailIcon from "./icons/Mail.astro"
 import LinkedInIcon from "./icons/LinkedIn.astro"
 import GitHubIcon from "./icons/GitHub.astro"
 import DownloadIcon from "./icons/Download.astro"
-import cvPdf from "@/assets/Sebastian_Bravo_CV.pdf"
 
 interface Props {
   locale?: Locale
@@ -14,6 +13,7 @@ interface Props {
 
 const { locale = 'es' } = Astro.props
 const t = getTranslations(locale)
+const cvHref = "/cv/Sebastian_Bravo_CV.pdf"
 
 const contactLinks = [
   {
@@ -61,7 +61,7 @@ const contactLinks = [
 
   <div class="contact-resume-row flex flex-wrap items-center justify-center gap-x-4 gap-y-[0.8rem] pt-2">
     <a
-      href={cvPdf}
+      href={cvHref}
       target="_blank"
       rel="noopener noreferrer"
       data-track-cv={locale}

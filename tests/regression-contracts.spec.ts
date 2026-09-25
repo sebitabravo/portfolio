@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test"
 
-test.describe("Judgment Day regression contracts", () => {
+test.describe("Regression contracts", () => {
   test("keeps hero LCP visible and motion controls accessible", async ({ page }) => {
     await page.goto("/")
 

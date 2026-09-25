@@ -79,7 +79,7 @@ const jsonLdString = buildLayoutJsonLd({
     {heroPortrait && (
       <link rel="preload" as="image" href={heroPortrait.src} fetchpriority="high" />
     )}
-    <Font cssVariable="--font-manrope" />
+    <Font cssVariable="--font-manrope" preload />
     <Font cssVariable="--font-syne" preload />
     <Font cssVariable="--font-jetbrains-mono" />
 

@@ -148,7 +148,18 @@ const heroTitleId = `hero-title-${locale}`
 <script>
   import { setupPortfolioMotion, teardownPortfolioMotion } from "@/scripts/portfolio-motion"
 
-  setupPortfolioMotion()
+  // Motion is an enhancement: requesting its chunks before first paint competes with the LCP heading.
+  const startWhenIdle = () => {
+    // Two frames guarantee a paint has happened; the load event alone can precede the LCP paint.
+    requestAnimationFrame(() =>
+      requestAnimationFrame(() => {
+        if (typeof requestIdleCallback === "function") requestIdleCallback(setupPortfolioMotion, { timeout: 1500 })
+        else setTimeout(setupPortfolioMotion, 200)
+      }),
+    )
+  }
+  if (document.readyState === "complete") startWhenIdle()
+  else window.addEventListener("load", startWhenIdle, { once: true })
   document.addEventListener('astro:page-load', setupPortfolioMotion)
   document.addEventListener('astro:before-swap', teardownPortfolioMotion)
 </script>

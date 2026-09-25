@@ -413,13 +413,13 @@ const alternates = createStaticAlternates(locale, spanishUrl, englishUrl)
                 {c.emailLead}{" "}
                 <a
                   href={`mailto:${personalInfo.email}`}
-                  class="link-inline"
+                  class="text-primary underline decoration-primary/30 underline-offset-[3px] hover:decoration-primary"
                 >
                   {personalInfo.email}
                 </a>
               </p>
               <p>
-                {c.siteLead}<a href="https://sebita.dev" class="link-inline">sebita.dev</a>{c.siteRest}
+                {c.siteLead}<a href="https://sebita.dev" class="text-primary underline decoration-primary/30 underline-offset-[3px] hover:decoration-primary">sebita.dev</a>{c.siteRest}
               </p>
             </div>
           </section>
@@ -473,7 +473,7 @@ const alternates = createStaticAlternates(locale, spanishUrl, englishUrl)
                       href={link.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      class="link-inline"
+                      class="text-primary underline decoration-primary/30 underline-offset-[3px] hover:decoration-primary"
                     >
                       {link.label}
                     </a>
@@ -594,7 +594,7 @@ const alternates = createStaticAlternates(locale, spanishUrl, englishUrl)
               <p>
                 <a
                   href={`mailto:${personalInfo.email}`}
-                  class="link-inline font-medium"
+                  class="text-primary underline decoration-primary/30 underline-offset-[3px] hover:decoration-primary font-medium"
                 >
                   {personalInfo.email}
                 </a>

@@ -176,7 +176,10 @@ const jsonLdString = buildLayoutJsonLd({
 
   </head>
   <body class="bg-background text-foreground" data-page={isHome ? 'home' : 'inner'}>
-    <a href="#main-content" class="skip-link">
+    <a
+      href="#main-content"
+      class="absolute -top-full left-4 z-[100] px-4 py-2 rounded-lg bg-primary text-primary-foreground font-semibold text-sm transition-[top] duration-200 ease-[ease] focus:top-2 focus:outline-2 focus:outline-primary focus:outline-offset-2"
+    >
       {locale === 'es' ? 'Saltar al contenido' : 'Skip to content'}
     </a>
     <div class="reading-progress" aria-hidden="true">

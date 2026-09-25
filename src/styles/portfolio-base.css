@@ -56,6 +56,31 @@
   }
 }
 
+@utility focus-ring {
+  &:focus {
+    outline: none;
+  }
+
+  &:focus-visible {
+    outline: 2px solid hsl(var(--primary));
+    outline-offset: 2px;
+  }
+}
+
+@utility tech-badge {
+  font-family: var(--font-code);
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 0.25rem 0.625rem;
+  border-radius: 6px;
+  border: 1px solid hsl(var(--border));
+  background-color: transparent;
+  color: hsl(var(--muted-foreground));
+  letter-spacing: 0;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
 /* ============================================
    Design System — Sebastian Bravo Portfolio
    Editorial white canvas, charcoal ink and lavender accents.
@@ -391,136 +416,29 @@ pre code {
 @layer components {
 
 /* ============================================
-   Container
+   Reading Progress — fixed top bar, used by Layout.astro on every page
    ============================================ */
 
-.container-custom {
-  max-width: 75rem;
-  margin-left: auto;
-  margin-right: auto;
-  padding-left: 1.25rem;
-  padding-right: 1.25rem;
+.reading-progress {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 70;
+  height: 2px;
+  pointer-events: none;
+  background: transparent;
 }
 
-@media (min-width: 640px) {
-  .container-custom {
-    padding-left: 1.5rem;
-    padding-right: 1.5rem;
-  }
-}
-
-@media (min-width: 768px) {
-  .container-custom {
-    padding-left: 2rem;
-    padding-right: 2rem;
-  }
-}
-
-@media (min-width: 1024px) {
-  .container-custom {
-    padding-left: 3rem;
-    padding-right: 3rem;
-  }
-}
-
-/* ============================================
-   Section Spacing
-   ============================================ */
-
-.section {
-  padding-top: 3rem;
-  padding-bottom: 3rem;
-}
-
-@media (min-width: 640px) {
-  .section {
-    padding-top: 4rem;
-    padding-bottom: 4rem;
-  }
-}
-
-@media (min-width: 768px) {
-  .section {
-    padding-top: 5rem;
-    padding-bottom: 5rem;
-  }
-}
-
-@media (min-width: 1024px) {
-  .section {
-    padding-top: 6rem;
-    padding-bottom: 6rem;
-  }
-}
-
-/* ============================================
-   Focus Ring
-   ============================================ */
-
-.focus-ring:focus {
-  outline: none;
-}
-
-.focus-ring:focus-visible {
-  outline: 2px solid hsl(var(--primary));
-  outline-offset: 2px;
-}
-
-/* ============================================
-   Button — Primary Amethyst
-   ============================================ */
-
-.btn-primary {
-  background-color: hsl(var(--primary));
-  color: hsl(var(--primary-foreground));
-  border-radius: 8px;
-  font-weight: 600;
-  font-size: 0.875rem;
-  letter-spacing: 0.02em;
-  padding: 0.625rem 1.5rem;
-  height: 44px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  transition: background-color 200ms ease, transform 150ms ease, box-shadow 200ms ease;
-  text-decoration: none;
-  border: none;
-  cursor: pointer;
-}
-
-.btn-primary:hover {
-  background-color: hsl(var(--primary) / 0.88);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 14px hsl(var(--primary) / 0.25);
-}
-
-.dark .btn-primary {
-  background-color: hsl(var(--primary));
-  color: hsl(var(--primary-foreground));
-}
-
-.dark .btn-primary:hover {
-  background-color: hsl(var(--primary) / 0.8);
-  box-shadow: 0 4px 14px hsl(var(--primary) / 0.2);
-}
-
-/* ============================================
-   Tech Badge — Monospace developer identity
-   ============================================ */
-
-.tech-badge {
-  font-family: var(--font-jetbrains-mono), monospace;
-  font-size: 0.75rem;
-  font-weight: 500;
-  padding: 0.25rem 0.625rem;
-  border-radius: 6px;
-  border: 1px solid hsl(var(--border));
-  background-color: transparent;
-  color: hsl(var(--muted-foreground));
-  letter-spacing: 0;
-  line-height: 1.4;
-  white-space: nowrap;
+.reading-progress span {
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform: scaleX(0);
+  transform-origin: left center;
+  background: linear-gradient(90deg, #8b7bff, #c7b7ff 55%, #f4efff);
+  box-shadow: 0 0 14px rgb(155 130 255 / 0.8);
+  transition: transform 120ms linear;
 }
 
  /* ============================================

@@ -41,11 +41,15 @@ const heroPortrait = isHome
 
 const profileUrl = locale === "es" ? "https://sebita.dev/" : "https://sebita.dev/en/"
 const canonical = canonicalUrl ?? profileUrl
-const dynamicOgImage = new URL(
-  `/og/${locale}.svg?title=${encodeURIComponent(title)}`,
+// Static PNG fallback: social crawlers (X/Facebook/LinkedIn/WhatsApp) do
+// not render SVG og:images, so the default card is the checked-in
+// public/og/<locale>.png (1200x630, regenerated with pnpm generate:og).
+// Pages with their own photography (blog posts) keep passing `image`.
+const staticOgImage = new URL(
+  `/og/${locale}.png`,
   "https://sebita.dev",
 ).toString()
-const seoImage = image ?? dynamicOgImage
+const seoImage = image ?? staticOgImage
 const sameAsProfiles = [social.github, social.linkedin].filter(
   (url): url is string => Boolean(url),
 )

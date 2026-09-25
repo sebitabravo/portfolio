@@ -4,3 +4,15 @@ updates:
     directory: /
     schedule:
       interval: weekly
+  # npm covers the pnpm workspace lockfile; the 7-day cooldown keeps
+  # freshly published (potentially compromised) releases out of automated
+  # PRs while frozen-lockfile installs keep CI deterministic.
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 7
+      semver-major-days: 7
+      semver-minor-days: 7
+      semver-patch-days: 7

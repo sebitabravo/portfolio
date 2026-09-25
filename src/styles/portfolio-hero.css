@@ -45,7 +45,6 @@
   --shadow-hero-btn: 0 10px 30px var(--hero-btn-shadow);
   --shadow-hero-btn-hover: 0 13px 36px var(--hero-btn-shadow-hover);
   --shadow-hero-pulse: 0 0 0 4px rgb(139 243 190 / 0.12), 0 0 16px rgb(139 243 190 / 0.7);
-  --font-code: var(--font-jetbrains-mono), ui-monospace, monospace;
   --font-hero-heading: var(--font-syne), var(--font-manrope), sans-serif;
   --font-hero-body: var(--font-manrope), system-ui, sans-serif;
 }

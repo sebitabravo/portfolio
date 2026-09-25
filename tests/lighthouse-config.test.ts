@@ -9,11 +9,16 @@ const steps = workflow.split(/^      - name: /m).slice(1);
 const step = (name: string) => steps.find((entry) => entry.startsWith(`${name}\n`));
 
 describe("Lighthouse checks the checked-out static build", () => {
-  it("serves both locale routes from dist three times and keeps error-level assertions", () => {
+  it("serves locale, blog, and privacy routes from dist three times and keeps error-level assertions", () => {
     expect(config.ci.collect.staticDistDir).toBe("./dist");
-    expect(config.ci.collect.url).toEqual(["http://localhost/", "http://localhost/en/"]);
+    expect(config.ci.collect.url).toEqual([
+      "http://localhost/",
+      "http://localhost/en/",
+      "http://localhost/blog/",
+      "http://localhost/privacy/",
+    ]);
     expect(config.ci.collect.numberOfRuns).toBe(3);
-    expect(config.ci.collect.settings.skipAudits).toEqual(["canonical", "robots-txt"]);
+    expect(config.ci.collect.settings.skipAudits).toEqual(["robots-txt"]);
     expect(config.ci.assert.assertions).toEqual({
       "categories:performance": ["error", { minScore: 0.95 }],
       "categories:accessibility": ["error", { minScore: 0.95 }],
@@ -36,7 +41,7 @@ describe("Lighthouse checks the checked-out static build", () => {
     ]);
     expect(step("Checkout repository")).toContain("uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2");
     expect(step("Set up pnpm")).toMatch(/uses: pnpm\/action-setup@fe02b34f77f8bc703788d5817da081398fad5dd2 # v4\.0\.0\n        with:\n          version: 10\.30\.1/);
-    expect(step("Set up Node")).toMatch(/uses: actions\/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4\.4\.0\n        with:\n          node-version: 22\n          cache: pnpm/);
+    expect(step("Set up Node")).toMatch(/uses: actions\/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4\.4\.0\n        with:\n          node-version: 22.23.3\n          cache: pnpm/);
     expect(step("Install dependencies")).toContain("run: pnpm install --frozen-lockfile");
     expect(step("Build site")).toContain("run: pnpm build");
     expect(step("Run Lighthouse CI")).toMatch(/continue-on-error: false\n        uses: treosh\/lighthouse-ci-action@3e7e23fb74242897f95c0ba9cabad3d0227b9b18 # 12\.6\.2/);

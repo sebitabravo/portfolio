@@ -36,7 +36,21 @@ describe("GitHub Actions immutable references", () => {
 
     expect(config).toMatch(/^version:\s*2\s*$/m);
     expect(config).toMatch(
-      /^updates:\s*\n\s*- package-ecosystem:\s*["']?github-actions["']?\s*\n\s*directory:\s*["']?\/["']?\s*\n\s*schedule:\s*\n\s*interval:\s*["']?weekly["']?\s*$/m,
+      /^[ \t]*-[ \t]*package-ecosystem:\s*["']?github-actions["']?\s*\n[ \t]*directory:\s*["']?\/["']?\s*\n[ \t]*schedule:\s*\n[ \t]*interval:\s*["']?weekly["']?/m,
     );
+  });
+
+  it("gates automated npm updates behind a 7-day cooldown", async () => {
+    const config = await readFile(".github/dependabot.yml", "utf8");
+
+    expect(config).toMatch(/package-ecosystem:\s*["']?npm["']?/);
+    for (const key of [
+      "default-days",
+      "semver-major-days",
+      "semver-minor-days",
+      "semver-patch-days",
+    ]) {
+      expect(config).toMatch(new RegExp(`${key}:\\s*7\\b`));
+    }
   });
 });

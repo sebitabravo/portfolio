@@ -11,6 +11,9 @@ describe("pnpm build-script and CI policy", () => {
         "  '@tailwindcss/oxide': true",
         "  esbuild: true",
         "  sharp: true",
+        "minimumReleaseAge: 20160",
+        "blockExoticSubdeps: true",
+        "trustPolicy: no-downgrade",
       ].join("\n"),
     );
   });

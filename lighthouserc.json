@@ -4,12 +4,13 @@
       "staticDistDir": "./dist",
       "url": [
         "http://localhost/",
-        "http://localhost/en/"
+        "http://localhost/en/",
+        "http://localhost/blog/",
+        "http://localhost/privacy/"
       ],
       "numberOfRuns": 3,
       "settings": {
         "skipAudits": [
-          "canonical",
           "robots-txt"
         ]
       }

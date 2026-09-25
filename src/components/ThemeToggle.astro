@@ -9,7 +9,7 @@ interface Props {
   locale?: Locale
 }
 
-const { locale = 'es' } = Astro.props
+const { locale = "es" } = Astro.props
 const t = getTranslations(locale)
 ---
 
@@ -23,21 +23,21 @@ const t = getTranslations(locale)
   <button
     id="theme-toggle"
     type="button"
-    class="inline-flex h-11 min-w-11 items-center justify-center gap-2 rounded-md px-2.5 py-2 text-sm font-medium text-current transition-colors hover:bg-[hsl(var(--muted))] dark:hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[hsl(var(--primary))]"
+    class="inline-flex h-11 min-w-11 items-center justify-center gap-2 rounded-md px-2.5 py-2 text-sm font-medium text-current transition-colors hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary dark:group-[:not(.scrolled)]:text-nav-glass-text-dark dark:hover:bg-white/10"
     aria-label={t.theme.toggle}
     aria-haspopup="menu"
     aria-expanded="false"
     aria-controls="theme-menu"
   >
-    <SunIcon class="size-4 theme-icon-light hidden" />
-    <MoonIcon class="size-4 theme-icon-dark hidden" />
-    <MonitorIcon class="size-4 theme-icon-system" />
+    <SunIcon class="theme-icon-light hidden size-4" />
+    <MoonIcon class="theme-icon-dark hidden size-4" />
+    <MonitorIcon class="theme-icon-system size-4" />
     <span id="current-theme" class="hidden xl:inline">{t.theme.system}</span>
   </button>
 
   <div
     id="theme-menu"
-    class="hidden absolute left-1/2 -translate-x-1/2 mt-2 w-48 rounded-md shadow-lg bg-[hsl(var(--card))] ring-1 ring-black/5 dark:ring-white/10 z-[9999]"
+    class="absolute left-1/2 z-[9999] mt-2 hidden w-48 min-w-max -translate-x-1/2 rounded-md bg-card shadow-lg ring-1 ring-black/5 dark:ring-white/10"
     role="menu"
   >
     <div class="py-1">
@@ -46,7 +46,7 @@ const t = getTranslations(locale)
         role="menuitemradio"
         aria-checked="false"
         data-theme="light"
-        class="theme-option flex items-center justify-between w-full px-4 py-2 text-sm text-[hsl(var(--foreground)/0.8)] hover:bg-[hsl(var(--muted)/0.5)] text-left"
+        class="theme-option flex w-full items-center justify-between px-4 py-2 text-left text-sm text-foreground/80 hover:bg-muted/50"
       >
         <span class="flex items-center gap-3">
           <SunIcon class="size-4" />
@@ -59,7 +59,7 @@ const t = getTranslations(locale)
         role="menuitemradio"
         aria-checked="false"
         data-theme="dark"
-        class="theme-option flex items-center justify-between w-full px-4 py-2 text-sm text-[hsl(var(--foreground)/0.8)] hover:bg-[hsl(var(--muted)/0.5)] text-left"
+        class="theme-option flex w-full items-center justify-between px-4 py-2 text-left text-sm text-foreground/80 hover:bg-muted/50"
       >
         <span class="flex items-center gap-3">
           <MoonIcon class="size-4" />
@@ -72,7 +72,7 @@ const t = getTranslations(locale)
         role="menuitemradio"
         aria-checked="true"
         data-theme="system"
-        class="theme-option flex items-center justify-between w-full px-4 py-2 text-sm text-[hsl(var(--foreground)/0.8)] hover:bg-[hsl(var(--muted)/0.5)] text-left"
+        class="theme-option flex w-full items-center justify-between px-4 py-2 text-left text-sm text-foreground/80 hover:bg-muted/50"
       >
         <span class="flex items-center gap-3">
           <MonitorIcon class="size-4" />
@@ -87,11 +87,11 @@ const t = getTranslations(locale)
 <script>
   import { initThemeToggle } from "@/scripts/theme-toggle"
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initThemeToggle, { once: true })
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initThemeToggle, { once: true })
   } else {
     initThemeToggle()
   }
 
-  document.addEventListener('astro:after-swap', initThemeToggle)
+  document.addEventListener("astro:after-swap", initThemeToggle)
 </script>

@@ -2,50 +2,43 @@
 
 ## Context
 
-Current portfolio content lives in `src/lib/data.ts`. Issue #2 asks to evaluate whether a headless CMS or Markdown/MDX should replace this approach.
+The portfolio uses two complementary content paths. Blog posts are MDX files in
+`src/content/blog/`, validated by the Astro/Zod `blog` collection schema in
+`src/content.config.ts`. Structured portfolio content, including projects, work
+experience and certifications, lives in typed modules under `src/lib/data/` and
+is exposed to consumers through the stable `src/lib/data.ts` facade. Issue #2
+asks whether a headless CMS or Markdown/MDX should replace this approach.
 
-## Option A: Headless CMS (Sanity/Contentful)
+## Options
 
-- Pros:
-  - Update content without code changes
-  - Editorial workflows and draft/publish controls
-  - Scales when multiple contributors edit content
-- Cons:
-  - Extra infrastructure and vendor dependency
-  - More moving parts for a personal static portfolio
-  - Higher complexity in local development and CI
+### Headless CMS (Sanity/Contentful)
 
-## Option B: Markdown/MDX content files
+A CMS could support editing without code changes, drafts and multi-contributor
+workflows, but adds infrastructure, a vendor dependency and CI/local complexity.
+The current editorial workflow does not justify that cost.
 
-- Pros:
-  - Keeps repository as source of truth
-  - Better maintainability than long TypeScript object literals
-  - Native fit for Astro content collections
-- Cons:
-  - Requires redeploy to publish changes
-  - Still needs migration effort and content schema definition
+### More Astro collections / Markdown or MDX
 
-## Option C: Keep `data.ts` (current state)
+Astro collections already fit the blog: prose and frontmatter benefit from an
+explicit schema. Moving other domains could make sense if editing or schema
+needs emerge, but would require migrating typed bilingual data, defining new
+schemas and changing the facade's consumers. It is not inherently simpler for
+structured portfolio records.
 
-- Pros:
-  - Fastest to edit for small content volume
-  - Zero extra tooling
-- Cons:
-  - Harder long-term scalability
-  - Less content governance
-  - Mixing data and logic in one file increases maintenance cost
+### Keep the current split
+
+Blog prose remains in MDX with collection validation. Projects, work,
+certifications and other structured content remain typed TypeScript domain
+modules rather than one large data file. The facade keeps existing consumers
+independent of the module layout. Changes still require a redeploy.
 
 ## Decision
 
-For this project stage, **Option B (Markdown/MDX)** is the recommended next step.
+Retain the current split. Do not add a CMS or migrate all portfolio domains to
+collections now. The existing blog schema does not validate projects, work or
+certifications; their TypeScript types and domain modules serve that role.
 
-- It keeps architecture simple while improving maintainability.
-- It avoids operational overhead of a CMS.
-- It aligns with Astro strengths and allows future migration to headless CMS if content operations grow.
-
-## Next Iteration Plan
-
-1. Create Astro content collections for `projects`, `experience`, and `certifications`.
-2. Move bilingual content into structured MDX files per locale.
-3. Replace `getProjects/getWorkExperience/getCertifications` with collection queries.
-4. Add schema validation for collection entries in CI.
+Re-evaluate an individual domain for a collection or CMS only when a concrete
+editorial workflow, contributor need or schema-validation gap warrants the
+migration. Scope any future change to that need rather than treating a wholesale
+collection migration as the next task.

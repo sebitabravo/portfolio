@@ -1,14 +1,10 @@
-import { existsSync } from "node:fs";
-import { join } from "node:path";
+import { getImage } from "astro:assets"
+import { getProjectSocialImage } from "./portfolio-images"
 
-const screenshotsDirectory = join(process.cwd(), "public", "screenshots");
+export async function getBlogImageUrl(key: string | undefined): Promise<string | undefined> {
+  const image = getProjectSocialImage(key)
+  if (!image) return undefined
 
-export function getBlogImageUrl(key: string | undefined): string | undefined {
-  if (!key || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(key)) {
-    return undefined;
-  }
-
-  return existsSync(join(screenshotsDirectory, `${key}.webp`))
-    ? `/screenshots/${key}.webp`
-    : undefined;
+  const optimized = await getImage({ src: image, width: Math.min(image.width, 1200), format: "webp", quality: 90 })
+  return optimized.src
 }

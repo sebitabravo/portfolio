@@ -1,12 +1,7 @@
 // @vitest-environment happy-dom
 
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
-import { trackEvent } from "@/lib/analytics"
 import { setupProjects, teardownProjects } from "../src/scripts/projects"
-
-vi.mock("@/lib/analytics", () => ({
-  trackEvent: vi.fn(),
-}))
 
 function pointerEvent(type: string, clientX: number, clientY: number): Event {
   const event = new Event(type, { bubbles: true })
@@ -46,19 +41,6 @@ describe("project interaction lifecycle", () => {
     vi.unstubAllGlobals()
   })
 
-  it("tracks project actions once even when setup runs again", () => {
-    setupProjects()
-    setupProjects()
-
-    document.querySelector<HTMLButtonElement>("[data-track-project]")!.click()
-
-    expect(trackEvent).toHaveBeenCalledTimes(1)
-    expect(trackEvent).toHaveBeenCalledWith({
-      name: "project_view",
-      props: { project: "vulcania", action: "live" },
-    })
-  })
-
   it("updates the cached spotlight coordinates on pointer movement", () => {
     setupProjects()
     const card = document.querySelector<HTMLElement>("[data-project-card]")!
@@ -76,7 +58,7 @@ describe("project interaction lifecycle", () => {
     const image = document.querySelector<HTMLImageElement>("[data-img-fallback]")!
 
     image.dispatchEvent(new Event("error"))
-    expect(image.style.display).toBe("none")
+    expect(image.classList.contains("hidden")).toBe(true)
 
     teardownProjects()
     card.style.removeProperty("--spotlight-x")

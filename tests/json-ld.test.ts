@@ -1,41 +1,121 @@
-import { readFileSync } from "node:fs";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest"
+import { buildLayoutJsonLd, getWebPageSchema } from "../src/lib/seo-structured-data"
 
-const layout = readFileSync("src/layouts/Layout.astro", "utf8");
-const spanishArticle = readFileSync("src/pages/blog/[slug].astro", "utf8");
-const englishArticle = readFileSync("src/pages/en/blog/[slug].astro", "utf8");
+describe("WebPage JSON-LD", () => {
+  const page = {
+    title: "Portfolio <preview>",
+    description: "A portfolio page",
+    canonical: "https://sebita.dev/en/projects/",
+    locale: "en" as const,
+  }
 
-describe("JSON-LD contracts", () => {
-  it("emits one WebPage node for indexable pages from canonical page metadata", () => {
-    expect(layout).toContain("const canonical = canonicalUrl ?? profileUrl");
-    expect(layout).toMatch(
-      /\.\.\.\(!noindex \? \[\{[\s\S]*?"@type": "WebPage"/,
-    );
-    expect(layout).toContain("name: title");
-    expect(layout).toContain("description: description");
-    expect(layout).toContain("url: canonical");
-    expect(layout).toContain("inLanguage: locale");
-    expect(layout.match(/"@type": "WebPage"/g)).toHaveLength(1);
-  });
+  it("creates one WebPage node from canonical page metadata for indexable pages", () => {
+    expect(getWebPageSchema(false, page)).toEqual([{
+      "@type": "WebPage",
+      name: "Portfolio <preview>",
+      description: "A portfolio page",
+      url: "https://sebita.dev/en/projects/",
+      inLanguage: "en",
+    }])
+  })
 
-  it("does not emit a WebPage node for noindex pages", () => {
-    expect(layout).toContain("!noindex ?");
-  });
+  it("omits only the WebPage node for noindex pages", () => {
+    expect(getWebPageSchema(true, page)).toEqual([])
+  })
 
-  it.each([
-    ["Spanish", spanishArticle],
-    ["English", englishArticle],
-  ])(
-    "preserves the %s Article schema without a duplicate WebPage schema",
-    (_locale, article) => {
-      expect(article.match(/"@type": "Article"/g)).toHaveLength(1);
-      expect(article).not.toContain('"@type": "WebPage"');
-      expect(article).not.toContain("dateModified");
-    },
-  );
+  it("preserves Spanish locale and its canonical URL", () => {
+    expect(getWebPageSchema(false, {
+      ...page,
+      canonical: "https://sebita.dev/",
+      locale: "es",
+    })).toEqual([{
+      "@type": "WebPage",
+      name: page.title,
+      description: page.description,
+      url: "https://sebita.dev/",
+      inLanguage: "es",
+    }])
+  })
+})
 
-  it("preserves the existing Person and WebSite schemas", () => {
-    expect(layout.match(/"@type": "Person"/g)).toHaveLength(1);
-    expect(layout.match(/"@type": "WebSite"/g)).toHaveLength(1);
-  });
-});
+describe("Layout JSON-LD document", () => {
+  const input = {
+    title: "Portfolio <preview>",
+    siteName: "Sebastian Bravo — Portfolio",
+    description: "A portfolio page",
+    canonical: "https://sebita.dev/en/",
+    locale: "en" as const,
+    profileUrl: "https://sebita.dev/en/",
+    personName: "Sebastian Bravo",
+    jobTitle: "Full Stack Developer",
+    email: "contact@sebita.dev",
+    imageUrl: "https://sebita.dev/profile.webp",
+    sameAs: ["https://github.com/sebitabravo", "https://linkedin.com/in/sebitabravo"],
+    noindex: false,
+  }
+
+  function parsed() {
+    return JSON.parse(buildLayoutJsonLd(input)) as {
+      "@context": string
+      "@graph": Array<Record<string, unknown>>
+    }
+  }
+
+  it("emits a schema.org graph with Person, WebSite and WebPage nodes", () => {
+    const document = parsed()
+
+    expect(document["@context"]).toBe("https://schema.org")
+    expect(document["@graph"].map((node) => node["@type"]).sort()).toEqual([
+      "Person",
+      "WebPage",
+      "WebSite",
+    ])
+  })
+
+  it("keeps the site name on WebSite and the page title on WebPage", () => {
+    const nodes = parsed()["@graph"]
+
+    expect(nodes.find((node) => node["@type"] === "WebSite")).toMatchObject({
+      name: "Sebastian Bravo — Portfolio",
+    })
+    expect(nodes.find((node) => node["@type"] === "WebPage")).toMatchObject({
+      name: "Portfolio <preview>",
+    })
+  })
+
+  it("keeps Person identity, contact and locale-bound profile URL", () => {
+    const person = parsed()["@graph"].find((node) => node["@type"] === "Person")
+
+    expect(person).toMatchObject({
+      name: "Sebastian Bravo",
+      alternateName: "sebitabravo",
+      url: "https://sebita.dev/en/",
+      jobTitle: "Full Stack Developer",
+      email: "mailto:contact@sebita.dev",
+      image: "https://sebita.dev/profile.webp",
+      sameAs: ["https://github.com/sebitabravo", "https://linkedin.com/in/sebitabravo"],
+      description: "A portfolio page",
+    })
+  })
+
+  it("omits only the WebPage node for noindex pages", () => {
+    const document = JSON.parse(buildLayoutJsonLd({ ...input, noindex: true })) as {
+      "@graph": Array<Record<string, unknown>>
+    }
+
+    expect(document["@graph"].map((node) => node["@type"]).sort()).toEqual([
+      "Person",
+      "WebSite",
+    ])
+  })
+
+  it("escapes angle brackets so the payload stays inline-safe", () => {
+    const raw = buildLayoutJsonLd(input)
+
+    expect(raw).not.toContain("<")
+    expect(raw).toContain("\\u003cpreview>")
+    expect(parsed()["@graph"].find((node) => node["@type"] === "WebPage")).toMatchObject({
+      name: "Portfolio <preview>",
+    })
+  })
+})

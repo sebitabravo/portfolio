@@ -1,6 +1,9 @@
 {
   "nav": {
     "home": "Inicio",
+    "mainNavigation": "Navegación principal",
+    "brandHome": "Inicio — Sebastian Bravo",
+    "breadcrumb": "Migas de pan",
     "menu": "Menú",
     "experience": "Experiencia",
     "projects": "Proyectos",
@@ -41,6 +44,9 @@
     "contactCta": "Hablemos",
     "viewMoreGithub": "Ver más proyectos en GitHub",
     "featured": "Destacado",
+    "cardLabel": "PROYECTO",
+    "evidenceLabel": "Evidencia del proyecto",
+    "technologiesLabel": "Tecnologías",
     "statusProduction": "En producción",
     "statusCodeAvailable": "Código disponible",
     "statusDevelopment": "En desarrollo",
@@ -56,8 +62,16 @@
     "currently": "Actualmente...",
     "viewMore": "Ver más →",
     "viewCaseStudy": "Ver case study",
+    "evidenceLabel": "Evidencia del trabajo",
     "timeline": "Entre contratos: 2023–2026 · Ingeniería Informática en INACAP y proyectos personales en producción.",
     "noExperience": "Experiencia laboral próximamente..."
+  },
+  "contact": {
+    "mailSubject": "Contacto desde tu portfolio",
+    "responseTime": "Te respondo en menos de 24h",
+    "linkedinDescription": "Conectemos profesionalmente",
+    "githubDescription": "Mirá mi código abierto",
+    "cvHelper": "CV disponible para revisar mi experiencia completa."
   },
   "education": {
     "title": "Educación",
@@ -66,6 +80,7 @@
   },
   "certifications": {
     "title": "Certificaciones",
+    "carouselLabel": "Carrusel de certificaciones",
     "professional": "Profesional",
     "academic": "Académico",
     "previous": "Anterior",
@@ -83,10 +98,22 @@
     "system": "Sistema"
   },
   "footer": {
+    "professionalProfiles": "Perfiles profesionales",
+    "links": "Enlaces del pie",
     "madeWith": "Hecho con",
     "privacy": "Privacidad"
   },
+  "language": {
+    "toggleLabel": "Cambiar idioma (actual: {code})"
+  },
+  "error404": {
+    "description": "La página que buscás no existe.",
+    "heading": "Esta página se perdió en el deploy",
+    "message": "No encontramos lo que buscabas. Volvé al inicio y seguimos desde ahí.",
+    "backHome": "Volver al inicio"
+  },
   "blog": {
+    "postNavigation": "Navegación del artículo",
     "title": "Blog",
     "description": "Artículos sobre desarrollo full-stack, IoT, Machine Learning y lecciones de código en producción.",
     "intro": "Escribo sobre lo que aprendo construyendo. Full-stack, IoT, Machine Learning y lecciones de código en producción.",

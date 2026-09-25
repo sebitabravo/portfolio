@@ -4,20 +4,12 @@ import { describe, expect, it } from "vitest";
 const heroCss = readFileSync("src/styles/portfolio-hero.css", "utf8");
 const heroMarkup = readFileSync("src/components/Hero.astro", "utf8");
 const blogCardMarkup = readFileSync("src/components/BlogCard.astro", "utf8");
-const spanishBlogIndexMarkup = readFileSync(
-  "src/pages/blog/index.astro",
+const blogIndexMarkup = readFileSync(
+  "src/components/blog/LocalizedBlogIndex.astro",
   "utf8",
 );
-const englishBlogIndexMarkup = readFileSync(
-  "src/pages/en/blog/index.astro",
-  "utf8",
-);
-const spanishBlogArticleMarkup = readFileSync(
-  "src/pages/blog/[slug].astro",
-  "utf8",
-);
-const englishBlogArticleMarkup = readFileSync(
-  "src/pages/en/blog/[slug].astro",
+const blogArticleMarkup = readFileSync(
+  "src/components/blog/LocalizedBlogPost.astro",
   "utf8",
 );
 
@@ -80,31 +72,27 @@ describe("blog text contrast contract", () => {
     );
   });
 
-  it("uses the muted foreground token for Spanish and English list breadcrumbs", () => {
-    for (const markup of [spanishBlogIndexMarkup, englishBlogIndexMarkup]) {
-      expect(markup).toMatch(
-        /<ol\b[^>]*class="[^"]*\btext-muted-foreground\b[^"]*"/,
-      );
-      expect(markup).not.toMatch(
-        /<ol\b[^>]*class="[^"]*\btext-foreground\/55\b[^"]*"/,
-      );
-    }
+  it("uses the muted foreground token for localized list breadcrumbs", () => {
+    expect(blogIndexMarkup).toMatch(
+      /<ol\b[^>]*class="[^"]*\btext-muted-foreground\b[^"]*"/,
+    );
+    expect(blogIndexMarkup).not.toMatch(
+      /<ol\b[^>]*class="[^"]*\btext-foreground\/55\b[^"]*"/,
+    );
   });
 
-  it("uses the muted foreground token for Spanish and English article breadcrumbs and dates", () => {
-    for (const markup of [spanishBlogArticleMarkup, englishBlogArticleMarkup]) {
-      expect(markup).toMatch(
-        /<ol\b[^>]*class="[^"]*\btext-muted-foreground\b[^"]*"/,
-      );
-      expect(markup).not.toMatch(
-        /<ol\b[^>]*class="[^"]*\btext-foreground\/55\b[^"]*"/,
-      );
-      expect(markup).toMatch(
-        /<time\b[^>]*class="[^"]*\btext-muted-foreground\b[^"]*"/,
-      );
-      expect(markup).not.toMatch(
-        /<time\b[^>]*class="[^"]*\btext-foreground\/40\b[^"]*"/,
-      );
-    }
+  it("uses the muted foreground token for localized article breadcrumbs and dates", () => {
+    expect(blogArticleMarkup).toMatch(
+      /<ol\b[^>]*class="[^"]*\btext-muted-foreground\b[^"]*"/,
+    );
+    expect(blogArticleMarkup).not.toMatch(
+      /<ol\b[^>]*class="[^"]*\btext-foreground\/55\b[^"]*"/,
+    );
+    expect(blogArticleMarkup).toMatch(
+      /<time\b[^>]*class="[^"]*\btext-muted-foreground\b[^"]*"/,
+    );
+    expect(blogArticleMarkup).not.toMatch(
+      /<time\b[^>]*class="[^"]*\btext-foreground\/40\b[^"]*"/,
+    );
   });
 });

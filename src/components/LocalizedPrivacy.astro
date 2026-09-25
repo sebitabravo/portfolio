@@ -1,0 +1,604 @@
+---
+import Layout from "@/layouts/Layout.astro"
+import { personalInfo } from "@/lib/data"
+import { createStaticAlternates, type Locale } from "@/lib/i18n"
+
+interface Props {
+  locale: Locale
+}
+
+interface PrivacyTermBullet {
+  term: string
+  detail: string
+}
+
+interface PrivacyExternalLink {
+  href: string
+  label: string
+  note: string
+}
+
+interface PrivacyArcoCopy {
+  heading: string
+  introLead: string
+  law1: string
+  law1Note: string
+  mid: string
+  law2: string
+  law2Note: string
+  bullets: PrivacyTermBullet[]
+  outro: string
+}
+
+interface PrivacyGdprCopy {
+  heading: string
+  introLead: string
+  introStrong: string
+  introRest: string
+  bullets: PrivacyTermBullet[]
+  basisLead: string
+  basisRest: string
+}
+
+interface PrivacyLocaleCopy {
+  lastUpdate: string
+  title: string
+  description: string
+  heading: string
+  updatedLabel: string
+  controllerHeading: string
+  controllerCountry: string
+  emailLead: string
+  siteLead: string
+  siteRest: string
+  noCollectHeading: string
+  noCollectLeadA: string
+  noCollectLeadStrong: string
+  noCollectLeadB: string
+  noCollectListLead: string
+  noCollectBullets: string[]
+  analyticsHeading: string
+  analyticsIntro: string
+  analyticsListLead: string
+  analyticsBullets: PrivacyTermBullet[]
+  analyticsNote: string
+  linksHeading: string
+  linksLead: string
+  links: PrivacyExternalLink[]
+  linksOutro: string
+  arco: PrivacyArcoCopy
+  gdpr: PrivacyGdprCopy
+  changesHeading: string
+  changesP1: string
+  changesP2: string
+  contactHeading: string
+  contactP1: string
+  contactNote: string
+}
+
+const PRIVACY_COPY: Record<Locale, PrivacyLocaleCopy> = {
+  es: {
+    lastUpdate: "25 de septiembre de 2026",
+    title: "Política de Privacidad — Sebastian Bravo",
+    description:
+      "Política de privacidad de sebita.dev. Sebastian Bravo no recolecta datos personales. Sitio estático sin analítica ni seguimiento. Información sobre derechos ARCO y GDPR.",
+    heading: "Política de Privacidad",
+    updatedLabel: "Última actualización:",
+    controllerHeading: "1. Responsable del Tratamiento",
+    controllerCountry: "Chile",
+    emailLead: "Correo electrónico:",
+    siteLead: "Este sitio web (",
+    siteRest:
+      ") es un portfolio personal de carácter informativo y profesional. No representa una empresa ni una organización formal.",
+    noCollectHeading: "2. Datos que NO Recolectamos",
+    noCollectLeadA: "Este sitio web es ",
+    noCollectLeadStrong: "100% estático",
+    noCollectLeadB:
+      ". No tiene formularios de contacto, no utiliza cookies propias, no tiene bases de datos ni almacena información de visitantes en el servidor.",
+    noCollectListLead: "Específicamente, NO recolectamos:",
+    noCollectBullets: [
+      "Nombres, correos electrónicos ni datos de contacto",
+      "Cookies de sesión o persistentes propias",
+      "Datos biométricos, de salud o categóricos",
+      "Información financiera o de pago",
+      "Direcciones IP completas (este sitio no las recolecta)",
+    ],
+    analyticsHeading: "3. Analítica y Medición",
+    analyticsIntro:
+      "Este sitio no utiliza herramientas de analítica ni seguimiento. No hay píxeles de rastreo, scripts de medición de terceros ni experimentos A/B: las páginas son HTML estático servido sin instrumentación del lado del cliente.",
+    analyticsListLead: "En concreto:",
+    analyticsBullets: [
+      {
+        term: "Sin analítica",
+        detail: "no se registran páginas vistas, eventos ni métricas de uso.",
+      },
+      {
+        term: "Sin identificadores",
+        detail: "no se generan ni almacenan identificadores de visitante.",
+      },
+      {
+        term: "Sin terceros de medición",
+        detail: "ningún script de analítica se carga en el navegador.",
+      },
+    ],
+    analyticsNote:
+      "Si en el futuro se incorporara alguna medición, será sin cookies y con datos agregados, y esta política se actualizará antes de activarla.",
+    linksHeading: "4. Enlaces a Sitios Externos",
+    linksLead: "Este sitio contiene enlaces a plataformas de terceros:",
+    links: [
+      {
+        href: "https://github.com/sebitabravo",
+        label: "GitHub",
+        note: "— repositorios de código",
+      },
+      {
+        href: "https://linkedin.com/in/sebitabravo",
+        label: "LinkedIn",
+        note: "— perfil profesional",
+      },
+      {
+        href: "https://cal.com/sebitabravo/15min",
+        label: "Cal.com",
+        note: "— agendamiento de reuniones",
+      },
+    ],
+    linksOutro:
+      "No tenemos control sobre el contenido ni las prácticas de privacidad de estos sitios. Te recomendamos revisar sus respectivas políticas de privacidad al visitarlos.",
+    arco: {
+      heading: "5. Derechos ARCO (Chile)",
+      introLead: "La legislación chilena protege tus datos personales. De acuerdo a la ",
+      law1: "Ley 19.628",
+      law1Note: " (vigente)",
+      mid: " y la ",
+      law2: "Ley 21.719",
+      law2Note: " (vigente a partir del 1 de diciembre de 2026), tienes los siguientes derechos ARCO:",
+      bullets: [
+        {
+          term: "Acceso",
+          detail: "solicitar que te informemos qué datos personales nuestros estamos tratando",
+        },
+        {
+          term: "Rectificación",
+          detail: "solicitar la corrección de datos inexactos o incompletos",
+        },
+        {
+          term: "Cancelación",
+          detail: "solicitar la eliminación de tus datos personales",
+        },
+        {
+          term: "Oposición",
+          detail: "oponerte al tratamiento de tus datos personales",
+        },
+      ],
+      outro:
+        "Dado que este sitio no recolecta datos personales de forma activa, no mantenemos registros de visitantes que podamos asociar a una persona identificada o identificable. Si consideras que tus datos han sido tratados de forma contraria a la ley, contáctanos al correo electrónico indicado en la sección 1 y resolveremos tu solicitud a la brevedad.",
+    },
+    gdpr: {
+      heading: "6. Derechos GDPR (Visitantes Europeos)",
+      introLead: "Si te encuentras en el Espacio Económico Europeo (EEE), el ",
+      introStrong: "Reglamento General de Protección de Datos (GDPR)",
+      introRest: " te otorga derechos adicionales:",
+      bullets: [
+        {
+          term: "Portabilidad",
+          detail: "solicitar tus datos en un formato estructurado y legible",
+        },
+        {
+          term: "Limitación del tratamiento",
+          detail: "restringir el procesamiento de tus datos",
+        },
+        {
+          term: "Retirada del consentimiento",
+          detail: "revocar cualquier consentimiento otorgado en cualquier momento",
+        },
+        {
+          term: "Reclamación ante autoridad de control",
+          detail: "presentar una reclamación ante tu autoridad local de protección de datos",
+        },
+      ],
+      basisLead: "Base legal:",
+      basisRest:
+        " este sitio no realiza ningún tratamiento de datos personales — no hay analítica, cookies ni registros de visitantes — por lo que no existe tratamiento sobre el cual aplicar una base legal. Si nos escribes por correo, tu mensaje se trata únicamente para responder a tu solicitud.",
+    },
+    changesHeading: "7. Cambios a esta Política",
+    changesP1:
+      'Esta politica de privacidad puede actualizarse para reflejar cambios en las funcionalidades del sitio o en la legislación aplicable. La fecha de "Última actualización" al inicio de esta página indica cuándo fue modificada por última vez.',
+    changesP2:
+      "Te recomendamos revisar esta página periódicamente si te interesa conocer como protegemos tu privacidad.",
+    contactHeading: "8. Contacto",
+    contactP1:
+      "Si tienes preguntas sobre esta política de privacidad o deseas ejercer tus derechos, puedes contactarme directamente a:",
+    contactNote:
+      "Responderé a la brevedad. No utilizo este canal para fines comerciales ni comparto tu correo con terceros.",
+  },
+  en: {
+    lastUpdate: "September 25, 2026",
+    title: "Privacy Policy — Sebastian Bravo",
+    description:
+      "Privacy policy for sebita.dev. Sebastian Bravo does not collect personal data. Static site with no analytics or tracking. Information about GDPR rights and Chilean data protection law.",
+    heading: "Privacy Policy",
+    updatedLabel: "Last updated:",
+    controllerHeading: "1. Data Controller",
+    controllerCountry: "Chile",
+    emailLead: "Email:",
+    siteLead: "This website (",
+    siteRest:
+      ") is a personal portfolio site for informational and professional purposes. It does not represent a company or formal organization.",
+    noCollectHeading: "2. Data We Do NOT Collect",
+    noCollectLeadA: "This website is ",
+    noCollectLeadStrong: "100% static",
+    noCollectLeadB:
+      ". It has no contact forms, does not use cookies, has no databases, and does not store any visitor information on the server.",
+    noCollectListLead: "Specifically, we do NOT collect:",
+    noCollectBullets: [
+      "Names, email addresses, or contact information",
+      "First-party session or persistent cookies",
+      "Biometric, health, or special category data",
+      "Financial or payment information",
+      "Full IP addresses (not collected by this site)",
+    ],
+    analyticsHeading: "3. Analytics and Measurement",
+    analyticsIntro:
+      "This site uses no analytics or tracking tools. There are no tracking pixels, third-party measurement scripts, or A/B experiments: pages are static HTML served with no client-side instrumentation.",
+    analyticsListLead: "Specifically:",
+    analyticsBullets: [
+      {
+        term: "No analytics",
+        detail: "no page views, events, or usage metrics are recorded.",
+      },
+      {
+        term: "No identifiers",
+        detail: "no visitor identifiers are generated or stored.",
+      },
+      {
+        term: "No third-party measurement",
+        detail: "no analytics script loads in the browser.",
+      },
+    ],
+    analyticsNote:
+      "If any measurement is ever introduced, it will be cookie-free and aggregate-only, and this policy will be updated before it goes live.",
+    linksHeading: "4. External Links",
+    linksLead: "This site contains links to third-party platforms:",
+    links: [
+      {
+        href: "https://github.com/sebitabravo",
+        label: "GitHub",
+        note: "— code repositories",
+      },
+      {
+        href: "https://linkedin.com/in/sebitabravo",
+        label: "LinkedIn",
+        note: "— professional profile",
+      },
+      {
+        href: "https://cal.com/sebitabravo/15min",
+        label: "Cal.com",
+        note: "— meeting scheduling",
+      },
+    ],
+    linksOutro:
+      "We have no control over the content or privacy practices of these external sites. We recommend reviewing their respective privacy policies when visiting them.",
+    arco: {
+      heading: "6. Your ARCO Rights (Chile)",
+      introLead: "Chilean law protects your personal data. Under ",
+      law1: "Law 19.628",
+      law1Note: " (currently in force)",
+      mid: " and ",
+      law2: "Law 21.719",
+      law2Note: " (effective December 1, 2026), you have the following ARCO rights:",
+      bullets: [
+        {
+          term: "Access",
+          detail: "request information about what personal data we are processing",
+        },
+        {
+          term: "Rectification",
+          detail: "request correction of inaccurate or incomplete data",
+        },
+        {
+          term: "Cancellation",
+          detail: "request deletion of your personal data",
+        },
+        {
+          term: "Opposition",
+          detail: "object to the processing of your personal data",
+        },
+      ],
+      outro:
+        "Since this site does not actively collect personal data, we do not maintain visitor records that can be associated with an identified or identifiable person. If you believe your data has been processed in a manner contrary to law, please contact us at the email address in Section 1 and we will resolve your request promptly.",
+    },
+    gdpr: {
+      heading: "5. Your GDPR Rights (European Visitors)",
+      introLead: "If you are located in the European Economic Area (EEA), the ",
+      introStrong: "General Data Protection Regulation (GDPR)",
+      introRest: " grants you the following rights:",
+      bullets: [
+        {
+          term: "Access",
+          detail: "request information about what personal data we process",
+        },
+        {
+          term: "Rectification",
+          detail: "request correction of inaccurate or incomplete data",
+        },
+        {
+          term: "Erasure",
+          detail: "request deletion of your personal data",
+        },
+        {
+          term: "Restriction",
+          detail: "restrict the processing of your data",
+        },
+        {
+          term: "Portability",
+          detail: "receive your data in a structured, machine-readable format",
+        },
+        {
+          term: "Objection",
+          detail: "object to the processing of your personal data",
+        },
+        {
+          term: "Withdraw consent",
+          detail: "withdraw any consent given at any time",
+        },
+        {
+          term: "Lodge a complaint",
+          detail: "file a complaint with your local data protection authority",
+        },
+      ],
+      basisLead: "Legal basis:",
+      basisRest:
+        " this site performs no personal-data processing — no analytics, cookies, or visitor records — so there is no processing to ground in a legal basis. If you email us, your message is handled solely to respond to your request.",
+    },
+    changesHeading: "7. Changes to This Policy",
+    changesP1:
+      'This privacy policy may be updated to reflect changes in site functionality or applicable law. The "Last updated" date at the top of this page indicates when it was last modified.',
+    changesP2: "We recommend checking this page periodically if you are interested in how your privacy is protected.",
+    contactHeading: "8. Contact",
+    contactP1:
+      "If you have questions about this privacy policy or wish to exercise your rights, you can contact me directly at:",
+    contactNote:
+      "I will respond promptly. I do not use this channel for commercial purposes nor share your email with third parties.",
+  },
+}
+
+const { locale } = Astro.props
+const isEnglish = locale === "en"
+const c = PRIVACY_COPY[locale]
+const spanishUrl = "https://sebita.dev/privacy/"
+const englishUrl = "https://sebita.dev/en/privacy/"
+const canonicalUrl = isEnglish ? englishUrl : spanishUrl
+const alternates = createStaticAlternates(locale, spanishUrl, englishUrl)
+---
+
+<Layout title={c.title} description={c.description} locale={locale} canonicalUrl={canonicalUrl} alternates={alternates}>
+  <main id="main-content">
+    <div class="px-4 md:px-6">
+      <div class="mx-auto max-w-[720px] pt-24 pb-16 md:pt-28 md:pb-24">
+        <h1 class="text-2xl font-bold tracking-tight md:text-3xl">
+          {c.heading}
+        </h1>
+        <p class="mt-2 text-sm text-caption-color">
+          {`${c.updatedLabel} ${c.lastUpdate}`}
+        </p>
+
+        <div class="mt-10 space-y-10 text-muted-foreground">
+          <section>
+            <h2 class="text-lg font-semibold text-foreground">
+              {c.controllerHeading}
+            </h2>
+            <div class="mt-3 space-y-2 leading-relaxed">
+              <p>
+                <strong class="text-foreground">Sebastian Bravo</strong>
+                <br />
+                {c.controllerCountry}
+              </p>
+              <p>
+                {c.emailLead}{" "}
+                <a
+                  href={`mailto:${personalInfo.email}`}
+                  class="text-primary underline decoration-primary/30 underline-offset-[3px] hover:decoration-primary"
+                >
+                  {personalInfo.email}
+                </a>
+              </p>
+              <p>
+                {c.siteLead}<a
+                  href="https://sebita.dev"
+                  class="text-primary underline decoration-primary/30 underline-offset-[3px] hover:decoration-primary"
+                  >sebita.dev</a
+                >{c.siteRest}
+              </p>
+            </div>
+          </section>
+
+          <section>
+            <h2 class="text-lg font-semibold text-foreground">
+              {c.noCollectHeading}
+            </h2>
+            <div class="mt-3 space-y-2 leading-relaxed">
+              <p>
+                {c.noCollectLeadA}<strong class="text-foreground">{c.noCollectLeadStrong}</strong>{c.noCollectLeadB}
+              </p>
+              <p>{c.noCollectListLead}</p>
+              <ul class="list-disc space-y-1 pl-6">
+                {c.noCollectBullets.map((bullet) => <li>{bullet}</li>)}
+              </ul>
+            </div>
+          </section>
+
+          <section>
+            <h2 class="text-lg font-semibold text-foreground">
+              {c.analyticsHeading}
+            </h2>
+            <div class="mt-3 space-y-2 leading-relaxed">
+              <p>{c.analyticsIntro}</p>
+              <p>{c.analyticsListLead}</p>
+              <ul class="list-disc space-y-1 pl-6">
+                {
+                  c.analyticsBullets.map((bullet) => (
+                    <li>
+                      <strong class="text-foreground">{bullet.term}:</strong> {bullet.detail}
+                    </li>
+                  ))
+                }
+              </ul>
+              <p class="text-sm">{c.analyticsNote}</p>
+            </div>
+          </section>
+
+          <section>
+            <h2 class="text-lg font-semibold text-foreground">
+              {c.linksHeading}
+            </h2>
+            <div class="mt-3 space-y-2 leading-relaxed">
+              <p>{c.linksLead}</p>
+              <ul class="list-disc space-y-1 pl-6">
+                {
+                  c.links.map((link) => (
+                    <li>
+                      <a
+                        href={link.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="text-primary underline decoration-primary/30 underline-offset-[3px] hover:decoration-primary"
+                      >
+                        {link.label}
+                      </a>{" "}
+                      {link.note}
+                    </li>
+                  ))
+                }
+              </ul>
+              <p>{c.linksOutro}</p>
+            </div>
+          </section>
+
+          {
+            isEnglish ? (
+              <>
+                <section>
+                  <h2 class="text-lg font-semibold text-foreground">{c.gdpr.heading}</h2>
+                  <div class="mt-3 space-y-2 leading-relaxed">
+                    <p>
+                      {c.gdpr.introLead}
+                      <strong class="text-foreground">{c.gdpr.introStrong}</strong>
+                      {c.gdpr.introRest}
+                    </p>
+                    <ul class="list-disc space-y-1 pl-6">
+                      {c.gdpr.bullets.map((bullet) => (
+                        <li>
+                          <strong class="text-foreground">{bullet.term}:</strong> {bullet.detail}
+                        </li>
+                      ))}
+                    </ul>
+                    <p>
+                      <strong class="text-foreground">{c.gdpr.basisLead}</strong>
+                      {c.gdpr.basisRest}
+                    </p>
+                  </div>
+                </section>
+
+                <section>
+                  <h2 class="text-lg font-semibold text-foreground">{c.arco.heading}</h2>
+                  <div class="mt-3 space-y-2 leading-relaxed">
+                    <p>
+                      {c.arco.introLead}
+                      <strong class="text-foreground">{c.arco.law1}</strong>
+                      {c.arco.law1Note}
+                      {c.arco.mid}
+                      <strong class="text-foreground">{c.arco.law2}</strong>
+                      {c.arco.law2Note}
+                    </p>
+                    <ul class="list-disc space-y-1 pl-6">
+                      {c.arco.bullets.map((bullet) => (
+                        <li>
+                          <strong class="text-foreground">{bullet.term}:</strong> {bullet.detail}
+                        </li>
+                      ))}
+                    </ul>
+                    <p>{c.arco.outro}</p>
+                  </div>
+                </section>
+              </>
+            ) : (
+              <>
+                <section>
+                  <h2 class="text-lg font-semibold text-foreground">{c.arco.heading}</h2>
+                  <div class="mt-3 space-y-2 leading-relaxed">
+                    <p>
+                      {c.arco.introLead}
+                      <strong class="text-foreground">{c.arco.law1}</strong>
+                      {c.arco.law1Note}
+                      {c.arco.mid}
+                      <strong class="text-foreground">{c.arco.law2}</strong>
+                      {c.arco.law2Note}
+                    </p>
+                    <ul class="list-disc space-y-1 pl-6">
+                      {c.arco.bullets.map((bullet) => (
+                        <li>
+                          <strong class="text-foreground">{bullet.term}:</strong> {bullet.detail}
+                        </li>
+                      ))}
+                    </ul>
+                    <p>{c.arco.outro}</p>
+                  </div>
+                </section>
+
+                <section>
+                  <h2 class="text-lg font-semibold text-foreground">{c.gdpr.heading}</h2>
+                  <div class="mt-3 space-y-2 leading-relaxed">
+                    <p>
+                      {c.gdpr.introLead}
+                      <strong class="text-foreground">{c.gdpr.introStrong}</strong>
+                      {c.gdpr.introRest}
+                    </p>
+                    <ul class="list-disc space-y-1 pl-6">
+                      {c.gdpr.bullets.map((bullet) => (
+                        <li>
+                          <strong class="text-foreground">{bullet.term}:</strong> {bullet.detail}
+                        </li>
+                      ))}
+                    </ul>
+                    <p>
+                      <strong class="text-foreground">{c.gdpr.basisLead}</strong>
+                      {c.gdpr.basisRest}
+                    </p>
+                  </div>
+                </section>
+              </>
+            )
+          }
+
+          <section>
+            <h2 class="text-lg font-semibold text-foreground">
+              {c.changesHeading}
+            </h2>
+            <div class="mt-3 space-y-2 leading-relaxed">
+              <p>{c.changesP1}</p>
+              <p>{c.changesP2}</p>
+            </div>
+          </section>
+
+          <section>
+            <h2 class="text-lg font-semibold text-foreground">
+              {c.contactHeading}
+            </h2>
+            <div class="mt-3 space-y-2 leading-relaxed">
+              <p>{c.contactP1}</p>
+              <p>
+                <a
+                  href={`mailto:${personalInfo.email}`}
+                  class="font-medium text-primary underline decoration-primary/30 underline-offset-[3px] hover:decoration-primary"
+                >
+                  {personalInfo.email}
+                </a>
+              </p>
+              <p class="text-sm">{c.contactNote}</p>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+  </main>
+</Layout>

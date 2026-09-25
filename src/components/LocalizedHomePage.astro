@@ -1,0 +1,95 @@
+---
+import Layout from "@/layouts/Layout.astro"
+import { personalInfo } from "@/lib/data"
+import { createStaticAlternates, getTranslations, type Locale } from "@/lib/i18n"
+import { homeSectionIds } from "@/lib/home-sections"
+import Hero from "@/components/Hero.astro"
+import SignalStrip from "@/components/SignalStrip.astro"
+import Experience from "@/components/Experience.astro"
+import Projects from "@/components/Projects.astro"
+import Education from "@/components/Education.astro"
+import Certifications from "@/components/Certifications.astro"
+import AboutMe from "@/components/AboutMe.astro"
+import Contact from "@/components/Contact.astro"
+import SectionBand from "@/components/SectionBand.astro"
+import TitleSection from "@/components/TitleSection.astro"
+import BriefcaseIcon from "@/components/icons/Briefcase.astro"
+import CodeIcon from "@/components/icons/Code.astro"
+import GraduationCapIcon from "@/components/icons/GraduationCap.astro"
+import CertificateIcon from "@/components/icons/Certificate.astro"
+import ProfileCheckIcon from "@/components/icons/ProfileCheck.astro"
+import MailIcon from "@/components/icons/Mail.astro"
+
+interface Props {
+  locale: Locale
+}
+
+const { locale } = Astro.props
+const t = getTranslations(locale)
+const canonicalUrl = locale === "es" ? "https://sebita.dev" : "https://sebita.dev/en/"
+const alternates = createStaticAlternates(locale, "https://sebita.dev", "https://sebita.dev/en/")
+const ids = homeSectionIds[locale]
+---
+
+<Layout
+  title={`${personalInfo.name} — ${personalInfo.title}`}
+  locale={locale}
+  canonicalUrl={canonicalUrl}
+  alternates={alternates}
+>
+  <main id="main-content">
+    <Hero locale={locale} />
+
+    <div class="home-sections w-full">
+      <SectionBand id={ids.projects} headingId={`${ids.projects}-heading`}>
+        <TitleSection id={`${ids.projects}-heading`} index={1} total={6}>
+          <CodeIcon class="size-6" />
+          {t.projects.title}
+        </TitleSection>
+        <Projects locale={locale} />
+      </SectionBand>
+
+      <SignalStrip locale={locale} />
+
+      <SectionBand id={ids.experience} headingId={`${ids.experience}-heading`} tone="tinted">
+        <TitleSection id={`${ids.experience}-heading`} index={2} total={6}>
+          <BriefcaseIcon class="size-6" />
+          {t.work.title}
+        </TitleSection>
+        <Experience locale={locale} />
+      </SectionBand>
+
+      <SectionBand id={ids.education} headingId={`${ids.education}-heading`}>
+        <TitleSection id={`${ids.education}-heading`} index={3} total={6}>
+          <GraduationCapIcon class="size-6" />
+          {t.education.title}
+        </TitleSection>
+        <Education locale={locale} />
+      </SectionBand>
+
+      <SectionBand id={ids.certifications} headingId={`${ids.certifications}-heading`} tone="tinted" data-animate>
+        <TitleSection id={`${ids.certifications}-heading`} index={4} total={6}>
+          <CertificateIcon class="size-6" />
+          {t.certifications.title}
+        </TitleSection>
+        <Certifications locale={locale} />
+      </SectionBand>
+
+      <SectionBand id={ids.about} headingId={`${ids.about}-heading`}>
+        <TitleSection id={`${ids.about}-heading`} index={5} total={6}>
+          <ProfileCheckIcon class="size-6" />
+          {t.about.title}
+        </TitleSection>
+        <AboutMe locale={locale} />
+      </SectionBand>
+
+      <SectionBand id={ids.contact} headingId={`${ids.contact}-heading`}>
+        <TitleSection id={`${ids.contact}-heading`} index={6} total={6}>
+          <MailIcon class="size-6" />
+          {t.nav.contact}
+        </TitleSection>
+        <Contact locale={locale} />
+      </SectionBand>
+    </div>
+  </main>
+</Layout>

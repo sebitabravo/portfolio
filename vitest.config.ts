@@ -1,7 +1,7 @@
-import { fileURLToPath } from "node:url"
-import { defineConfig } from "vitest/config"
+/// <reference types="vitest/config" />
+import { getViteConfig } from "astro/config"
 
-export default defineConfig({
+export default getViteConfig({
   test: {
     environment: "node",
     include: ["tests/**/*.test.ts"],
@@ -14,11 +14,6 @@ export default defineConfig({
         functions: 90,
         lines: 90,
       },
-    },
-  },
-  resolve: {
-    alias: {
-      "@": fileURLToPath(new URL("./src", import.meta.url)),
     },
   },
 })

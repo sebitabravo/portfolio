@@ -1,4 +1,4 @@
-import { getProjects } from "../src/lib/data"
+import { getProjects } from "../src/lib/data/projects"
 
 const locales = ["es", "en"] as const
 const timeoutMs = 12000
@@ -25,7 +25,7 @@ async function checkUrl(url: string): Promise<LinkCheckResult> {
       return { ok: true, status: headResponse.status }
     }
   } catch {
-    // Ignorar para intentar GET como fallback
+    // Ignore and fall back to a GET request
   }
 
   try {
@@ -56,9 +56,7 @@ async function main() {
     for (const project of projects) {
       const context = `${locale}:${project.slug}`
 
-      const links = [project.githubUrl, project.liveUrl].filter(
-        (value): value is string => Boolean(value),
-      )
+      const links = [project.githubUrl, project.liveUrl].filter((value): value is string => Boolean(value))
 
       for (const link of links) {
         if (!urlContexts.has(link)) {

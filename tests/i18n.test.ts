@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest"
 import en from "../src/lib/i18n/en.json"
 import es from "../src/lib/i18n/es.json"
-import { defaultLocale, getTranslations, locales } from "../src/lib/i18n"
+import { createStaticAlternates, defaultLocale, getTranslations, locales, type Locale } from "../src/lib/i18n"
 
 function getDeepKeys(
   input: Record<string, unknown>,
@@ -22,6 +22,25 @@ function getDeepKeys(
 
   return keys
 }
+
+describe("static page alternates", () => {
+  const routes = [
+    { name: "home", spanishUrl: "https://sebita.dev", englishUrl: "https://sebita.dev/en/" },
+    { name: "blog index", spanishUrl: "https://sebita.dev/blog", englishUrl: "https://sebita.dev/en/blog" },
+  ]
+
+  for (const { name, spanishUrl, englishUrl } of routes) {
+    for (const locale of ["es", "en"] as Locale[]) {
+      it(`keeps ${name} ${locale} alternates in locale-first order with Spanish as default`, () => {
+        expect(createStaticAlternates(locale, spanishUrl, englishUrl)).toEqual([
+          { hreflang: locale, href: locale === "es" ? spanishUrl : englishUrl },
+          { hreflang: locale === "es" ? "en" : "es", href: locale === "es" ? englishUrl : spanishUrl },
+          { hreflang: "x-default", href: spanishUrl },
+        ])
+      })
+    }
+  }
+})
 
 describe("i18n dictionaries", () => {
   it("contains the same translation keys in both locales", () => {

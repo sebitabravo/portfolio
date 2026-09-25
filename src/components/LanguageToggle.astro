@@ -1,7 +1,7 @@
 ---
 // LanguageToggle Component - Toggle between ES and EN
 import LanguagesIcon from "./icons/Languages.astro"
-import type { Locale } from "@/lib/i18n"
+import { getTranslations, type Locale } from "@/lib/i18n"
 
 interface Props {
   locale?: Locale
@@ -9,14 +9,18 @@ interface Props {
 
 const { locale = 'es' } = Astro.props
 const currentLangCode = locale === 'es' ? 'ES' : 'EN'
-const toggleLabel = locale === 'es' ? `Cambiar idioma (actual: ${currentLangCode})` : `Toggle language (current: ${currentLangCode})`
+const labels = {
+  es: getTranslations('es').language.toggleLabel,
+  en: getTranslations('en').language.toggleLabel,
+}
+const toggleLabel = labels[locale].replace('{code}', currentLangCode)
 ---
 
-<div class="relative inline-block" id="language-toggle-wrapper">
+<div class="relative inline-block" id="language-toggle-wrapper" data-label-template-es={labels.es} data-label-template-en={labels.en}>
   <button
     id="language-toggle"
     type="button"
-    class="inline-flex h-11 min-w-11 items-center justify-center gap-2 rounded-md px-2.5 py-2 text-sm font-medium text-current transition-colors hover:bg-[hsl(var(--muted))] dark:hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[hsl(var(--primary))]"
+    class="inline-flex h-11 min-w-11 items-center justify-center gap-2 rounded-md px-2.5 py-2 text-sm font-medium text-current transition-colors hover:bg-muted dark:hover:bg-white/10 dark:group-[:not(.scrolled)]:text-nav-glass-text-dark focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
     aria-label={toggleLabel}
     aria-haspopup="menu"
     aria-expanded="false"
@@ -28,7 +32,7 @@ const toggleLabel = locale === 'es' ? `Cambiar idioma (actual: ${currentLangCode
 
   <div
     id="language-menu"
-    class="hidden absolute left-1/2 -translate-x-1/2 mt-2 w-32 rounded-md shadow-lg bg-[hsl(var(--card))] ring-1 ring-black/5 dark:ring-white/10 z-[9999]"
+    class="hidden absolute left-1/2 -translate-x-1/2 mt-2 w-32 min-w-max rounded-md shadow-lg bg-card ring-1 ring-black/5 dark:ring-white/10 z-[9999]"
     role="menu"
   >
     <div class="py-1">
@@ -36,8 +40,9 @@ const toggleLabel = locale === 'es' ? `Cambiar idioma (actual: ${currentLangCode
         type="button"
         role="menuitemradio"
         aria-checked={locale === 'es' ? 'true' : 'false'}
+        tabindex={locale === 'es' ? 0 : -1}
         data-lang="es"
-        class="language-option flex items-center justify-between w-full px-4 py-2 text-sm text-[hsl(var(--foreground)/0.8)] hover:bg-[hsl(var(--muted)/0.5)] text-left"
+        class="language-option flex items-center justify-between w-full px-4 py-2 text-sm text-foreground/80 hover:bg-muted/50 text-left"
       >
         <span>Español</span>
         <span class="check-es hidden" aria-hidden="true">✓</span>
@@ -46,8 +51,9 @@ const toggleLabel = locale === 'es' ? `Cambiar idioma (actual: ${currentLangCode
         type="button"
         role="menuitemradio"
         aria-checked={locale === 'en' ? 'true' : 'false'}
+        tabindex={locale === 'en' ? 0 : -1}
         data-lang="en"
-        class="language-option flex items-center justify-between w-full px-4 py-2 text-sm text-[hsl(var(--foreground)/0.8)] hover:bg-[hsl(var(--muted)/0.5)] text-left"
+        class="language-option flex items-center justify-between w-full px-4 py-2 text-sm text-foreground/80 hover:bg-muted/50 text-left"
       >
         <span>English</span>
         <span class="check-en hidden" aria-hidden="true">✓</span>
@@ -57,150 +63,12 @@ const toggleLabel = locale === 'es' ? `Cambiar idioma (actual: ${currentLangCode
 </div>
 
 <script>
-  function initLanguageToggle() {
-    const ac = new AbortController()
-    const { signal } = ac
-    const LANG_KEY = 'language-preference'
-
-    const toggle = document.getElementById('language-toggle')
-    const menu = document.getElementById('language-menu')
-    const wrapper = document.getElementById('language-toggle-wrapper')
-    const currentLangEl = document.getElementById('current-language')
-
-    if (!toggle || !menu || !wrapper || !currentLangEl) return
-    const languageToggle = toggle
-    const languageMenu = menu
-
-    function setLanguagePreference(lang: string): void {
-      localStorage.setItem(LANG_KEY, lang)
-    }
-
-    function updateLanguageDisplay(lang: string): void {
-      if (!currentLangEl || !wrapper || !toggle) return
-
-      currentLangEl.textContent = lang.toUpperCase()
-
-      const ariaLabel = lang === 'es' ? 'Cambiar idioma (actual: ES)' : 'Toggle language (current: EN)'
-      toggle.setAttribute('aria-label', ariaLabel)
-
-      const checkEs = wrapper.querySelector('.check-es')
-      const checkEn = wrapper.querySelector('.check-en')
-      const optionEs = wrapper.querySelector('[data-lang="es"]')
-      const optionEn = wrapper.querySelector('[data-lang="en"]')
-
-      if (checkEs && checkEn) {
-        checkEs.classList.toggle('hidden', lang !== 'es')
-        checkEn.classList.toggle('hidden', lang !== 'en')
-      }
-      optionEs?.setAttribute('aria-checked', String(lang === 'es'))
-      optionEn?.setAttribute('aria-checked', String(lang === 'en'))
-    }
-
-    function setMenuOpen(isOpen: boolean) {
-      languageMenu.classList.toggle('hidden', !isOpen)
-      languageToggle.setAttribute('aria-expanded', String(isOpen))
-    }
-
-    function switchLanguage(lang: string) {
-      const currentPath = window.location.pathname
-      const isEnglish = (currentPath === '/en' || currentPath.startsWith('/en/'))
-
-      if (lang === 'en' && !isEnglish) {
-        window.location.href = '/en' + (currentPath === '/' ? '/' : currentPath)
-      } else if (lang === 'es' && isEnglish) {
-        const targetPath = currentPath.replace(/^\/en/, '') || '/'
-        window.location.href = targetPath
-      }
-    }
-
-    function getCurrentLanguageFromUrl(): string {
-      const currentPath = window.location.pathname
-      return (currentPath === '/en' || currentPath.startsWith('/en/')) ? 'en' : 'es'
-    }
-
-    const currentLang = getCurrentLanguageFromUrl()
-    setLanguagePreference(currentLang)
-    updateLanguageDisplay(currentLang)
-
-    toggle.addEventListener('click', (e) => {
-      e.preventDefault()
-      e.stopPropagation()
-      setMenuOpen(menu.classList.contains('hidden'))
-    }, { signal })
-
-    document.addEventListener('click', (e) => {
-      if (!wrapper.contains(e.target as Node)) {
-        setMenuOpen(false)
-      }
-    }, { signal })
-
-    const langButtons = menu.querySelectorAll('.language-option')
-    langButtons.forEach(button => {
-      button.addEventListener('click', (e) => {
-        e.preventDefault()
-        const lang = (e.currentTarget as HTMLElement).dataset.lang
-        if (lang) {
-          setLanguagePreference(lang)
-          updateLanguageDisplay(lang)
-          setMenuOpen(false)
-          switchLanguage(lang)
-        }
-      }, { signal })
-    })
-
-    // Keyboard navigation
-    function openMenu() {
-      setMenuOpen(true)
-      const items = menu!.querySelectorAll<HTMLButtonElement>('.language-option')
-      items[0]?.focus()
-    }
-
-    function closeMenu() {
-      setMenuOpen(false)
-      toggle!.focus()
-    }
-
-    toggle.addEventListener('keydown', (e) => {
-      if (e.key === 'ArrowDown' || e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault()
-        openMenu()
-      }
-    }, { signal })
-
-    menu.addEventListener('keydown', (e) => {
-      const items = Array.from(menu!.querySelectorAll<HTMLButtonElement>('.language-option'))
-      const current = document.activeElement as HTMLElement
-      const idx = items.indexOf(current as HTMLButtonElement)
-
-      switch (e.key) {
-        case 'ArrowDown':
-          e.preventDefault()
-          items[(idx + 1) % items.length]?.focus()
-          break
-        case 'ArrowUp':
-          e.preventDefault()
-          items[(idx - 1 + items.length) % items.length]?.focus()
-          break
-        case 'Home':
-          e.preventDefault()
-          items[0]?.focus()
-          break
-        case 'End':
-          e.preventDefault()
-          items[items.length - 1]?.focus()
-          break
-        case 'Escape':
-          e.preventDefault()
-          closeMenu()
-          break
-      }
-    }, { signal })
-  }
+  import { initLanguageToggle } from '@/scripts/language-toggle'
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initLanguageToggle)
+    document.addEventListener('DOMContentLoaded', initLanguageToggle, { once: true })
   } else {
     initLanguageToggle()
   }
-
+  document.addEventListener('astro:after-swap', initLanguageToggle)
 </script>

@@ -61,7 +61,7 @@ Usuario 2026-09-25: "dale nomas... realiza todo para que quede bien programado y
 - [x] P7 — Carousel slim + tokens: bajar `<style>`/`<script>`, promover hex sueltos a `@theme inline`, `projects.ts` class-toggle. Route: delegated writer. Checks: vitest + build + playwright carousel. (`816ca14`, ver evidencia abajo)
 - [x] P8 — Tipos y lib: aplanar `CarouselCertification`, const-objects para `status`/`category`/`Locale`/`ThemePreference`, `any` ambiental, documentar `lib/` real en README + checklist translationKey. Route: delegated writer. Checks: `pnpm check` + vitest. (`bcc8811`, ver evidencia abajo)
 - [x] P9 — Supply-chain y SEO: `minimumReleaseAge`/dependabot npm/cooldown/lockfile-lint evaluación, pin Node exacto `22.x`, OG PNG junto a SVG, LHCI o asserts para blog/privacy/hreflang. Route: delegated writer. Checks: build + links + LHCI relevante. (`632b1b5`, ver evidencia abajo)
-- [ ] P10 — Verificación full + informe. Route: delegated verifier (fresh) solo si writer reporta partial/blocked o spot-check caro; si no, parent spot-check un comando. Checks: full gate. → FAILED 2026-09-25 (ver evidencia P10 abajo): chromium 136/137, `smoke.spec.ts:118` stale tras P9 (espera `/og/es.svg?title=`, Layout sirve `/og/es.png`). P10 queda abierto hasta fix del writer.
+- [x] P10 — Verificación full + informe. Route: delegated verifier + parent spot-check. Checks: full gate. → CERRADO 2026-09-25: `pnpm test` 30 files 200/200, `pnpm exec playwright test --project=chromium` 137/137 tras fix `d711743` (smoke OG PNG). `pnpm build` VERDE 90 páginas, CSP 90/638/11.
 
 ## Progress
 - 2026-09-25: documento creado. Punto de partida: rama `refactor/portfolio-theme-tokens-01`, 6 sucios, log `e94a65d` head. RDD off. Próximo: P0.

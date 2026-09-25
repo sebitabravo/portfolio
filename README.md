@@ -103,9 +103,18 @@ src/
 ├── content.config.ts   # Astro/Zod schema for the blog collection
 ├── layouts/            # Shared page layout
 ├── lib/
-│   ├── data.ts         # Public facade for portfolio domain data
-│   ├── data/           # Typed projects, work, certifications and other domains
-│   └── i18n/           # Spanish and English dictionaries
+│   ├── blog-alternates.ts    # translationKey pairing + hreflang alternates for posts
+│   ├── blog-image.ts         # Blog OG/social image resolution
+│   ├── config.ts             # Public site configuration
+│   ├── data.ts               # Public facade for portfolio domain data
+│   ├── data/                 # Typed projects, work, certifications and other domains
+│   ├── home-sections.ts      # Localized home anchor IDs
+│   ├── i18n/                 # Spanish/English dictionaries + Locale helpers
+│   ├── portfolio-images.ts   # Project card/social image registry
+│   ├── seo-structured-data.ts# JSON-LD builders
+│   ├── tech-badges.ts        # Canonical tech badge colors + icons
+│   ├── utils.ts              # formatDate, cn() class merge
+│   └── visual-gradients.ts   # Per-project gradient fallbacks
 ├── pages/              # Spanish default and /en routes, blog, privacy, 404, OG
 ├── scripts/            # Deferred motion, optional WebGL and UI behavior
 ├── styles/             # Base, hero, content, responsive and header CSS layers
@@ -114,6 +123,53 @@ scripts/                 # Source/bundle/CSP checks and link validation
 tests/                   # Vitest and Playwright suites
 public/                  # Static files, including icons/sprite.svg
 ```
+
+## Types
+
+Single source of truth lives in const-objects; types are derived from them:
+
+| Const-object | Derived type | Home |
+|---|---|---|
+| `LOCALES` (`ES`/`EN`) | `Locale` | `src/lib/i18n/index.ts` |
+| `PROJECT_STATUSES` | `ProjectStatus` | `src/lib/data/types.ts` |
+| `CERTIFICATION_CATEGORIES` | `CertificationCategory` | `src/lib/data/types.ts` |
+| `THEMES` | `ThemePreference` | `src/types/index.ts` |
+
+`CarouselCertification` keeps its `{ data }` shape (carousel contract) but the
+payload is a flat `CarouselCertificationData` interface, not an inline object.
+Import domain types from `@/lib/data`, UI/carousel types from `@/types`, and
+`Locale` helpers from `@/lib/i18n`. `THEMES` lives in `@/types` on purpose:
+`theme-toggle.ts` ships inside a CSP-hashed inline script, so it imports only
+the type (erased at build, zero runtime bytes changed).
+
+## Adding a language, page, or translated post
+
+### Add a translated blog post
+
+1. Create the ES file (omit `locale`, it defaults to `es`) and the EN file
+   (set `locale: "en"`), both with the same `translationKey`.
+2. Verify: `pnpm exec vitest run tests/blog-alternates.test.ts`.
+
+Checklist:
+
+- [ ] Both files share one `translationKey` (exactly one ES + one EN post).
+- [ ] ES file omits `locale`; EN file sets `locale: "en"`.
+- [ ] Opposite-direction alternates resolve (`getBlogTranslationId`).
+- [ ] ES-only posts intentionally render as `/en/blog/<same-slug>` fallbacks.
+
+### Add a page
+
+- [ ] Create `src/pages/<page>.astro` and its mirror `src/pages/en/<page>.astro`.
+- [ ] Add locale-first alternates with `x-default` pointing at the Spanish URL.
+- [ ] Confirm the page renders in `pnpm build` output for both locales.
+
+### Add a language
+
+- [ ] Add the dictionary (`src/lib/i18n/<locale>.json`) with full key parity.
+- [ ] Extend `LOCALES` (+ `locales`, `defaultLocale` follows automatically).
+- [ ] Extend every `Record<Locale, ...>` data module and the blog `locale` enum.
+- [ ] Mirror `src/pages/` routes, alternates, OG route, and sitemap config.
+- [ ] Update `tests/i18n.test.ts` expectations and run the full gate.
 
 ## Build
 

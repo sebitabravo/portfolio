@@ -1,5 +1,21 @@
 import type { ImageMetadata } from "astro"
 
+export const PROJECT_STATUSES = {
+  PRODUCTION: "production",
+  DEVELOPMENT: "development",
+  DEMO: "demo",
+} as const
+
+export type ProjectStatus = (typeof PROJECT_STATUSES)[keyof typeof PROJECT_STATUSES]
+
+export const CERTIFICATION_CATEGORIES = {
+  PROFESSIONAL: "professional",
+  ACADEMIC: "academic",
+} as const
+
+export type CertificationCategory =
+  (typeof CERTIFICATION_CATEGORIES)[keyof typeof CERTIFICATION_CATEGORIES]
+
 export interface ExperienceLogo {
   src: ImageMetadata
   alt: string
@@ -27,7 +43,7 @@ export interface Project {
   description: string
   tags: string[]
   featured: boolean
-  status: "production" | "development" | "demo"
+  status: ProjectStatus
   metrics?: { label: string; value: string }[]
   publishDate: Date
   githubUrl?: string
@@ -54,5 +70,5 @@ export interface Certification {
   organization: string
   pdfUrl?: string
   order: number
-  category: "professional" | "academic"
+  category: CertificationCategory
 }

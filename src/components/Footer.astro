@@ -9,22 +9,26 @@ interface Props {
   locale?: Locale
 }
 
-const { locale = 'es' } = Astro.props
+const { locale = "es" } = Astro.props
 const t = getTranslations(locale)
 const currentYear = new Date().getFullYear()
-const homeUrl = locale === 'es' ? '/' : '/en/'
-const aboutUrl = `${homeUrl}${homeSectionFragment(locale, 'about')}`
-const contactUrl = `${homeUrl}${homeSectionFragment(locale, 'contact')}`
-const blogUrl = locale === 'es' ? '/blog' : '/en/blog'
-const privacyUrl = locale === 'es' ? '/privacy' : '/en/privacy'
+const homeUrl = locale === "es" ? "/" : "/en/"
+const aboutUrl = `${homeUrl}${homeSectionFragment(locale, "about")}`
+const contactUrl = `${homeUrl}${homeSectionFragment(locale, "contact")}`
+const blogUrl = locale === "es" ? "/blog" : "/en/blog"
+const privacyUrl = locale === "es" ? "/privacy" : "/en/privacy"
 ---
 
 <footer class="mx-auto mt-16 w-full max-w-[1200px] px-4">
   <div class="flex flex-col gap-3 py-6 text-sm md:flex-row md:items-center md:justify-between">
-   <div class="text-caption-color">
-       <span>&copy; {currentYear} &middot; </span>
-       <a href={locale === 'en' ? '/en' : '/'} class="font-medium text-foreground hover:text-primary transition-colors focus-ring rounded">{personalInfo.name}</a>
-     </div>
+    <div class="text-caption-color">
+      <span>&copy; {currentYear} &middot; </span>
+      <a
+        href={locale === "en" ? "/en" : "/"}
+        class="rounded font-medium text-foreground focus-ring transition-colors hover:text-primary"
+        >{personalInfo.name}</a
+      >
+    </div>
 
     <div class="flex flex-wrap items-center gap-4">
       <nav aria-label={t.footer.professionalProfiles}>
@@ -35,7 +39,7 @@ const privacyUrl = locale === 'es' ? '/privacy' : '/en/privacy'
               target="_blank"
               rel="me noopener noreferrer"
               data-track-social="linkedin"
-              class="inline-flex items-center gap-1.5 rounded-md px-2 py-1.5 text-caption-color transition-colors hover:text-foreground focus-ring"
+              class="inline-flex items-center gap-1.5 rounded-md px-2 py-1.5 text-caption-color focus-ring transition-colors hover:text-foreground"
             >
               <LinkedInIcon class="size-4" />
               <span>LinkedIn</span>
@@ -47,7 +51,7 @@ const privacyUrl = locale === 'es' ? '/privacy' : '/en/privacy'
               target="_blank"
               rel="me noopener noreferrer"
               data-track-social="github"
-              class="inline-flex items-center gap-1.5 rounded-md px-2 py-1.5 text-caption-color transition-colors hover:text-foreground focus-ring"
+              class="inline-flex items-center gap-1.5 rounded-md px-2 py-1.5 text-caption-color focus-ring transition-colors hover:text-foreground"
             >
               <GitHubIcon class="size-4" />
               <span>GitHub</span>
@@ -58,9 +62,19 @@ const privacyUrl = locale === 'es' ? '/privacy' : '/en/privacy'
 
       <span class="text-xs text-caption-color">
         {t.footer.madeWith}
-        <a href="https://astro.build" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline focus-ring rounded">Astro</a>
+        <a
+          href="https://astro.build"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="rounded text-primary focus-ring hover:underline">Astro</a
+        >
         +
-        <a href="https://tailwindcss.com" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline focus-ring rounded">Tailwind</a>
+        <a
+          href="https://tailwindcss.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="rounded text-primary focus-ring hover:underline">Tailwind</a
+        >
       </span>
 
       <span class="text-caption-color/30" aria-hidden="true">&middot;</span>
@@ -68,16 +82,24 @@ const privacyUrl = locale === 'es' ? '/privacy' : '/en/privacy'
       <nav aria-label={t.footer.links}>
         <ul class="flex items-center gap-4">
           <li>
-            <a href={blogUrl} class="text-caption-color hover:text-foreground transition-colors focus-ring rounded">{t.nav.blog}</a>
+            <a href={blogUrl} class="rounded text-caption-color focus-ring transition-colors hover:text-foreground"
+              >{t.nav.blog}</a
+            >
           </li>
           <li>
-            <a href={aboutUrl} class="text-caption-color hover:text-foreground transition-colors focus-ring rounded">{t.nav.about}</a>
+            <a href={aboutUrl} class="rounded text-caption-color focus-ring transition-colors hover:text-foreground"
+              >{t.nav.about}</a
+            >
           </li>
           <li>
-            <a href={contactUrl} class="text-caption-color hover:text-foreground transition-colors focus-ring rounded">{t.nav.contact}</a>
+            <a href={contactUrl} class="rounded text-caption-color focus-ring transition-colors hover:text-foreground"
+              >{t.nav.contact}</a
+            >
           </li>
           <li>
-            <a href={privacyUrl} class="text-caption-color hover:text-foreground transition-colors focus-ring rounded">{t.footer.privacy}</a>
+            <a href={privacyUrl} class="rounded text-caption-color focus-ring transition-colors hover:text-foreground"
+              >{t.footer.privacy}</a
+            >
           </li>
         </ul>
       </nav>

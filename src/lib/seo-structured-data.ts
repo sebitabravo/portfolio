@@ -8,13 +8,17 @@ interface PageMetadata {
 }
 
 export function getWebPageSchema(noindex: boolean, page: PageMetadata) {
-  return noindex ? [] : [{
-    "@type": "WebPage",
-    name: page.title,
-    description: page.description,
-    url: page.canonical,
-    inLanguage: page.locale,
-  }]
+  return noindex
+    ? []
+    : [
+        {
+          "@type": "WebPage",
+          name: page.title,
+          description: page.description,
+          url: page.canonical,
+          inLanguage: page.locale,
+        },
+      ]
 }
 
 interface LayoutJsonLdInput {

@@ -17,9 +17,7 @@ const workEntries: WorkEntry[] = [
     startDate: new Date("2026-02-01"),
     endDate: new Date("2026-04-30"),
     current: false,
-    logos: [
-      { src: mimasoft, alt: "MIMASOFT", url: "https://www.mimasoft.com" },
-    ],
+    logos: [{ src: mimasoft, alt: "MIMASOFT", url: "https://www.mimasoft.com" }],
     es: {
       position: "Desarrollador Full Stack",
       description: `Contribuí al desarrollo de una plataforma SaaS de huella de carbono en producción para el sector minero e industrial. Estandaricé la capa de datos migrando módulos legacy a TanStack Query, implementé sistema de permisos granulares con guards por tenant, y lideré una limpieza de codebase que redujo significativamente el bundle y la superficie de ataque.`,

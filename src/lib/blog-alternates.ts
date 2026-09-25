@@ -1,5 +1,5 @@
-import type { CollectionEntry } from 'astro:content'
-import type { Locale } from './i18n'
+import type { CollectionEntry } from "astro:content"
+import type { Locale } from "./i18n"
 
 interface BlogAlternateOptions {
   locale: Locale
@@ -10,17 +10,17 @@ interface BlogAlternateOptions {
 
 /** Return a counterpart only when the explicit key identifies exactly one post per locale. */
 export function getBlogTranslationId(
-  post: CollectionEntry<'blog'>,
-  posts: CollectionEntry<'blog'>[],
+  post: CollectionEntry<"blog">,
+  posts: CollectionEntry<"blog">[],
 ): string | undefined {
   const key = post.data.translationKey
-  if (!key || (post.data.locale !== 'es' && post.data.locale !== 'en')) return undefined
+  if (!key || (post.data.locale !== "es" && post.data.locale !== "en")) return undefined
 
   const matches = posts.filter((candidate) => candidate.data.translationKey === key)
   if (matches.length !== 2 || !matches.some((candidate) => candidate.id === post.id)) return undefined
 
   const counterpart = matches.find((candidate) => candidate.id !== post.id)
-  const oppositeLocale = post.data.locale === 'es' ? 'en' : 'es'
+  const oppositeLocale = post.data.locale === "es" ? "en" : "es"
   return counterpart?.data.locale === oppositeLocale ? counterpart.id : undefined
 }
 
@@ -36,23 +36,23 @@ export function createBlogAlternates({
   if (isFallback) {
     const url = spanishUrl(postId)
     return [
-      { hreflang: 'es', href: url },
-      { hreflang: 'x-default', href: url },
+      { hreflang: "es", href: url },
+      { hreflang: "x-default", href: url },
     ]
   }
 
-  const ownUrl = locale === 'es' ? spanishUrl(postId) : englishUrl(postId)
+  const ownUrl = locale === "es" ? spanishUrl(postId) : englishUrl(postId)
   if (!translationId) {
     return [
       { hreflang: locale, href: ownUrl },
-      { hreflang: 'x-default', href: ownUrl },
+      { hreflang: "x-default", href: ownUrl },
     ]
   }
 
-  const translatedUrl = locale === 'es' ? englishUrl(translationId) : spanishUrl(translationId)
+  const translatedUrl = locale === "es" ? englishUrl(translationId) : spanishUrl(translationId)
   return [
     { hreflang: locale, href: ownUrl },
-    { hreflang: locale === 'es' ? 'en' : 'es', href: translatedUrl },
-    { hreflang: 'x-default', href: locale === 'es' ? ownUrl : translatedUrl },
+    { hreflang: locale === "es" ? "en" : "es", href: translatedUrl },
+    { hreflang: "x-default", href: locale === "es" ? ownUrl : translatedUrl },
   ]
 }

@@ -1,15 +1,15 @@
 ---
-import { getCollection } from 'astro:content'
-import type { GetStaticPaths } from 'astro'
+import { getCollection } from "astro:content"
+import type { GetStaticPaths } from "astro"
 import LocalizedBlogPost from "@/components/blog/LocalizedBlogPost.astro"
-import { getBlogTranslationId } from '@/lib/blog-alternates'
+import { getBlogTranslationId } from "@/lib/blog-alternates"
 
 export const getStaticPaths = (async () => {
-  const posts = await getCollection('blog')
+  const posts = await getCollection("blog")
   return posts
-    .filter((p) => ['en', 'es'].includes(p.data.locale ?? 'es'))
+    .filter((p) => ["en", "es"].includes(p.data.locale ?? "es"))
     .map((p) => {
-      const isFallback = (p.data.locale ?? 'es') !== 'en'
+      const isFallback = (p.data.locale ?? "es") !== "en"
       return {
         params: { slug: p.id },
         props: {

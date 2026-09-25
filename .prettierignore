@@ -1,0 +1,30 @@
+dist
+coverage
+playwright-report
+test-results
+.astro
+public
+pnpm-lock.yaml
+odd
+openspec
+# Long-form prose and MDX content are edited by hand; reflowing them churns diffs.
+*.md
+*.mdx
+# Existing tests are edit-protected; format them together with their contracts.
+tests
+**/*.spec.ts
+**/*.test.ts
+# Pinned by source-text assertions in protected tests; format when those tests assert behavior instead.
+src/components/ui/Button.astro
+src/components/LanguageToggle.astro
+src/scripts/cert-carousel.ts
+src/scripts/language-toggle.ts
+pnpm-workspace.yaml
+# Would exceed the source line limits once formatted; split them first.
+src/components/Header.astro
+src/components/Projects.astro
+src/components/SignalStrip.astro
+src/scripts/portfolio-motion.ts
+# Inline scripts are CSP hash-pinned in vercel.json and the Astro plugin cannot skip embedded code.
+src/layouts/Layout.astro
+src/components/Hero.astro

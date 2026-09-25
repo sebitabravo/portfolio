@@ -56,9 +56,7 @@ async function main() {
     for (const project of projects) {
       const context = `${locale}:${project.slug}`
 
-      const links = [project.githubUrl, project.liveUrl].filter(
-        (value): value is string => Boolean(value),
-      )
+      const links = [project.githubUrl, project.liveUrl].filter((value): value is string => Boolean(value))
 
       for (const link of links) {
         if (!urlContexts.has(link)) {

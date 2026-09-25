@@ -35,6 +35,9 @@ jobs:
       - name: Audit production dependencies
         run: pnpm audit --prod
 
+      - name: Check formatting
+        run: pnpm format:check
+
       - name: Type check
         run: pnpm astro check
 

@@ -8,18 +8,26 @@ interface Props {
 
 const { id, index = 1, total = 6 } = Astro.props
 const currentYear = new Date().getFullYear()
-const sectionIndex = String(index).padStart(2, '0')
-const sectionTotal = String(total).padStart(2, '0')
+const sectionIndex = String(index).padStart(2, "0")
+const sectionTotal = String(total).padStart(2, "0")
 ---
 
 <div class="section-heading mb-10">
-  <div class="section-heading-meta flex items-center gap-[0.65rem] mb-3 text-caption-color text-[0.68rem]" aria-hidden="true">
-    <span class="section-heading-meta-line inline-block w-[1.6rem] h-px bg-hero-accent shadow-section-meta-line"></span>
-    <span class="section-heading-index text-hero-accent text-[0.64rem]">{sectionIndex} / {sectionTotal}</span>
+  <div
+    class="section-heading-meta mb-3 flex items-center gap-[0.65rem] text-[0.68rem] text-caption-color"
+    aria-hidden="true"
+  >
+    <span class="section-heading-meta-line inline-block h-px w-[1.6rem] bg-hero-accent shadow-section-meta-line"></span>
+    <span class="section-heading-index text-[0.64rem] text-hero-accent">{sectionIndex} / {sectionTotal}</span>
     <span>SEBITA / {currentYear}</span>
   </div>
-  <h2 id={id} class="flex items-center gap-x-3 text-foreground [&>svg]:text-primary text-[clamp(2.25rem,4.5vw,3.75rem)] tracking-[-0.065em] leading-[0.98]">
+  <h2
+    id={id}
+    class="flex items-center gap-x-3 text-[clamp(2.25rem,4.5vw,3.75rem)] leading-[0.98] tracking-[-0.065em] text-foreground [&>svg]:text-primary"
+  >
     <slot />
   </h2>
-  <div class="section-heading-rule mt-4 flex items-center gap-[0.4rem] h-px bg-hero-line" aria-hidden="true"><span class="w-24 h-0.5 bg-hero-accent shadow-section-rule"></span></div>
+  <div class="section-heading-rule mt-4 flex h-px items-center gap-[0.4rem] bg-hero-line" aria-hidden="true">
+    <span class="h-0.5 w-24 bg-hero-accent shadow-section-rule"></span>
+  </div>
 </div>

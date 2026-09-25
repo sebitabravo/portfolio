@@ -5,10 +5,7 @@ import { buildOgSvg, resolveOgLocale, resolveOgTitle } from "@/lib/og-image"
 export const prerender = true
 
 export const getStaticPaths: GetStaticPaths = () => {
-  return [
-    { params: { locale: "es" } },
-    { params: { locale: "en" } },
-  ]
+  return [{ params: { locale: "es" } }, { params: { locale: "en" } }]
 }
 
 export const GET: APIRoute = ({ params, url }) => {

@@ -1,16 +1,16 @@
-import es from './es.json'
-import en from './en.json'
+import es from "./es.json"
+import en from "./en.json"
 
 export const LOCALES = {
-  ES: 'es',
-  EN: 'en',
+  ES: "es",
+  EN: "en",
 } as const
 
 export type Locale = (typeof LOCALES)[keyof typeof LOCALES]
 
 export const locales: readonly Locale[] = [LOCALES.ES, LOCALES.EN]
 export const defaultLocale: Locale = LOCALES.ES
-export { createStaticAlternates } from './alternates'
+export { createStaticAlternates } from "./alternates"
 
 const translations = {
   es,
@@ -22,4 +22,3 @@ type TranslationKeys = typeof es
 export function getTranslations(locale: Locale): TranslationKeys {
   return translations[locale] || translations[defaultLocale]
 }
-

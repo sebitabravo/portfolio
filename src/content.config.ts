@@ -1,10 +1,10 @@
-import { defineCollection } from 'astro:content'
-import { z } from 'astro/zod'
-import { glob } from 'astro/loaders'
-import { LOCALES } from '@/lib/i18n'
+import { defineCollection } from "astro:content"
+import { z } from "astro/zod"
+import { glob } from "astro/loaders"
+import { LOCALES } from "@/lib/i18n"
 
 const blog = defineCollection({
-  loader: glob({ pattern: '**/*.mdx', base: 'src/content/blog' }),
+  loader: glob({ pattern: "**/*.mdx", base: "src/content/blog" }),
   schema: z.object({
     title: z.string(),
     description: z.string(),

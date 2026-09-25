@@ -18,7 +18,7 @@ async function collectFiles(directory: string): Promise<string[]> {
 
   for (const entry of entries) {
     const path = join(directory, entry.name)
-    if (entry.isDirectory()) files.push(...await collectFiles(path))
+    if (entry.isDirectory()) files.push(...(await collectFiles(path)))
     else if (limits.has(path.slice(path.lastIndexOf(".")))) files.push(path)
   }
 
@@ -44,7 +44,5 @@ if (violations.length > 0) {
 
 console.log("Source size limits passed.")
 console.log(
-  `Documented exceptions (not failures): ${[...exceptions]
-    .map(([file, reason]) => `${file} (${reason})`)
-    .join("; ")}`,
+  `Documented exceptions (not failures): ${[...exceptions].map(([file, reason]) => `${file} (${reason})`).join("; ")}`,
 )

@@ -20,7 +20,7 @@ const toggleLabel = labels[locale].replace('{code}', currentLangCode)
   <button
     id="language-toggle"
     type="button"
-    class="inline-flex h-11 min-w-11 items-center justify-center gap-2 rounded-md px-2.5 py-2 text-sm font-medium text-current transition-colors hover:bg-muted dark:hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+    class="inline-flex h-11 min-w-11 items-center justify-center gap-2 rounded-md px-2.5 py-2 text-sm font-medium text-current transition-colors hover:bg-muted dark:hover:bg-white/10 dark:group-[:not(.scrolled)]:text-nav-glass-text-dark focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
     aria-label={toggleLabel}
     aria-haspopup="menu"
     aria-expanded="false"
@@ -32,7 +32,7 @@ const toggleLabel = labels[locale].replace('{code}', currentLangCode)
 
   <div
     id="language-menu"
-    class="hidden absolute left-1/2 -translate-x-1/2 mt-2 w-32 rounded-md shadow-lg bg-card ring-1 ring-black/5 dark:ring-white/10 z-[9999]"
+    class="hidden absolute left-1/2 -translate-x-1/2 mt-2 w-32 min-w-max rounded-md shadow-lg bg-card ring-1 ring-black/5 dark:ring-white/10 z-[9999]"
     role="menu"
   >
     <div class="py-1">

@@ -32,6 +32,7 @@
   --color-charcoal: hsl(var(--charcoal));
   --color-caption-color: hsl(var(--caption-color));
   --shadow-card-hover: var(--card-shadow-hover);
+  --font-code: var(--font-jetbrains-mono), ui-monospace, monospace;
 }
 
 /* Small custom utilities belong to Tailwind's utilities layer. Keep their

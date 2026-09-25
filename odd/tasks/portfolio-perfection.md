@@ -97,6 +97,7 @@ Usuario 2026-09-25: "dale nomas... realiza todo para que quede bien programado y
 
 ## Next step
 - Writer fix mínimo: actualizar `tests/smoke.spec.ts:118` a `/og/es.png` (assert del default P9) y re-correr `pnpm exec playwright test tests/smoke.spec.ts --project=chromium`; luego re-verificar P10 para cierre.
+- 2026-09-25 writer GREEN: `tests/smoke.spec.ts:118` actualizado a `/\/og\/es\.png/` (flexible: absoluto o relativo, con o sin query). `pnpm exec playwright test tests/smoke.spec.ts --project=chromium`: 19/19 passed. `git diff --check`: OK. P10 sigue [ ] hasta full gate de cierre.
 
 ## Route declaration
 - P0–P9: delegated direct (writer trigger: 2+ files no triviales; preparation trigger: lectura prepara escritura). P10: parent spot-check + verifier on-demand. Ninguna ruta crea artefactos SDD ni invoca `sdd-*`.

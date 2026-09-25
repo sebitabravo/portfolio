@@ -26,8 +26,6 @@
     "@astrojs/mdx": "^7.0.5",
     "@astrojs/sitemap": "^3.7.3",
     "@tailwindcss/vite": "^4.3.0",
-    "@vercel/analytics": "^1.5.0",
-    "@vercel/speed-insights": "^2.0.0",
     "astro": "^7.2.8",
     "astro-seo": "^1.1.0",
     "clsx": "^2.1.1",

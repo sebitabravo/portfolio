@@ -36,8 +36,6 @@ const fixedDirectives = new Map([
     "connect-src",
     [
       "'self'",
-      "https://vitals.vercel-insights.com",
-      "https://va.vercel-scripts.com",
     ],
   ],
   ["worker-src", ["'self'"]],
@@ -149,7 +147,7 @@ export function validateVercelConfig(input: unknown): {
   const scriptSources = parsed.directives.get("script-src");
   const scriptHashes = new Set<string>();
   if (scriptSources) {
-    const fixedSources = ["'self'", "https://va.vercel-scripts.com"];
+    const fixedSources = ["'self'"];
     for (const source of scriptSources) {
       const hash = source.match(/^'sha256-([A-Za-z0-9+/]{43}=)'$/);
       if (hash) scriptHashes.add(hash[1]);

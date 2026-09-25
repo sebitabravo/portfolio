@@ -146,30 +146,9 @@ const heroTitleId = `hero-title-${locale}`
 </script>
 
 <script>
-  import { trackEvent } from "@/lib/analytics"
   import { setupPortfolioMotion, teardownPortfolioMotion } from "@/scripts/portfolio-motion"
 
-  const setupPortfolioTracking = () => {
-    document.querySelectorAll<HTMLElement>('[data-track-social]').forEach((el) => {
-      if (el.dataset.trackBound === 'true') return
-      el.dataset.trackBound = 'true'
-      el.addEventListener('click', () => {
-        trackEvent({ name: 'social_click', props: { platform: el.dataset.trackSocial ?? '' } })
-      })
-    })
-
-    document.querySelectorAll<HTMLElement>('[data-track-cv]').forEach((el) => {
-      if (el.dataset.trackBound === 'true') return
-      el.dataset.trackBound = 'true'
-      el.addEventListener('click', () => {
-        trackEvent({ name: 'cv_download', props: { locale: el.dataset.trackCv ?? '' } })
-      })
-    })
-  }
-
-  setupPortfolioTracking()
   setupPortfolioMotion()
-  document.addEventListener('astro:page-load', setupPortfolioTracking)
   document.addEventListener('astro:page-load', setupPortfolioMotion)
   document.addEventListener('astro:before-swap', teardownPortfolioMotion)
 </script>

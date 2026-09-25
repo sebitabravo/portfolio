@@ -14,32 +14,32 @@ interface Props {
   home?: boolean
 }
 
-const { locale = 'es', home = false } = Astro.props
+const { locale = "es", home = false } = Astro.props
 const t = getTranslations(locale)
-const prefix = locale === 'es' ? '' : '/en'
+const prefix = locale === "es" ? "" : "/en"
 
 const ids = homeSectionIds[locale]
 const mobileMenuId = `mobile-nav-${locale}`
-const homeUrl = prefix || '/'
-const contactUrl = `${homeUrl}${homeSectionFragment(locale, 'contact')}`
+const homeUrl = prefix || "/"
+const contactUrl = `${homeUrl}${homeSectionFragment(locale, "contact")}`
 const cvHref = "/cv/Sebastian_Bravo_CV.pdf"
 
 const desktopNavItems = [
-  { title: t.nav.blog, label: 'blog', url: `${prefix}/blog` },
-  { title: t.nav.projects, label: ids.projects, url: `${homeUrl}${homeSectionFragment(locale, 'projects')}` },
-  { title: t.nav.experience, label: ids.experience, url: `${homeUrl}${homeSectionFragment(locale, 'experience')}` },
-  { title: t.nav.formation, label: ids.education, url: `${homeUrl}${homeSectionFragment(locale, 'education')}` },
+  { title: t.nav.blog, label: "blog", url: `${prefix}/blog` },
+  { title: t.nav.projects, label: ids.projects, url: `${homeUrl}${homeSectionFragment(locale, "projects")}` },
+  { title: t.nav.experience, label: ids.experience, url: `${homeUrl}${homeSectionFragment(locale, "experience")}` },
+  { title: t.nav.formation, label: ids.education, url: `${homeUrl}${homeSectionFragment(locale, "education")}` },
 ]
 
 const mobileNavItems = [
-  { title: t.nav.home, label: 'home', url: homeUrl },
+  { title: t.nav.home, label: "home", url: homeUrl },
   ...desktopNavItems,
   { title: t.nav.contact, label: ids.contact, url: contactUrl },
 ]
-const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/'
+const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/"
 const isCurrentRoute = (url: string) => {
-  if (url.includes('#')) return false
-  const routePath = url.replace(/\/$/, '') || '/'
+  if (url.includes("#")) return false
+  const routePath = url.replace(/\/$/, "") || "/"
   return routePath === currentPath
 }
 
@@ -49,42 +49,57 @@ const navSurfaceClass = home
   : "bg-card/84 shadow-nav"
 ---
 
-<header class="site-header fixed inset-x-0 top-0 z-50 pointer-events-none" data-home={home ? 'true' : 'false'}>
+<header class="site-header pointer-events-none fixed inset-x-0 top-0 z-50" data-home={home ? "true" : "false"}>
   <div class="mx-auto max-w-[1200px] px-3 sm:px-4">
     <nav
       aria-label={t.nav.mainNavigation}
       class:list={[
         "site-nav pointer-events-auto mx-auto flex min-h-14 items-center justify-between gap-3 border border-border/85 px-3 py-2 text-sm font-medium text-foreground transition-all duration-300",
-        "mt-2 rounded-[0.85rem] sm:mt-3 sm:rounded-2xl sm:px-4 backdrop-saturate-[1.35] backdrop-blur-lg",
+        "mt-2 rounded-[0.85rem] backdrop-blur-lg backdrop-saturate-[1.35] sm:mt-3 sm:rounded-2xl sm:px-4",
         "scrolled:border-border scrolled:bg-card/90 scrolled:shadow-nav-scrolled",
         "dark:border-border/90 dark:bg-card/90 dark:shadow-nav-dark",
         "dark-scrolled:border-border/90 dark-scrolled:shadow-nav-dark",
         navSurfaceClass,
         // `group` scopes the toggles' dark-mode override to home navs, matching the original ancestor selector.
-        { "site-nav-home": home, "group": home },
+        { "site-nav-home": home, group: home },
       ]}
     >
-      <a href={homeUrl} class="brand-mark-link inline-flex shrink-0 items-center gap-[0.55rem] tracking-[-0.02em] focus-ring" aria-label={t.nav.brandHome}>
-        <span class="brand-mark inline-flex size-[1.9rem] items-center justify-center rounded-[0.55rem] border border-current font-code text-[0.66rem] font-semibold tracking-[-0.08em]" aria-hidden="true">SB</span>
-        <span class="hidden whitespace-nowrap sm:inline">Sebastian <span class="brand-lastname text-primary">Bravo</span></span>
+      <a
+        href={homeUrl}
+        class="brand-mark-link inline-flex shrink-0 items-center gap-[0.55rem] tracking-[-0.02em] focus-ring"
+        aria-label={t.nav.brandHome}
+      >
+        <span
+          class="brand-mark inline-flex size-[1.9rem] items-center justify-center rounded-[0.55rem] border border-current font-code text-[0.66rem] font-semibold tracking-[-0.08em]"
+          aria-hidden="true">SB</span
+        >
+        <span class="hidden whitespace-nowrap sm:inline"
+          >Sebastian <span class="brand-lastname text-primary">Bravo</span></span
+        >
       </a>
 
       <div class="hidden items-center gap-1 md:flex">
-        {desktopNavItems.map((link) => (
-          <a
-            class="nav-link relative rounded-lg px-3 py-2 transition-colors duration-200 hover:bg-muted focus-ring"
-            data-section={link.label}
-            href={link.url}
-            aria-current={isCurrentRoute(link.url) ? 'page' : undefined}
-          >
-            {link.title}
-          </a>
-        ))}
+        {
+          desktopNavItems.map((link) => (
+            <a
+              class="nav-link relative rounded-lg px-3 py-2 focus-ring transition-colors duration-200 hover:bg-muted"
+              data-section={link.label}
+              href={link.url}
+              aria-current={isCurrentRoute(link.url) ? "page" : undefined}
+            >
+              {link.title}
+            </a>
+          ))
+        }
       </div>
 
       <div class="flex items-center gap-1.5 sm:gap-2">
-        <a href={contactUrl} class="header-cta hidden items-center gap-2 rounded-lg bg-primary px-3 py-2 text-xs font-semibold text-primary-foreground transition hover:-translate-y-px hover:shadow-header-cta-hover sm:inline-flex focus-ring">
-          <span class="header-cta-dot size-[0.38rem] rounded-full bg-current shadow-header-cta-dot" aria-hidden="true"></span>
+        <a
+          href={contactUrl}
+          class="header-cta hidden items-center gap-2 rounded-lg bg-primary px-3 py-2 text-xs font-semibold text-primary-foreground focus-ring transition hover:-translate-y-px hover:shadow-header-cta-hover sm:inline-flex"
+        >
+          <span class="header-cta-dot size-[0.38rem] rounded-full bg-current shadow-header-cta-dot" aria-hidden="true"
+          ></span>
           {t.nav.cta}
         </a>
 
@@ -93,7 +108,7 @@ const navSurfaceClass = home
           target="_blank"
           rel="me noopener noreferrer"
           data-track-social="linkedin"
-          class="header-social hidden items-center gap-1.5 rounded-lg border border-border/90 bg-card/45 px-2.5 py-2 text-xs font-semibold text-muted-foreground transition hover:border-primary/55 hover:bg-primary/8 hover:text-primary lg:inline-flex focus-ring"
+          class="header-social hidden items-center gap-1.5 rounded-lg border border-border/90 bg-card/45 px-2.5 py-2 text-xs font-semibold text-muted-foreground focus-ring transition hover:border-primary/55 hover:bg-primary/8 hover:text-primary lg:inline-flex"
           aria-label={t.nav.linkedin}
         >
           <LinkedInIcon class="size-3.5" />
@@ -105,7 +120,7 @@ const navSurfaceClass = home
           target="_blank"
           rel="noopener noreferrer"
           data-track-cv={locale}
-          class="header-resume hidden items-center gap-1.5 rounded-lg border border-border/90 bg-card/45 px-2.5 py-2 text-xs font-semibold text-muted-foreground transition hover:border-primary/55 hover:bg-primary/8 hover:text-primary sm:inline-flex focus-ring"
+          class="header-resume hidden items-center gap-1.5 rounded-lg border border-border/90 bg-card/45 px-2.5 py-2 text-xs font-semibold text-muted-foreground focus-ring transition hover:border-primary/55 hover:bg-primary/8 hover:text-primary sm:inline-flex"
           aria-label={t.hero.downloadCv}
         >
           <DownloadIcon class="size-3.5" />
@@ -120,23 +135,25 @@ const navSurfaceClass = home
         <div class="md:hidden">
           <DropdownMenu id={mobileMenuId} triggerLabel={t.nav.menu}>
             <div class="flex min-w-52 flex-col gap-1 p-1">
-              {mobileNavItems.map((link) => (
-                <a
-                  href={link.url}
-                  class="rounded-lg px-3 py-2.5 text-sm text-foreground/90 transition-colors hover:bg-muted/70 focus-ring"
-                  aria-current={isCurrentRoute(link.url) ? 'page' : undefined}
-                  target={link.url === cvHref ? '_blank' : undefined}
-                  rel={link.url === cvHref ? 'noopener noreferrer' : undefined}
-                >
-                  {link.title}
-                </a>
-              ))}
+              {
+                mobileNavItems.map((link) => (
+                  <a
+                    href={link.url}
+                    class="rounded-lg px-3 py-2.5 text-sm text-foreground/90 focus-ring transition-colors hover:bg-muted/70"
+                    aria-current={isCurrentRoute(link.url) ? "page" : undefined}
+                    target={link.url === cvHref ? "_blank" : undefined}
+                    rel={link.url === cvHref ? "noopener noreferrer" : undefined}
+                  >
+                    {link.title}
+                  </a>
+                ))
+              }
               <a
                 href={social.linkedin}
                 target="_blank"
                 rel="me noopener noreferrer"
                 data-track-social="linkedin"
-                class="rounded-lg px-3 py-2.5 text-sm text-foreground/90 transition-colors hover:bg-muted/70 focus-ring"
+                class="rounded-lg px-3 py-2.5 text-sm text-foreground/90 focus-ring transition-colors hover:bg-muted/70"
               >
                 {t.nav.linkedin}
               </a>
@@ -145,7 +162,7 @@ const navSurfaceClass = home
                 target="_blank"
                 rel="noopener noreferrer"
                 data-track-cv={locale}
-                class="rounded-lg px-3 py-2.5 text-sm text-foreground/90 transition-colors hover:bg-muted/70 focus-ring"
+                class="rounded-lg px-3 py-2.5 text-sm text-foreground/90 focus-ring transition-colors hover:bg-muted/70"
               >
                 {t.hero.downloadCv}
               </a>
@@ -157,79 +174,10 @@ const navSurfaceClass = home
   </div>
 </header>
 
-
 <script>
-  let headerController: AbortController | null = null
-  let headerObserver: IntersectionObserver | null = null
+  import { setupHeaderNav, teardownHeaderNav } from "@/scripts/header-nav"
 
-  function setupHeader() {
-    headerController?.abort()
-    headerObserver?.disconnect()
-
-    const controller = new AbortController()
-    headerController = controller
-    const { signal } = controller
-    const navLinks = Array.from(document.querySelectorAll('.site-nav .nav-link'))
-    const navigableIds = new Set(navLinks.map((link) => link.getAttribute('data-section')))
-    const sections = document.querySelector('.site-header[data-home="true"]')
-      ? Array.from(document.querySelectorAll('section[id]')).filter((section) => navigableIds.has(section.id))
-      : []
-    const siteNav = document.querySelector('.site-nav')
-
-    if (!siteNav) return
-
-    const setActive = (sectionId: string) => {
-      if (document.querySelector('.site-header')?.getAttribute('data-home') !== 'true' || !navigableIds.has(sectionId)) return
-      navLinks.forEach((link) => {
-        const isActive = link.getAttribute('data-section') === sectionId
-        link.classList.toggle('nav-active', isActive)
-        if (isActive) {
-          link.setAttribute('aria-current', 'page')
-        } else {
-          link.removeAttribute('aria-current')
-        }
-      })
-    }
-
-    const currentPath = window.location.pathname.replace(/\/$/, '') || '/'
-    navLinks.forEach((link) => {
-      const href = link.getAttribute('href') ?? ''
-      const linkPath = href.split('#')[0].replace(/\/$/, '') || '/'
-      if (!href.includes('#') && linkPath === currentPath) {
-        link.classList.add('nav-active')
-        link.setAttribute('aria-current', 'page')
-      }
-    })
-
-    headerObserver = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0]
-        if (visible) setActive(visible.target.id)
-      },
-      { threshold: [0.15, 0.35, 0.6], rootMargin: '-15% 0px -55% 0px' },
-    )
-    sections.forEach((section) => headerObserver?.observe(section))
-
-    const onScroll = () => siteNav.classList.toggle('scrolled', window.scrollY > 36)
-    onScroll()
-    window.addEventListener('scroll', onScroll, { passive: true, signal })
-
-    const onVisibilityChange = () => {
-      if (document.visibilityState === 'hidden') {
-        headerObserver?.disconnect()
-      } else {
-        sections.forEach((section) => headerObserver?.observe(section))
-      }
-    }
-    document.addEventListener('visibilitychange', onVisibilityChange, { signal })
-  }
-
-  setupHeader()
-  document.addEventListener('astro:page-load', setupHeader)
-  document.addEventListener('astro:before-swap', () => {
-    headerController?.abort()
-    headerObserver?.disconnect()
-  })
+  setupHeaderNav()
+  document.addEventListener("astro:page-load", setupHeaderNav)
+  document.addEventListener("astro:before-swap", teardownHeaderNav)
 </script>

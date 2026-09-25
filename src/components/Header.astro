@@ -8,7 +8,6 @@ import LanguageToggle from "./LanguageToggle.astro"
 import DropdownMenu from "./ui/DropdownMenu.astro"
 import DownloadIcon from "./icons/Download.astro"
 import LinkedInIcon from "./icons/LinkedIn.astro"
-import cvPdf from "@/assets/Sebastian_Bravo_CV.pdf"
 
 interface Props {
   locale?: Locale
@@ -23,6 +22,7 @@ const ids = homeSectionIds[locale]
 const mobileMenuId = `mobile-nav-${locale}`
 const homeUrl = prefix || '/'
 const contactUrl = `${homeUrl}${homeSectionFragment(locale, 'contact')}`
+const cvHref = "/cv/Sebastian_Bravo_CV.pdf"
 
 const desktopNavItems = [
   { title: t.nav.blog, label: 'blog', url: `${prefix}/blog` },
@@ -101,7 +101,7 @@ const navSurfaceClass = home
         </a>
 
         <a
-          href={cvPdf}
+          href={cvHref}
           target="_blank"
           rel="noopener noreferrer"
           data-track-cv={locale}
@@ -125,8 +125,8 @@ const navSurfaceClass = home
                   href={link.url}
                   class="rounded-lg px-3 py-2.5 text-sm text-foreground/90 transition-colors hover:bg-muted/70 focus-ring"
                   aria-current={isCurrentRoute(link.url) ? 'page' : undefined}
-                  target={link.url === cvPdf ? '_blank' : undefined}
-                  rel={link.url === cvPdf ? 'noopener noreferrer' : undefined}
+                  target={link.url === cvHref ? '_blank' : undefined}
+                  rel={link.url === cvHref ? 'noopener noreferrer' : undefined}
                 >
                   {link.title}
                 </a>
@@ -141,7 +141,7 @@ const navSurfaceClass = home
                 {t.nav.linkedin}
               </a>
               <a
-                href={cvPdf}
+                href={cvHref}
                 target="_blank"
                 rel="noopener noreferrer"
                 data-track-cv={locale}

@@ -57,12 +57,12 @@ The global rule MUST also provide a `Content-Security-Policy` header. Required h
 The global Content Security Policy MUST include these directives and values:
 
 - `default-src 'self'`
-- `script-src 'self' https://va.vercel-scripts.com` plus only the executable inline-script SHA-256 hashes required by generated output
+- `script-src 'self'` plus only the executable inline-script SHA-256 hashes required by generated output
 - `script-src-attr 'none'`
 - `style-src 'self' 'unsafe-inline'`
 - `img-src 'self' data:`
 - `font-src 'self' data:`
-- `connect-src 'self' https://vitals.vercel-insights.com https://va.vercel-scripts.com`
+- `connect-src 'self'`
 - `worker-src 'self'`
 - `frame-ancestors 'none'`
 - `base-uri 'self'`
@@ -71,18 +71,18 @@ The global Content Security Policy MUST include these directives and values:
 - `manifest-src 'self'`
 - `upgrade-insecure-requests`
 
-The policy MUST retain the listed Vercel Analytics and Speed Insights origins. The policy MUST retain `style-src 'unsafe-inline'` for generated Astro styles in this change.
+CSP source allowances MUST match active site features. This portfolio does not currently use Vercel Analytics or Speed Insights, so their origins MUST NOT be included. The policy MUST retain `style-src 'unsafe-inline'` for generated Astro styles.
 
 #### Scenario: The CSP is validated as a structured policy
 
 - GIVEN the global CSP is parsed by regression tooling
 - WHEN each required directive is checked
 - THEN all required directives and values are present
-- AND required script, analytics, and style allowances remain available.
+- AND required script and style allowances remain available.
 
 #### Scenario: A required directive or allowance is removed
 
-- GIVEN the global CSP lacks a required directive, source, or directive value
+- GIVEN the global CSP lacks a required directive, source, or directive value, or includes an origin for an inactive integration
 - WHEN security-header verification runs
 - THEN verification fails before the configuration is accepted.
 
@@ -158,7 +158,7 @@ The README MUST identify `vercel.json` as the authority for Vercel deployment re
 
 ### Requirement: Scope exclusions remain unchanged
 
-This change MUST NOT alter application behavior, page markup, Astro configuration, analytics integration, caching durations or rules, routes, content, `public/.well-known/security.txt`, GitHub workflow permissions, the Lighthouse workflow, or prior OpenSpec artifacts. This change MUST NOT migrate hashes to nonces, remove `style-src 'unsafe-inline'`, eliminate existing inline scripts, add Trusted Types, add COEP, add Vercel API or deployment probes, or incorporate the accessibility work associated with PR #28.
+The security-header work MUST NOT alter application behavior, page markup, Astro configuration, caching durations or rules, routes, content, `public/.well-known/security.txt`, GitHub workflow permissions, the Lighthouse workflow, or prior OpenSpec artifacts. CSP source allowances MUST reflect the active application integrations; the portfolio refactor removes the unused Vercel Analytics and Speed Insights integrations and their CSP origins. This change MUST NOT migrate hashes to nonces, remove `style-src 'unsafe-inline'`, eliminate existing inline scripts, add Trusted Types, add COEP, add Vercel API or deployment probes, or incorporate the accessibility work associated with PR #28.
 
 #### Scenario: The change is reviewed for scope
 

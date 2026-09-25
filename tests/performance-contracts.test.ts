@@ -16,7 +16,7 @@ const carouselMarkup = readFileSync(
 describe("performance contracts", () => {
   it("provides local image metadata rather than public URL strings for all experience logos", () => {
     for (const locale of ["es", "en"] as const) {
-      const logos = getWorkExperience(locale).flatMap((experience) => experience.logos);
+      const logos = getWorkExperience(locale).flatMap((experience) => experience.logos ?? []);
       expect(logos).toHaveLength(3);
       for (const logo of logos) {
         expect(logo.src).toEqual(expect.objectContaining({

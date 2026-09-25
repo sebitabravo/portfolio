@@ -1,5 +1,6 @@
 ---
 import type { Locale } from "@/lib/i18n"
+import { formatDate } from "@/lib/utils"
 
 interface Props {
   id: string
@@ -14,7 +15,6 @@ interface Props {
 
 const { id, title, description, publishDate, tags, locale, contentLocale, fallbackLabel } = Astro.props
 const prefix = locale === 'es' ? '' : '/en'
-const dateLocale = locale === 'es' ? 'es-CL' : 'en-US'
 const headingId = `post-title-${id}`
 ---
 
@@ -27,7 +27,7 @@ const headingId = `post-title-${id}`
         ))}
       </div>
       <time lang={locale} datetime={publishDate.toISOString()} class="text-xs text-muted-foreground font-mono shrink-0">
-        {new Intl.DateTimeFormat(dateLocale, { year: 'numeric', month: 'long', day: 'numeric' }).format(publishDate)}
+        {formatDate(publishDate, locale)}
       </time>
     </div>
     <h2 id={headingId} class="text-xl sm:text-2xl font-bold tracking-tight mb-2 group-hover:text-primary transition-colors">

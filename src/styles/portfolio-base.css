@@ -31,6 +31,9 @@
   --color-warm-cream: hsl(var(--warm-cream));
   --color-charcoal: hsl(var(--charcoal));
   --color-caption-color: hsl(var(--caption-color));
+  --color-cert-pro-bg: hsl(var(--cert-pro) / 0.12);
+  --color-cert-pro-text: hsl(var(--cert-pro-text));
+  --color-cert-pro-border: hsl(var(--cert-pro) / 0.25);
   --shadow-card-hover: var(--card-shadow-hover);
   --font-code: var(--font-jetbrains-mono), ui-monospace, monospace;
 }
@@ -98,6 +101,8 @@
     --warm-cream: 40 21.4286% 89.0196%;
     --charcoal: 30 2.5% 15.6863%;
     --caption-color: 30 5% 39.2157%; /* #69645f */
+    --cert-pro: 144 37% 35%;
+    --cert-pro-text: 144 45% 32%;
 
     /* Full-bleed section rhythm and hero crossover */
     --section-band-bg: #f4f3fa;
@@ -145,6 +150,8 @@
     --warm-cream: 30 5% 15.6863%;      /* #2a2826 */
     --charcoal: 36 9.8039% 90%;
     --caption-color: 42 4.0984% 52.1569%;
+    --cert-pro: 144 37% 35%;
+    --cert-pro-text: 144 45% 32%;
 
     --section-band-bg: #161a33;
     --section-band-line: rgb(199 183 255 / 0.16);

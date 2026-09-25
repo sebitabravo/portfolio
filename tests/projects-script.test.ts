@@ -58,7 +58,7 @@ describe("project interaction lifecycle", () => {
     const image = document.querySelector<HTMLImageElement>("[data-img-fallback]")!
 
     image.dispatchEvent(new Event("error"))
-    expect(image.style.display).toBe("none")
+    expect(image.classList.contains("hidden")).toBe(true)
 
     teardownProjects()
     card.style.removeProperty("--spotlight-x")

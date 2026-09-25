@@ -18,7 +18,10 @@ export const homeSectionIds = {
     about: "about",
     contact: "contact",
   },
-} as const satisfies Record<Locale, Record<"projects" | "experience" | "education" | "certifications" | "about" | "contact", string>>
+} as const satisfies Record<
+  Locale,
+  Record<"projects" | "experience" | "education" | "certifications" | "about" | "contact", string>
+>
 
 type HomeSection = keyof typeof homeSectionIds.es
 

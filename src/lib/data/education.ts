@@ -52,9 +52,9 @@ const educationData = {
       skills: ["Routers/Switches", "Network Configuration", "Fiber Optics", "Networking"],
       order: 2,
     },
-  ]
+  ],
 }
 
-export function getEducation(locale: Locale = 'es') {
+export function getEducation(locale: Locale = "es") {
   return educationData[locale]
 }

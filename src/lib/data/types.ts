@@ -13,8 +13,7 @@ export const CERTIFICATION_CATEGORIES = {
   ACADEMIC: "academic",
 } as const
 
-export type CertificationCategory =
-  (typeof CERTIFICATION_CATEGORIES)[keyof typeof CERTIFICATION_CATEGORIES]
+export type CertificationCategory = (typeof CERTIFICATION_CATEGORIES)[keyof typeof CERTIFICATION_CATEGORIES]
 
 export interface ExperienceLogo {
   src: ImageMetadata

@@ -21,9 +21,24 @@ interface Props {
   index?: number
 }
 
-const { company, position, description, startDate, endDate, current, location, employmentType, skills, logos, url, highlights = [], locale = 'es', index = 0 } = Astro.props
+const {
+  company,
+  position,
+  description,
+  startDate,
+  endDate,
+  current,
+  location,
+  employmentType,
+  skills,
+  logos,
+  url,
+  highlights = [],
+  locale = "es",
+  index = 0,
+} = Astro.props
 const t = getTranslations(locale)
-const externalUrl = url?.startsWith('http')
+const externalUrl = url?.startsWith("http")
 
 const dateText = current
   ? t.work.currently
@@ -32,51 +47,66 @@ const dateText = current
     : formatDate(startDate, locale)
 ---
 
-<div data-animate data-animate-delay={String(index + 1)} class:list={["experience-item relative pl-8 pb-8 before:absolute before:left-0 before:block before:h-full before:border-l before:border-parchment before:content-['']", { "experience-item-secondary": index > 0 }]}>
-  <span class="absolute -left-[5px] top-1 size-[10px] rounded-full bg-primary ring-4 ring-background"></span>
+<div
+  data-animate
+  data-animate-delay={String(index + 1)}
+  class:list={[
+    "experience-item relative pb-8 pl-8 before:absolute before:left-0 before:block before:h-full before:border-l before:border-parchment before:content-['']",
+    { "experience-item-secondary": index > 0 },
+  ]}
+>
+  <span class="absolute top-1 -left-[5px] size-[10px] rounded-full bg-primary ring-4 ring-background"></span>
 
   <div
     class:list={[
       "experience-item-card section-card rounded-2xl border border-parchment bg-card",
-      index > 0 ? "py-4 px-[1.1rem] md:py-[1.15rem] md:px-6" : "p-6",
+      index > 0 ? "px-[1.1rem] py-4 md:px-6 md:py-[1.15rem]" : "p-6",
     ]}
   >
     <div class="grid md:grid-cols-5 md:gap-8">
-      <div class="md:col-span-2 mb-4 md:mb-0">
+      <div class="mb-4 md:col-span-2 md:mb-0">
         <h3 class="font-semibold text-foreground">{position}</h3>
-        <h4 class="text-caption-color mt-0.5">{company}</h4>
-        <time class="text-xs text-caption-color mt-2 block">{dateText}</time>
+        <h4 class="mt-0.5 text-caption-color">{company}</h4>
+        <time class="mt-2 block text-xs text-caption-color">{dateText}</time>
         {location && <p class="text-xs leading-[1.60] text-caption-color">{location}</p>}
-        {employmentType && <p class="experience-employment-type mt-[0.35rem] text-foreground/72 text-[0.76rem] font-semibold">{employmentType}</p>}
+        {
+          employmentType && (
+            <p class="experience-employment-type mt-[0.35rem] text-[0.76rem] font-semibold text-foreground/72">
+              {employmentType}
+            </p>
+          )
+        }
 
-        {logos && logos.length > 0 && (
-          <div class="flex flex-wrap items-center gap-3 mt-4">
-            {logos.map((logo) => (
-              <a
-                href={logo.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                title={logo.alt}
-                aria-label={logo.alt}
-                class="group flex size-14 items-center justify-center rounded-lg border border-parchment bg-card p-2 transition-opacity duration-200 hover:opacity-100 opacity-75"
-              >
-                <Picture
-                  src={logo.src}
-                  formats={["avif"]}
-                  fallbackFormat="webp"
-                  alt={logo.alt}
-                  width={48}
-                  height={48}
-                  densities={[1, 2]}
-                  fit="contain"
-                  loading="lazy"
-                  decoding="async"
-                  class="size-full object-contain"
-                />
-              </a>
-            ))}
-          </div>
-        )}
+        {
+          logos && logos.length > 0 && (
+            <div class="mt-4 flex flex-wrap items-center gap-3">
+              {logos.map((logo) => (
+                <a
+                  href={logo.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  title={logo.alt}
+                  aria-label={logo.alt}
+                  class="group flex size-14 items-center justify-center rounded-lg border border-parchment bg-card p-2 opacity-75 transition-opacity duration-200 hover:opacity-100"
+                >
+                  <Picture
+                    src={logo.src}
+                    formats={["avif"]}
+                    fallbackFormat="webp"
+                    alt={logo.alt}
+                    width={48}
+                    height={48}
+                    densities={[1, 2]}
+                    fit="contain"
+                    loading="lazy"
+                    decoding="async"
+                    class="size-full object-contain"
+                  />
+                </a>
+              ))}
+            </div>
+          )
+        }
       </div>
 
       <div
@@ -87,36 +117,49 @@ const dateText = current
       >
         <p class="text-[0.95rem] leading-[1.60]">{description}</p>
 
-        {highlights.length > 0 && (
-          <div class="experience-highlights grid grid-cols-1 md:grid-cols-3 gap-[0.45rem] mt-[0.35rem]" aria-label={t.work.evidenceLabel}>
-            {highlights.map((highlight) => (
-              <div class="experience-highlight flex min-w-0 flex-col gap-1 py-[0.6rem] px-[0.7rem] border border-hero-line rounded-[0.55rem] bg-surface-soft/62">
-                <span>{highlight.label}</span>
-                <strong class="overflow-hidden text-foreground/90 text-[0.78rem] text-ellipsis whitespace-nowrap">{highlight.value}</strong>
-              </div>
-            ))}
-          </div>
-        )}
+        {
+          highlights.length > 0 && (
+            <div
+              class="experience-highlights mt-[0.35rem] grid grid-cols-1 gap-[0.45rem] md:grid-cols-3"
+              aria-label={t.work.evidenceLabel}
+            >
+              {highlights.map((highlight) => (
+                <div class="experience-highlight flex min-w-0 flex-col gap-1 rounded-[0.55rem] border border-hero-line bg-surface-soft/62 px-[0.7rem] py-[0.6rem]">
+                  <span>{highlight.label}</span>
+                  <strong class="overflow-hidden text-[0.78rem] text-ellipsis whitespace-nowrap text-foreground/90">
+                    {highlight.value}
+                  </strong>
+                </div>
+              ))}
+            </div>
+          )
+        }
 
-        {skills.length > 0 && (
-          <div class:list={["experience-skills flex flex-wrap gap-2 mt-2", { hidden: index > 0 }]}>
-            {skills.map((skill) => (
-              <span class="tech-badge">{skill}</span>
-            ))}
-          </div>
-        )}
+        {
+          skills.length > 0 && (
+            <div class:list={["experience-skills mt-2 flex flex-wrap gap-2", { hidden: index > 0 }]}>
+              {skills.map((skill) => (
+                <span class="tech-badge">{skill}</span>
+              ))}
+            </div>
+          )
+        }
 
-        {url && (
-          <a
-            href={url}
-            target={externalUrl ? "_blank" : undefined}
-            rel={externalUrl ? "noopener noreferrer" : undefined}
-            class="inline-flex items-center gap-1 text-sm hover:underline mt-2 focus-ring rounded px-1"
-          >
-            {t.work.viewCaseStudy}
-            <svg class="size-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
-          </a>
-        )}
+        {
+          url && (
+            <a
+              href={url}
+              target={externalUrl ? "_blank" : undefined}
+              rel={externalUrl ? "noopener noreferrer" : undefined}
+              class="mt-2 inline-flex items-center gap-1 rounded px-1 text-sm focus-ring hover:underline"
+            >
+              {t.work.viewCaseStudy}
+              <svg class="size-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              </svg>
+            </a>
+          )
+        }
       </div>
     </div>
   </div>

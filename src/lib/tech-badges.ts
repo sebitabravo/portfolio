@@ -27,21 +27,21 @@ export interface TechBadge {
 }
 
 export const techBadges: Record<string, TechBadge> = {
-  "React": { color: "#61DAFB", darkText: "#00A8D8", icon: ReactIcon },
+  React: { color: "#61DAFB", darkText: "#00A8D8", icon: ReactIcon },
   "Next.js": { color: "#000000", dark: "#ffffff", icon: Nextjs },
-  "TypeScript": { color: "#3178C6", icon: TypeScript },
-  "Python": { color: "#3776AB", icon: Python },
-  "Docker": { color: "#2496ED", icon: Docker },
-  "IoT": { color: "#00C7B7", icon: IoT },
-  "NestJS": { color: "#E0234E", icon: NestJS },
-  "PostgreSQL": { color: "#336DB8", dark: "#4169E1", darkText: "#5C8BFF", icon: PostgreSQL },
-  "FastAPI": { color: "#009688", icon: FastAPI },
-  "Supabase": { color: "#3ECF8E", icon: Supabase },
+  TypeScript: { color: "#3178C6", icon: TypeScript },
+  Python: { color: "#3776AB", icon: Python },
+  Docker: { color: "#2496ED", icon: Docker },
+  IoT: { color: "#00C7B7", icon: IoT },
+  NestJS: { color: "#E0234E", icon: NestJS },
+  PostgreSQL: { color: "#336DB8", dark: "#4169E1", darkText: "#5C8BFF", icon: PostgreSQL },
+  FastAPI: { color: "#009688", icon: FastAPI },
+  Supabase: { color: "#3ECF8E", icon: Supabase },
   "shadcn/ui": { color: "#000000", dark: "#ffffff", icon: ShadcnUI },
   "Machine Learning": { color: "#8E44AD", darkText: "#A569BD", icon: MachineLearning },
   "Groq LLM": { color: "#F97316", icon: Groq },
   "WhatsApp API": { color: "#25D366", icon: WhatsApp },
-  "Turso": { color: "#4FF8D2", icon: Turso },
+  Turso: { color: "#4FF8D2", icon: Turso },
 }
 
 const FALLBACK_CLASS =

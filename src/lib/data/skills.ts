@@ -7,6 +7,4 @@ export const skills = {
 }
 
 /** One canonical list for the hero-adjacent stack signal. */
-export const canonicalTechnologies = Object.freeze([
-  ...new Set(Object.values(skills).flat()),
-])
+export const canonicalTechnologies = Object.freeze([...new Set(Object.values(skills).flat())])

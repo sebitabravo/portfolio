@@ -1,5 +1,5 @@
 ---
-import { render, type CollectionEntry } from 'astro:content'
+import { render, type CollectionEntry } from "astro:content"
 import Layout from "@/layouts/Layout.astro"
 import { personalInfo } from "@/lib/data"
 import { getBlogImageUrl } from "@/lib/blog-image"
@@ -9,14 +9,14 @@ import { formatDate } from "@/lib/utils"
 
 interface Props {
   locale: Locale
-  post: CollectionEntry<'blog'>
+  post: CollectionEntry<"blog">
   isFallback?: boolean
   translationId?: string
 }
 
 const { locale, post, isFallback = false, translationId } = Astro.props
 const { Content } = await render(post)
-const isEnglish = locale === 'en'
+const isEnglish = locale === "en"
 const t = getTranslations(locale)
 const spanishUrl = `https://sebita.dev/blog/${post.id}`
 const englishUrl = `https://sebita.dev/en/blog/${post.id}`
@@ -41,8 +41,8 @@ const articleJsonLd = JSON.stringify({
     name: personalInfo.name,
   },
 }).replace(/</g, "\\u003c")
-const homePath = isEnglish ? '/en' : '/'
-const blogPath = isEnglish ? '/en/blog' : '/blog'
+const homePath = isEnglish ? "/en" : "/"
+const blogPath = isEnglish ? "/en/blog" : "/blog"
 ---
 
 <Layout
@@ -56,29 +56,47 @@ const blogPath = isEnglish ? '/en/blog' : '/blog'
   <main id="main-content" class="mx-auto max-w-[780px] px-4 pt-24 pb-12 sm:pb-16 md:pt-28 lg:pb-20">
     <nav class="mb-8" aria-label={t.nav.breadcrumb}>
       <ol class="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
-        <li><a href={homePath} class="hover:text-foreground transition-colors">{t.nav.home}</a></li>
+        <li><a href={homePath} class="transition-colors hover:text-foreground">{t.nav.home}</a></li>
         <li aria-hidden="true">/</li>
-        <li><a href={blogPath} class="hover:text-foreground transition-colors">{t.blog.title}</a></li>
+        <li><a href={blogPath} class="transition-colors hover:text-foreground">{t.blog.title}</a></li>
         <li aria-hidden="true">/</li>
-        <li lang={isFallback ? 'es' : undefined} class="text-foreground/80 font-medium" aria-current="page">{post.data.title}</li>
+        <li lang={isFallback ? "es" : undefined} class="font-medium text-foreground/80" aria-current="page">
+          {post.data.title}
+        </li>
       </ol>
     </nav>
 
-    <article lang={isEnglish ? (isFallback ? 'es' : 'en') : undefined}>
+    <article lang={isEnglish ? (isFallback ? "es" : "en") : undefined}>
       <header class="mb-10">
-        {isEnglish && isFallback && (
-          <aside lang={locale} class="mb-6 rounded-xl border border-primary/25 bg-primary/6 px-4 py-3 text-sm text-muted-foreground dark:text-foreground/75" role="note">
-            {t.blog.fallbackNotice}
-          </aside>
-        )}
-        <div class="flex flex-wrap gap-2 mb-4">
-          {post.data.tags.map((tag) => (
-            <span class="rounded-md border border-parchment bg-muted px-2 py-0.5 text-xs font-mono text-muted-foreground dark:text-foreground/60">{tag}</span>
-          ))}
+        {
+          isEnglish && isFallback && (
+            <aside
+              lang={locale}
+              class="mb-6 rounded-xl border border-primary/25 bg-primary/6 px-4 py-3 text-sm text-muted-foreground dark:text-foreground/75"
+              role="note"
+            >
+              {t.blog.fallbackNotice}
+            </aside>
+          )
+        }
+        <div class="mb-4 flex flex-wrap gap-2">
+          {
+            post.data.tags.map((tag) => (
+              <span class="rounded-md border border-parchment bg-muted px-2 py-0.5 font-mono text-xs text-muted-foreground dark:text-foreground/60">
+                {tag}
+              </span>
+            ))
+          }
         </div>
-        <h1 class="text-3xl sm:text-4xl font-bold tracking-tight mb-4 leading-tight">{post.data.title}</h1>
-        <p class="text-muted-foreground dark:text-foreground/65 text-base sm:text-lg leading-relaxed max-w-2xl">{post.data.description}</p>
-        <time lang={locale} datetime={post.data.publishDate.toISOString()} class="mt-4 inline-block text-sm text-muted-foreground font-mono">
+        <h1 class="mb-4 text-3xl leading-tight font-bold tracking-tight sm:text-4xl">{post.data.title}</h1>
+        <p class="max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg dark:text-foreground/65">
+          {post.data.description}
+        </p>
+        <time
+          lang={locale}
+          datetime={post.data.publishDate.toISOString()}
+          class="mt-4 inline-block font-mono text-sm text-muted-foreground"
+        >
           {formatDate(post.data.publishDate, locale)}
         </time>
       </header>
@@ -88,17 +106,20 @@ const blogPath = isEnglish ? '/en/blog' : '/blog'
       </div>
     </article>
 
-    <footer class="mt-16 pt-8 border-t border-parchment">
+    <footer class="mt-16 border-t border-parchment pt-8">
       <nav class="flex flex-wrap items-center justify-between gap-4" aria-label={t.blog.postNavigation}>
         <a href={blogPath} class="text-sm text-primary hover:underline">
           {`← ${t.blog.back}`}
         </a>
-        <a href={homePath} class="text-sm text-muted-foreground hover:text-foreground dark:text-foreground/55 transition-colors">
+        <a
+          href={homePath}
+          class="text-sm text-muted-foreground transition-colors hover:text-foreground dark:text-foreground/55"
+        >
           {`${t.nav.home} →`}
         </a>
       </nav>
     </footer>
   </main>
 
-  <script is:inline type="application/ld+json" set:html={articleJsonLd}></script>
+  <script is:inline type="application/ld+json" set:html={articleJsonLd} />
 </Layout>

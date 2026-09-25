@@ -14,26 +14,45 @@ interface Props {
 }
 
 const { id, title, description, publishDate, tags, locale, contentLocale, fallbackLabel } = Astro.props
-const prefix = locale === 'es' ? '' : '/en'
+const prefix = locale === "es" ? "" : "/en"
 const headingId = `post-title-${id}`
 ---
 
-<article lang={contentLocale} class="group rounded-2xl border border-parchment bg-card overflow-hidden transition-all duration-300 hover:-translate-y-[2px] hover:shadow-card-hover" aria-labelledby={headingId}>
+<article
+  lang={contentLocale}
+  class="group overflow-hidden rounded-2xl border border-parchment bg-card transition-all duration-300 hover:-translate-y-[2px] hover:shadow-card-hover"
+  aria-labelledby={headingId}
+>
   <a href={`${prefix}/blog/${id}`} class="block p-6 sm:p-8">
-    <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 mb-3">
+    <div class="mb-3 flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
       <div class="flex flex-wrap gap-2">
-        {tags.slice(0, 3).map((tag) => (
-          <span class="rounded-md border border-parchment bg-muted px-2 py-0.5 text-xs font-mono text-muted-foreground dark:text-foreground/60">{tag}</span>
-        ))}
+        {
+          tags
+            .slice(0, 3)
+            .map((tag) => (
+              <span class="rounded-md border border-parchment bg-muted px-2 py-0.5 font-mono text-xs text-muted-foreground dark:text-foreground/60">
+                {tag}
+              </span>
+            ))
+        }
       </div>
-      <time lang={locale} datetime={publishDate.toISOString()} class="text-xs text-muted-foreground font-mono shrink-0">
+      <time lang={locale} datetime={publishDate.toISOString()} class="shrink-0 font-mono text-xs text-muted-foreground">
         {formatDate(publishDate, locale)}
       </time>
     </div>
-    <h2 id={headingId} class="text-xl sm:text-2xl font-bold tracking-tight mb-2 group-hover:text-primary transition-colors">
+    <h2
+      id={headingId}
+      class="mb-2 text-xl font-bold tracking-tight transition-colors group-hover:text-primary sm:text-2xl"
+    >
       {title}
     </h2>
-    {fallbackLabel && <p lang={locale} class="mb-2 text-xs font-medium text-primary">{fallbackLabel}</p>}
-    <p class="text-muted-foreground dark:text-foreground/65 text-sm sm:text-base leading-relaxed">{description}</p>
+    {
+      fallbackLabel && (
+        <p lang={locale} class="mb-2 text-xs font-medium text-primary">
+          {fallbackLabel}
+        </p>
+      )
+    }
+    <p class="text-sm leading-relaxed text-muted-foreground sm:text-base dark:text-foreground/65">{description}</p>
   </a>
 </article>

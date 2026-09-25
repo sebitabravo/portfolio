@@ -13,7 +13,7 @@ const { id, triggerLabel, class: className } = Astro.props
 <div class={cn("relative inline-flex", className)} data-dropdown-root={id}>
   <button
     type="button"
-    class="inline-flex h-11 min-w-11 items-center justify-center rounded-md border border-parchment bg-transparent px-3 text-sm font-medium text-foreground transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+    class="inline-flex h-11 min-w-11 items-center justify-center rounded-md border border-parchment bg-transparent px-3 text-sm font-medium text-foreground transition-colors hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
     data-dropdown-trigger={id}
     aria-expanded="false"
     aria-controls={`${id}-menu`}
@@ -25,7 +25,7 @@ const { id, triggerLabel, class: className } = Astro.props
     id={`${id}-menu`}
     role="navigation"
     aria-label={triggerLabel}
-    class="invisible absolute right-0 top-12 z-[60] min-w-56 rounded-lg border border-border bg-card p-2 opacity-0 shadow-lg transition duration-150"
+    class="invisible absolute top-12 right-0 z-[60] min-w-56 rounded-lg border border-border bg-card p-2 opacity-0 shadow-lg transition duration-150"
     data-dropdown-menu={id}
   >
     <slot />
@@ -67,40 +67,46 @@ const { id, triggerLabel, class: className } = Astro.props
       controller = new AbortController()
       const { signal } = controller
 
-      document.addEventListener("click", (event) => {
-        const target = event.target
-        if (!(target instanceof Element)) return
+      document.addEventListener(
+        "click",
+        (event) => {
+          const target = event.target
+          if (!(target instanceof Element)) return
 
-        const trigger = target.closest("[data-dropdown-trigger]")
-        if (trigger instanceof HTMLElement) {
-          const dropdownId = trigger.dataset.dropdownTrigger
-          const menu = dropdownId
-            ? document.querySelector(`[data-dropdown-menu='${dropdownId}']`)
-            : null
+          const trigger = target.closest("[data-dropdown-trigger]")
+          if (trigger instanceof HTMLElement) {
+            const dropdownId = trigger.dataset.dropdownTrigger
+            const menu = dropdownId ? document.querySelector(`[data-dropdown-menu='${dropdownId}']`) : null
 
-          if (!(menu instanceof HTMLElement)) return
+            if (!(menu instanceof HTMLElement)) return
 
-          const isOpen = trigger.getAttribute("aria-expanded") === "true"
-          closeAllDropdowns()
+            const isOpen = trigger.getAttribute("aria-expanded") === "true"
+            closeAllDropdowns()
 
-          if (!isOpen) {
-            trigger.setAttribute("aria-expanded", "true")
-            menu.classList.remove("invisible", "opacity-0")
-            menu.classList.add("visible", "opacity-100")
+            if (!isOpen) {
+              trigger.setAttribute("aria-expanded", "true")
+              menu.classList.remove("invisible", "opacity-0")
+              menu.classList.add("visible", "opacity-100")
+            }
+            return
           }
-          return
-        }
 
-        if (!target.closest("[data-dropdown-root]")) {
-          closeAllDropdowns(false)
-        }
-      }, { signal })
+          if (!target.closest("[data-dropdown-root]")) {
+            closeAllDropdowns(false)
+          }
+        },
+        { signal },
+      )
 
-      document.addEventListener("keydown", (event) => {
-        if (event.key === "Escape") {
-          closeAllDropdowns()
-        }
-      }, { signal })
+      document.addEventListener(
+        "keydown",
+        (event) => {
+          if (event.key === "Escape") {
+            closeAllDropdowns()
+          }
+        },
+        { signal },
+      )
     }
 
     setup()

@@ -30,9 +30,9 @@ const aboutMeData = {
     ],
     interestsTitle: "Interests",
     lookingFor: `I'm looking for my first full-time role as a Junior Full-Stack Developer. I'm motivated by projects that solve concrete problems with well-applied technology — TypeScript, Python, cloud and automated testing.`,
-  }
+  },
 }
 
-export function getAboutMe(locale: Locale = 'es') {
+export function getAboutMe(locale: Locale = "es") {
   return aboutMeData[locale]
 }

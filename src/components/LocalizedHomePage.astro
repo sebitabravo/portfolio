@@ -26,8 +26,8 @@ interface Props {
 
 const { locale } = Astro.props
 const t = getTranslations(locale)
-const canonicalUrl = locale === 'es' ? 'https://sebita.dev' : 'https://sebita.dev/en/'
-const alternates = createStaticAlternates(locale, 'https://sebita.dev', 'https://sebita.dev/en/')
+const canonicalUrl = locale === "es" ? "https://sebita.dev" : "https://sebita.dev/en/"
+const alternates = createStaticAlternates(locale, "https://sebita.dev", "https://sebita.dev/en/")
 const ids = homeSectionIds[locale]
 ---
 

@@ -8,20 +8,20 @@ interface Props {
   locale?: Locale
 }
 
-const { locale = 'es' } = Astro.props
+const { locale = "es" } = Astro.props
 const certifications = getCertifications(locale)
 
-const certificationsForCarousel: CarouselCertification[] = certifications.map(cert => ({
+const certificationsForCarousel: CarouselCertification[] = certifications.map((cert) => ({
   data: {
     name: cert.name,
     organization: cert.organization,
     logo: undefined,
     pdfUrl: cert.pdfUrl || undefined,
     category: cert.category,
-  }
+  },
 }))
 ---
 
 <div>
-   <CertificationCarousel certifications={certificationsForCarousel} locale={locale} />
- </div>
+  <CertificationCarousel certifications={certificationsForCarousel} locale={locale} />
+</div>

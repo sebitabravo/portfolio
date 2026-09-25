@@ -13,6 +13,8 @@
     "build:static": "env -u VERCEL -u PUBLIC_VERCEL_OBSERVABILITY_BASEPATH -u PUBLIC_VERCEL_OBSERVABILITY_CLIENT_CONFIG astro build",
     "preview": "astro preview",
     "check": "astro check",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "astro": "astro",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
@@ -43,6 +45,9 @@
     "@types/three": "0.185.1",
     "@vitest/coverage-v8": "3.2.6",
     "happy-dom": "20.11.2",
+    "prettier": "3.9.6",
+    "prettier-plugin-astro": "0.14.1",
+    "prettier-plugin-tailwindcss": "0.8.1",
     "tsx": "^4.20.6",
     "typescript": "^6.0.3",
     "vitest": "^3.2.6"

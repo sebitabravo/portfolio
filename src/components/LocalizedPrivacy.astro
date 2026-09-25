@@ -146,19 +146,16 @@ const PRIVACY_COPY: Record<Locale, PrivacyLocaleCopy> = {
       "No tenemos control sobre el contenido ni las prácticas de privacidad de estos sitios. Te recomendamos revisar sus respectivas políticas de privacidad al visitarlos.",
     arco: {
       heading: "5. Derechos ARCO (Chile)",
-      introLead:
-        "La legislación chilena protege tus datos personales. De acuerdo a la ",
+      introLead: "La legislación chilena protege tus datos personales. De acuerdo a la ",
       law1: "Ley 19.628",
       law1Note: " (vigente)",
       mid: " y la ",
       law2: "Ley 21.719",
-      law2Note:
-        " (vigente a partir del 1 de diciembre de 2026), tienes los siguientes derechos ARCO:",
+      law2Note: " (vigente a partir del 1 de diciembre de 2026), tienes los siguientes derechos ARCO:",
       bullets: [
         {
           term: "Acceso",
-          detail:
-            "solicitar que te informemos qué datos personales nuestros estamos tratando",
+          detail: "solicitar que te informemos qué datos personales nuestros estamos tratando",
         },
         {
           term: "Rectificación",
@@ -178,8 +175,7 @@ const PRIVACY_COPY: Record<Locale, PrivacyLocaleCopy> = {
     },
     gdpr: {
       heading: "6. Derechos GDPR (Visitantes Europeos)",
-      introLead:
-        "Si te encuentras en el Espacio Económico Europeo (EEE), el ",
+      introLead: "Si te encuentras en el Espacio Económico Europeo (EEE), el ",
       introStrong: "Reglamento General de Protección de Datos (GDPR)",
       introRest: " te otorga derechos adicionales:",
       bullets: [
@@ -197,8 +193,7 @@ const PRIVACY_COPY: Record<Locale, PrivacyLocaleCopy> = {
         },
         {
           term: "Reclamación ante autoridad de control",
-          detail:
-            "presentar una reclamación ante tu autoridad local de protección de datos",
+          detail: "presentar una reclamación ante tu autoridad local de protección de datos",
         },
       ],
       basisLead: "Base legal:",
@@ -207,7 +202,7 @@ const PRIVACY_COPY: Record<Locale, PrivacyLocaleCopy> = {
     },
     changesHeading: "7. Cambios a esta Política",
     changesP1:
-      "Esta politica de privacidad puede actualizarse para reflejar cambios en las funcionalidades del sitio o en la legislación aplicable. La fecha de \"Última actualización\" al inicio de esta página indica cuándo fue modificada por última vez.",
+      'Esta politica de privacidad puede actualizarse para reflejar cambios en las funcionalidades del sitio o en la legislación aplicable. La fecha de "Última actualización" al inicio de esta página indica cuándo fue modificada por última vez.',
     changesP2:
       "Te recomendamos revisar esta página periódicamente si te interesa conocer como protegemos tu privacidad.",
     contactHeading: "8. Contacto",
@@ -290,13 +285,11 @@ const PRIVACY_COPY: Record<Locale, PrivacyLocaleCopy> = {
       law1Note: " (currently in force)",
       mid: " and ",
       law2: "Law 21.719",
-      law2Note:
-        " (effective December 1, 2026), you have the following ARCO rights:",
+      law2Note: " (effective December 1, 2026), you have the following ARCO rights:",
       bullets: [
         {
           term: "Access",
-          detail:
-            "request information about what personal data we are processing",
+          detail: "request information about what personal data we are processing",
         },
         {
           term: "Rectification",
@@ -316,8 +309,7 @@ const PRIVACY_COPY: Record<Locale, PrivacyLocaleCopy> = {
     },
     gdpr: {
       heading: "5. Your GDPR Rights (European Visitors)",
-      introLead:
-        "If you are located in the European Economic Area (EEA), the ",
+      introLead: "If you are located in the European Economic Area (EEA), the ",
       introStrong: "General Data Protection Regulation (GDPR)",
       introRest: " grants you the following rights:",
       bullets: [
@@ -351,8 +343,7 @@ const PRIVACY_COPY: Record<Locale, PrivacyLocaleCopy> = {
         },
         {
           term: "Lodge a complaint",
-          detail:
-            "file a complaint with your local data protection authority",
+          detail: "file a complaint with your local data protection authority",
         },
       ],
       basisLead: "Legal basis:",
@@ -361,9 +352,8 @@ const PRIVACY_COPY: Record<Locale, PrivacyLocaleCopy> = {
     },
     changesHeading: "7. Changes to This Policy",
     changesP1:
-      "This privacy policy may be updated to reflect changes in site functionality or applicable law. The \"Last updated\" date at the top of this page indicates when it was last modified.",
-    changesP2:
-      "We recommend checking this page periodically if you are interested in how your privacy is protected.",
+      'This privacy policy may be updated to reflect changes in site functionality or applicable law. The "Last updated" date at the top of this page indicates when it was last modified.',
+    changesP2: "We recommend checking this page periodically if you are interested in how your privacy is protected.",
     contactHeading: "8. Contact",
     contactP1:
       "If you have questions about this privacy policy or wish to exercise your rights, you can contact me directly at:",
@@ -381,21 +371,15 @@ const canonicalUrl = isEnglish ? englishUrl : spanishUrl
 const alternates = createStaticAlternates(locale, spanishUrl, englishUrl)
 ---
 
-<Layout
-  title={c.title}
-  description={c.description}
-  locale={locale}
-  canonicalUrl={canonicalUrl}
-  alternates={alternates}
->
+<Layout title={c.title} description={c.description} locale={locale} canonicalUrl={canonicalUrl} alternates={alternates}>
   <main id="main-content">
     <div class="px-4 md:px-6">
-      <div class="mx-auto max-w-[720px] pt-24 md:pt-28 pb-16 md:pb-24">
-        <h1 class="text-2xl md:text-3xl font-bold tracking-tight">
+      <div class="mx-auto max-w-[720px] pt-24 pb-16 md:pt-28 md:pb-24">
+        <h1 class="text-2xl font-bold tracking-tight md:text-3xl">
           {c.heading}
         </h1>
         <p class="mt-2 text-sm text-caption-color">
-          {c.updatedLabel} {c.lastUpdate}
+          {`${c.updatedLabel} ${c.lastUpdate}`}
         </p>
 
         <div class="mt-10 space-y-10 text-muted-foreground">
@@ -419,7 +403,11 @@ const alternates = createStaticAlternates(locale, spanishUrl, englishUrl)
                 </a>
               </p>
               <p>
-                {c.siteLead}<a href="https://sebita.dev" class="text-primary underline decoration-primary/30 underline-offset-[3px] hover:decoration-primary">sebita.dev</a>{c.siteRest}
+                {c.siteLead}<a
+                  href="https://sebita.dev"
+                  class="text-primary underline decoration-primary/30 underline-offset-[3px] hover:decoration-primary"
+                  >sebita.dev</a
+                >{c.siteRest}
               </p>
             </div>
           </section>
@@ -433,10 +421,8 @@ const alternates = createStaticAlternates(locale, spanishUrl, englishUrl)
                 {c.noCollectLeadA}<strong class="text-foreground">{c.noCollectLeadStrong}</strong>{c.noCollectLeadB}
               </p>
               <p>{c.noCollectListLead}</p>
-              <ul class="list-disc pl-6 space-y-1">
-                {c.noCollectBullets.map((bullet) => (
-                  <li>{bullet}</li>
-                ))}
+              <ul class="list-disc space-y-1 pl-6">
+                {c.noCollectBullets.map((bullet) => <li>{bullet}</li>)}
               </ul>
             </div>
           </section>
@@ -448,13 +434,14 @@ const alternates = createStaticAlternates(locale, spanishUrl, englishUrl)
             <div class="mt-3 space-y-2 leading-relaxed">
               <p>{c.analyticsIntro}</p>
               <p>{c.analyticsListLead}</p>
-              <ul class="list-disc pl-6 space-y-1">
-                {c.analyticsBullets.map((bullet) => (
-                  <li>
-                    <strong class="text-foreground">{bullet.term}:</strong>
-                    {" "}{bullet.detail}
-                  </li>
-                ))}
+              <ul class="list-disc space-y-1 pl-6">
+                {
+                  c.analyticsBullets.map((bullet) => (
+                    <li>
+                      <strong class="text-foreground">{bullet.term}:</strong> {bullet.detail}
+                    </li>
+                  ))
+                }
               </ul>
               <p class="text-sm">{c.analyticsNote}</p>
             </div>
@@ -466,114 +453,122 @@ const alternates = createStaticAlternates(locale, spanishUrl, englishUrl)
             </h2>
             <div class="mt-3 space-y-2 leading-relaxed">
               <p>{c.linksLead}</p>
-              <ul class="list-disc pl-6 space-y-1">
-                {c.links.map((link) => (
-                  <li>
-                    <a
-                      href={link.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      class="text-primary underline decoration-primary/30 underline-offset-[3px] hover:decoration-primary"
-                    >
-                      {link.label}
-                    </a>
-                    {" "}{link.note}
-                  </li>
-                ))}
+              <ul class="list-disc space-y-1 pl-6">
+                {
+                  c.links.map((link) => (
+                    <li>
+                      <a
+                        href={link.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="text-primary underline decoration-primary/30 underline-offset-[3px] hover:decoration-primary"
+                      >
+                        {link.label}
+                      </a>{" "}
+                      {link.note}
+                    </li>
+                  ))
+                }
               </ul>
               <p>{c.linksOutro}</p>
             </div>
           </section>
 
-          {isEnglish ? (
-            <>
-              <section>
-                <h2 class="text-lg font-semibold text-foreground">
-                  {c.gdpr.heading}
-                </h2>
-                <div class="mt-3 space-y-2 leading-relaxed">
-                  <p>
-                    {c.gdpr.introLead}<strong class="text-foreground">{c.gdpr.introStrong}</strong>{c.gdpr.introRest}
-                  </p>
-                  <ul class="list-disc pl-6 space-y-1">
-                    {c.gdpr.bullets.map((bullet) => (
-                      <li>
-                        <strong class="text-foreground">{bullet.term}:</strong>
-                        {" "}{bullet.detail}
-                      </li>
-                    ))}
-                  </ul>
-                  <p>
-                    <strong class="text-foreground">{c.gdpr.basisLead}</strong>{c.gdpr.basisRest}
-                  </p>
-                </div>
-              </section>
+          {
+            isEnglish ? (
+              <>
+                <section>
+                  <h2 class="text-lg font-semibold text-foreground">{c.gdpr.heading}</h2>
+                  <div class="mt-3 space-y-2 leading-relaxed">
+                    <p>
+                      {c.gdpr.introLead}
+                      <strong class="text-foreground">{c.gdpr.introStrong}</strong>
+                      {c.gdpr.introRest}
+                    </p>
+                    <ul class="list-disc space-y-1 pl-6">
+                      {c.gdpr.bullets.map((bullet) => (
+                        <li>
+                          <strong class="text-foreground">{bullet.term}:</strong> {bullet.detail}
+                        </li>
+                      ))}
+                    </ul>
+                    <p>
+                      <strong class="text-foreground">{c.gdpr.basisLead}</strong>
+                      {c.gdpr.basisRest}
+                    </p>
+                  </div>
+                </section>
 
-              <section>
-                <h2 class="text-lg font-semibold text-foreground">
-                  {c.arco.heading}
-                </h2>
-                <div class="mt-3 space-y-2 leading-relaxed">
-                  <p>
-                    {c.arco.introLead}<strong class="text-foreground">{c.arco.law1}</strong>{c.arco.law1Note}{c.arco.mid}<strong class="text-foreground">{c.arco.law2}</strong>{c.arco.law2Note}
-                  </p>
-                  <ul class="list-disc pl-6 space-y-1">
-                    {c.arco.bullets.map((bullet) => (
-                      <li>
-                        <strong class="text-foreground">{bullet.term}:</strong>
-                        {" "}{bullet.detail}
-                      </li>
-                    ))}
-                  </ul>
-                  <p>{c.arco.outro}</p>
-                </div>
-              </section>
-            </>
-          ) : (
-            <>
-              <section>
-                <h2 class="text-lg font-semibold text-foreground">
-                  {c.arco.heading}
-                </h2>
-                <div class="mt-3 space-y-2 leading-relaxed">
-                  <p>
-                    {c.arco.introLead}<strong class="text-foreground">{c.arco.law1}</strong>{c.arco.law1Note}{c.arco.mid}<strong class="text-foreground">{c.arco.law2}</strong>{c.arco.law2Note}
-                  </p>
-                  <ul class="list-disc pl-6 space-y-1">
-                    {c.arco.bullets.map((bullet) => (
-                      <li>
-                        <strong class="text-foreground">{bullet.term}:</strong>
-                        {" "}{bullet.detail}
-                      </li>
-                    ))}
-                  </ul>
-                  <p>{c.arco.outro}</p>
-                </div>
-              </section>
+                <section>
+                  <h2 class="text-lg font-semibold text-foreground">{c.arco.heading}</h2>
+                  <div class="mt-3 space-y-2 leading-relaxed">
+                    <p>
+                      {c.arco.introLead}
+                      <strong class="text-foreground">{c.arco.law1}</strong>
+                      {c.arco.law1Note}
+                      {c.arco.mid}
+                      <strong class="text-foreground">{c.arco.law2}</strong>
+                      {c.arco.law2Note}
+                    </p>
+                    <ul class="list-disc space-y-1 pl-6">
+                      {c.arco.bullets.map((bullet) => (
+                        <li>
+                          <strong class="text-foreground">{bullet.term}:</strong> {bullet.detail}
+                        </li>
+                      ))}
+                    </ul>
+                    <p>{c.arco.outro}</p>
+                  </div>
+                </section>
+              </>
+            ) : (
+              <>
+                <section>
+                  <h2 class="text-lg font-semibold text-foreground">{c.arco.heading}</h2>
+                  <div class="mt-3 space-y-2 leading-relaxed">
+                    <p>
+                      {c.arco.introLead}
+                      <strong class="text-foreground">{c.arco.law1}</strong>
+                      {c.arco.law1Note}
+                      {c.arco.mid}
+                      <strong class="text-foreground">{c.arco.law2}</strong>
+                      {c.arco.law2Note}
+                    </p>
+                    <ul class="list-disc space-y-1 pl-6">
+                      {c.arco.bullets.map((bullet) => (
+                        <li>
+                          <strong class="text-foreground">{bullet.term}:</strong> {bullet.detail}
+                        </li>
+                      ))}
+                    </ul>
+                    <p>{c.arco.outro}</p>
+                  </div>
+                </section>
 
-              <section>
-                <h2 class="text-lg font-semibold text-foreground">
-                  {c.gdpr.heading}
-                </h2>
-                <div class="mt-3 space-y-2 leading-relaxed">
-                  <p>
-                    {c.gdpr.introLead}<strong class="text-foreground">{c.gdpr.introStrong}</strong>{c.gdpr.introRest}
-                  </p>
-                  <ul class="list-disc pl-6 space-y-1">
-                    {c.gdpr.bullets.map((bullet) => (
-                      <li>
-                        <strong class="text-foreground">{bullet.term}:</strong>
-                        {" "}{bullet.detail}
-                      </li>
-                    ))}
-                  </ul>
-                  <p>
-                    <strong class="text-foreground">{c.gdpr.basisLead}</strong>{c.gdpr.basisRest}
-                  </p>
-                </div>
-              </section>
-            </>
-          )}
+                <section>
+                  <h2 class="text-lg font-semibold text-foreground">{c.gdpr.heading}</h2>
+                  <div class="mt-3 space-y-2 leading-relaxed">
+                    <p>
+                      {c.gdpr.introLead}
+                      <strong class="text-foreground">{c.gdpr.introStrong}</strong>
+                      {c.gdpr.introRest}
+                    </p>
+                    <ul class="list-disc space-y-1 pl-6">
+                      {c.gdpr.bullets.map((bullet) => (
+                        <li>
+                          <strong class="text-foreground">{bullet.term}:</strong> {bullet.detail}
+                        </li>
+                      ))}
+                    </ul>
+                    <p>
+                      <strong class="text-foreground">{c.gdpr.basisLead}</strong>
+                      {c.gdpr.basisRest}
+                    </p>
+                  </div>
+                </section>
+              </>
+            )
+          }
 
           <section>
             <h2 class="text-lg font-semibold text-foreground">
@@ -594,7 +589,7 @@ const alternates = createStaticAlternates(locale, spanishUrl, englishUrl)
               <p>
                 <a
                   href={`mailto:${personalInfo.email}`}
-                  class="text-primary underline decoration-primary/30 underline-offset-[3px] hover:decoration-primary font-medium"
+                  class="font-medium text-primary underline decoration-primary/30 underline-offset-[3px] hover:decoration-primary"
                 >
                   {personalInfo.email}
                 </a>

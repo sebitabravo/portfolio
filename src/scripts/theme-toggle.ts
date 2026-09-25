@@ -1,4 +1,4 @@
-type ThemePreference = 'light' | 'dark' | 'system'
+import type { ThemePreference } from "@/types"
 
 let themeCleanup: (() => void) | null = null
 

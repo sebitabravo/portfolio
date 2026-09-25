@@ -148,13 +148,28 @@ const heroTitleId = `hero-title-${locale}`
 <script>
   import { setupPortfolioMotion, teardownPortfolioMotion } from "@/scripts/portfolio-motion"
 
+  const STARTUP_BOUND_MS = 3000
+
+  // The claim resets status to loading, possibly after the inline bound already fired; bound it again.
+  const claimMotion = () => {
+    setupPortfolioMotion()
+    const root = document.querySelector<HTMLElement>("[data-portfolio-motion]")
+    if (root?.dataset.motionStatus !== "loading") return
+    const canvas = root.querySelector<HTMLElement>("[data-hero-webgl]")
+    const timer = setTimeout(() => {
+      if (root.dataset.motionStatus === "loading") root.dataset.motionStatus = "fallback"
+      if (canvas?.dataset.webglStatus === "pending") canvas.dataset.webglStatus = "fallback"
+    }, STARTUP_BOUND_MS)
+    root.addEventListener("portfolio-motion:started", () => clearTimeout(timer), { once: true })
+  }
+
   // Motion is an enhancement: requesting its chunks before first paint competes with the LCP heading.
   const startWhenIdle = () => {
     // Two frames guarantee a paint has happened; the load event alone can precede the LCP paint.
     requestAnimationFrame(() =>
       requestAnimationFrame(() => {
-        if (typeof requestIdleCallback === "function") requestIdleCallback(setupPortfolioMotion, { timeout: 1500 })
-        else setTimeout(setupPortfolioMotion, 200)
+        if (typeof requestIdleCallback === "function") requestIdleCallback(claimMotion, { timeout: 1500 })
+        else setTimeout(claimMotion, 200)
       }),
     )
   }

@@ -1,0 +1,13 @@
+---
+// Barra de título de una ventana SB-OS: semáforo y nombre del archivo.
+interface Props {
+  title: string
+}
+
+const { title } = Astro.props
+---
+
+<div class="os-window-bar">
+  <span class="os-window-lights"><span></span><span></span><span></span></span>
+  <span class="os-window-title">{title}</span>
+</div>

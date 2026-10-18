@@ -33,26 +33,21 @@ const postCount = String(posts.length).padStart(2, "0")
 >
   <main id="main-content" class="blog-index frame">
     <nav class="blog-breadcrumb" aria-label={t.nav.breadcrumb}>
-      <ol class="mono-label flex flex-wrap items-center gap-2 text-muted-foreground">
+      <ol class="meta-label flex flex-wrap items-center gap-2 text-muted-foreground">
         <li><a href={isEnglish ? "/en" : "/"} class="transition-colors hover:text-foreground">{t.nav.home}</a></li>
         <li aria-hidden="true">/</li>
         <li class="text-foreground" aria-current="page">{t.blog.title}</li>
       </ol>
     </nav>
     <header class="blog-index-hero" data-animate>
-      <div class="blog-index-meta mono-label">
-        <span class="section-index">[BLOG]</span>
-        <span>{t.blog.kicker}</span>
-        <span class="section-head-rule" aria-hidden="true"></span>
-        <span>{postCount}</span>
-      </div>
       <h1>{t.blog.title}</h1>
       <p class="blog-index-intro">{t.blog.intro}</p>
+      <div class="blog-index-meta meta-label">{postCount}</div>
     </header>
 
     {
       hasFallbackPosts && (
-        <aside class="blog-index-note mono-label" role="note">
+        <aside class="blog-index-note meta-label" role="note">
           {t.blog.fallbackNotice}
         </aside>
       )
@@ -97,10 +92,7 @@ const postCount = String(posts.length).padStart(2, "0")
   }
 
   .blog-index-meta {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    margin: 0 0 1.25rem;
+    margin-top: 1rem;
   }
 
   .blog-index-hero h1 {

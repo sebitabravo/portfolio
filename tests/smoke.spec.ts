@@ -12,9 +12,10 @@ test.describe("Hero — mensaje y conversión", () => {
       const styles = getComputedStyle(element)
       return { textTransform: styles.textTransform, fontFamily: styles.fontFamily }
     })
-    // El rol es la voz técnica del sistema: mono en mayúsculas, nunca la fuente de código anterior.
-    expect(roleStyles.textTransform).toBe("uppercase")
-    expect(roleStyles.fontFamily).toContain("Geist Mono")
+    // El rol responde quién y qué en la voz de texto: sin mayúsculas forzadas ni disfraz mono.
+    expect(roleStyles.textTransform).toBe("none")
+    expect(roleStyles.fontFamily).toContain("Geist")
+    expect(roleStyles.fontFamily).not.toContain("Geist Mono")
     expect(roleStyles.fontFamily).not.toContain("JetBrains")
     await expect(hero.locator(".hero-lede")).toContainText("plataformas web en producción")
     await expect(hero.locator(".hero-proof")).toHaveCount(0)
@@ -42,10 +43,8 @@ test.describe("Hero — mensaje y conversión", () => {
     const contact = page.locator("#contacto")
     await expect(contact.locator("a[href*='linkedin.com']")).toBeVisible()
     await expect(contact.locator("a[href*='github.com']")).toBeVisible()
-    const headerLinkedIn = page.locator("header .header-social[data-track-social='linkedin']")
-    const isExtraLarge = await page.evaluate(() => window.matchMedia("(min-width: 80rem)").matches)
-    if (isExtraLarge) await expect(headerLinkedIn).toBeVisible()
-    else await expect(headerLinkedIn).toBeHidden()
+    // El header no repite perfiles ni CV: viven en el hero, el contacto y el footer.
+    await expect(page.locator(".site-header a[data-track-social], .site-header a[data-track-cv]")).toHaveCount(0)
     await expect(page.locator(".hero-gradient a[data-track-social]")).toHaveCount(0)
     await expect(page.locator(".projects-contact-cta a")).toHaveAttribute("href", "#contacto")
   })

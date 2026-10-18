@@ -4,7 +4,7 @@ import type { HeroCanvasElement, MotionContext, MotionGsap, MotionModule, Motion
 
 type Cleanup = () => void
 
-const HANDOFF_SELECTORS = [".hero-topline", ".hero-aside"] as const
+const HANDOFF_SELECTORS = [".hero-aside"] as const
 const CTA_SELECTOR = ".hero-btn-primary"
 const MAGNET_MAX_OFFSET = 7
 
@@ -66,7 +66,7 @@ export function createHeroModule(): MotionModule {
             "--hero-exit-opacity": 0,
             ease: "none",
             scrollTrigger: {
-              trigger: root,
+              trigger: root.querySelector<HTMLElement>(".hero-frame") ?? root,
               start: "top top",
               end: "bottom 30%",
               scrub: 0.5,

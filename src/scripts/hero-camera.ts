@@ -37,3 +37,22 @@ export function heroScrollProgress(scrollY: number, heroHeight: number): number 
   if (!Number.isFinite(scrollY) || !Number.isFinite(heroHeight) || heroHeight <= 0) return 0
   return Math.min(1, Math.max(0, scrollY / heroHeight))
 }
+
+export interface StoryTrack {
+  readonly top: number
+  readonly height: number
+}
+
+// Avance dentro del tramo fijado: 0 cuando la pista toca el header, 1 cuando el escenario se suelta.
+// Devuelve null si la pista no es más alta que el escenario (sin scroll timelines o con menos movimiento).
+export function storyProgress(
+  scrollY: number,
+  track: StoryTrack,
+  viewportHeight: number,
+  headerHeight: number,
+): number | null {
+  const distance = track.height - (viewportHeight - headerHeight)
+  const values = [scrollY, track.top, track.height, viewportHeight, headerHeight]
+  if (values.some((value) => !Number.isFinite(value)) || distance <= 1) return null
+  return Math.min(1, Math.max(0, (scrollY + headerHeight - track.top) / distance))
+}

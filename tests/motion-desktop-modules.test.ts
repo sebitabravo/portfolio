@@ -2,7 +2,6 @@
 
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { createCountersModule, formatCount, parseCount } from "../src/scripts/motion/counters"
-import { createCursorModule, resolveCursorLabel } from "../src/scripts/motion/cursor"
 import { createTerminalModule, planTerminal } from "../src/scripts/motion/terminal"
 import type { MotionContext, MotionGsap } from "../src/scripts/motion/types"
 
@@ -152,51 +151,6 @@ describe("stat counters", () => {
     expect(tween.scrollTrigger.kill).toHaveBeenCalled()
     expect(below.textContent).toBe("94.1%")
     module.refresh(createContext(), "manual")
-    module.cleanup()
-  })
-})
-
-describe("cursor pill", () => {
-  it("resolves labels from the closest labelled ancestor", () => {
-    document.body.innerHTML = `<article data-cursor-label=" Ver caso "><a id="inside">x</a></article><p id="plain">y</p>`
-    expect(resolveCursorLabel(document.querySelector("#inside"))).toBe("Ver caso")
-    expect(resolveCursorLabel(document.querySelector("#plain"))).toBeNull()
-    expect(resolveCursorLabel(null)).toBeNull()
-    expect(resolveCursorLabel(window)).toBeNull()
-  })
-
-  it("skips coarse pointers entirely", () => {
-    const module = createCursorModule()
-    module.init(createContext(false))
-    expect(document.querySelector(".cursor-pill")).toBeNull()
-  })
-
-  it("follows the pointer, shows the label over projects and cleans up", () => {
-    document.body.innerHTML = `<article data-cursor-label="Ver caso"><span id="target">x</span></article><p id="plain">y</p>`
-    const module = createCursorModule()
-    const context = createContext(true)
-    module.init(context)
-    const pill = document.querySelector<HTMLElement>(".cursor-pill")!
-    expect(pill.getAttribute("aria-hidden")).toBe("true")
-
-    const target = document.querySelector("#target")!
-    target.dispatchEvent(new PointerEvent("pointermove", { bubbles: true, clientX: 100, clientY: 50 }))
-    expect(gsapHarness.quickSetters[0]).toHaveBeenCalledWith(118)
-    expect(gsapHarness.quickSetters[1]).toHaveBeenCalledWith(68)
-    expect(pill.classList.contains("is-visible")).toBe(true)
-    expect(pill.textContent).toBe("Ver caso ↗")
-
-    document.querySelector("#plain")!.dispatchEvent(new PointerEvent("pointermove", { bubbles: true, clientX: 5, clientY: 5 }))
-    expect(pill.classList.contains("is-visible")).toBe(false)
-
-    target.dispatchEvent(new PointerEvent("pointermove", { bubbles: true, clientX: 100, clientY: 50 }))
-    document.documentElement.dispatchEvent(new PointerEvent("pointerleave"))
-    expect(pill.classList.contains("is-visible")).toBe(false)
-
-    module.refresh(context, "manual")
-    module.destroy()
-    expect(document.querySelector(".cursor-pill")).toBeNull()
-    expect(gsapHarness.killTweensOf).toHaveBeenCalledWith(pill)
     module.cleanup()
   })
 })

@@ -1,6 +1,5 @@
 ---
 import ArrowUpRight from "@/components/icons/ArrowUpRight.astro"
-import RoundSeal from "@/components/RoundSeal.astro"
 // Los enlaces directos evitan recopilar datos mediante un formulario.
 import { personalInfo, social } from "@/lib/data"
 import { getTranslations, type Locale } from "@/lib/i18n"
@@ -35,20 +34,13 @@ const contactLinks = [
 ]
 ---
 
-<div data-story-wipe class="contact-chapter">
+<div class="contact-chapter">
   <div class="contact-grid">
     <div class="contact-hero">
       <h3 class="contact-headline" data-animate>
         {t.contact.headline}
         <em>{t.contact.headlineAccent}</em>
       </h3>
-      <p class="contact-status" data-animate>
-        <span class="status-dot" aria-hidden="true"></span>
-        {t.hero.available}
-      </p>
-      <div class="contact-seal" aria-hidden="true">
-        <RoundSeal text={t.contact.seal} center="SB" size={150} />
-      </div>
     </div>
 
     <div class="contact-links">

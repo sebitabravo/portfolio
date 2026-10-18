@@ -16,17 +16,19 @@ const contactUrl = homeSectionFragment(locale, "contact")
 const projects = getProjects(locale)
   .slice()
   .sort((projectA, projectB) => projectA.order - projectB.order)
-const archiveNumber = String(projects.length + 1).padStart(2, "0")
 ---
 
 <div class="projects-shell">
   <div class="project-outcomes" data-project-outcomes aria-labelledby={`project-outcomes-title-${locale}`}>
-    <h3 id={`project-outcomes-title-${locale}`} class="project-outcomes-title mono-label">{t.projects.outcomesTitle}</h3>
+    <h3 id={`project-outcomes-title-${locale}`} class="project-outcomes-title meta-label">{t.projects.outcomesTitle}</h3>
     <ul class="project-outcomes-list">
       {
         t.projects.stats.map((stat) => (
           <li class="project-stat">
-            <strong class="project-stat-value" data-count-to={stat.value}>{stat.value}</strong>
+            <strong class="project-stat-value">
+              <span aria-hidden="true" data-count-to={stat.value}>{stat.value}</span>
+              <span class="sr-only">{stat.value}</span>
+            </strong>
             <span class="project-stat-label">{stat.label}</span>
           </li>
         ))
@@ -42,12 +44,7 @@ const archiveNumber = String(projects.length + 1).padStart(2, "0")
       target="_blank"
       rel="noopener noreferrer"
       class="project-archive projects-github-link focus-ring"
-      data-cursor-label="GitHub"
     >
-      <span class="project-archive-head mono-label">
-        <span class="section-index">[{archiveNumber}]</span>
-        <span>~/repos</span>
-      </span>
       <span class="project-archive-icon" aria-hidden="true"><GitHubIcon class="size-10" /></span>
       <span class="project-archive-title">{t.projects.archiveTitle}</span>
       <span class="project-archive-text">{t.projects.archiveText}</span>

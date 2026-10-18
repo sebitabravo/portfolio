@@ -2,7 +2,6 @@ import { createMotionBootstrap } from "./motion/bootstrap"
 import { createCardsModule } from "./motion/cards"
 import { createMotionController } from "./motion/controller"
 import { createCountersModule } from "./motion/counters"
-import { createCursorModule } from "./motion/cursor"
 import { shouldLoadWebGLEnhancement } from "./motion/environment"
 import { createExperienceTimelineModule } from "./motion/experience-timeline"
 import { createHeroModule } from "./motion/hero"
@@ -20,7 +19,6 @@ const bootstrap = createMotionBootstrap(() =>
       createExperienceTimelineModule(),
       createTerminalModule(),
       createCountersModule(),
-      createCursorModule(),
     ],
   }),
 )

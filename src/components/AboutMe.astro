@@ -40,27 +40,18 @@ const words = aboutMe.intro.split(/\s+/).filter(Boolean)
     </ul>
 
     <div class="about-interests" data-animate>
-      <h3 class="about-interests-title mono-label">{aboutMe.interestsTitle}</h3>
+      <h3 class="about-interests-title meta-label">{aboutMe.interestsTitle}</h3>
       <ul class="about-interest-list">
-        {
-          aboutMe.interests.map((interest, index) => (
-            <li>
-              <span class="section-index" aria-hidden="true">
-                {String(index + 1).padStart(2, "0")}
-              </span>
-              {interest}
-            </li>
-          ))
-        }
+        {aboutMe.interests.map((interest) => <li>{interest}</li>)}
       </ul>
     </div>
 
     <div class="about-focus" data-animate>
-      <h3 class="about-focus-title mono-label">
+      <h3 class="about-focus-title meta-label">
         <span class="status-dot" aria-hidden="true"></span>{t.about.focusTitle}
       </h3>
       <p>{aboutMe.lookingFor}</p>
-      <a href={contactId} class="about-cta btn btn-solid focus-ring">
+      <a href={contactId} class="about-cta focus-ring">
         <span>{t.about.contactCta}</span>
         <ArrowUpRight class="btn-arrow size-4 shrink-0" />
       </a>

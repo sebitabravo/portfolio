@@ -5,7 +5,7 @@ import { resolve } from "node:path"
 import sharp from "sharp"
 import { Image } from "astro:assets"
 import profileImage from "@/assets/perfil.jpeg"
-import { pixelsToAscii } from "@/lib/ascii-art"
+import { asciiToSvg, pixelsToAscii, svgDataUri } from "@/lib/ascii-art"
 import { getTranslations, type Locale } from "@/lib/i18n"
 import BrandMark from "./BrandMark.astro"
 
@@ -27,6 +27,8 @@ const { data } = await sharp(framed)
   .raw()
   .toBuffer({ resolveWithObject: true })
 const ascii = pixelsToAscii(data, COLUMNS, ROWS)
+// Se entrega como imagen: es un retrato, no texto que alguien deba leer.
+const asciiSrc = svgDataUri(asciiToSvg(ascii, { color: "#7dffa0", glow: true }))
 const channels = t.about.channels
 const bars = ["#c8c8c8", "#d6c93a", "#3fc5c9", "#3fbf4a", "#c93fb8", "#cf3a35", "#3a45c9"]
 ---
@@ -52,7 +54,15 @@ const bars = ["#c8c8c8", "#d6c93a", "#3fc5c9", "#3fbf4a", "#c93fb8", "#cf3a35", 
           <span class="tv-osd pixel-text">CH 01 · {channels[0]}</span>
         </div>
         <div class="tv-channel" data-channel="1">
-          <pre class="tv-ascii">{ascii}</pre>
+          <img
+            src={asciiSrc}
+            alt=""
+            width={COLUMNS * 6}
+            height={ROWS * 12}
+            loading="lazy"
+            decoding="async"
+            class="tv-ascii"
+          />
           <span class="tv-static"></span>
           <span class="tv-osd pixel-text">CH 02 · {channels[1]}</span>
         </div>

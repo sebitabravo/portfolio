@@ -20,8 +20,6 @@ const { id, headingId, tone = "base", class: className, ...attributes } = Astro.
   data-section-band={tone}
 >
   <div class="frame section-frame">
-    <span class="frame-node frame-node-tl" aria-hidden="true"></span>
-    <span class="frame-node frame-node-tr" aria-hidden="true"></span>
     <SectionContainer id={id} headingId={headingId} {...attributes}>
       <slot />
     </SectionContainer>

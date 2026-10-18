@@ -25,7 +25,6 @@
   },
   "hero": {
     "role": "Desarrollador Full-Stack",
-    "scroll": "Seguí bajando",
     "greeting": "Hola, soy",
     "roleLocation": "Chile / Remoto",
     "specialization": "Web en producción · ML aplicado",
@@ -36,12 +35,17 @@
     "contact": "Contactar",
     "available": "Disponible para trabajar",
     "downloadCv": "Descargar CV",
-    "kicker": "Portfolio / Edición 2026",
-    "localTime": "Hora local",
     "timezone": "Chile"
   },
+  "story": {
+    "label": "Del concepto al despliegue",
+    "acts": [
+      "Empieza con un problema real.",
+      "Se vuelve código que se puede mantener.",
+      "Y termina funcionando en producción."
+    ]
+  },
   "os": {
-    "screenLabel": "Escritorio SB-OS: ventanas decorativas sobre un paisaje 3D",
     "shortcuts": "Accesos directos del escritorio",
     "menu": ["Archivo", "Editar", "Ver", "Ayuda"],
     "online": "En línea",
@@ -68,8 +72,6 @@
   },
   "projects": {
     "title": "Proyectos",
-    "kicker": "Trabajo seleccionado",
-    "meta": "2025 — 2026",
     "outcomesLabel": "Resultados",
     "outcomesTitle": "Evidencia antes que promesas",
     "stats": [
@@ -88,8 +90,7 @@
     ],
     "viewProject": "Demo",
     "viewCode": "Código",
-    "readMore": "Leer más",
-    "viewCase": "Ver caso",
+    "readMore": "Leer el caso",
     "contactPrompt": "¿Te interesa cómo lo construí?",
     "contactCta": "Hablemos",
     "viewMoreGithub": "Ver más proyectos en GitHub",
@@ -111,10 +112,9 @@
   },
   "work": {
     "title": "Experiencia",
-    "kicker": "Trayectoria",
     "currently": "Actualmente...",
     "viewMore": "Ver más →",
-    "viewCaseStudy": "Ver case study",
+    "viewCaseStudy": "Ver caso de estudio",
     "evidenceLabel": "Evidencia del trabajo",
     "period": "Periodo",
     "role": "Rol",
@@ -124,7 +124,6 @@
     "noExperience": "Experiencia laboral próximamente..."
   },
   "contact": {
-    "kicker": "Transmisión abierta",
     "headline": "¿Suficiente lectura?",
     "headlineAccent": "Hagamos algo juntos.",
     "mailSubject": "Contacto desde tu portfolio",
@@ -133,18 +132,15 @@
     "githubDescription": "Mirá mi código abierto",
     "cvHelper": "CV disponible para revisar mi experiencia completa.",
     "copy": "Copiar email",
-    "copied": "Email copiado",
-    "seal": "Disponible para trabajar · Edición 2026 · "
+    "copied": "Email copiado"
   },
   "education": {
     "title": "Educación",
-    "kicker": "Formación",
     "present": "Presente",
     "grade": "Calificación"
   },
   "certifications": {
     "title": "Certificaciones",
-    "kicker": "Credenciales",
     "viewCertificate": "Ver certificado",
     "carouselLabel": "Carrusel de certificaciones",
     "professional": "Profesional",
@@ -154,7 +150,6 @@
   },
   "about": {
     "title": "Sobre mí",
-    "kicker": "Persona detrás del código",
     "focusTitle": "Dónde aporto mejor",
     "contactCta": "Hablemos",
     "tvLabel": "Televisor retro con tres canales",
@@ -175,9 +170,7 @@
     "madeWith": "Hecho con",
     "privacy": "Privacidad",
     "tagline": "Desarrollo full-stack de alta tecnología",
-    "rights": "Todos los derechos reservados.",
-    "sealMade": "Hecho en Chile · Remoto mundial · ",
-    "sealPrivacy": "Leé la política de privacidad"
+    "rights": "Todos los derechos reservados."
   },
   "language": {
     "toggleLabel": "Cambiar idioma (actual: {code})"
@@ -197,7 +190,6 @@
     "fallbackNotice": "Este artículo todavía está disponible en español. La ruta en inglés existe para que los case studies no terminen en un 404.",
     "fallbackCardLabel": "Disponible en español",
     "back": "Volver al blog",
-    "kicker": "Bitácora",
     "readingTime": "min de lectura"
   }
 }

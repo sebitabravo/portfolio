@@ -18,24 +18,20 @@ const certifications = [...getCertifications(locale)].sort((a, b) => a.order - b
   {
     certifications.map((cert, index) => (
       <li class="cert-item" style={`--seal-tone: var(--r${(index % 6) + 1})`}>
-        <a
-          href={cert.pdfUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          class="cert-link focus-ring"
-          aria-label={`${t.certifications.viewCertificate}: ${cert.name}`}
-        >
+        <a href={cert.pdfUrl} target="_blank" rel="noopener noreferrer" class="cert-link focus-ring">
           <span class="cert-seal">
             <RoundSeal
               text={`${cert.organization} · ${t.certifications[cert.category]} · `}
               center={cert.monogram}
               size={128}
+              locale={locale}
             />
           </span>
-          <span class="cert-category mono-label">{t.certifications[cert.category]}</span>
           <h3 class="cert-name">{cert.name}</h3>
-          <span class="cert-org">{cert.organization}</span>
-          <span class="cert-view mono-label">
+          <span class="cert-org">
+            {cert.organization} · <span class="cert-category meta-label">{t.certifications[cert.category]}</span>
+          </span>
+          <span class="cert-view meta-label">
             {t.certifications.viewCertificate}
             <ArrowUpRight class="size-3.5 shrink-0" />
           </span>

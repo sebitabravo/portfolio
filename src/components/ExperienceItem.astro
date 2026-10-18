@@ -42,7 +42,6 @@ const {
 const t = getTranslations(locale)
 const externalUrl = url?.startsWith("http")
 const period = current ? t.work.currently : formatPeriod(startDate, endDate, current, locale)
-const number = String(index + 1).padStart(2, "0")
 ---
 
 <details
@@ -53,16 +52,15 @@ const number = String(index + 1).padStart(2, "0")
   open={index === 0}
 >
   <summary class="experience-summary focus-ring">
-    <span class="experience-index mono-label" aria-hidden="true">[{number}]</span>
-    <span class="experience-meta mono-label"><time datetime={startDate.toISOString().slice(0, 7)}>{period}</time></span>
+    <span class="experience-meta meta-label"><time datetime={startDate.toISOString().slice(0, 7)}>{period}</time></span>
     <h3 class="experience-role">{position}</h3>
     <span class="experience-company">{company}</span>
-    <span class="experience-employment-type mono-label">{employmentType}</span>
+    <span class="experience-employment-type meta-label">{employmentType}</span>
     <span class="experience-toggle" aria-hidden="true"></span>
   </summary>
 
   <div class="experience-description">
-    {location && <p class="experience-location mono-label">{location}</p>}
+    {location && <p class="experience-location meta-label">{location}</p>}
     <p class="experience-copy">{description}</p>
 
     {

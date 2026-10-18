@@ -27,7 +27,6 @@ const screenshot = getProjectScreenshot(slug)
 const resolvedBlogSlug = blogSlug || slug
 const projectUrl = locale === "en" ? `/en/blog/${resolvedBlogSlug}` : `/blog/${resolvedBlogSlug}`
 const host = (liveUrl ?? githubUrl ?? "sebita.dev").replace(/^https?:\/\//, "")
-const number = String(index + 1).padStart(2, "0")
 const visibleTags = tags.slice(0, 4)
 const visualStats = metrics?.slice(0, 2) ?? []
 const actionClass = "project-action focus-ring"
@@ -40,11 +39,9 @@ const actionClass = "project-action focus-ring"
   data-project-card
   data-project={slug}
   data-project-tags={tags.join(",")}
-  data-cursor-label={t.projects.viewCase}
   style={`--stage: var(--${stage})`}
 >
   <div class="project-media">
-    <span class="project-index" aria-hidden="true">{number}</span>
     <div class="project-window os-window">
       <div class="os-window-bar" aria-hidden="true">
         <span class="os-window-lights"><span></span><span></span><span></span></span>
@@ -90,8 +87,7 @@ const actionClass = "project-action focus-ring"
   </div>
 
   <div class="project-body">
-    <p class="project-meta mono-label">
-      <span class="section-index">[{number}]</span>
+    <p class="project-meta meta-label">
       <span class="project-status"><span class="project-status-dot" aria-hidden="true"></span>{publicStatusLabel}</span>
       <span class="project-year">{publishDate.getFullYear()}</span>
     </p>
@@ -107,7 +103,7 @@ const actionClass = "project-action focus-ring"
         data-track-action="casestudy"
         class={`${actionClass} project-action-primary`}
       >
-        {t.projects.readMore}<ArrowUpRight class="size-3.5 shrink-0" />
+        {t.projects.readMore}<span class="sr-only">: {title}</span><ArrowUpRight class="size-3.5 shrink-0" />
       </a>
       {
         githubUrl && (

@@ -15,8 +15,7 @@ const workExperience = getWorkExperience(locale)
 {
   workExperience.length > 0 ? (
     <div class="experience-table">
-      <p class="experience-columns mono-label" aria-hidden="true">
-        <span />
+      <p class="experience-columns meta-label" aria-hidden="true">
         <span>{t.work.period}</span>
         <span>{t.work.role}</span>
         <span>{t.work.company}</span>
@@ -33,10 +32,7 @@ const workExperience = getWorkExperience(locale)
           ))}
         </ol>
       </div>
-      <p class="experience-timeline-note mono-label" data-experience-timeline>
-        <span class="section-index" aria-hidden="true">
-          ↳
-        </span>
+      <p class="experience-timeline-note meta-label" data-experience-timeline>
         {t.work.timeline}
       </p>
     </div>

@@ -1,27 +1,16 @@
 ---
-// Encabezado de capítulo: fila técnica en mono sobre un título editorial gigante.
+// Título de capítulo: el encabezado carga su propio peso, sin etiquetas encima.
 interface Props {
   id: string
-  index?: string
-  kicker?: string
-  meta?: string
+  // Cuando el capítulo abre con su propio titular, el h2 queda solo para el árbol accesible.
+  srOnly?: boolean
 }
 
-const { id, index, kicker, meta } = Astro.props
+const { id, srOnly = false } = Astro.props
 ---
 
-<header class="section-head">
-  {
-    (index || kicker || meta) && (
-      <p class="section-head-meta mono-label">
-        {index && <span class="section-index">[{index}]</span>}
-        {kicker && <span class="section-kicker">{kicker}</span>}
-        <span class="section-head-rule" aria-hidden="true" />
-        {meta && <span class="section-meta">{meta}</span>}
-      </p>
-    )
-  }
-  <h2 id={id} data-story-heading class="section-heading">
+<header class:list={["section-head", { "sr-only": srOnly }]}>
+  <h2 id={id} class="section-heading">
     <slot />
   </h2>
 </header>

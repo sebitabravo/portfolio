@@ -41,12 +41,9 @@ Thumbs.db
 *.njsproj
 *.sln
 *.sw?
-.atl
-.claude
 
 # testing
 /coverage
-.playwright-mcp/
 playwright-report/
 test-results/
 tests/screenshots/*.png
@@ -62,10 +59,3 @@ qa-*.png
 *-postpolish.md
 *-menu-open.md
 lighthouse-scores.png
-.codegraph/
-
-# ODD working docs (kept out of PRs; active tracker stays tracked until archived)
-odd/*
-!odd/tasks
-odd/tasks/*
-!odd/tasks/portfolio-perfection.md

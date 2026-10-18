@@ -5,8 +5,6 @@ test-results
 .astro
 public
 pnpm-lock.yaml
-odd
-openspec
 # Long-form prose and MDX content are edited by hand; reflowing them churns diffs.
 *.md
 *.mdx

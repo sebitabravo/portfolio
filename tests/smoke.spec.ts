@@ -1,13 +1,13 @@
 import { test, expect } from "@playwright/test"
 
 test.describe("Hero — mensaje y conversión", () => {
-  test("concentra identidad, tesis y una sola CTA", async ({ page }) => {
+  test("concentra identidad, tesis y contacto con acceso al CV", async ({ page }) => {
     await page.goto("/")
     const hero = page.locator(".hero-gradient")
 
-    await expect(hero.locator(".hero-title-role")).toContainText("Full-Stack Developer")
-    await expect(hero.locator(".hero-role")).toContainText("Web en producción")
-    await expect(hero.locator(".hero-role")).toContainText("ML aplicado")
+    await expect(hero.getByRole("heading", { level: 1, name: "Sebastian Bravo" })).toBeVisible()
+    await expect(hero.locator(".hero-title-role")).toContainText("Desarrollador Full-Stack")
+    await expect(hero.locator(".hero-role")).toContainText("Chile / Remoto")
     const roleStyles = await hero.locator(".hero-role").evaluate((element) => {
       const styles = getComputedStyle(element)
       return { textTransform: styles.textTransform, fontFamily: styles.fontFamily }
@@ -17,13 +17,14 @@ test.describe("Hero — mensaje y conversión", () => {
     await expect(hero.locator(".hero-lede")).toContainText("plataformas web en producción")
     await expect(hero.locator(".hero-proof")).toHaveCount(0)
     await expect(hero).not.toContainText("94.1%")
-    await expect(hero.locator(".hero-meta")).toContainText("Full-Stack Junior")
-    await expect(hero.locator(".hero-actions > a")).toHaveCount(1)
+    await expect(hero.locator(".hero-meta")).toContainText("Disponible para trabajar")
+    await expect(hero.locator(".hero-meta")).toContainText("Inglés C1")
+    await expect(hero.locator(".hero-actions > a")).toHaveCount(2)
     await expect(hero.getByRole("link", { name: "Contactar", exact: true })).toBeVisible()
     await expect(hero.locator(".hero-wins")).toHaveCount(0)
     await expect(hero.locator(".hero-art-tag, .hero-art-caption")).toHaveCount(0)
     await expect(hero).not.toContainText("46°S")
-    await expect(hero).not.toContainText("Descargar CV")
+    await expect(hero.getByRole("link", { name: /Descargar CV/ })).toHaveAttribute("href", "/cv/Sebastian_Bravo_CV.pdf")
   })
 
   test("mueve los resultados al inicio de proyectos y las redes al footer", async ({ page }) => {
@@ -96,7 +97,8 @@ test.describe("Projects — screenshots con fallback", () => {
         const image = page.locator(`[data-project="${slug}"] .project-image`)
         await expect(image).toHaveAttribute("src", /\/_astro\/[^/]+\.webp$/)
         await expect(image).toHaveAttribute("srcset", /800w.*1600w/)
-        await expect(image).toHaveAttribute("sizes", "(max-width: 767px) 100vw, (max-width: 1280px) 50vw, 800px")
+        const featured = await image.locator("xpath=ancestor::article").evaluate((card) => card.classList.contains("project-card-featured"))
+        await expect(image).toHaveAttribute("sizes", featured ? "(max-width: 767px) 100vw, 1200px" : "(max-width: 767px) 100vw, 600px")
         await expect(image).toHaveAttribute("alt", /screenshot$/)
         await expect(image).toHaveAttribute("loading", "lazy")
         await image.scrollIntoViewIfNeeded()
@@ -118,19 +120,23 @@ test.describe("Projects — screenshots con fallback", () => {
     await expect(page.locator('meta[property="og:image"]')).toHaveAttribute("content", /\/og\/es\.png/)
   })
 
-  test("failed optimized screenshots still reveal the card gradient", async ({ page }) => {
+  test("failed optimized screenshots reveal the flat typographic fallback", async ({ page }) => {
     await page.goto("/")
     const card = page.locator('[data-project="vulcania"]')
     const image = card.locator(".project-image")
     await card.scrollIntoViewIfNeeded()
     await image.evaluate((element: HTMLImageElement) => {
-      // Remove source candidates so the intentionally broken WebP fallback is selected.
+      // Sin candidatos alternativos, el error ejercita el fallback real de la imagen.
       element.closest("picture")?.querySelectorAll("source").forEach((source) => { source.srcset = "" })
       element.srcset = ""
       element.src = "/missing-optimized-screenshot.webp"
     })
     await expect(image).toHaveCSS("display", "none")
-    await expect(card.locator(".project-media")).toHaveAttribute("style", /linear-gradient/)
+    await expect(card.locator(".project-media-name")).toBeVisible()
+    await expect(card.locator(".project-media-name")).toHaveText(await card.locator("h3").innerText())
+    await expect(card.locator(".project-media")).toHaveCSS("background-image", "none")
+    await expect(card.locator(".project-media")).toHaveCSS("background-color", "rgb(21, 21, 19)")
+    await expect(card.locator(".project-media-link")).toHaveAttribute("href", /\/blog\//)
   })
 
   test("4 project cards renderizados", async ({ page }) => {
@@ -139,13 +145,16 @@ test.describe("Projects — screenshots con fallback", () => {
     await expect(cards).toHaveCount(4)
   })
 
-  test("cada card tiene gradiente de fondo", async ({ page }) => {
+  test("each exhibit uses a flat image stage without card chrome", async ({ page }) => {
     await page.goto("/")
     const cards = page.locator("[data-project-card]")
-    const count = await cards.count()
-    for (let i = 0; i < count; i++) {
-      const bgDiv = cards.nth(i).locator("[style*='linear-gradient']").first()
-      await expect(bgDiv).toBeVisible()
+    await expect(cards).toHaveCount(4)
+    for (const card of await cards.all()) {
+      await card.scrollIntoViewIfNeeded()
+      await expect(card.locator(".project-media")).toBeVisible()
+      await expect(card.locator(".project-media")).toHaveCSS("background-image", "none")
+      await expect(card).toHaveCSS("border-top-width", "0px")
+      await expect(card).toHaveCSS("box-shadow", "none")
     }
   })
 })
@@ -203,8 +212,8 @@ test.describe("Temutel — descripción reducida", () => {
   test("muestra una voz propia en Sobre mí y etiquetas honestas de acceso", async ({ page }) => {
     await page.goto("/")
     await expect(page.locator("#sobre-mi")).toContainText("No hago tutoriales de Todo List.")
-    await expect(page.locator("[data-project='manttoai'] .project-eyebrow")).toContainText("Código disponible")
-    await expect(page.locator("[data-project='rapido-sur'] .project-eyebrow")).toContainText("Código disponible")
+    await expect(page.locator("[data-project='manttoai'] .project-status")).toContainText("Código disponible")
+    await expect(page.locator("[data-project='rapido-sur'] .project-status")).toContainText("Código disponible")
     await expect(page.locator("[data-project='rapido-sur']")).toContainText("45 vehículos")
   })
 
@@ -250,11 +259,14 @@ test.describe("Layout general", () => {
     await page.goto("/")
     const certSection = page.locator("#certificaciones")
     await certSection.scrollIntoViewIfNeeded()
-    // El carousel debería tener los certs
-    const certs = page.locator(".cert-item")
-    const count = await certs.count()
-    // El carrusel duplica los certs para el loop infinito, así que contamos la mitad
-    expect(count).toBe(10) // 5 certs × 2 (loop infinito)
+    const certs = certSection.locator("ul > li")
+    await expect(certs).toHaveCount(5)
+    await expect(certs.locator("h3")).toHaveCount(5)
+    await expect(certSection.locator("[data-duplicate]")).toHaveCount(0)
+    for (const link of await certSection.getByRole("link", { name: "Ver certificado" }).all()) {
+      await expect(link).toHaveAttribute("href", /\.pdf$/)
+      await expect(link).toHaveAttribute("rel", "noopener noreferrer")
+    }
   })
 
   test("página carga sin errores de consola", async ({ page }) => {

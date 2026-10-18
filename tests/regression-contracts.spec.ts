@@ -85,9 +85,9 @@ test.describe("Regression contracts", () => {
       secondaryBackground: "rgba(0, 0, 0, 0)",
       secondaryShadow: "none",
       secondaryDisplay: "grid",
-      companyFontSize: "20px",
+      companyFontSize: "21px",
       companyLineHeight: "24px",
     })
-    expect(Number.parseFloat(cascade.locationLineHeight ?? "")).toBeCloseTo(22.4, 1)
+    expect(Number.parseFloat(cascade.locationLineHeight ?? "")).toBeCloseTo(20.8, 1)
   })
 })

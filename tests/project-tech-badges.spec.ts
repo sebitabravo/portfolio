@@ -1,39 +1,23 @@
 import { expect, test } from "@playwright/test"
 
-test.describe("project tech badges", () => {
-  test("TypeScript badge is tinted with foreground text and its icon in light mode", async ({ page }) => {
-    await page.addInitScript(() => localStorage.setItem("theme", "light"))
+for (const theme of ["light", "dark"]) {
+  test(`project technologies are plain readable text in ${theme} mode`, async ({ page }) => {
+    await page.addInitScript((value) => localStorage.setItem("theme", value), theme)
     await page.goto("/")
-
-    const badge = page.locator(".project-tech-badge", { hasText: "TypeScript" }).first()
-    await expect(badge).toBeVisible()
-
-    const styles = await badge.evaluate((el) => {
-      const cs = getComputedStyle(el)
-      return { bg: cs.backgroundColor, border: cs.borderColor, color: cs.color, hasIcon: !!el.querySelector("svg") }
-    })
-
-    expect(styles.bg).not.toBe("rgba(0, 0, 0, 0)")
-    expect(styles.border).not.toBe("rgba(0, 0, 0, 0)")
-    // Brand hues on pastel tints miss WCAG AA in light mode, so text stays foreground.
-    expect(styles.color).toBe("rgb(41, 40, 39)")
-    expect(styles.hasIcon).toBe(true)
+    const cards = page.locator("[data-project-card]")
+    await expect(cards).toHaveCount(4)
+    for (const card of await cards.all()) {
+      await card.scrollIntoViewIfNeeded()
+      const tags = card.getByLabel("Tecnologías", { exact: true })
+      await expect(tags).toBeVisible()
+      const expected = (await card.getAttribute("data-project-tags"))!.split(",").slice(0, 5)
+      await expect(tags.locator("span:not([aria-hidden])")).toHaveText(expected)
+      await expect(tags.locator('[aria-hidden="true"]')).toHaveText(expected.slice(1).map(() => "·"))
+      await expect(tags.locator("svg, .tech-badge, .project-tech-badge")).toHaveCount(0)
+      await expect(tags).toHaveCSS("font-size", "13px")
+      await expect(tags).toHaveCSS("background-color", "rgba(0, 0, 0, 0)")
+      await expect(tags).toHaveCSS("color", theme === "light" ? "rgb(92, 88, 81)" : "rgb(162, 155, 144)")
+      await expect(tags).toHaveCSS("border-top-width", "0px")
+    }
   })
-
-  test("TypeScript badge shows its brand color as text in dark mode", async ({ page }) => {
-    await page.addInitScript(() => localStorage.setItem("theme", "dark"))
-    await page.goto("/")
-
-    const badge = page.locator(".project-tech-badge", { hasText: "TypeScript" }).first()
-    await expect(badge).toBeVisible()
-
-    const styles = await badge.evaluate((el) => {
-      const cs = getComputedStyle(el)
-      return { bg: cs.backgroundColor, color: cs.color, hasIcon: !!el.querySelector("svg") }
-    })
-
-    expect(styles.color).toBe("rgb(49, 120, 198)")
-    expect(styles.bg).not.toBe("rgba(0, 0, 0, 0)")
-    expect(styles.hasIcon).toBe(true)
-  })
-})
+}

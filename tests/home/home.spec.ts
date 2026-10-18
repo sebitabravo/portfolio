@@ -355,7 +355,8 @@ test.describe("Home Page", () => {
         return {
           htmlClass: document.documentElement.className,
           heroColor: getComputedStyle(hero).color,
-          heroBackground: getComputedStyle(hero).backgroundImage,
+          heroBackground: getComputedStyle(hero).backgroundColor,
+          heroBackgroundImage: getComputedStyle(hero).backgroundImage,
           navColor: getComputedStyle(nav).color,
           navBackground: getComputedStyle(nav).backgroundColor,
           statusColor: getComputedStyle(status).color,
@@ -364,11 +365,12 @@ test.describe("Home Page", () => {
 
       expect(colors).not.toBeNull()
       expect(colors?.htmlClass).not.toMatch(/\bdark\b/)
-      expect(colors?.heroColor).toBe("rgb(23, 19, 41)")
-      expect(colors?.heroBackground).not.toContain("rgb(16, 20, 58)")
-      expect(colors?.navColor).toBe("rgb(41, 40, 39)")
-      expect(colors?.navBackground).toContain("255")
-      expect(colors?.statusColor).toBe("rgb(76, 82, 123)")
+      expect(colors?.heroColor).toBe("rgb(17, 16, 14)")
+      expect(colors?.heroBackground).toBe("rgb(241, 238, 234)")
+      expect(colors?.heroBackgroundImage).toBe("none")
+      expect(colors?.navColor).toBe("rgb(17, 16, 14)")
+      expect(colors?.navBackground).toBe("rgba(241, 238, 234, 0.82)")
+      expect(colors?.statusColor).toBe("rgb(92, 88, 81)")
     },
   )
 
@@ -398,7 +400,7 @@ test.describe("Home Page", () => {
   )
 
   test(
-    "progressive motion layer falls back safely and follows project scroll",
+    "progressive motion layer falls back safely and reveals projects on scroll",
     { tag: ["@e2e", "@home", "@HOME-E2E-004"] },
     async ({ page }) => {
       await page.setViewportSize({ width: 1280, height: 720 })
@@ -409,27 +411,21 @@ test.describe("Home Page", () => {
         /^(active|fallback)$/,
         { timeout: 10000 },
       )
-      const motionStatus = await page.locator("[data-portfolio-motion]").getAttribute("data-motion-status")
       await expect(page.locator("[data-hero-webgl]")).toHaveAttribute(
         "data-webgl-status",
         /^(ready|fallback)$/,
         { timeout: 10000 },
       )
 
-      // ScrollTrigger is an optional enhancement. A bounded fallback is a
-      // valid terminal state, so its decorative meter is not expected to move.
-      if (motionStatus !== "active") return
+      const cards = page.locator("[data-project-card][data-animate]")
+      await expect(cards).toHaveCount(4)
+      for (const card of await cards.all()) {
+        await card.scrollIntoViewIfNeeded()
+        await expect(card).toBeVisible()
+        await expect(card).toHaveCSS("opacity", "1")
+        await expect(card.locator("h3")).toBeVisible()
+      }
 
-      await page.locator("#proyectos").scrollIntoViewIfNeeded()
-      await expect
-        .poll(
-          () => page.locator("[data-project-scroll-meter] span").evaluate((element) => {
-            const match = element.getAttribute("style")?.match(/scaleX\(([^)]+)\)/)
-            return Number(match?.[1] ?? 0)
-          }),
-          { timeout: 5000 },
-        )
-        .toBeGreaterThan(0)
     },
   )
 

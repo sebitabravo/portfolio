@@ -29,20 +29,28 @@ test("theme aliases follow the active runtime palette in both locales", async ({
   }
 })
 
-test("approved utilities render a gradient title and a scrollable hidden-scrollbar carousel", async ({ page }) => {
+test("hero title is solid and certifications form a static responsive five-item grid", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" })
   await page.goto("/")
   const title = page.locator(".hero-title-accent")
-  await expect(title).toHaveCSS("color", "rgba(0, 0, 0, 0)")
-  await expect(title).toHaveCSS("background-clip", "text")
-
-  const wrapper = page.locator("#certCarouselWrapper")
-  await expect(wrapper).toHaveCSS("scrollbar-width", "none")
-  const dimensions = await wrapper.evaluate((element) => ({
-    content: element.scrollWidth, viewport: element.clientWidth,
-  }))
-  expect(dimensions.content).toBeGreaterThan(dimensions.viewport)
-  await page.locator("#certNavNext").click()
-  await expect.poll(() => wrapper.evaluate((element) => element.scrollLeft)).toBeGreaterThan(0)
+  await expect(title).toHaveCSS("color", "rgb(242, 239, 232)")
+  await expect(title).toHaveCSS("background-image", "none")
+  await expect(title).not.toHaveCSS("background-clip", "text")
+  const grid = page.locator("#certificaciones ul")
+  await expect(grid.locator(":scope > li")).toHaveCount(5)
+  await expect(page.locator("#certCarouselWrapper, #certNavNext, [data-duplicate][aria-hidden='true']")).toHaveCount(0)
+  for (const width of [390, 1280]) {
+    await page.setViewportSize({ width, height: 900 })
+    await grid.scrollIntoViewIfNeeded()
+    await expect(grid).toHaveCSS("display", "grid")
+    const state = await grid.evaluate((element) => ({
+      columns: getComputedStyle(element).gridTemplateColumns.split(" ").length,
+      overflow: element.scrollWidth > element.clientWidth,
+      animations: element.getAnimations({ subtree: true }).length,
+    }))
+    expect(state).toEqual({ columns: width < 768 ? 1 : 2, overflow: false, animations: 0 })
+    for (const item of await grid.locator(":scope > li").all()) await expect(item).toBeVisible()
+  }
 })
 
 test("served compiled CSS does not ship retired legacy selectors", async ({ page }) => {
@@ -73,11 +81,12 @@ test("signal strip styles are component-scoped in compiled CSS", async ({ page }
   const strip = page.locator(".signal-strip")
   await expect(strip).toHaveCSS("position", "relative")
   await expect(strip).toHaveCSS("overflow", "hidden")
-  // Inspect delivered selectors as well as the rendered style: an unscoped duplicate would defeat ownership.
+  // Astro puede incluir los estilos del componente en línea según su tamaño.
   const sheets = await page.locator('link[rel="stylesheet"]').evaluateAll((elements) =>
     elements.map((element) => (element as HTMLLinkElement).href),
   )
-  const css = (await Promise.all(sheets.map(async (href) => (await page.request.get(href)).text()))).join("\n")
+  const inline = await page.locator("style").allTextContents()
+  const css = [...inline, ...await Promise.all(sheets.map(async (href) => (await page.request.get(href)).text()))].join("\n")
   expect(css.match(/\.signal-strip\[data-astro-cid-[\w-]+\]/g)?.length).toBeGreaterThan(0)
   expect(css.match(/(?:^|[,{])\s*\.signal-strip\s*[{,:]/g)).toBeNull()
 })

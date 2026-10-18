@@ -42,3 +42,11 @@ const workExperience = getWorkExperience(locale)
     </div>
   )
 }
+
+<script>
+  import { setupDetailsMedia, teardownDetailsMedia } from "@/scripts/details-media"
+
+  setupDetailsMedia()
+  document.addEventListener("astro:page-load", () => setupDetailsMedia())
+  document.addEventListener("astro:before-swap", teardownDetailsMedia)
+</script>

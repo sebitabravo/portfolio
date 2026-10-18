@@ -823,6 +823,19 @@
     opacity: 0.6;
   }
 
+  /* Con menos movimiento el sello no viaja ni rota: el hover responde con tono, sin transiciones. */
+  @media (prefers-reduced-motion: reduce) {
+    .cert-link,
+    .cert-seal,
+    .cert-seal::before {
+      transition: none;
+    }
+
+    .cert-link:hover .cert-seal {
+      transform: none;
+    }
+  }
+
   .cert-name {
     margin: 0;
     font-size: 1.375rem;

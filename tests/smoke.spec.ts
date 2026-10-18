@@ -204,7 +204,11 @@ test.describe("Experience — Astro-managed logos", () => {
         await expect(image).toHaveAttribute("decoding", "async")
         expect(await image.getAttribute("alt")).toBe(await logo.getAttribute("aria-label"))
         await image.scrollIntoViewIfNeeded()
-        await expect.poll(() => image.evaluate((img) => (img as HTMLImageElement).naturalWidth)).toBeGreaterThan(0)
+        await expect
+          .poll(() => image.evaluate((img) => (img as HTMLImageElement).naturalWidth), {
+            message: `${await logo.getAttribute("aria-label")} logo should load in ${route}`,
+          })
+          .toBeGreaterThan(0)
       }
     }
   })

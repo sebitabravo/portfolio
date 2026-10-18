@@ -11,7 +11,9 @@ for (const { path, sectionId, sectionName, carouselName } of [
     const carousel = page.locator("#certCarouselContainer")
     await expect(carousel.and(page.getByRole("region", { name: carouselName, exact: true }))).toBeVisible()
     await expect(carousel.getByRole("button")).toHaveCount(2)
-    await expect(carousel.locator(".cert-placeholder")).toHaveCount(10)
+    await expect(carousel.locator(".cert-placeholder")).toHaveCount(0)
+    await expect(carousel.locator(".cert-item")).toHaveCount(10)
+    await expect(carousel.locator(".cert-category")).toHaveCount(10)
     await expect(carousel.locator(".cert-logo")).toHaveCount(0)
   })
 }

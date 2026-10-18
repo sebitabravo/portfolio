@@ -12,40 +12,34 @@ const t = getTranslations(locale)
 const education = getEducation(locale)
 ---
 
-<div class="mt-8 flex flex-col gap-6">
+<div class="mt-8 flex flex-col gap-12">
   {
     education.map(({ institution, degree, description, startDate, endDate, current, location, grade, skills }, i) => (
-      <article
-        data-animate
-        data-animate-delay={String(i + 1)}
-        class="section-card rounded-2xl border border-parchment bg-card p-6 transition-all duration-300 hover:-translate-y-[2px] hover:shadow-card-hover"
-      >
+      <article data-animate data-animate-delay={String(i + 1)} class="education-row">
         <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div>
-            <h3 class="font-semibold text-foreground">{degree}</h3>
+            <h3 class="font-text text-[clamp(1.25rem,2vw,1.5rem)] font-semibold text-foreground">{degree}</h3>
             <p class="mt-0.5 text-sm text-caption-color">{institution}</p>
           </div>
-          <div class="shrink-0 text-left text-xs text-caption-color sm:text-right">
+          <div class="shrink-0 text-left text-[0.875rem] text-caption-color sm:text-right">
             <time>{formatDate(startDate, locale)}</time>
             <span> — </span>
             <time>{current ? t.education.present : endDate ? formatDate(endDate, locale) : ""}</time>
             {location && <p class="mt-0.5">{location}</p>}
             {grade && (
-              <p class="mt-0.5 font-medium text-foreground/70">
+              <p class="mt-0.5 font-medium text-muted-foreground">
                 {t.education.grade}: {grade}
               </p>
             )}
           </div>
         </div>
 
-        {description && <p class="mt-4 text-[0.95rem] leading-[1.60] text-foreground/85">{description}</p>}
+        {description && (
+          <p class="mt-4 max-w-[65ch] text-[1.0625rem] leading-[1.60] text-muted-foreground">{description}</p>
+        )}
 
         {skills && skills.length > 0 && (
-          <div class="mt-4 flex flex-wrap gap-2">
-            {skills.map((skill) => (
-              <span class="tech-badge">{skill}</span>
-            ))}
-          </div>
+          <p class="mt-4 font-text text-sm text-muted-foreground">{skills.join(" · ")}</p>
         )}
       </article>
     ))

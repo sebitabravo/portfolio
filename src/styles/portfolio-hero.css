@@ -304,6 +304,12 @@
     transform: none;
   }
 
+  /* En mobile el lede puede ser el LCP: revelarlo sin opacidad mantiene la pintura temprana. */
+  .hero-lede.hero-reveal {
+    opacity: 1;
+    animation-name: hero-reveal-lede;
+  }
+
   /* El handoff escribe estas variables; translate/opacity independientes no
      pisan el transform de entrada ni el tilt del frame. */
   .hero-art-frame,
@@ -353,6 +359,15 @@
     }
     to {
       opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes hero-reveal-lede {
+    from {
+      transform: translateY(1rem);
+    }
+    to {
       transform: translateY(0);
     }
   }

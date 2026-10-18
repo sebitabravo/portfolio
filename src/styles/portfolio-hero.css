@@ -362,10 +362,25 @@
   }
 
   @keyframes hero-chromatic-glitch {
-    0%, 92%, 96%, 100% { transform: none; opacity: 0.2; }
-    93% { transform: translateX(1px); opacity: 0.08; }
-    94% { transform: translate(-1px, 1px); opacity: 0.24; }
-    95% { transform: translateY(-1px); opacity: 0.12; }
+    0%,
+    92%,
+    96%,
+    100% {
+      transform: none;
+      opacity: 0.2;
+    }
+    93% {
+      transform: translateX(1px);
+      opacity: 0.08;
+    }
+    94% {
+      transform: translate(-1px, 1px);
+      opacity: 0.24;
+    }
+    95% {
+      transform: translateY(-1px);
+      opacity: 0.12;
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {

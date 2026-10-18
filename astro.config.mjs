@@ -33,22 +33,6 @@ export default defineConfig({
       fallbacks: ["system-ui", "sans-serif"],
     },
     {
-      name: "Manrope",
-      cssVariable: "--font-manrope",
-      provider: fontProviders.google(),
-      weights: [400, 600, 700],
-      styles: ["normal"],
-      fallbacks: ["system-ui", "-apple-system", "sans-serif"],
-    },
-    {
-      name: "Syne",
-      cssVariable: "--font-syne",
-      provider: fontProviders.google(),
-      weights: [600, 700],
-      styles: ["normal"],
-      fallbacks: ["system-ui", "sans-serif"],
-    },
-    {
       name: "JetBrains Mono",
       cssVariable: "--font-jetbrains-mono",
       provider: fontProviders.fontsource(),

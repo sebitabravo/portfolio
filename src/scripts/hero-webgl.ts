@@ -99,16 +99,25 @@ export function createHeroScene(canvas: HTMLCanvasElement, root: MotionRoot): Cl
   group.add(workstation)
 
   const addBoxEdges = (
-    width: number, height: number, depth: number,
-    x: number, y: number, z: number,
-    color = 0xe7a23c, opacity = 0.3,
+    width: number,
+    height: number,
+    depth: number,
+    x: number,
+    y: number,
+    z: number,
+    color = 0xe7a23c,
+    opacity = 0.3,
   ) => {
     const box = new BoxGeometry(width, height, depth)
     const geometry = new EdgesGeometry(box)
     // El sólido temporal no pertenece al árbol que libera los recursos al salir.
     box.dispose()
     const material = new LineBasicMaterial({
-      color, transparent: true, opacity, depthWrite: false, blending: AdditiveBlending,
+      color,
+      transparent: true,
+      opacity,
+      depthWrite: false,
+      blending: AdditiveBlending,
     })
     const edges = new LineSegments(geometry, material)
     edges.position.set(x, y, z)

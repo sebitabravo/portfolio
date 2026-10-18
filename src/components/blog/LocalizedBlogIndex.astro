@@ -3,6 +3,7 @@ import { getCollection } from "astro:content"
 import Layout from "@/layouts/Layout.astro"
 import BlogCard from "@/components/BlogCard.astro"
 import { personalInfo } from "@/lib/data"
+import { getProjectScreenshot } from "@/lib/portfolio-images"
 import { createStaticAlternates, getTranslations, type Locale } from "@/lib/i18n"
 
 interface Props {
@@ -37,15 +38,17 @@ const alternates = createStaticAlternates(locale, spanishUrl, englishUrl)
         <li class="font-medium text-foreground/80" aria-current="page">{t.blog.title}</li>
       </ol>
     </nav>
-    <h1 class="mb-4 text-3xl font-bold tracking-tight sm:text-4xl">{t.blog.title}</h1>
-    <p class="mb-12 max-w-xl text-base text-muted-foreground sm:text-lg dark:text-foreground/70">
-      {t.blog.intro}
-    </p>
+    <header class="mb-12 py-12 sm:py-20" data-animate>
+      <h1 class="mb-6 font-display text-[clamp(2.75rem,6vw,5.375rem)] font-medium leading-[0.95] tracking-[-0.03em]">{t.blog.title}</h1>
+      <p class="max-w-xl text-lg leading-relaxed text-muted-foreground">
+        {t.blog.intro}
+      </p>
+    </header>
 
     {
       hasFallbackPosts && (
         <aside
-          class="mb-8 rounded-xl border border-primary/25 bg-primary/6 px-4 py-3 text-base text-muted-foreground dark:text-foreground/75"
+          class="mb-10 text-base leading-relaxed text-muted-foreground"
           role="note"
         >
           {t.blog.fallbackNotice}
@@ -57,14 +60,16 @@ const alternates = createStaticAlternates(locale, spanishUrl, englishUrl)
       posts.length === 0 ? (
         <p class="text-base text-muted-foreground dark:text-foreground/55">{t.blog.empty}</p>
       ) : (
-        <div class="space-y-8">
-          {posts.map((post) => (
+        <div class="grid grid-cols-1 gap-10 md:grid-cols-2">
+          {posts.map((post, index) => (
             <BlogCard
               id={post.id}
               title={post.data.title}
               description={post.data.description}
               publishDate={post.data.publishDate}
               tags={post.data.tags}
+              image={post.data.image ? getProjectScreenshot(post.data.image) : undefined}
+              animateDelay={(index % 2) + 1}
               locale={locale}
               contentLocale={post.data.locale === "en" ? "en" : "es"}
               fallbackLabel={isEnglish && (post.data.locale ?? "es") !== "en" ? t.blog.fallbackCardLabel : undefined}

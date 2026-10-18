@@ -1,4 +1,6 @@
 ---
+import type { ImageMetadata } from "astro"
+import { Image } from "astro:assets"
 import type { Locale } from "@/lib/i18n"
 import { formatDate } from "@/lib/utils"
 import { articleTitleTransitionName } from "@/scripts/transitions"
@@ -12,39 +14,48 @@ interface Props {
   locale: Locale
   contentLocale: Locale
   fallbackLabel?: string
+  image?: ImageMetadata
+  animateDelay?: number
 }
 
-const { id, title, description, publishDate, tags, locale, contentLocale, fallbackLabel } = Astro.props
+const { id, title, description, publishDate, tags, locale, contentLocale, fallbackLabel, image, animateDelay = 1 } = Astro.props
 const prefix = locale === "es" ? "" : "/en"
 const headingId = `post-title-${id}`
 ---
 
 <article
   lang={contentLocale}
-  class="group overflow-hidden rounded-2xl border border-parchment bg-card transition-all duration-300 hover:-translate-y-[2px] hover:shadow-card-hover"
+  class="group min-w-0"
   aria-labelledby={headingId}
+  data-animate
+  data-animate-delay={String(animateDelay)}
 >
-  <a href={`${prefix}/blog/${id}`} class="block p-6 sm:p-8">
+  <a href={`${prefix}/blog/${id}`} class="focus-ring block">
+    {
+      image && (
+        <Image
+          src={image}
+          alt=""
+          widths={[480, 800, 1200]}
+          sizes="(min-width: 900px) 430px, (min-width: 768px) calc((100vw - 72px) / 2), calc(100vw - 32px)"
+          width={800}
+          height={450}
+          class="mb-6 aspect-video w-full object-cover grayscale"
+          loading="lazy"
+          decoding="async"
+        />
+      )
+    }
     <div class="mb-3 flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
-      <div class="flex flex-wrap gap-2">
-        {
-          tags
-            .slice(0, 3)
-            .map((tag) => (
-              <span class="rounded-md border border-parchment bg-muted px-2 py-0.5 font-mono text-xs text-muted-foreground dark:text-foreground/60">
-                {tag}
-              </span>
-            ))
-        }
-      </div>
-      <time lang={locale} datetime={publishDate.toISOString()} class="shrink-0 font-mono text-xs text-muted-foreground">
+      <p class="font-text text-xs text-muted-foreground">{tags.slice(0, 3).join(" · ")}</p>
+      <time lang={locale} datetime={publishDate.toISOString()} class="shrink-0 font-text text-xs text-muted-foreground">
         {formatDate(publishDate, locale)}
       </time>
     </div>
     <h2
       id={headingId}
       transition:name={articleTitleTransitionName(id)}
-      class="mb-2 text-xl font-bold tracking-tight transition-colors group-hover:text-primary sm:text-2xl"
+      class="mb-3 font-display text-2xl font-medium leading-tight tracking-[-0.03em] transition-colors group-hover:text-primary group-focus-within:text-primary"
     >
       {title}
     </h2>
@@ -55,6 +66,6 @@ const headingId = `post-title-${id}`
         </p>
       )
     }
-    <p class="text-base leading-relaxed text-muted-foreground dark:text-foreground/65">{description}</p>
+    <p class="text-base leading-relaxed text-muted-foreground">{description}</p>
   </a>
 </article>

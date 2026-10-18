@@ -84,7 +84,7 @@ describe("remaining localized pages", () => {
   })
 
   it("keeps Header and Footer at the documented 1200px content width", () => {
-    expect(design).toContain("- Max content: 1200px")
+    expect(design).toContain("shared sections and header/footer max `1200px`")
     const headerWrapper = header.match(/<header\b[^>]*>\s*<div class="([^"]+)"/)?.[1]
     const footerWrapper = footer.match(/<footer\b[^>]*class="([^"]+)"/)?.[1]
     for (const wrapper of [headerWrapper, footerWrapper]) {

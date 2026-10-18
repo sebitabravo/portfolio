@@ -1,7 +1,8 @@
 import { expect, test } from "@playwright/test"
+import { canonicalTechnologies } from "../src/lib/data/skills"
 
 test.describe("Regression contracts", () => {
-  test("keeps hero LCP visible and motion controls accessible", async ({ page }) => {
+  test("keeps hero LCP visible, the stack static, and navigation controls accessible", async ({ page }) => {
     await page.goto("/")
 
     const heroState = await page.locator(".hero-title").evaluate((element) => {
@@ -11,14 +12,13 @@ test.describe("Regression contracts", () => {
     expect(heroState).toEqual({ opacity: "1", filter: "none" })
 
     const signal = page.locator(".signal-strip")
-    const signalToggle = page.locator("[data-signal-toggle]")
     await expect(signal).toHaveAttribute("role", "region")
-    await expect(signalToggle).toHaveAttribute("aria-pressed", "false")
-    await expect(signalToggle).toHaveAttribute("aria-label", /Pausar/)
-    await signalToggle.click()
-    await expect(signal).toHaveClass(/is-paused/)
-    await expect(signalToggle).toHaveAttribute("aria-pressed", "true")
-    await expect(signalToggle).toHaveAttribute("aria-label", /Reanudar/)
+    await expect(signal).toHaveAttribute("aria-label", "Stack con el que construyo")
+    await expect(signal.getByRole("listitem")).toHaveText([...canonicalTechnologies])
+    await expect(signal.locator("[data-duplicate], [aria-hidden='true'].signal-technologies")).toHaveCount(0)
+    await expect(signal.getByRole("button")).toHaveCount(0)
+    await expect(signal.locator(".signal-marquee")).toHaveCount(0)
+    expect(await signal.evaluate((element) => element.getAnimations({ subtree: true }).length)).toBe(0)
 
     await expect(page.locator("#language-toggle")).toHaveAttribute("aria-haspopup", "menu")
     await expect(page.locator("#language-toggle")).toHaveAttribute("aria-controls", "language-menu")
@@ -32,6 +32,45 @@ test.describe("Regression contracts", () => {
     await expect(webpFallback).toHaveAttribute("srcset", /\/_astro\/[^,\s]+\.webp 800w(?:,|$)/)
     await expect(webpFallback).toHaveAttribute("srcset", /\/_astro\/[^,\s]+\.webp 1600w(?:,|$)/)
   })
+
+  for (const { route, label } of [
+    { route: "/", label: "Stack con el que construyo" },
+    { route: "/en/", label: "The stack I build with" },
+  ]) {
+    for (const reducedMotion of ["no-preference", "reduce"] as const) {
+      test(`stack wraps without movement at ${route} with ${reducedMotion}`, async ({ page }) => {
+        await page.setViewportSize({ width: 375, height: 812 })
+        await page.emulateMedia({ reducedMotion })
+        await page.goto(route)
+        const signal = page.getByRole("region", { name: label, exact: true })
+        const technologies = signal.getByRole("listitem")
+        await signal.scrollIntoViewIfNeeded()
+        await expect(signal).toBeVisible()
+        await expect(technologies).toHaveText([...canonicalTechnologies])
+        await expect(signal.getByRole("list")).toHaveCSS("flex-wrap", "wrap")
+        await expect(signal.getByRole("button")).toHaveCount(0)
+        for (const technology of await technologies.all()) {
+          await expect(technology).toBeVisible()
+          await expect(technology).toHaveCSS("font-size", "13px")
+        }
+        const state = await signal.evaluate((element) => {
+          const items = [...element.querySelectorAll("li")]
+          const bounds = element.getBoundingClientRect()
+          return {
+            animationCount: element.getAnimations({ subtree: true }).length,
+            fits: items.every((item) => {
+              const rect = item.getBoundingClientRect()
+              return rect.left >= bounds.left && rect.right <= bounds.right
+            }),
+            rows: new Set(items.map((item) => item.getBoundingClientRect().top)).size,
+          }
+        })
+        expect(state.animationCount).toBe(0)
+        expect(state.fits).toBe(true)
+        expect(state.rows).toBeGreaterThan(1)
+      })
+    }
+  }
 
   test("English blog and project case studies never render the empty state", async ({ page }) => {
     await page.goto("/en/blog")

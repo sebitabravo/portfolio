@@ -9,47 +9,18 @@ interface Props {
 
 const { locale = "es" } = Astro.props
 const t = getTranslations(locale)
-const technologies = [...canonicalTechnologies]
-const repeatedTechnologies = [...technologies, ...technologies]
 const label = t.signal.label
 ---
 
-<div
-  class="signal-strip"
-  data-animate
-  role="region"
-  aria-label={label}
-  data-signal-pause={t.signal.pause}
-  data-signal-resume={t.signal.resume}
->
+<div class="signal-strip" role="region" aria-label={label}>
   <div class="signal-strip-inner">
     <div class="signal-strip-label">
       <span class="signal-strip-dot" aria-hidden="true"></span>
       <span>{label}</span>
     </div>
-    <div class="signal-marquee-window" aria-hidden="true">
-      <div class="signal-marquee">
-        {
-          repeatedTechnologies.map((technology, index) => (
-            <span class="signal-tech" data-duplicate={index >= technologies.length ? "true" : undefined}>
-              {technology}
-            </span>
-          ))
-        }
-      </div>
-    </div>
-    <div class="signal-strip-actions">
-      <button
-        type="button"
-        class="signal-marquee-toggle focus-ring"
-        data-signal-toggle
-        aria-pressed="false"
-        aria-label={t.signal.pause}
-      >
-        <span aria-hidden="true">Ⅱ</span>
-        <span class="sr-only">{t.signal.pause}</span>
-      </button>
-    </div>
+    <ul class="signal-technologies" role="list">
+      {canonicalTechnologies.map((technology) => <li class="signal-tech">{technology}</li>)}
+    </ul>
   </div>
 </div>
 
@@ -63,14 +34,14 @@ const label = t.signal.label
   }
 
   .signal-strip-inner {
-    display: grid;
+    display: flex;
     max-width: 1280px;
     min-height: 4.25rem;
     margin: 0 auto;
-    grid-template-columns: auto minmax(0, 1fr) auto;
+    flex-wrap: wrap;
     align-items: center;
-    gap: 1.25rem;
-    padding: 0 1.25rem;
+    gap: 0.75rem 1.25rem;
+    padding: 1rem 1.25rem;
   }
 
   .signal-strip-label {
@@ -78,34 +49,26 @@ const label = t.signal.label
     align-items: center;
     gap: 0.55rem;
     color: hsl(var(--muted-foreground));
-    font-size: var(--text-xs);
-    white-space: nowrap;
   }
 
   .signal-strip-dot {
     width: 0.42rem;
     height: 0.42rem;
+    flex-shrink: 0;
     border-radius: 50%;
     background: hsl(var(--primary));
   }
 
-  .signal-marquee-window {
-    overflow: hidden;
-    mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
-  }
-
-  .signal-marquee {
+  .signal-technologies {
     display: flex;
-    width: max-content;
+    min-width: 0;
+    flex: 1 1 40rem;
+    flex-wrap: wrap;
     align-items: center;
-    gap: 1.7rem;
-    animation: signal-marquee 32s linear infinite;
-  }
-
-  .signal-marquee-window:hover .signal-marquee,
-  .signal-marquee-window:focus-within .signal-marquee,
-  .signal-strip.is-paused .signal-marquee {
-    animation-play-state: paused;
+    gap: 0.65rem 1rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
   }
 
   .signal-tech {
@@ -113,11 +76,10 @@ const label = t.signal.label
     align-items: center;
     gap: 0.45rem;
     color: hsl(var(--muted-foreground));
-    font-size: var(--text-xs);
     white-space: nowrap;
   }
 
-  .signal-tech::before {
+  .signal-tech + .signal-tech::before {
     content: "";
     width: 0.2rem;
     height: 0.2rem;
@@ -125,87 +87,9 @@ const label = t.signal.label
     background: hsl(var(--muted-foreground) / 0.5);
   }
 
-  .signal-strip-actions {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.65rem;
-  }
-
-  .signal-marquee-toggle {
-    display: inline-flex;
-    width: 2rem;
-    height: 2rem;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid transparent;
-    color: hsl(var(--muted-foreground));
-    background: transparent;
-    font-family: var(--font-switzer);
-    font-size: var(--text-xs);
-    cursor: pointer;
-    transition: color 180ms ease;
-  }
-
-  .signal-marquee-toggle:hover {
-    color: hsl(var(--primary));
-  }
-
-  .signal-marquee-toggle:focus-visible {
-    border-color: hsl(var(--primary));
-  }
-
-  @keyframes signal-marquee {
-    from {
-      transform: translateX(0);
-    }
-    to {
-      transform: translateX(-50%);
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .signal-marquee {
-      animation: none;
-    }
-
-    .signal-marquee-window {
-      overflow-x: auto;
-      mask-image: none;
-    }
-
-    .signal-marquee {
-      width: max-content;
-      flex-wrap: nowrap;
-      transform: none;
-    }
-  }
-
   @media (max-width: 767px) {
     .signal-strip-inner {
-      min-height: 3.7rem;
-      grid-template-columns: auto minmax(0, 1fr) auto;
-      gap: 0.65rem;
-      padding: 0 1rem;
-    }
-
-    .signal-strip-label {
-      font-size: var(--text-xs);
-      white-space: normal;
-    }
-
-    .signal-marquee {
-      gap: 1rem;
-    }
-
-    .signal-tech {
-      font-size: var(--text-xs);
+      padding-inline: 1rem;
     }
   }
 </style>
-
-<script>
-  import { setupSignalStrip } from "@/scripts/signal-strip"
-
-  setupSignalStrip()
-  document.addEventListener("astro:page-load", setupSignalStrip)
-</script>

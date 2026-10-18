@@ -383,7 +383,7 @@ test.describe("Home Page", () => {
       await page.waitForTimeout(900)
 
       const state = await page.evaluate(() => {
-        const animatedSelectors = [".hero-orbit", ".hero-orbit-dot", ".hero-ambient", ".signal-marquee"]
+        const animatedSelectors = [".hero-orbit", ".hero-orbit-dot", ".hero-ambient", ".signal-strip", ".signal-technologies", ".signal-tech"]
         const hiddenElements = Array.from(document.querySelectorAll("[data-animate], .hero-reveal"))
           .filter((element) => Number.parseFloat(getComputedStyle(element).opacity) < 0.99)
         const activeLoops = animatedSelectors.flatMap((selector) =>

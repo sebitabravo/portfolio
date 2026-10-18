@@ -1,4 +1,10 @@
 @layer components {
+  .section-band-inverted {
+    background: hsl(var(--inverted-bg));
+    color: hsl(var(--inverted-ink));
+  }
+
+
   .section-heading,
   .project-outcomes-title,
   .project-title,
@@ -40,4 +46,9 @@
     transform-origin: top;
     z-index: 2;
   }
+}
+
+/* La tinta contextual prevalece sobre la utilidad global del título compartido. */
+.section-band-inverted .section-heading {
+  color: inherit;
 }

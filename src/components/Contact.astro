@@ -33,14 +33,20 @@ const contactLinks = [
 ]
 ---
 
-<div class="space-y-10">
-  <h3
-    data-animate
-    class="font-display text-[clamp(3rem,8vw,7rem)] leading-[0.95] font-medium tracking-[-0.03em] italic"
-  >
-    {t.about.contactCta}
-  </h3>
-  <div class="grid max-w-4xl gap-8">
+<div class="contact-chapter flex min-h-[70svh] flex-col justify-between gap-12">
+  <div class="space-y-6">
+    <h3
+      data-animate
+      class="font-display text-[clamp(2.75rem,8vw,5.375rem)] leading-[0.95] font-medium tracking-[-0.03em] italic"
+    >
+      {t.about.contactCta}
+    </h3>
+    <p data-animate class="flex items-center gap-3 text-base">
+      <span aria-hidden="true" class="size-2 rounded-full bg-inverted-accent"></span>
+      {t.hero.available}
+    </p>
+  </div>
+  <div class="grid w-full gap-8 md:gap-12">
     {
       contactLinks.map(({ href, label, icon, description }, i) => (
         <a
@@ -49,15 +55,15 @@ const contactLinks = [
           data-animate-delay={String(i + 1)}
           target={icon !== "mail" ? "_blank" : undefined}
           rel={icon !== "mail" ? "noopener noreferrer" : undefined}
-          class="group grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-x-6 gap-y-2 py-2 focus-ring"
+          class="group grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-x-6 gap-y-3 py-3 focus-ring"
         >
-          <span class="font-text text-[clamp(1rem,2vw,1.5rem)] font-semibold break-words text-foreground group-hover:text-signal">
+          <span class="font-text text-2xl font-semibold break-words text-inverted-accent underline decoration-transparent underline-offset-8 transition-colors group-hover:decoration-current md:text-3xl">
             {label}
           </span>
-          <span aria-hidden="true" class="row-span-2 text-xl text-signal">
+          <span aria-hidden="true" class="row-span-2 text-2xl text-inverted-accent md:text-3xl">
             ↗
           </span>
-          <span class="text-sm text-muted-foreground">{description}</span>
+          <span class="text-base">{description}</span>
         </a>
       ))
     }
@@ -69,7 +75,7 @@ const contactLinks = [
       target="_blank"
       rel="noopener noreferrer"
       data-track-cv={locale}
-      class="contact-resume-action inline-flex min-h-11 w-fit items-center gap-2 text-base text-signal underline underline-offset-4 focus-ring"
+      class="contact-resume-action inline-flex min-h-11 w-fit items-center gap-2 text-base text-inverted-accent underline underline-offset-4 focus-ring"
     >
       <span>{t.hero.downloadCv}</span>
       <span aria-hidden="true">↗</span>
@@ -80,7 +86,14 @@ const contactLinks = [
 
 <style>
   .contact-resume-row p {
-    color: hsl(var(--caption-color));
-    font-size: 0.875rem;
+    font-size: var(--text-xs);
+  }
+
+  .contact-chapter h3 {
+    color: inherit;
+  }
+
+  .contact-chapter :global(.focus-ring:focus-visible) {
+    outline-color: hsl(var(--inverted-accent));
   }
 </style>

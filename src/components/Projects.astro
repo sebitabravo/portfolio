@@ -34,8 +34,8 @@ const actionPrimary = `${actionBase} text-primary`
     data-project-outcomes
     aria-labelledby={`project-outcomes-title-${locale}`}
   >
-    <h3 id={`project-outcomes-title-${locale}`} class="project-outcomes-title max-w-[24ch] text-[clamp(1.75rem,3vw,3rem)] leading-[1.05] tracking-[-0.03em] text-foreground">{t.projects.outcomesTitle}</h3>
-    <ul class="project-outcomes-list m-0 grid list-none gap-4 p-0 text-[1.0625rem] leading-relaxed text-muted-foreground">
+    <h3 id={`project-outcomes-title-${locale}`} class="project-outcomes-title max-w-[24ch] text-3xl leading-[1.05] tracking-[-0.03em] text-foreground">{t.projects.outcomesTitle}</h3>
+    <ul class="project-outcomes-list m-0 grid list-none gap-4 p-0 text-base leading-relaxed text-muted-foreground">
       {t.projects.outcomes.map((outcome: string) => (
         <li>{outcome}</li>
       ))}
@@ -68,7 +68,7 @@ const actionPrimary = `${actionBase} text-primary`
             "project-media relative isolate overflow-hidden bg-surface-raised",
             featured ? "aspect-[8/5] md:aspect-[2/1]" : "aspect-[8/5]",
           ]}>
-            <span class="project-media-name absolute inset-0 flex items-center justify-center p-8 text-center text-[clamp(2rem,5vw,5rem)] leading-none tracking-[-0.03em] text-foreground" aria-hidden="true">{title}</span>
+            <span class="project-media-name absolute inset-0 flex items-center justify-center p-8 text-center text-2xl leading-none tracking-[-0.03em] text-foreground" aria-hidden="true">{title}</span>
             {screenshot && <Picture
               src={screenshot}
               formats={["avif"]}
@@ -90,7 +90,7 @@ const actionPrimary = `${actionBase} text-primary`
           <div class="project-body flex min-w-0 flex-1 flex-col items-start gap-4 pt-6">
             <h3
               transition:name={articleTitleTransitionName(resolvedBlogSlug)}
-              class="project-title text-[clamp(1.6rem,2.4vw,2.4rem)] leading-[1.05] tracking-[-0.03em] text-foreground transition-colors group-hover:text-primary group-focus-within:text-primary"
+              class="project-title text-2xl leading-[1.05] tracking-[-0.03em] text-foreground transition-colors group-hover:text-primary group-focus-within:text-primary"
             >
               {title}
             </h3>
@@ -98,7 +98,7 @@ const actionPrimary = `${actionBase} text-primary`
               <span class="size-1.5 shrink-0 rounded-full bg-signal" aria-hidden="true"></span>
               {publicStatusLabel}
             </p>
-            <p class="project-description max-w-[60ch] text-[1.0625rem] leading-relaxed text-muted-foreground">{description}</p>
+            <p class="project-description max-w-[60ch] text-base leading-relaxed text-muted-foreground">{description}</p>
 
             {visualStats.length > 0 && (
               <div class="project-metrics flex flex-wrap gap-x-8 gap-y-4" aria-label={t.projects.evidenceLabel}>
@@ -142,7 +142,7 @@ const actionPrimary = `${actionBase} text-primary`
   </div>
 
   <div class="projects-contact-cta mt-12 flex flex-col items-start gap-x-6 gap-y-2 md:flex-row md:items-center">
-    <p class="text-[1.0625rem] text-muted-foreground">{t.projects.contactPrompt}</p>
+    <p class="text-base text-muted-foreground">{t.projects.contactPrompt}</p>
     <a href={contactUrl} class={`projects-contact-link ${actionPrimary}`}>
       <span>{t.projects.contactCta}</span><span aria-hidden="true">↗</span>
     </a>

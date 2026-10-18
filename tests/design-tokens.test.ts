@@ -108,7 +108,7 @@ describe("flat certification categories and retained theme tokens", () => {
 
   it("uses plain category text while retaining named theme utilities", () => {
     expect(certifications).not.toMatch(/hsl\(144/);
-    expect(certifications).toContain("cert-category text-[13px] text-muted-foreground");
+    expect(certifications).toContain("cert-category text-xs text-muted-foreground");
     expect(certifications).not.toContain("bg-cert-pro-bg");
     expect(certifications).not.toContain("text-cert-pro-text");
     expect(certifications).not.toContain("border-cert-pro-border");

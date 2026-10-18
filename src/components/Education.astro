@@ -18,10 +18,10 @@ const education = getEducation(locale)
       <article data-animate data-animate-delay={String(i + 1)} class="education-row">
         <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div>
-            <h3 class="font-text text-[clamp(1.25rem,2vw,1.5rem)] font-semibold text-foreground">{degree}</h3>
+            <h3 class="font-text text-2xl font-semibold text-foreground">{degree}</h3>
             <p class="mt-0.5 text-sm text-caption-color">{institution}</p>
           </div>
-          <div class="shrink-0 text-left text-[0.875rem] text-caption-color sm:text-right">
+          <div class="shrink-0 text-left text-sm text-caption-color sm:text-right">
             <time>{formatDate(startDate, locale)}</time>
             <span> — </span>
             <time>{current ? t.education.present : endDate ? formatDate(endDate, locale) : ""}</time>
@@ -35,7 +35,7 @@ const education = getEducation(locale)
         </div>
 
         {description && (
-          <p class="mt-4 max-w-[65ch] text-[1.0625rem] leading-[1.60] text-muted-foreground">{description}</p>
+          <p class="mt-4 max-w-[65ch] text-base leading-[1.60] text-muted-foreground">{description}</p>
         )}
 
         {skills && skills.length > 0 && (

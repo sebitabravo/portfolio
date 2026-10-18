@@ -19,10 +19,10 @@ const contactId = homeSectionFragment(locale, "contact")
   <article
     data-animate
     data-animate-delay="1"
-    class="about-copy flex max-w-[45rem] flex-col gap-5 text-[1.0625rem] leading-[1.65] text-muted-foreground"
+    class="about-copy flex max-w-[45rem] flex-col gap-5 text-base leading-[1.65] text-muted-foreground"
   >
     <p
-      class="about-lede font-display text-[clamp(1.5rem,2.4vw,1.75rem)] leading-[1.2] font-medium tracking-[-0.03em] text-foreground"
+      class="about-lede font-display text-2xl leading-[1.2] font-medium tracking-[-0.03em] text-foreground"
     >
       {aboutMe.intro}
     </p>
@@ -47,8 +47,8 @@ const contactId = homeSectionFragment(locale, "contact")
   </article>
 
   <div data-animate data-animate-delay="2" class="about-focus flex flex-col gap-4">
-    <h3 class="font-text text-[1.0625rem] font-semibold">{t.about.focusTitle}</h3>
-    <p class="text-[1.0625rem] leading-[1.6] text-muted-foreground">{aboutMe.lookingFor}</p>
+    <h3 class="font-text text-base font-semibold">{t.about.focusTitle}</h3>
+    <p class="text-base leading-[1.6] text-muted-foreground">{aboutMe.lookingFor}</p>
     <a
       href={contactId}
       class="about-cta inline-flex min-h-11 w-fit items-center gap-2 text-base text-signal underline underline-offset-4 focus-ring"

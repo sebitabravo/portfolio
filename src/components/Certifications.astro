@@ -15,10 +15,10 @@ const certifications = [...getCertifications(locale)].sort((a, b) => a.order - b
   {
     certifications.map((cert) => (
       <li class="flex flex-col items-start gap-2">
-        <p class="cert-category text-[13px] text-muted-foreground">
+        <p class="cert-category text-xs text-muted-foreground">
           {t.certifications[cert.category]}
         </p>
-        <h3 class="text-[1.0625rem] leading-snug font-semibold">{cert.name}</h3>
+        <h3 class="text-base leading-snug font-semibold">{cert.name}</h3>
         <p class="text-sm text-muted-foreground">{cert.organization}</p>
         {cert.pdfUrl && (
           <a

@@ -12,6 +12,15 @@
   --color-hairline: hsl(var(--hairline));
   --color-signal: hsl(var(--signal));
   --color-signal-ink: hsl(var(--signal-ink));
+  --text-xs: 0.8125rem;
+  --text-base: 1.0625rem;
+  --text-lg: 1.3125rem;
+  --text-xl: 1.3125rem;
+  --text-2xl: 1.5rem;
+  --text-3xl: 2.6875rem;
+  --color-inverted-bg: hsl(var(--inverted-bg));
+  --color-inverted-ink: hsl(var(--inverted-ink));
+  --color-inverted-accent: hsl(var(--inverted-accent));
   --font-display: var(--font-boska);
   --font-text: var(--font-switzer);
   --color-background: hsl(var(--background));
@@ -45,15 +54,6 @@
   --color-cert-pro-border: hsl(var(--cert-pro) / 0.25);
   --shadow-card-hover: var(--card-shadow-hover);
   --font-code: var(--font-jetbrains-mono), ui-monospace, monospace;
-}
-
-/* Small custom utilities belong to Tailwind's utilities layer. Keep their
-   visual values in component/runtime tokens instead of coupling them to a
-   single component. */
-@utility text-gradient {
-  color: transparent;
-  background-clip: text;
-  -webkit-background-clip: text;
 }
 
 @utility scrollbar-hidden {
@@ -97,6 +97,9 @@
 
 @layer base {
   :root {
+    --inverted-bg: 40 9.677419% 6.078431%;
+    --inverted-ink: 42 27.777778% 92.941176%;
+    --inverted-accent: 35.789474 78.082192% 57.058824%;
     --canvas: 40 20% 93%;
     --surface-raised: 40 16% 89%;
     --ink: 45 10% 6%;
@@ -151,12 +154,13 @@
     --section-band-line: rgb(113 76 182 / 0.14);
     --section-grid-line: rgb(75 70 140 / 0.08);
 
-    /* Shadows — restrained */
-    --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06);
     --card-shadow-hover: 0 8px 25px rgba(0, 0, 0, 0.08), 0 4px 10px rgba(0, 0, 0, 0.04);
   }
 
   .dark {
+    --inverted-bg: 42 27.777778% 92.941176%;
+    --inverted-ink: 40 9.677419% 6.078431%;
+    --inverted-accent: 35.172414 72.5% 31.372549%;
     --canvas: 60 4% 3%;
     --surface-raised: 45 5% 8%;
     --ink: 39 29% 93%;
@@ -207,7 +211,6 @@
     --section-band-line: rgb(199 183 255 / 0.16);
     --section-grid-line: rgb(255 255 255 / 0.055);
 
-    --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.2), 0 1px 2px rgba(0, 0, 0, 0.3);
     --card-shadow-hover: 0 8px 25px rgba(0, 0, 0, 0.3), 0 4px 10px rgba(0, 0, 0, 0.2);
   }
 }
@@ -227,6 +230,7 @@
   }
 
   body {
+    font-size: var(--text-base);
     font-family:
       var(--font-switzer),
       system-ui,
@@ -707,15 +711,5 @@
     max-width: 100%;
     border-radius: 0.5rem;
     margin: 1.5rem 0;
-  }
-
-  /* ============================================
-   Background-clip text fallback
-   ============================================ */
-
-  @supports not (-webkit-background-clip: text) {
-    .bg-clip-text-fallback.bg-clip-text-fallback {
-      color: hsl(var(--foreground));
-    }
   }
 }

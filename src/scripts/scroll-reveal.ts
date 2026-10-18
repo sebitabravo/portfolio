@@ -1,9 +1,16 @@
+import { initCardReveal } from "./motion/cards"
+
 let revealObserver: IntersectionObserver | null = null
 
 export function initScrollReveal(): void {
+  initCardReveal()
   revealObserver?.disconnect()
 
-  const targets = Array.from(document.querySelectorAll("[data-animate]"))
+  // La experiencia tiene su propio reveal con stagger; dos dueños producirían
+  // clases y transforms en competencia sobre el mismo nodo.
+  const targets = Array.from(document.querySelectorAll("[data-animate]:not([data-project-card])")).filter(
+    (element) => !element.closest("[data-experience-list]"),
+  )
   if (!("IntersectionObserver" in window)) return
 
   const observer = new IntersectionObserver(

@@ -23,6 +23,8 @@
     "generate:og": "pnpm exec tsx scripts/generate-og-images.ts",
     "verify:bundle": "pnpm exec tsx scripts/check-bundle-size.ts",
     "verify:csp": "pnpm exec tsx scripts/verify-csp-hashes.ts",
+    "update:csp": "pnpm exec tsx scripts/update-csp-hashes.ts",
+    "update:csp:write": "pnpm exec tsx scripts/update-csp-hashes.ts --write",
     "verify:limits": "pnpm exec tsx scripts/check-source-limits.ts"
   },
   "dependencies": {

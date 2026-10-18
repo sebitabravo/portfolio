@@ -1,3 +1,5 @@
+import { HEADER_NAV_CHANGE_EVENT, type HeaderNavChangeDetail } from "./motion/types"
+
 let headerController: AbortController | null = null
 let headerObserver: IntersectionObserver | null = null
 
@@ -8,14 +10,27 @@ export function setupHeaderNav(): void {
   const controller = new AbortController()
   headerController = controller
   const { signal } = controller
-  const navLinks = Array.from(document.querySelectorAll(".site-nav .nav-link"))
+  const navLinks = Array.from(document.querySelectorAll<HTMLAnchorElement>(".site-nav .nav-link"))
   const navigableIds = new Set(navLinks.map((link) => link.getAttribute("data-section")))
   const sections = document.querySelector('.site-header[data-home="true"]')
     ? Array.from(document.querySelectorAll("section[id]")).filter((section) => navigableIds.has(section.id))
     : []
-  const siteNav = document.querySelector(".site-nav")
+  const siteNav = document.querySelector<HTMLElement>(".site-nav")
 
   if (!siteNav) return
+
+  let activeLink: HTMLAnchorElement | null = null
+  const announceActive = () => {
+    const next = navLinks.find((link) => link.classList.contains("nav-active")) ?? null
+    if (next === activeLink) return
+    activeLink = next
+    siteNav.dispatchEvent(
+      new CustomEvent<HeaderNavChangeDetail>(HEADER_NAV_CHANGE_EVENT, {
+        detail: { link: next },
+        bubbles: true,
+      }),
+    )
+  }
 
   const setActive = (sectionId: string) => {
     if (document.querySelector(".site-header")?.getAttribute("data-home") !== "true" || !navigableIds.has(sectionId))
@@ -29,6 +44,7 @@ export function setupHeaderNav(): void {
         link.removeAttribute("aria-current")
       }
     })
+    announceActive()
   }
 
   const currentPath = window.location.pathname.replace(/\/$/, "") || "/"
@@ -40,6 +56,7 @@ export function setupHeaderNav(): void {
       link.setAttribute("aria-current", "page")
     }
   })
+  announceActive()
 
   headerObserver = new IntersectionObserver(
     (entries) => {

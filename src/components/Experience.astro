@@ -24,13 +24,16 @@ const workExperience = getWorkExperience(locale)
         </span>
         <p>{t.work.timeline}</p>
       </div>
-      <ol class="relative mt-8 pl-4">
-        {workExperience.map((experience, i) => (
-          <li>
-            <ExperienceItem {...experience} locale={locale} index={i} />
-          </li>
-        ))}
-      </ol>
+      <div class="relative mt-8">
+        <span class="experience-progress" data-experience-progress aria-hidden="true" />
+        <ol class="relative pl-4" data-experience-list>
+          {workExperience.map((experience, i) => (
+            <li data-experience-item>
+              <ExperienceItem {...experience} locale={locale} index={i} />
+            </li>
+          ))}
+        </ol>
+      </div>
     </>
   ) : (
     <div class="mt-8 text-center text-foreground/80">

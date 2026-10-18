@@ -51,6 +51,13 @@
       display: none;
     }
 
+    .hero-art-frame,
+    .hero-actions,
+    .hero-meta,
+    .hero-btn-primary {
+      translate: none !important;
+    }
+
     [data-animate],
     [data-animate].reveal-pending,
     [data-animate].animate-in {

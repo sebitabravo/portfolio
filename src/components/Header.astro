@@ -78,7 +78,8 @@ const navSurfaceClass = home
         >
       </a>
 
-      <div class="hidden items-center gap-1 md:flex">
+      <div class="desktop-nav relative hidden items-center gap-1 md:flex" data-nav-list>
+        <span class="nav-indicator" data-nav-indicator aria-hidden="true"></span>
         {
           desktopNavItems.map((link) => (
             <a
@@ -176,8 +177,18 @@ const navSurfaceClass = home
 
 <script>
   import { setupHeaderNav, teardownHeaderNav } from "@/scripts/header-nav"
+  import { setupNavIndicator, teardownNavIndicator } from "@/scripts/motion/nav-indicator"
 
-  setupHeaderNav()
-  document.addEventListener("astro:page-load", setupHeaderNav)
-  document.addEventListener("astro:before-swap", teardownHeaderNav)
+  const startNavigation = () => {
+    setupHeaderNav()
+    setupNavIndicator()
+  }
+  const stopNavigation = () => {
+    teardownHeaderNav()
+    teardownNavIndicator()
+  }
+
+  startNavigation()
+  document.addEventListener("astro:page-load", startNavigation)
+  document.addEventListener("astro:before-swap", stopNavigation)
 </script>

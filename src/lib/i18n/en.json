@@ -17,6 +17,8 @@
     "cta": "Let's talk"
   },
   "hero": {
+    "role": "Full-Stack Developer",
+    "scroll": "Scroll",
     "greeting": "Hi, I'm",
     "roleLocation": "Chile / Remote",
     "specialization": "Production web · Applied ML",

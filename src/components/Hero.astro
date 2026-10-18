@@ -1,5 +1,5 @@
 ---
-// Recruiter-readable first viewport with one clear message and a cinematic visual layer.
+// El título permanece estático para proteger la pintura del LCP.
 import { Image } from "astro:assets"
 import { personalInfo } from "@/lib/data"
 import { getTranslations, type Locale } from "@/lib/i18n"
@@ -22,108 +22,66 @@ const heroTitleId = `hero-title-${locale}`
   aria-labelledby={heroTitleId}
   data-portfolio-motion
 >
-  <div
-    class="hero-ambient hero-ambient-one absolute -z-[1] top-[12%] -right-32 size-96 rounded-full blur-[2px] pointer-events-none"
-    aria-hidden="true"
-  ></div>
-  <div
-    class="hero-ambient hero-ambient-two absolute -z-[1] -bottom-48 -left-32 size-80 rounded-full blur-[2px] pointer-events-none"
-    aria-hidden="true"
-  ></div>
-
-  <div class="max-w-[75rem] mx-auto px-5 sm:px-6 md:px-8 lg:px-12 hero-inner relative min-h-[auto] pt-30 pb-[1.1rem] md:min-h-[min(760px,100svh)] md:pt-22 md:pb-5">
-    <div class="hero-layout flex flex-col items-stretch gap-10 md:grid md:min-h-[600px] md:grid-cols-[minmax(0,1fr)_minmax(250px,0.75fr)] md:items-center md:gap-10 lg:grid-cols-[minmax(0,1.1fr)_minmax(300px,0.9fr)] lg:gap-[clamp(2rem,7vw,7rem)]">
-      <div class="hero-copy max-w-[700px]">
-        <div class="hero-kicker hero-reveal hero-reveal-1 flex items-center gap-[0.8rem] text-hero-muted text-[clamp(0.68rem,1vw,0.78rem)] font-medium font-code uppercase tracking-[0.12em]">
-          <span>{t.hero.greeting}</span>
-          <span class="hero-kicker-line inline-block w-[3.3rem] h-px bg-hero-line" aria-hidden="true"></span>
-        </div>
-
-        <h1
-          id={heroTitleId}
-          class="hero-title hero-reveal hero-reveal-2 max-w-[730px] mt-5 text-hero-ink font-hero-heading text-[clamp(3.45rem,17vw,5.3rem)] font-bold tracking-[-0.085em] leading-[0.84] max-[420px]:text-[3.35rem] md:text-[clamp(3.6rem,8vw,6rem)] md:leading-[0.82] lg:text-[clamp(3.7rem,8vw,8rem)]"
-        >
+  <canvas class="hero-webgl" data-hero-webgl aria-hidden="true"></canvas>
+  <div class="hero-stage-grid" aria-hidden="true"></div>
+  <div class="hero-inner">
+    <div class="hero-layout">
+      <div class="hero-copy">
+        <h1 id={heroTitleId} class="hero-title">
           <span class="hero-title-name block">Sebastian</span>
-          <span class="hero-title-name hero-title-accent text-gradient block">Bravo</span>
-          <span class="hero-title-role block mt-5 text-hero-accent-strong font-code text-[clamp(0.68rem,1.15vw,0.82rem)] font-medium tracking-[0.12em] leading-[1.25] uppercase">
-            <span aria-hidden="true">· </span>{personalInfo.title}
-          </span>
+          <span class="hero-title-name hero-title-accent block">Bravo</span>
         </h1>
-
-        <p class="hero-role hero-reveal hero-reveal-3 mt-[0.7rem] text-hero-accent font-hero-body text-[clamp(0.95rem,1.4vw,1.1rem)] font-semibold tracking-[-0.01em] leading-[1.4]">
-          {t.hero.specialization}
+        <p class="hero-role hero-title-role">
+          {t.hero.role}<span aria-hidden="true"> · </span>{t.hero.roleLocation}
         </p>
-
-        <p class="hero-lede hero-reveal hero-reveal-4 max-w-[620px] mt-5 text-hero-ink text-[1rem] leading-[1.5] tracking-[-0.018em] md:text-[clamp(1.06rem,1.55vw,1.32rem)]">
-          {t.hero.intro}
-        </p>
-
-        <div class="hero-actions hero-reveal hero-reveal-5 flex flex-wrap items-stretch gap-[0.65rem] mt-[1.35rem] md:items-center">
-          <a
-            href={contactUrl}
-            class="hero-btn-primary focus-ring group inline-flex items-center justify-center h-11 min-h-11 rounded-[0.55rem] gap-[0.6rem] px-6 py-2.5 font-semibold text-sm tracking-[0.02em] cursor-pointer transition-[background-color,translate,box-shadow] duration-[200ms,150ms,200ms] ease-[ease] border border-hero-btn-border bg-hero-btn-bg text-hero-btn-color shadow-hero-btn hover:bg-hero-btn-bg-hover hover:shadow-hero-btn-hover flex-none md:flex-initial max-[420px]:w-full"
-            aria-label={t.hero.contact}
-          >
+        <p class="hero-lede">{t.hero.intro}</p>
+        <div class="hero-actions">
+          <a href={contactUrl} class="hero-btn-primary focus-ring" aria-label={t.hero.contact}>
             <MailIcon class="size-4" />
             <span>{t.hero.contact}</span>
-            <span
-              class="hero-btn-arrow text-base leading-none transition-transform duration-200 ease-[ease] group-hover:translate-x-[2px] group-hover:-translate-y-[2px]"
-              aria-hidden="true"
-            >↗</span>
+            <span class="hero-btn-arrow" aria-hidden="true">↗</span>
           </a>
+          <a
+            href="/cv/Sebastian_Bravo_CV.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+            data-track-cv={locale}
+            class="hero-cv-link focus-ring"
+          >{t.hero.downloadCv}<span aria-hidden="true"> ↗</span></a>
         </div>
-
-        <ul
-          class="hero-meta hero-reveal hero-reveal-6 flex flex-wrap items-center gap-[0.65rem] mt-[1.15rem] p-0 text-hero-faint text-[0.72rem] list-none"
-          aria-label={t.hero.metaLabel}
-        >
+        <ul class="hero-meta" aria-label={t.hero.metaLabel}>
           {personalInfo.available && (
-            <li class="hero-meta-status inline-flex items-center gap-[0.45rem]">
-              <span class="hero-meta-pulse size-[0.42rem] rounded-full bg-hero-pulse shadow-hero-pulse" aria-hidden="true"></span>
+            <li class="hero-meta-status">
+              <span class="hero-meta-pulse" aria-hidden="true"></span>
               {t.hero.available}
             </li>
           )}
-          <li class="hero-meta-item inline-flex items-center">{t.hero.language}</li>
-          <li class="hero-meta-item inline-flex items-center">{t.hero.roleLocation}</li>
-          <li class="hero-meta-item inline-flex items-center">{t.hero.level}</li>
+          <li class="hero-meta-item">{t.hero.language}</li>
         </ul>
       </div>
-
-      <div
-        class="hero-art hero-reveal hero-reveal-3 self-center md:justify-self-end md:self-auto w-[min(100%,360px)] md:w-[min(100%,500px)]"
-        aria-hidden="true"
-      >
-        <div class="hero-art-frame group-data-[motion-status=active]:will-change-transform relative aspect-square grid place-items-center overflow-hidden rounded-[1rem] md:rounded-[1.4rem]">
-          <div class="hero-art-grid"></div>
-          <canvas
-            class="hero-webgl absolute inset-0 z-[2] block w-full h-full pointer-events-none opacity-[0.64] mix-blend-multiply dark:opacity-[0.82] dark:mix-blend-screen"
-            data-hero-webgl
-            aria-hidden="true"
-          ></canvas>
-          <div class="hero-art-crosshair hero-art-crosshair-top absolute w-4 h-4 border-hero-accent opacity-70 top-[1.1rem] right-[1.1rem] border-t border-r"></div>
-          <div class="hero-art-crosshair hero-art-crosshair-bottom absolute w-4 h-4 border-hero-accent opacity-70 bottom-[1.1rem] left-[1.1rem] border-b border-l"></div>
-          <div class="hero-orbit hero-orbit-one absolute z-[2] w-[76%] h-[32%] rounded-full"></div>
-          <div class="hero-orbit hero-orbit-two absolute z-[2] w-[40%] h-[88%] rounded-full"></div>
-          <div class="hero-orbit-dot hero-orbit-dot-one absolute z-[4] size-[0.42rem] rounded-full top-[19%] right-[19%]"></div>
-          <div class="hero-orbit-dot hero-orbit-dot-two absolute z-[4] size-[0.42rem] rounded-full bottom-[21%] left-[18%]"></div>
-          <div class="hero-portrait-shell relative z-[3] w-[56%] md:w-[58%] aspect-square p-2 rounded-full">
+      <div class="hero-art" aria-hidden="true">
+        <div class="hero-art-frame group-data-[motion-status=active]:will-change-transform">
+          <div class="hero-art-crosshair"></div>
+          <div class="hero-orbit hero-orbit-one"></div>
+          <div class="hero-portrait-shell">
             <Image
               src={profileImage}
               alt=""
-              width={320}
-              height={320}
-              sizes="(max-width: 767px) 210px, (max-width: 1024px) 280px, 320px"
+              width={480}
+              height={600}
+              sizes="(max-width: 767px) 70vw, 32vw"
               format="webp"
               quality={90}
               loading="eager"
               fetchpriority="high"
-              class="hero-portrait w-full h-full rounded-full object-cover saturate-[0.92] contrast-[1.04]"
+              class="hero-portrait"
             />
           </div>
         </div>
       </div>
     </div>
   </div>
+  <div class="hero-scroll-cue" aria-hidden="true"><span>{t.hero.scroll}</span><span>↓</span></div>
 </section>
 
 <script is:inline>

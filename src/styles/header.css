@@ -6,19 +6,55 @@
 
 /* Alpha lives inside the glass tokens so computed colors stay plain rgba() instead of color-mix(). */
 @theme inline {
-  --color-nav-glass: rgb(255 255 255 / 0.76);
-  --color-nav-glass-dark: rgb(7 9 25 / 0.7);
-  --color-nav-glass-border-dark: rgb(255 255 255 / 0.14);
-  --color-nav-glass-text-dark: rgb(248 250 255 / 0.9);
-  --shadow-nav: 0 14px 45px rgb(15 23 42 / 0.08);
-  --shadow-nav-home: 0 18px 55px rgb(43 39 95 / 0.12);
-  --shadow-nav-scrolled: 0 14px 45px rgb(15 23 42 / 0.1);
-  --shadow-nav-dark: 0 14px 45px rgb(0 0 0 / 0.22);
-  --shadow-header-cta-hover: 0 7px 20px hsl(var(--primary) / 0.27);
+  --color-header-cta: #e7a23c;
+  --color-header-cta-ink: #0b0b09;
+  --color-nav-glass: rgb(241 238 234 / 0.82);
+  --color-nav-glass-dark: rgb(8 8 7 / 0.78);
+  --color-nav-glass-border-dark: rgb(242 239 232 / 0.12);
+  --color-nav-glass-text-dark: rgb(242 239 232 / 0.95);
+  --shadow-nav: none;
+  --shadow-nav-home: none;
+  --shadow-nav-scrolled: none;
+  --shadow-nav-dark: none;
+  --shadow-header-cta-hover: 0 0 16px hsl(var(--primary) / 0.12);
   --shadow-header-cta-dot: 0 0 0 3px hsl(var(--primary-foreground) / 0.18);
 }
 
 @layer components {
+  .site-nav {
+    font-family: var(--font-switzer), system-ui, sans-serif;
+    border-radius: 4px;
+    border-color: hsl(var(--hairline));
+    backdrop-filter: blur(16px);
+    box-shadow: none;
+  }
+
+  .site-nav:not(.scrolled),
+  .site-nav.scrolled {
+    background-color: var(--color-nav-glass);
+  }
+  .dark .site-nav:not(.scrolled),
+  .dark .site-nav.scrolled {
+    background-color: var(--color-nav-glass-dark);
+    border-color: var(--color-nav-glass-border-dark);
+  }
+  .site-nav .nav-link,
+  .site-nav .header-cta,
+  .site-nav .header-social,
+  .site-nav .header-resume {
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    border-radius: 2px;
+  }
+  .site-nav .brand-mark {
+    font-family: var(--font-switzer), system-ui, sans-serif;
+    border-radius: 2px;
+  }
+  .site-nav .brand-lastname {
+    color: inherit;
+  }
+
   .site-nav .nav-link.nav-active::after {
     position: absolute;
     right: 25%;
@@ -26,8 +62,8 @@
     left: 25%;
     height: 2px;
     border-radius: 9999px;
-    background: currentColor;
-    box-shadow: 0 0 14px currentColor;
+    background: hsl(var(--signal));
+    box-shadow: 0 0 10px hsl(var(--signal) / 0.2);
     content: "";
   }
 

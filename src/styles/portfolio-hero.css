@@ -1,35 +1,28 @@
 :root {
-  --hero-ink: #171329;
-  --hero-muted: rgb(45 48 82 / 0.78);
-  --hero-faint: #4c527b;
-  --hero-line: rgb(79 70 229 / 0.22);
-  --hero-accent: #4338ca;
-  --hero-accent-strong: #3730a3;
-  --hero-btn-border: rgb(79 70 229 / 0.34);
+  --hero-ink: #11100e;
+  --hero-muted: #5c5851;
+  --hero-faint: #5c5851;
+  --hero-line: hsl(var(--hairline));
+  --hero-accent: #11100e;
+  --hero-accent-strong: #885a16;
+  --hero-btn-border: #885a16;
   --hero-btn-bg: var(--hero-accent-strong);
-  --hero-btn-bg-hover: #4338ca;
-  --hero-btn-color: #fff;
-  --hero-btn-shadow: rgb(79 70 229 / 0.2);
-  --hero-btn-shadow-hover: rgb(79 70 229 / 0.3);
+  --hero-btn-bg-hover: #744c13;
+  --hero-btn-color: #f1eeea;
 }
 
 .dark {
-  --hero-ink: #f7f8ff;
-  --hero-muted: rgb(229 232 255 / 0.68);
-  --hero-faint: #bac5ef;
-  --hero-line: rgb(218 222 255 / 0.18);
-  --hero-accent: #c7b7ff;
-  --hero-accent-strong: #9b82ff;
-  --hero-btn-border: rgb(255 255 255 / 0.35);
-  --hero-btn-bg: var(--hero-accent);
-  --hero-btn-bg-hover: #ddd4ff;
-  --hero-btn-color: #171329;
-  --hero-btn-shadow: rgb(155 130 255 / 0.22);
-  --hero-btn-shadow-hover: rgb(155 130 255 / 0.33);
+  --hero-ink: #f2efe8;
+  --hero-muted: #aea89e;
+  --hero-faint: #aea89e;
+  --hero-line: hsl(var(--hairline));
+  --hero-accent: #f2efe8;
+  --hero-accent-strong: #e7a23c;
+  --hero-btn-border: #e7a23c;
+  --hero-btn-bg-hover: #efb45a;
+  --hero-btn-color: #0b0b09;
 }
 
-/* Theme colors/fonts/shadows so hover and typography can move to utilities
-   in Hero.astro; alpha stays inside the token so computed colors read as plain rgba. */
 @theme inline {
   --color-hero-ink: var(--hero-ink);
   --color-hero-muted: var(--hero-muted);
@@ -41,156 +34,265 @@
   --color-hero-btn-bg: var(--hero-btn-bg);
   --color-hero-btn-bg-hover: var(--hero-btn-bg-hover);
   --color-hero-btn-color: var(--hero-btn-color);
-  --color-hero-pulse: #8bf3be;
-  --shadow-hero-btn: 0 10px 30px var(--hero-btn-shadow);
-  --shadow-hero-btn-hover: 0 13px 36px var(--hero-btn-shadow-hover);
-  --shadow-hero-pulse: 0 0 0 4px rgb(139 243 190 / 0.12), 0 0 16px rgb(139 243 190 / 0.7);
-  --font-hero-heading: var(--font-syne), var(--font-manrope), sans-serif;
-  --font-hero-body: var(--font-manrope), system-ui, sans-serif;
+  --color-hero-pulse: var(--hero-accent-strong);
+  --font-hero-heading: var(--font-boska), Georgia, serif;
+  --font-hero-body: var(--font-switzer), system-ui, sans-serif;
 }
 
 @layer components {
   .hero-gradient {
-    background:
-      radial-gradient(circle at 78% 18%, rgb(118 97 255 / 0.16), transparent 27%),
-      radial-gradient(circle at 12% 75%, rgb(73 112 255 / 0.1), transparent 25%),
-      linear-gradient(135deg, #f6f5ff 0%, #eef0ff 46%, #fbfcff 100%);
-  }
-
-  .dark .hero-gradient {
-    background:
-      radial-gradient(circle at 78% 18%, rgb(118 97 255 / 0.2), transparent 27%),
-      radial-gradient(circle at 12% 75%, rgb(73 112 255 / 0.12), transparent 25%),
-      linear-gradient(135deg, #10143a 0%, #090d29 46%, #050713 100%);
-  }
-
-  .hero-gradient::before {
-    z-index: -1;
-    background-image:
-      linear-gradient(rgb(75 70 140 / 0.1) 1px, transparent 1px),
-      linear-gradient(90deg, rgb(75 70 140 / 0.1) 1px, transparent 1px);
-    background-size: 72px 72px;
-    opacity: 0.45;
-    mask-image: linear-gradient(to bottom, black, transparent 92%);
-  }
-
-  .dark .hero-gradient::before {
-    background-image:
-      linear-gradient(rgb(255 255 255 / 0.055) 1px, transparent 1px),
-      linear-gradient(90deg, rgb(255 255 255 / 0.055) 1px, transparent 1px);
-    background-size: 72px 72px;
-    opacity: 0.45;
+    min-height: 92svh;
+    background: radial-gradient(ellipse at 78% 40%, hsl(var(--signal) / 0.1), transparent 55%), hsl(var(--canvas));
   }
 
   .hero-gradient::after {
     position: absolute;
     inset: 0;
+    z-index: 3;
+    background-image:
+      repeating-conic-gradient(#fff 0% 25%, transparent 0% 50%),
+      repeating-conic-gradient(#000 0% 25%, transparent 0% 50%);
+    background-size:
+      3px 5px,
+      7px 3px;
+    background-position:
+      0 0,
+      1px 2px;
+    opacity: 0.025;
+    pointer-events: none;
     content: "";
-    z-index: -1;
-    background:
-      linear-gradient(110deg, transparent 0 48%, rgb(79 70 229 / 0.1) 48.2% 48.4%, transparent 48.6%),
-      radial-gradient(circle at 50% 0%, transparent 0 35%, rgb(67 70 110 / 0.08) 90%);
-    mix-blend-mode: multiply;
+  }
+
+  .hero-stage-grid {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background-image:
+      linear-gradient(hsl(var(--ink) / 0.035) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(var(--ink) / 0.035) 1px, transparent 1px);
+    background-size: 88px 88px;
     pointer-events: none;
   }
 
-  .dark .hero-gradient::after {
-    background:
-      linear-gradient(110deg, transparent 0 48%, rgb(199 183 255 / 0.06) 48.2% 48.4%, transparent 48.6%),
-      radial-gradient(circle at 50% 0%, transparent 0 35%, rgb(2 4 17 / 0.35) 90%);
+  .hero-webgl {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    opacity: 0.5;
     mix-blend-mode: screen;
+    pointer-events: none;
   }
 
-  :root:not(.dark) .hero-ambient-one {
-    border-color: rgb(91 82 214 / 0.18);
-    box-shadow:
-      0 0 120px rgb(126 103 255 / 0.14),
-      inset 0 0 80px rgb(126 103 255 / 0.06);
+  .hero-inner {
+    position: relative;
+    z-index: 1;
+    width: min(100%, 90rem);
+    margin-inline: auto;
+    padding: 8rem clamp(1.25rem, 4vw, 4rem) 6rem;
   }
 
-  :root:not(.dark) .hero-ambient-two {
-    border-color: rgb(37 99 235 / 0.14);
-    box-shadow: 0 0 100px rgb(80 143 255 / 0.1);
+  .hero-layout {
+    display: grid;
+    align-items: center;
+    gap: 3.5rem;
   }
 
-  :root:not(.dark) .hero-art-frame {
-    border-color: rgb(79 70 229 / 0.24);
-    background: radial-gradient(circle at 50% 50%, rgb(138 117 255 / 0.14), transparent 41%), rgb(255 255 255 / 0.56);
-    box-shadow:
-      inset 0 0 80px rgb(79 70 229 / 0.08),
-      0 28px 90px rgb(43 39 95 / 0.14);
+  .hero-copy {
+    position: relative;
+    z-index: 2;
+    min-width: 0;
   }
 
-  :root:not(.dark) .hero-art-frame::after {
-    background: radial-gradient(
-      circle at calc(var(--hero-glow-x) * 1%) calc(var(--hero-glow-y) * 1%),
-      rgb(99 91 255 / 0.14),
-      transparent 30%
-    );
+  /* El LCP permanece visible sin depender de la inicialización del movimiento. */
+  .hero-title {
+    margin: 0;
+    font-family: var(--font-boska), Georgia, serif;
+    font-size: clamp(4rem, 15vw, 12.5rem);
+    font-weight: 500;
+    line-height: 0.82;
+    letter-spacing: -0.03em;
+    text-transform: none;
+    opacity: 1;
+    animation: none;
+    filter: none;
+    transform: none;
   }
 
-  :root:not(.dark) .hero-art-grid {
-    background-image:
-      linear-gradient(rgb(79 70 229 / 0.12) 1px, transparent 1px),
-      linear-gradient(90deg, rgb(79 70 229 / 0.12) 1px, transparent 1px);
-    opacity: 0.28;
+  .hero-title-accent {
+    color: var(--hero-accent);
+    text-shadow:
+      -1px 0 rgb(235 72 55 / 0.45),
+      1px 0 rgb(77 204 214 / 0.45);
   }
 
-  :root:not(.dark) .hero-portrait-shell {
-    border-color: rgb(79 70 229 / 0.38);
-    background: linear-gradient(135deg, rgb(255 255 255 / 0.86), rgb(199 183 255 / 0.38));
-    box-shadow:
-      0 0 0 12px rgb(99 91 255 / 0.06),
-      0 0 90px rgb(99 91 255 / 0.18);
+  .hero-role,
+  .hero-meta,
+  .hero-actions,
+  .hero-scroll-cue {
+    font-family: var(--font-switzer), system-ui, sans-serif;
   }
 
-  :root:not(.dark) .hero-orbit {
-    border-color: rgb(79 70 229 / 0.28);
+  .hero-role {
+    margin-top: 2rem;
+    color: var(--hero-muted);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    line-height: 1.7;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
   }
 
-  :root:not(.dark) .hero-orbit-two {
-    border-color: rgb(37 99 235 / 0.24);
+  .hero-lede {
+    max-width: 52ch;
+    margin-top: 1.5rem;
+    font-size: clamp(1rem, 1.3vw, 1.3125rem);
+    line-height: 1.6;
+  }
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1.75rem;
+    margin-top: 2rem;
+  }
+  .hero-btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    min-height: 2.75rem;
+    padding: 0.75rem 1.5rem;
+    border: 1px solid var(--hero-btn-border);
+    border-radius: 2px;
+    background: var(--hero-btn-bg);
+    color: var(--hero-btn-color);
+    font-size: 0.875rem;
+    font-weight: 600;
+    --magnet-x: 0px;
+    --magnet-y: 0px;
+    translate: var(--magnet-x) var(--magnet-y);
+    transition: background-color 180ms ease;
+  }
+  .hero-btn-primary:hover {
+    background: var(--hero-btn-bg-hover);
+  }
+  .hero-cv-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 2.75rem;
+    font-size: 0.875rem;
+    text-decoration: underline;
+    text-underline-offset: 0.3em;
+  }
+  .hero-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin: 1.5rem 0 0;
+    padding: 0;
+    color: var(--hero-faint);
+    font-size: 0.8125rem;
+    list-style: none;
+  }
+  .hero-meta-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .hero-meta-pulse {
+    width: 0.375rem;
+    height: 0.375rem;
+    border-radius: 50%;
+    background: var(--hero-accent-strong);
+  }
+  .hero-meta-item::before {
+    margin-right: 1rem;
+    content: "/";
   }
 
-  :root:not(.dark) .hero-orbit-dot {
-    background: var(--hero-accent);
-    box-shadow:
-      0 0 0 4px rgb(91 82 214 / 0.14),
-      0 0 18px rgb(91 82 214 / 0.48);
+  .hero-art {
+    position: relative;
+    z-index: 1;
+    width: min(70vw, 26rem);
+    justify-self: center;
+  }
+  .hero-art-frame {
+    position: relative;
+    aspect-ratio: 4 / 5;
+    --hero-tilt-x: 0deg;
+    --hero-tilt-y: 0deg;
+    --hero-glow-x: 50;
+    --hero-glow-y: 50;
+    transform: perspective(1200px) rotateX(var(--hero-tilt-y)) rotateY(var(--hero-tilt-x));
+    transition: transform 650ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .hero-portrait-shell {
+    position: absolute;
+    inset: 0;
+    border-right: 1px solid hsl(var(--signal) / 0.7);
+  }
+  .hero-portrait {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(1) contrast(1.08);
+  }
+  .hero-portrait-shell::after {
+    position: absolute;
+    inset: 0;
+    box-shadow: inset -12px 0 20px -18px hsl(var(--signal) / 0.8);
+    pointer-events: none;
+    content: "";
+  }
+  .hero-art-crosshair {
+    position: absolute;
+    z-index: 2;
+    top: -0.75rem;
+    right: -0.75rem;
+    width: 1.5rem;
+    height: 1.5rem;
+    border-top: 1px solid hsl(var(--signal));
+    border-right: 1px solid hsl(var(--signal));
+    opacity: 0.35;
+  }
+  .hero-orbit {
+    position: absolute;
+    z-index: -1;
+    inset: 12% -8%;
+    border: 1px solid hsl(var(--signal) / 0.2);
+    border-radius: 50%;
+    transform: rotate(-28deg);
   }
 
-  :root:not(.dark) .hero-orbit-dot-two {
-    background: #2563eb;
-    box-shadow:
-      0 0 0 4px rgb(37 99 235 / 0.12),
-      0 0 18px rgb(37 99 235 / 0.42);
+  /* El handoff solo modifica las superficies, nunca el título del LCP. */
+  .hero-art-frame,
+  .hero-actions,
+  .hero-meta {
+    --hero-exit-y: 0rem;
+    --hero-exit-opacity: 1;
+    translate: 0 var(--hero-exit-y);
+    opacity: var(--hero-exit-opacity);
+  }
+  .hero-scroll-cue {
+    position: absolute;
+    z-index: 2;
+    bottom: 1.5rem;
+    left: 50%;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    color: var(--hero-faint);
+    font-size: 0.6875rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    translate: -50% 0;
   }
 
-  .hero-ambient-one {
-    border: 1px solid rgb(199 183 255 / 0.13);
-    box-shadow:
-      0 0 120px rgb(126 103 255 / 0.18),
-      inset 0 0 80px rgb(126 103 255 / 0.08);
-    animation: ambient-drift 18s ease-in-out infinite;
-  }
-
-  .hero-ambient-two {
-    border: 1px solid rgb(112 183 255 / 0.1);
-    box-shadow: 0 0 100px rgb(80 143 255 / 0.12);
-    animation: ambient-drift 23s ease-in-out infinite reverse;
-  }
-
-  @keyframes ambient-drift {
-    0%,
-    100% {
-      transform: translate3d(0, 0, 0) scale(1);
-    }
-    50% {
-      transform: translate3d(0, 18px, 0) scale(1.06);
-    }
-  }
-
-  .hero-kicker,
   .section-heading-meta,
   .project-eyebrow,
   .project-media-kicker,
@@ -201,183 +303,30 @@
     letter-spacing: 0.12em;
   }
 
-  .hero-title-accent {
-    background: linear-gradient(100deg, var(--hero-ink) 12%, var(--hero-accent) 78%, #8873e8 100%);
-  }
-
-  :root:not(.dark) .hero-title-accent {
-    background-image: linear-gradient(100deg, var(--hero-ink) 12%, #3730a3 78%, #312e81 100%);
-  }
-
-  .hero-meta-item::before {
-    margin-right: 0.65rem;
-    color: var(--hero-line);
-    content: "/";
-  }
-
-  .hero-art-frame {
-    border: 1px solid rgb(217 220 255 / 0.16);
-    background: radial-gradient(circle at 50% 50%, rgb(138 117 255 / 0.14), transparent 41%), rgb(255 255 255 / 0.025);
-    box-shadow:
-      inset 0 0 80px rgb(0 0 0 / 0.2),
-      0 28px 90px rgb(2 5 25 / 0.24);
-    --hero-tilt-x: 0deg;
-    --hero-tilt-y: 0deg;
-    --hero-glow-x: 50;
-    --hero-glow-y: 50;
-    transform: perspective(1200px) rotateX(var(--hero-tilt-y)) rotateY(var(--hero-tilt-x));
-    transform-style: preserve-3d;
-    transition: transform 650ms cubic-bezier(0.16, 1, 0.3, 1);
-  }
-
-  .hero-art-frame::after {
-    position: absolute;
-    inset: 0;
-    z-index: 1;
-    background: radial-gradient(
-      circle at calc(var(--hero-glow-x) * 1%) calc(var(--hero-glow-y) * 1%),
-      rgb(199 183 255 / 0.16),
-      transparent 30%
-    );
-    content: "";
-    opacity: 0.8;
-    pointer-events: none;
-  }
-
-  .hero-art-grid {
-    position: absolute;
-    inset: 0;
-    z-index: 0;
-    background-image:
-      linear-gradient(rgb(255 255 255 / 0.08) 1px, transparent 1px),
-      linear-gradient(90deg, rgb(255 255 255 / 0.08) 1px, transparent 1px);
-    background-size: 38px 38px;
-    mask-image: radial-gradient(circle at center, black, transparent 72%);
-    opacity: 0.32;
-  }
-
-  .hero-portrait-shell {
-    border: 1px solid rgb(255 255 255 / 0.55);
-    background: linear-gradient(135deg, rgb(255 255 255 / 0.24), rgb(199 183 255 / 0.08));
-    box-shadow:
-      0 0 0 12px rgb(199 183 255 / 0.035),
-      0 0 90px rgb(155 130 255 / 0.33);
-  }
-
-  .hero-orbit {
-    border: 1px solid rgb(199 183 255 / 0.28);
-    transform: rotate(-28deg);
-    animation: hero-orbit 15s linear infinite;
-  }
-
-  .hero-orbit-two {
-    border-color: rgb(135 191 255 / 0.2);
-    transform: rotate(36deg);
-    animation-duration: 21s;
-    animation-direction: reverse;
-  }
-
-  .hero-orbit-dot {
-    background: var(--hero-accent);
-    box-shadow:
-      0 0 0 4px rgb(199 183 255 / 0.15),
-      0 0 18px rgb(199 183 255 / 0.8);
-  }
-
-  .hero-orbit-dot-two {
-    background: #8bbcff;
-    box-shadow:
-      0 0 0 4px rgb(139 188 255 / 0.13),
-      0 0 18px rgb(139 188 255 / 0.8);
-  }
-
-  .hero-reveal {
-    opacity: 1;
-    animation: hero-reveal 800ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
-  }
-
-  /* The heading is the LCP candidate: never hide or blur it behind enhancement motion. */
-  .hero-title.hero-reveal {
-    opacity: 1;
-    animation: none;
-    filter: none;
-    transform: none;
-  }
-
-  /* En mobile el lede puede ser el LCP: revelarlo sin opacidad mantiene la pintura temprana. */
-  .hero-lede.hero-reveal {
-    opacity: 1;
-    animation-name: hero-reveal-lede;
-  }
-
-  /* El handoff escribe estas variables; translate/opacity independientes no
-     pisan el transform de entrada ni el tilt del frame. */
-  .hero-art-frame,
-  .hero-actions,
-  .hero-meta {
-    --hero-exit-y: 0rem;
-    --hero-exit-opacity: 1;
-    translate: 0 var(--hero-exit-y);
-    opacity: var(--hero-exit-opacity);
-  }
-
-  /* El magnetismo usa variables con unidad para que GSAP conserve el px. */
-  .hero-btn-primary {
-    --magnet-x: 0px;
-    --magnet-y: 0px;
-    --hero-btn-hover-lift: 0px;
-    translate: var(--magnet-x) calc(var(--magnet-y) - var(--hero-btn-hover-lift));
-  }
-
-  .hero-btn-primary:hover {
-    --hero-btn-hover-lift: 1px;
-  }
-
-  .hero-reveal-1 {
-    animation-delay: 60ms;
-  }
-  .hero-reveal-2 {
-    animation-delay: 130ms;
-  }
-  .hero-reveal-3 {
-    animation-delay: 210ms;
-  }
-  .hero-reveal-4 {
-    animation-delay: 300ms;
-  }
-  .hero-reveal-5 {
-    animation-delay: 390ms;
-  }
-  .hero-reveal-6 {
-    animation-delay: 500ms;
-  }
-
-  @keyframes hero-reveal {
-    from {
-      opacity: 0;
-      transform: translateY(1rem);
+  @media (min-width: 768px) {
+    .hero-gradient {
+      min-height: 100svh;
     }
-    to {
-      opacity: 1;
-      transform: translateY(0);
+    .hero-inner {
+      display: grid;
+      align-items: center;
+      min-height: 100svh;
+    }
+    .hero-layout {
+      grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+      gap: 2rem;
+    }
+    .hero-art {
+      width: 100%;
+      max-width: 26rem;
+      justify-self: end;
     }
   }
 
-  @keyframes hero-reveal-lede {
-    from {
-      transform: translateY(1rem);
-    }
-    to {
-      transform: translateY(0);
-    }
-  }
-
-  @keyframes hero-orbit {
-    from {
-      transform: rotate(-28deg) rotate(0deg);
-    }
-    to {
-      transform: rotate(-28deg) rotate(360deg);
+  @media (prefers-reduced-motion: reduce) {
+    .hero-art-frame,
+    .hero-btn-primary {
+      transition: none;
     }
   }
 }

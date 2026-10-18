@@ -17,6 +17,8 @@
     "cta": "Hablemos"
   },
   "hero": {
+    "role": "Desarrollador Full-Stack",
+    "scroll": "Desplazar",
     "greeting": "Hola, soy",
     "roleLocation": "Chile / Remoto",
     "specialization": "Web en producción · ML aplicado",

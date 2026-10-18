@@ -46,7 +46,7 @@ const isCurrentRoute = (url: string) => {
 // `scrolled:`/`dark:` below win over either branch by specificity, so only one is ever needed.
 const navSurfaceClass = home
   ? "bg-nav-glass shadow-nav-home dark:unscrolled:border-nav-glass-border-dark dark:unscrolled:bg-nav-glass-dark dark:unscrolled:text-nav-glass-text-dark"
-  : "bg-card/84 shadow-nav"
+  : "bg-nav-glass shadow-nav"
 ---
 
 <header class="site-header pointer-events-none fixed inset-x-0 top-0 z-50" data-home={home ? "true" : "false"}>
@@ -56,8 +56,8 @@ const navSurfaceClass = home
       class:list={[
         "site-nav pointer-events-auto mx-auto flex min-h-14 items-center justify-between gap-3 border border-border/85 px-3 py-2 text-sm font-medium text-foreground transition-all duration-300",
         "mt-2 rounded-[0.85rem] backdrop-blur-lg backdrop-saturate-[1.35] sm:mt-3 sm:rounded-2xl sm:px-4",
-        "scrolled:border-border scrolled:bg-card/90 scrolled:shadow-nav-scrolled",
-        "dark:border-border/90 dark:bg-card/90 dark:shadow-nav-dark",
+        "scrolled:border-border scrolled:shadow-nav-scrolled",
+        "dark:border-border/90 dark:bg-nav-glass-dark dark:shadow-nav-dark",
         "dark-scrolled:border-border/90 dark-scrolled:shadow-nav-dark",
         navSurfaceClass,
         // `group` scopes the toggles' dark-mode override to home navs, matching the original ancestor selector.
@@ -70,7 +70,7 @@ const navSurfaceClass = home
         aria-label={t.nav.brandHome}
       >
         <span
-          class="brand-mark inline-flex size-[1.9rem] items-center justify-center rounded-[0.55rem] border border-current font-code text-[0.66rem] font-semibold tracking-[-0.08em]"
+          class="brand-mark inline-flex size-[1.9rem] items-center justify-center rounded-[0.55rem] border border-current font-text text-[0.66rem] font-semibold tracking-[-0.08em]"
           aria-hidden="true">SB</span
         >
         <span class="hidden whitespace-nowrap sm:inline"
@@ -97,7 +97,7 @@ const navSurfaceClass = home
       <div class="flex items-center gap-1.5 sm:gap-2">
         <a
           href={contactUrl}
-          class="header-cta hidden items-center gap-2 rounded-lg bg-primary px-3 py-2 text-xs font-semibold text-primary-foreground focus-ring transition hover:-translate-y-px hover:shadow-header-cta-hover sm:inline-flex"
+          class="header-cta hidden items-center gap-2 rounded-lg bg-header-cta px-3 py-2 text-xs font-semibold text-header-cta-ink focus-ring transition hover:-translate-y-px hover:shadow-header-cta-hover sm:inline-flex"
         >
           <span class="header-cta-dot size-[0.38rem] rounded-full bg-current shadow-header-cta-dot" aria-hidden="true"
           ></span>

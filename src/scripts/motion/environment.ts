@@ -16,7 +16,14 @@ type NavigatorWithHints = Navigator & {
   deviceMemory?: number
 }
 
-export function shouldLoadWebGLEnhancement(connection?: MotionConnection, deviceMemory?: number): boolean {
+export function shouldLoadWebGLEnhancement(
+  connection?: MotionConnection,
+  deviceMemory?: number,
+  maxTouchPoints = 0,
+): boolean {
+  // El canvas 3D sigue al puntero; en táctil queda el fallback CSS y no se descarga Three.js.
+  if (maxTouchPoints > 0) return false
+
   if (connection?.saveData || connection?.effectiveType === "slow-2g" || connection?.effectiveType === "2g") {
     return false
   }
@@ -26,7 +33,7 @@ export function shouldLoadWebGLEnhancement(connection?: MotionConnection, device
 
 export function canLoadWebGLEnhancement(): boolean {
   const { connection, deviceMemory } = navigator as NavigatorWithHints
-  return shouldLoadWebGLEnhancement(connection, deviceMemory)
+  return shouldLoadWebGLEnhancement(connection, deviceMemory, navigator.maxTouchPoints)
 }
 
 export function readMotionPreference(view: Pick<Window, "matchMedia">): MotionPreference {

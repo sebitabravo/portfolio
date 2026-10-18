@@ -1,5 +1,7 @@
 ---
+// Credenciales como sellos certificados: el anillo gira y el centro muestra la sigla.
 import ArrowUpRight from "@/components/icons/ArrowUpRight.astro"
+import RoundSeal from "@/components/RoundSeal.astro"
 import { getCertifications } from "@/lib/data"
 import { getTranslations, type Locale } from "@/lib/i18n"
 
@@ -12,24 +14,32 @@ const t = getTranslations(locale)
 const certifications = [...getCertifications(locale)].sort((a, b) => a.order - b.order)
 ---
 
-<ul class="grid grid-cols-1 gap-x-12 gap-y-10 font-text md:grid-cols-2">
+<ul class="cert-grid">
   {
-    certifications.map((cert) => (
-      <li class="flex flex-col items-start gap-2">
-        <p class="cert-category text-xs text-muted-foreground">{t.certifications[cert.category]}</p>
-        <h3 class="text-base leading-snug font-semibold">{cert.name}</h3>
-        <p class="text-xs text-muted-foreground">{cert.organization}</p>
-        {cert.pdfUrl && (
-          <a
-            href={cert.pdfUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="mt-2 inline-flex min-h-11 items-center gap-2 text-xs text-signal underline underline-offset-4 focus-ring"
-          >
+    certifications.map((cert, index) => (
+      <li class="cert-item" style={`--seal-tone: var(--r${(index % 6) + 1})`}>
+        <a
+          href={cert.pdfUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="cert-link focus-ring"
+          aria-label={`${t.certifications.viewCertificate}: ${cert.name}`}
+        >
+          <span class="cert-seal">
+            <RoundSeal
+              text={`${cert.organization} · ${t.certifications[cert.category]} · `}
+              center={cert.monogram}
+              size={128}
+            />
+          </span>
+          <span class="cert-category mono-label">{t.certifications[cert.category]}</span>
+          <h3 class="cert-name">{cert.name}</h3>
+          <span class="cert-org">{cert.organization}</span>
+          <span class="cert-view mono-label">
             {t.certifications.viewCertificate}
-            <ArrowUpRight class="size-4 shrink-0" />
-          </a>
-        )}
+            <ArrowUpRight class="size-3.5 shrink-0" />
+          </span>
+        </a>
       </li>
     ))
   }

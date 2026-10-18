@@ -1,11 +1,10 @@
 ---
 import ArrowUpRight from "@/components/icons/ArrowUpRight.astro"
-import { Picture } from "astro:assets"
-import { getProjects, type Project } from "@/lib/data"
-import { getProjectScreenshot } from "@/lib/portfolio-images"
+import GitHubIcon from "@/components/icons/GitHub.astro"
+import ProjectTile from "@/components/ProjectTile.astro"
+import { getProjects } from "@/lib/data"
 import { getTranslations, type Locale } from "@/lib/i18n"
 import { homeSectionFragment } from "@/lib/home-sections"
-import { articleTitleTransitionName } from "@/scripts/transitions"
 
 interface Props {
   locale?: Locale
@@ -17,146 +16,49 @@ const contactUrl = homeSectionFragment(locale, "contact")
 const projects = getProjects(locale)
   .slice()
   .sort((projectA, projectB) => projectA.order - projectB.order)
-
-const statusLabels: Record<Project["status"], string> = {
-  production: t.projects.statusProduction,
-  development: t.projects.statusDevelopment,
-  demo: t.projects.statusDemo,
-}
-
-const actionBase = "project-action focus-ring inline-flex min-h-11 items-center gap-2 text-xs underline underline-offset-4 transition-colors hover:text-primary"
-const actionSecondary = `${actionBase} text-muted-foreground`
-const actionPrimary = `${actionBase} text-primary`
+const archiveNumber = String(projects.length + 1).padStart(2, "0")
 ---
 
 <div class="projects-shell">
-  <div
-    class="project-outcomes mb-12 grid items-start gap-6 md:grid-cols-2 md:gap-12"
-    data-project-outcomes
-    aria-labelledby={`project-outcomes-title-${locale}`}
-  >
-    <h3 id={`project-outcomes-title-${locale}`} class="project-outcomes-title max-w-[24ch] text-3xl leading-[1.05] tracking-[-0.03em] text-foreground">{t.projects.outcomesTitle}</h3>
-    <ul class="project-outcomes-list m-0 grid list-none gap-4 p-0 text-base leading-relaxed text-muted-foreground">
-      {t.projects.outcomes.map((outcome: string) => (
-        <li>{outcome}</li>
-      ))}
+  <div class="project-outcomes" data-project-outcomes aria-labelledby={`project-outcomes-title-${locale}`}>
+    <h3 id={`project-outcomes-title-${locale}`} class="project-outcomes-title mono-label">{t.projects.outcomesTitle}</h3>
+    <ul class="project-outcomes-list">
+      {
+        t.projects.stats.map((stat) => (
+          <li class="project-stat">
+            <strong class="project-stat-value" data-count-to={stat.value}>{stat.value}</strong>
+            <span class="project-stat-label">{stat.label}</span>
+          </li>
+        ))
+      }
     </ul>
   </div>
 
-  <div class="project-grid grid grid-cols-1 gap-x-8 gap-y-12 md:grid-cols-2 md:gap-x-12" data-projects-list>
-    {projects.map(({ slug, title, description, tags, liveUrl, githubUrl, featured, status, metrics, blogSlug }, i) => {
-      const statusLabel = status ? statusLabels[status] : undefined
-      const publicStatusLabel = !liveUrl && githubUrl ? t.projects.statusCodeAvailable : statusLabel
-      const screenshot = getProjectScreenshot(slug)
-      const resolvedBlogSlug = blogSlug || slug
-      const projectUrl = locale === "en" ? `/en/blog/${resolvedBlogSlug}` : `/blog/${resolvedBlogSlug}`
-      const visibleTags = tags.slice(0, 5)
-      const visualStats = metrics?.slice(0, 2) ?? []
+  <div class="project-grid" data-projects-list>
+    {projects.map((project, index) => <ProjectTile project={project} index={index} locale={locale} />)}
 
-      return (
-        <article
-          data-animate
-          data-animate-delay={String((i % 4) + 1)}
-          class:list={[
-            "project-card group relative flex min-w-0 flex-col",
-            { "project-card-featured md:col-span-2": featured },
-          ]}
-          data-project-card
-          data-project={slug}
-          data-project-tags={tags.join(",")}
-        >
-          <div class:list={[
-            "project-media relative isolate overflow-hidden bg-surface-raised",
-            featured ? "aspect-[8/5] md:aspect-[2/1]" : "aspect-[8/5]",
-          ]}>
-            <span class="project-media-name absolute inset-0 flex items-center justify-center p-8 text-center text-2xl leading-none tracking-[-0.03em] text-foreground" aria-hidden="true">{title}</span>
-            {screenshot && <Picture
-              src={screenshot}
-              formats={["avif"]}
-              fallbackFormat="webp"
-              widths={[800, 1600]}
-              quality={90}
-              width={800}
-              height={500}
-              sizes={featured ? "(max-width: 767px) 100vw, 1200px" : "(max-width: 767px) 100vw, 600px"}
-              alt={`${title} screenshot`}
-              class="project-image absolute inset-0 z-10 h-full w-full object-cover object-top transition-transform duration-700 ease-out group-hover:scale-[1.03] group-focus-within:scale-[1.03]"
-              loading="lazy"
-              decoding="async"
-              data-img-fallback
-            />}
-            <a href={projectUrl} class="project-media-link focus-ring absolute inset-0 z-20" aria-label={`${title} — ${t.projects.readMore}`}></a>
-          </div>
-
-          <div class="project-body flex min-w-0 flex-1 flex-col items-start gap-4 pt-6">
-            <h3
-              transition:name={articleTitleTransitionName(resolvedBlogSlug)}
-              class="project-title text-2xl leading-[1.05] tracking-[-0.03em] text-foreground transition-colors group-hover:text-primary group-focus-within:text-primary"
-            >
-              {title}
-            </h3>
-            <p class="project-status inline-flex items-center gap-2 text-xs text-muted-foreground">
-              <span class="size-1.5 shrink-0 rounded-full bg-signal" aria-hidden="true"></span>
-              {publicStatusLabel}
-            </p>
-            <p class="project-description max-w-[60ch] text-base leading-relaxed text-muted-foreground">{description}</p>
-
-            {visualStats.length > 0 && (
-              <div class="project-metrics flex flex-wrap gap-x-8 gap-y-4" aria-label={t.projects.evidenceLabel}>
-                {visualStats.map((metric) => (
-                  <div class="project-metric flex min-w-0 flex-col gap-1">
-                    <span>{metric.label}</span>
-                    <strong class="text-base font-medium text-primary">{metric.value}</strong>
-                  </div>
-                ))}
-              </div>
-            )}
-
-            <div class="project-tags flex flex-wrap gap-x-2 text-xs text-muted-foreground" aria-label={t.projects.technologiesLabel}>
-              {visibleTags.map((tag, index) => (
-                <>
-                  {index > 0 && <span aria-hidden="true">·</span>}
-                  <span>{tag}</span>
-                </>
-              ))}
-            </div>
-
-            <footer class="project-actions mt-auto flex flex-wrap gap-x-6 pt-2">
-              {githubUrl && (
-                <a href={githubUrl} target="_blank" rel="noopener noreferrer" data-track-project={slug} data-track-action="code" class={actionSecondary}>
-                  {t.projects.viewCode}<ArrowUpRight class="size-4 shrink-0" />
-                </a>
-              )}
-              {liveUrl && (
-                <a href={liveUrl} target="_blank" rel="noopener noreferrer" data-track-project={slug} data-track-action="live" class={actionSecondary}>
-                  {t.projects.viewProject}<ArrowUpRight class="size-4 shrink-0" />
-                </a>
-              )}
-              <a href={projectUrl} data-track-project={slug} data-track-action="casestudy" class={actionPrimary}>
-                {t.projects.readMore}<ArrowUpRight class="size-4 shrink-0" />
-              </a>
-            </footer>
-          </div>
-        </article>
-      )
-    })}
-  </div>
-
-  <div class="projects-contact-cta mt-12 flex flex-col items-start gap-x-6 gap-y-2 md:flex-row md:items-center">
-    <p class="text-base text-muted-foreground">{t.projects.contactPrompt}</p>
-    <a href={contactUrl} class={`projects-contact-link ${actionPrimary}`}>
-      <span>{t.projects.contactCta}</span><ArrowUpRight class="size-4 shrink-0" />
-    </a>
-  </div>
-
-  <div class="projects-endcap mt-6">
     <a
       href="https://github.com/sebitabravo?tab=repositories"
       target="_blank"
       rel="noopener noreferrer"
-      class={`projects-github-link ${actionSecondary}`}
+      class="project-archive projects-github-link focus-ring"
+      data-cursor-label="GitHub"
     >
-      {t.projects.viewMoreGithub}<ArrowUpRight class="size-4 shrink-0" />
+      <span class="project-archive-head mono-label">
+        <span class="section-index">[{archiveNumber}]</span>
+        <span>~/repos</span>
+      </span>
+      <span class="project-archive-icon" aria-hidden="true"><GitHubIcon class="size-10" /></span>
+      <span class="project-archive-title">{t.projects.archiveTitle}</span>
+      <span class="project-archive-text">{t.projects.archiveText}</span>
+      <span class="project-archive-cta">{t.projects.viewMoreGithub}<ArrowUpRight class="size-4 shrink-0" /></span>
+    </a>
+  </div>
+
+  <div class="projects-contact-cta">
+    <p>{t.projects.contactPrompt}</p>
+    <a href={contactUrl} class="projects-contact-link focus-ring">
+      <span>{t.projects.contactCta}</span><ArrowUpRight class="size-4 shrink-0" />
     </a>
   </div>
 </div>

@@ -1,13 +1,15 @@
 ---
-// Floating navigation: the home gets a theme-aware glass treatment, inner pages a surface fallback.
+// Barra del sistema: marca a rayas, navegación mono y acciones a la derecha.
 import { getTranslations, type Locale } from "@/lib/i18n"
 import { homeSectionFragment, homeSectionIds } from "@/lib/home-sections"
 import { social } from "@/lib/data"
+import BrandMark from "./BrandMark.astro"
 import ThemeToggle from "./ThemeToggle.astro"
 import LanguageToggle from "./LanguageToggle.astro"
 import DropdownMenu from "./ui/DropdownMenu.astro"
 import DownloadIcon from "./icons/Download.astro"
 import LinkedInIcon from "./icons/LinkedIn.astro"
+import ArrowUpRight from "./icons/ArrowUpRight.astro"
 
 interface Props {
   locale?: Locale
@@ -25,10 +27,10 @@ const contactUrl = `${homeUrl}${homeSectionFragment(locale, "contact")}`
 const cvHref = "/cv/Sebastian_Bravo_CV.pdf"
 
 const desktopNavItems = [
-  { title: t.nav.blog, label: "blog", url: `${prefix}/blog` },
   { title: t.nav.projects, label: ids.projects, url: `${homeUrl}${homeSectionFragment(locale, "projects")}` },
   { title: t.nav.experience, label: ids.experience, url: `${homeUrl}${homeSectionFragment(locale, "experience")}` },
   { title: t.nav.formation, label: ids.education, url: `${homeUrl}${homeSectionFragment(locale, "education")}` },
+  { title: t.nav.blog, label: "blog", url: `${prefix}/blog` },
 ]
 
 const mobileNavItems = [
@@ -42,52 +44,41 @@ const isCurrentRoute = (url: string) => {
   const routePath = url.replace(/\/$/, "") || "/"
   return routePath === currentPath
 }
-
-// `scrolled:`/`dark:` below win over either branch by specificity, so only one is ever needed.
-const navSurfaceClass = home
-  ? "bg-nav-glass shadow-nav-home dark:unscrolled:border-nav-glass-border-dark dark:unscrolled:bg-nav-glass-dark dark:unscrolled:text-nav-glass-text-dark"
-  : "bg-nav-glass shadow-nav"
 ---
 
-<header class="site-header pointer-events-none fixed inset-x-0 top-0 z-50" data-home={home ? "true" : "false"}>
-  <div class="mx-auto max-w-[1200px] px-3 sm:px-4">
+<header class="site-header fixed inset-x-0 top-0 z-50" data-home={home ? "true" : "false"}>
+  <div class="frame site-header-frame">
     <nav
       aria-label={t.nav.mainNavigation}
       class:list={[
-        "site-nav pointer-events-auto mx-auto flex min-h-14 items-center justify-between gap-3 border border-border/85 px-3 py-2 text-xs font-medium text-foreground transition-all duration-300",
-        "mt-2 rounded-[0.85rem] backdrop-blur-lg backdrop-saturate-[1.35] sm:mt-3 sm:rounded-2xl sm:px-4",
-        "scrolled:border-border scrolled:shadow-nav-scrolled",
-        "dark:border-border/90 dark:bg-nav-glass-dark dark:shadow-nav-dark",
-        "dark-scrolled:border-border/90 dark-scrolled:shadow-nav-dark",
-        navSurfaceClass,
-        // `group` scopes the toggles' dark-mode override to home navs, matching the original ancestor selector.
-        { "site-nav-home": home, group: home },
+        "site-nav flex min-h-14 items-center justify-between gap-3 px-3 text-xs text-foreground sm:px-5",
+        { "site-nav-home": home },
       ]}
     >
       <a
         href={homeUrl}
-        class="brand-mark-link inline-flex shrink-0 items-center gap-[0.55rem] tracking-[-0.02em] focus-ring"
+        class="brand-mark-link inline-flex shrink-0 items-center gap-2.5 focus-ring"
         aria-label={t.nav.brandHome}
       >
-        <span
-          class="brand-mark inline-flex size-[1.9rem] items-center justify-center font-text text-xs font-semibold tracking-[-0.08em]"
-          aria-hidden="true">SB</span
-        >
-        <span class="hidden whitespace-nowrap sm:inline"
-          >Sebastian <span class="brand-lastname text-inherit">Bravo</span></span
-        >
+        <BrandMark class="brand-mark h-[1.15rem] w-auto" />
+        <span class="brand-word hidden whitespace-nowrap sm:inline" aria-hidden="true">
+          Sebastian <em class="brand-lastname">Bravo</em>
+        </span>
       </a>
 
       <div class="desktop-nav relative hidden items-center gap-1 lg:flex" data-nav-list>
         <span class="nav-indicator" data-nav-indicator aria-hidden="true"></span>
         {
-          desktopNavItems.map((link) => (
+          desktopNavItems.map((link, index) => (
             <a
-              class="nav-link relative rounded-lg px-3 py-2 focus-ring transition-colors duration-200 hover:bg-muted"
+              class="nav-link relative px-3 py-2 focus-ring"
               data-section={link.label}
               href={link.url}
               aria-current={isCurrentRoute(link.url) ? "page" : undefined}
             >
+              <span class="nav-link-index" aria-hidden="true">
+                {String(index + 1).padStart(2, "0")}
+              </span>
               {link.title}
             </a>
           ))
@@ -96,19 +87,11 @@ const navSurfaceClass = home
 
       <div class="flex items-center gap-1.5 sm:gap-2">
         <a
-          href={contactUrl}
-          class="header-cta hidden items-center gap-2 rounded-lg border border-hairline bg-transparent px-3 py-2 text-xs font-semibold text-foreground focus-ring transition-colors hover:bg-muted sm:inline-flex"
-        >
-          <span class="header-cta-dot size-[0.38rem] rounded-full bg-current" aria-hidden="true"></span>
-          {t.nav.cta}
-        </a>
-
-        <a
           href={social.linkedin}
           target="_blank"
           rel="me noopener noreferrer"
           data-track-social="linkedin"
-          class="header-social hidden items-center gap-1.5 rounded-lg bg-card/45 px-2.5 py-2 text-xs font-semibold text-muted-foreground focus-ring transition hover:bg-primary/8 hover:text-primary xl:inline-flex"
+          class="header-social hidden items-center gap-1.5 px-2.5 py-2 focus-ring xl:inline-flex"
           aria-label={t.nav.linkedin}
         >
           <LinkedInIcon class="size-3.5" />
@@ -120,29 +103,33 @@ const navSurfaceClass = home
           target="_blank"
           rel="noopener noreferrer"
           data-track-cv={locale}
-          class="header-resume hidden items-center gap-1.5 rounded-lg bg-card/45 px-2.5 py-2 text-xs font-semibold text-muted-foreground focus-ring transition hover:bg-primary/8 hover:text-primary sm:inline-flex"
+          class="header-resume hidden items-center gap-1.5 px-2.5 py-2 focus-ring sm:inline-flex"
           aria-label={t.hero.downloadCv}
         >
           <DownloadIcon class="size-3.5" />
           <span>CV</span>
         </a>
 
-        <div class="flex items-center gap-0.5 border-l border-current/15 pl-1.5 sm:gap-1 sm:pl-2">
+        <div class="header-toggles flex items-center gap-0.5 sm:gap-1">
           <ThemeToggle locale={locale} />
           <LanguageToggle locale={locale} />
         </div>
 
+        <a href={contactUrl} class="header-cta btn btn-solid hidden focus-ring sm:inline-flex">
+          <span class="header-cta-dot status-dot" aria-hidden="true"></span>
+          {t.nav.cta}
+          <ArrowUpRight class="btn-arrow size-3.5" />
+        </a>
+
         <div class="lg:hidden">
           <DropdownMenu id={mobileMenuId} triggerLabel={t.nav.menu}>
-            <div class="flex min-w-52 flex-col gap-1 p-1">
+            <div class="flex min-w-56 flex-col gap-0.5 p-1">
               {
                 mobileNavItems.map((link) => (
                   <a
                     href={link.url}
-                    class="rounded-lg px-3 py-2.5 text-xs text-foreground/90 focus-ring transition-colors hover:bg-muted/70"
+                    class="mobile-nav-link px-3 py-2.5 focus-ring"
                     aria-current={isCurrentRoute(link.url) ? "page" : undefined}
-                    target={link.url === cvHref ? "_blank" : undefined}
-                    rel={link.url === cvHref ? "noopener noreferrer" : undefined}
                   >
                     {link.title}
                   </a>
@@ -153,7 +140,7 @@ const navSurfaceClass = home
                 target="_blank"
                 rel="me noopener noreferrer"
                 data-track-social="linkedin"
-                class="rounded-lg px-3 py-2.5 text-xs text-foreground/90 focus-ring transition-colors hover:bg-muted/70"
+                class="mobile-nav-link px-3 py-2.5 focus-ring"
               >
                 {t.nav.linkedin}
               </a>
@@ -162,7 +149,7 @@ const navSurfaceClass = home
                 target="_blank"
                 rel="noopener noreferrer"
                 data-track-cv={locale}
-                class="rounded-lg px-3 py-2.5 text-xs text-foreground/90 focus-ring transition-colors hover:bg-muted/70"
+                class="mobile-nav-link px-3 py-2.5 focus-ring"
               >
                 {t.hero.downloadCv}
               </a>

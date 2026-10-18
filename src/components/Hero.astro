@@ -1,91 +1,74 @@
 ---
-import ArrowUpRight from "@/components/icons/ArrowUpRight.astro"
 // El título permanece estático para proteger la pintura del LCP.
-import { Image } from "astro:assets"
-import { personalInfo } from "@/lib/data"
+import ArrowUpRight from "@/components/icons/ArrowUpRight.astro"
 import { getTranslations, type Locale } from "@/lib/i18n"
 import { homeSectionFragment } from "@/lib/home-sections"
-import profileImage from "@/assets/perfil.jpeg"
+import { personalInfo } from "@/lib/data"
+import HeroScreen from "./HeroScreen.astro"
 import MailIcon from "./icons/Mail.astro"
 
 interface Props {
   locale?: Locale
 }
 
-const { locale = 'es' } = Astro.props
+const { locale = "es" } = Astro.props
 const t = getTranslations(locale)
-const contactUrl = homeSectionFragment(locale, 'contact')
+const contactUrl = homeSectionFragment(locale, "contact")
 const heroTitleId = `hero-title-${locale}`
 ---
 
-<section
-  class="hero-gradient group relative isolate w-full overflow-hidden text-hero-ink"
-  aria-labelledby={heroTitleId}
-  data-portfolio-motion
->
-  <canvas class="hero-webgl" data-hero-webgl aria-hidden="true"></canvas>
-  <div class="hero-stage-glow bg-foreground" aria-hidden="true"></div>
-  <div class="hero-stage-grid" aria-hidden="true"></div>
-  <div class="hero-crt" aria-hidden="true"></div>
-  <div class="hero-inner">
+<section class="hero-gradient group relative isolate w-full text-hero-ink" aria-labelledby={heroTitleId} data-portfolio-motion>
+  <div class="frame hero-frame">
+    <p class="hero-topline mono-label">
+      <span class="section-index">[00]</span>
+      <span>{t.hero.kicker}</span>
+      <span class="section-head-rule" aria-hidden="true"></span>
+      <span class="hero-topline-time">{t.hero.localTime} · {t.hero.timezone}</span>
+    </p>
+
     <div class="hero-layout">
-      <div class="hero-copy">
-        <h1 id={heroTitleId} class="hero-title" aria-label="Sebastian Bravo">
-          <span class="hero-title-name block">Sebastian</span>
-          <span class="hero-title-name hero-title-accent block" data-text="Bravo">Bravo</span>
-        </h1>
+      <h1 id={heroTitleId} class="hero-title" aria-label="Sebastian Bravo">
+        <span class="hero-title-name block">Sebastian</span>
+        <span class="hero-title-name hero-title-accent block" data-text="Bravo">Bravo</span>
+      </h1>
+
+      <div class="hero-aside">
         <p class="hero-role hero-title-role">
           {t.hero.role}<span aria-hidden="true"> · </span>{t.hero.roleLocation}
         </p>
         <p class="hero-lede">{t.hero.intro}</p>
         <div class="hero-actions">
-          <a href={contactUrl} class="hero-btn-primary border-0 focus-ring" aria-label={t.hero.contact}>
+          <a href={contactUrl} class="hero-btn-primary btn btn-solid focus-ring" aria-label={t.hero.contact}>
             <MailIcon class="size-4" />
             <span>{t.hero.contact}</span>
-            <ArrowUpRight class="hero-btn-arrow size-4 shrink-0" />
+            <ArrowUpRight class="hero-btn-arrow btn-arrow size-4 shrink-0" />
           </a>
           <a
             href="/cv/Sebastian_Bravo_CV.pdf"
             target="_blank"
             rel="noopener noreferrer"
             data-track-cv={locale}
-            class="hero-cv-link focus-ring"
-          >{t.hero.downloadCv}<ArrowUpRight class="size-4 shrink-0" /></a>
+            class="hero-cv-link btn btn-ghost focus-ring"
+          >{t.hero.downloadCv}<ArrowUpRight class="btn-arrow size-4 shrink-0" /></a>
         </div>
         <ul class="hero-meta" aria-label={t.hero.metaLabel}>
           {personalInfo.available && (
-            <li class="hero-meta-status text-muted-foreground">
-              <span class="hero-meta-pulse" aria-hidden="true"></span>
+            <li class="hero-meta-status">
+              <span class="status-dot" aria-hidden="true"></span>
               {t.hero.available}
             </li>
           )}
           <li class="hero-meta-item">{t.hero.language}</li>
         </ul>
       </div>
-      <div class="hero-art" aria-hidden="true">
-        <div class="hero-art-frame">
-          <div class="hero-art-crosshair border-foreground/20"></div>
-          <div class="hero-orbit hero-orbit-one border-foreground/10"></div>
-          <div class="hero-portrait-shell">
-            <Image
-              src={profileImage}
-              alt=""
-              width={480}
-              height={600}
-              sizes="(max-width: 767px) 70vw, 32vw"
-              format="webp"
-              quality={90}
-              loading="eager"
-              fetchpriority="high"
-              decoding="sync"
-              class="hero-portrait"
-            />
-          </div>
-        </div>
+    </div>
+
+    <div class="hero-art">
+      <div class="hero-art-frame">
+        <HeroScreen locale={locale} />
       </div>
     </div>
   </div>
-  <div class="hero-scroll-cue" aria-hidden="true"><span>{t.hero.scroll}</span><span>↓</span></div>
 </section>
 
 <script is:inline>

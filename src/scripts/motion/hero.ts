@@ -4,7 +4,7 @@ import type { HeroCanvasElement, MotionContext, MotionGsap, MotionModule, Motion
 
 type Cleanup = () => void
 
-const HANDOFF_SELECTORS = [".hero-art-frame", ".hero-actions", ".hero-meta"] as const
+const HANDOFF_SELECTORS = [".hero-topline", ".hero-aside"] as const
 const CTA_SELECTOR = ".hero-btn-primary"
 const MAGNET_MAX_OFFSET = 7
 

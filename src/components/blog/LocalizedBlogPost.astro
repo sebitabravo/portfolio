@@ -48,6 +48,8 @@ const articleJsonLd = JSON.stringify({
 }).replace(/</g, "\\u003c")
 const homePath = isEnglish ? "/en" : "/"
 const blogPath = isEnglish ? "/en/blog" : "/blog"
+// Lectura estimada a 220 palabras por minuto sobre el MDX crudo.
+const readingMinutes = Math.max(1, Math.round((post.body ?? "").split(/\s+/).filter(Boolean).length / 220))
 ---
 
 <Layout
@@ -58,73 +60,82 @@ const blogPath = isEnglish ? "/en/blog" : "/blog"
   canonicalUrl={canonicalUrl}
   alternates={alternates}
 >
-  <main id="main-content" class="mx-auto max-w-[900px] px-4 pt-24 pb-12 sm:pb-16 md:pt-28 lg:pb-20">
-    <nav class="mb-8" aria-label={t.nav.breadcrumb}>
-      <ol class="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+  <main id="main-content" class="blog-post frame">
+    <nav class="blog-post-breadcrumb" aria-label={t.nav.breadcrumb}>
+      <ol class="mono-label flex flex-wrap items-center gap-2 text-muted-foreground">
         <li><a href={homePath} class="transition-colors hover:text-foreground">{t.nav.home}</a></li>
         <li aria-hidden="true">/</li>
         <li><a href={blogPath} class="transition-colors hover:text-foreground">{t.blog.title}</a></li>
         <li aria-hidden="true">/</li>
-        <li lang={isFallback ? "es" : undefined} class="font-medium text-foreground/80" aria-current="page">
+        <li lang={isFallback ? "es" : undefined} class="blog-post-crumb text-foreground" aria-current="page">
           {post.data.title}
         </li>
       </ol>
     </nav>
 
     <article lang={isEnglish ? (isFallback ? "es" : "en") : undefined}>
-      <header class="mb-10" data-animate>
+      <header class="blog-post-header" data-animate>
         {
           isEnglish && isFallback && (
-            <aside lang={locale} class="mb-6 text-base text-muted-foreground" role="note">
+            <aside lang={locale} class="blog-post-note mono-label" role="note">
               {t.blog.fallbackNotice}
             </aside>
           )
         }
-        <h1
-          transition:name={articleTitleTransitionName(post.id)}
-          class="mb-6 font-display text-3xl leading-[0.95] font-medium tracking-[-0.03em]"
-        >
+        <p class="blog-post-meta mono-label">
+          <span class="section-index">[{t.blog.kicker}]</span>
+          <time lang={locale} datetime={post.data.publishDate.toISOString()} class="text-muted-foreground">
+            {formatDate(post.data.publishDate, locale)}
+          </time>
+          <span aria-hidden="true">·</span>
+          <span lang={locale}>{readingMinutes} {t.blog.readingTime}</span>
+        </p>
+        <h1 transition:name={articleTitleTransitionName(post.id)} class="blog-post-title">
           {post.data.title}
         </h1>
-        <p class="max-w-[65ch] text-base leading-relaxed text-muted-foreground sm:text-lg">
+        <p class="blog-post-description">
           {post.data.description}
         </p>
-        <p class="mt-6 font-text text-xs text-muted-foreground">{post.data.tags.join(" · ")}</p>
-        <time
-          lang={locale}
-          datetime={post.data.publishDate.toISOString()}
-          class="mt-4 inline-block font-text text-xs text-muted-foreground"
-        >
-          {formatDate(post.data.publishDate, locale)}
-        </time>
+        <p class="blog-post-tags">{post.data.tags.map((tag) => <span class="chip">{tag}</span>)}</p>
       </header>
 
       {
         optimizedImageUrl && heroImage && (
-          <img
-            src={optimizedImageUrl}
-            alt={post.data.title}
-            width={heroImageWidth}
-            height={heroImageHeight}
-            loading="eager"
-            fetchpriority="high"
-            class="mb-12 aspect-video w-full object-cover"
-            data-animate
-          />
+          <figure class="blog-post-figure os-window" data-animate>
+            <span class="os-window-bar" aria-hidden="true">
+              <span class="os-window-lights">
+                <>
+                  <span />
+                  <span />
+                  <span />
+                </>
+              </span>
+              <span class="os-window-title">{post.id}.mdx</span>
+            </span>
+            <img
+              src={optimizedImageUrl}
+              alt={post.data.title}
+              width={heroImageWidth}
+              height={heroImageHeight}
+              loading="eager"
+              fetchpriority="high"
+              class="aspect-video w-full object-cover object-top"
+            />
+          </figure>
         )
       }
 
-      <div class="prose-custom">
+      <div class="prose-custom blog-post-body">
         <Content />
       </div>
     </article>
 
-    <footer class="mt-16 pt-8" data-animate>
+    <footer class="blog-post-footer" data-animate>
       <nav class="flex flex-wrap items-center justify-between gap-4" aria-label={t.blog.postNavigation}>
-        <a href={blogPath} class="text-xs text-primary hover:underline">
+        <a href={blogPath} class="btn btn-ghost focus-ring">
           {`← ${t.blog.back}`}
         </a>
-        <a href={homePath} class="text-xs text-muted-foreground transition-colors hover:text-foreground">
+        <a href={homePath} class="btn btn-solid focus-ring">
           {`${t.nav.home} →`}
         </a>
       </nav>
@@ -133,3 +144,86 @@ const blogPath = isEnglish ? "/en/blog" : "/blog"
 
   <script is:inline type="application/ld+json" set:html={articleJsonLd} />
 </Layout>
+
+<style>
+  .blog-post {
+    padding: 6.5rem clamp(1rem, 4vw, 3.5rem) clamp(4rem, 8vw, 7rem);
+  }
+
+  .blog-post-breadcrumb {
+    margin-bottom: clamp(2.5rem, 6vw, 4.5rem);
+  }
+
+  .blog-post-crumb {
+    max-width: 40ch;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .blog-post-header {
+    max-width: 62rem;
+    margin-bottom: clamp(2.5rem, 5vw, 4rem);
+  }
+
+  .blog-post-note {
+    margin: 0 0 1.5rem;
+    line-height: 1.6;
+    text-transform: none;
+    letter-spacing: 0.02em;
+  }
+
+  .blog-post-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 0.75rem;
+    margin: 0 0 1.5rem;
+  }
+
+  .blog-post-title {
+    margin: 0 0 1.5rem;
+    font-size: clamp(2.75rem, 6.5vw, 5.75rem);
+    line-height: 0.92;
+    letter-spacing: -0.03em;
+    text-wrap: balance;
+  }
+
+  .blog-post-description {
+    max-width: 60ch;
+    margin: 0 0 1.5rem;
+    color: hsl(var(--muted-foreground));
+    font-size: clamp(1.0625rem, 1.4vw, 1.25rem);
+    line-height: 1.55;
+  }
+
+  .blog-post-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin: 0;
+  }
+
+  .blog-post-figure {
+    max-width: 62rem;
+    margin: 0 0 clamp(3rem, 6vw, 4.5rem);
+  }
+
+  .blog-post-body {
+    max-width: 44rem;
+  }
+
+  .blog-post-footer {
+    max-width: 44rem;
+    margin-top: 4rem;
+    padding-top: 2rem;
+    border-top: 1px solid hsl(var(--border));
+  }
+
+  @media (min-width: 1100px) {
+    .blog-post-body,
+    .blog-post-footer {
+      margin-left: clamp(0rem, 8vw, 9rem);
+    }
+  }
+</style>

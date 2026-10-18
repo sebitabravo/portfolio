@@ -1,5 +1,6 @@
 ---
 import ArrowUpRight from "@/components/icons/ArrowUpRight.astro"
+import RoundSeal from "@/components/RoundSeal.astro"
 // Los enlaces directos evitan recopilar datos mediante un formulario.
 import { personalInfo, social } from "@/lib/data"
 import { getTranslations, type Locale } from "@/lib/i18n"
@@ -34,73 +35,81 @@ const contactLinks = [
 ]
 ---
 
-<div
-  data-story-wipe
-  class="contact-chapter grid min-h-[70svh] grid-cols-1 content-between items-start gap-12 md:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]"
->
-  <div class="space-y-6">
-    <h3
-      data-animate
-      class="font-display text-[clamp(2.75rem,8vw,5.375rem)] leading-[0.95] font-medium tracking-[-0.03em] italic"
-    >
-      {t.about.contactCta}
-    </h3>
-    <p data-animate class="flex items-center gap-3 text-base">
-      <span aria-hidden="true" class="size-2 rounded-full bg-inverted-accent"></span>
-      {t.hero.available}
-    </p>
-  </div>
-  <div class="grid w-full min-w-0 gap-10 md:gap-20 md:pt-20">
-    {
-      contactLinks.map(({ href, label, icon, description }, i) => (
-        <a
-          href={href}
-          data-animate
-          data-animate-delay={String(i + 1)}
-          target={icon !== "mail" ? "_blank" : undefined}
-          rel={icon !== "mail" ? "noopener noreferrer" : undefined}
-          class="group grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-3 py-3 focus-ring"
-        >
-          <span
-            class:list={[
-              "min-w-0 font-text font-semibold text-inverted-accent underline decoration-transparent underline-offset-8 transition-colors group-hover:decoration-current",
-              icon === "mail" ? "text-[clamp(1rem,2.4vw,1.75rem)] whitespace-nowrap" : "text-2xl md:text-3xl",
-            ]}
-          >
-            {label}
-          </span>
-          <ArrowUpRight class="row-span-2 size-6 shrink-0 text-inverted-accent md:size-8" />
-          <span class="text-base">{description}</span>
-        </a>
-      ))
-    }
+<div data-story-wipe class="contact-chapter">
+  <div class="contact-grid">
+    <div class="contact-hero">
+      <h3 class="contact-headline" data-animate>
+        {t.contact.headline}
+        <em>{t.contact.headlineAccent}</em>
+      </h3>
+      <p class="contact-status" data-animate>
+        <span class="status-dot" aria-hidden="true"></span>
+        {t.hero.available}
+      </p>
+      <div class="contact-seal" aria-hidden="true">
+        <RoundSeal text={t.contact.seal} center="SB" size={150} />
+      </div>
+    </div>
+
+    <div class="contact-links">
+      {
+        contactLinks.map(({ href, label, icon, description }, i) => (
+          <div class:list={["contact-row", `contact-row-${icon}`]} data-animate data-animate-delay={String(i + 1)}>
+            <a
+              href={href}
+              target={icon !== "mail" ? "_blank" : undefined}
+              rel={icon !== "mail" ? "noopener noreferrer" : undefined}
+              class="contact-link group focus-ring"
+            >
+              <span class="contact-link-label">{label}</span>
+              <ArrowUpRight class="contact-link-arrow" />
+              <span class="contact-link-description">{description}</span>
+            </a>
+            {icon === "mail" && (
+              <button
+                type="button"
+                class="contact-copy chip focus-ring"
+                data-copy-email={personalInfo.email}
+                data-label-copied={t.contact.copied}
+                hidden
+              >
+                {t.contact.copy}
+              </button>
+            )}
+          </div>
+        ))
+      }
+      <p class="contact-copy-status sr-only" data-copy-status aria-live="polite"></p>
+    </div>
   </div>
 
-  <div class="contact-resume-row flex flex-wrap items-center gap-x-4 gap-y-[0.8rem] pt-2 md:col-span-2">
+  <div class="contact-resume-row">
     <a
       href={cvHref}
       target="_blank"
       rel="noopener noreferrer"
       data-track-cv={locale}
-      class="contact-resume-action inline-flex min-h-11 w-fit items-center gap-2 text-base text-inverted-accent underline underline-offset-4 focus-ring"
+      class="contact-resume-action btn btn-solid focus-ring"
     >
       <span>{t.hero.downloadCv}</span>
-      <ArrowUpRight class="size-4 shrink-0" />
+      <ArrowUpRight class="btn-arrow size-4 shrink-0" />
     </a>
     <p>{t.contact.cvHelper}</p>
   </div>
+
+  <div class="contact-bezel" aria-hidden="true">
+    <span class="contact-bezel-knob"></span>
+    <span class="contact-bezel-slots"><span></span><span></span><span></span></span>
+    <span class="contact-bezel-plate">SB-2600</span>
+    <span class="contact-bezel-slots"><span></span><span></span><span></span></span>
+    <span class="contact-bezel-knob"></span>
+  </div>
 </div>
 
-<style>
-  .contact-resume-row p {
-    font-size: var(--text-xs);
-  }
+<script>
+  import { setupCopyEmail, teardownCopyEmail } from "@/scripts/copy-email"
 
-  .contact-chapter h3 {
-    color: inherit;
-  }
-
-  .contact-chapter :global(.focus-ring:focus-visible) {
-    outline-color: hsl(var(--inverted-accent));
-  }
-</style>
+  setupCopyEmail()
+  document.addEventListener("astro:page-load", () => setupCopyEmail())
+  document.addEventListener("astro:before-swap", teardownCopyEmail)
+</script>

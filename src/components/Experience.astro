@@ -14,16 +14,18 @@ const workExperience = getWorkExperience(locale)
 
 {
   workExperience.length > 0 ? (
-    <>
-      <p
-        class="experience-timeline-note mt-5 max-w-[60ch] text-lg leading-relaxed text-muted-foreground"
-        data-experience-timeline
-      >
-        {t.work.timeline}
+    <div class="experience-table">
+      <p class="experience-columns mono-label" aria-hidden="true">
+        <span />
+        <span>{t.work.period}</span>
+        <span>{t.work.role}</span>
+        <span>{t.work.company}</span>
+        <span>{t.work.mode}</span>
+        <span />
       </p>
-      <div class="relative mt-8">
+      <div class="relative">
         <span class="experience-progress" data-experience-progress aria-hidden="true" />
-        <ol class="relative pl-6" data-experience-list>
+        <ol class="experience-list" data-experience-list>
           {workExperience.map((experience, i) => (
             <li data-experience-item>
               <ExperienceItem {...experience} locale={locale} index={i} />
@@ -31,7 +33,13 @@ const workExperience = getWorkExperience(locale)
           ))}
         </ol>
       </div>
-    </>
+      <p class="experience-timeline-note mono-label" data-experience-timeline>
+        <span class="section-index" aria-hidden="true">
+          ↳
+        </span>
+        {t.work.timeline}
+      </p>
+    </div>
   ) : (
     <div class="mt-8 text-center text-foreground/80">
       <p>{t.work.noExperience}</p>

@@ -75,9 +75,10 @@ const jsonLdString = buildLayoutJsonLd({
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <ClientRouter />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <Font cssVariable="--font-jetbrains-mono" />
-    <Font cssVariable="--font-boska" />
-    <Font cssVariable="--font-switzer" />
+    <Font cssVariable="--font-instrument" />
+    <Font cssVariable="--font-geist" />
+    <Font cssVariable="--font-geist-mono" />
+    <Font cssVariable="--font-vt323" />
 
     {alternates.map(({ hreflang, href }) => (
       <link rel="alternate" hreflang={hreflang} href={href} />
@@ -170,8 +171,27 @@ const jsonLdString = buildLayoutJsonLd({
       })();
     </script>
 
+    {/* The boot intro must be armed before first paint; automation, touch,
+      reduced motion and repeat visits in the same session skip it. */}
+    {isHome && (
+      <script is:inline>
+        (function () {
+          try {
+            var forced = new URLSearchParams(location.search).has('boot');
+            if (!forced) {
+              if (navigator.webdriver) return;
+              if (sessionStorage.getItem('sb-os-booted') === '1') return;
+              if (!matchMedia('(min-width: 1024px) and (hover: hover) and (pointer: fine)').matches) return;
+              if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+            }
+            document.documentElement.classList.add('boot-armed');
+          } catch (error) {}
+        })();
+      </script>
+    )}
+
   </head>
-  <body class="bg-background text-foreground" data-page={isHome ? 'home' : 'inner'}>
+  <body class="grain bg-background text-foreground" data-page={isHome ? 'home' : 'inner'}>
     <a
       href="#main-content"
       class="absolute -top-full left-4 z-[100] px-4 py-2 rounded-lg bg-primary text-primary-foreground font-semibold text-sm transition-[top] duration-200 ease-[ease] focus:top-2 focus:outline-2 focus:outline-primary focus:outline-offset-2"

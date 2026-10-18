@@ -1,7 +1,8 @@
 ---
+// Formación en celdas de plano: una ficha técnica por etapa, sin párrafos largos.
 import { getEducation } from "@/lib/data"
 import { getTranslations, type Locale } from "@/lib/i18n"
-import { formatDate } from "@/lib/utils"
+import { formatPeriod } from "@/lib/utils"
 
 interface Props {
   locale?: Locale
@@ -12,32 +13,33 @@ const t = getTranslations(locale)
 const education = getEducation(locale)
 ---
 
-<div class="mt-8 flex flex-col gap-12">
+<div class="education-grid">
   {
     education.map(({ institution, degree, description, startDate, endDate, current, location, grade, skills }, i) => (
       <article data-animate data-animate-delay={String(i + 1)} class="education-row">
-        <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-          <div>
-            <h3 class="font-text text-2xl font-semibold text-foreground">{degree}</h3>
-            <p class="mt-0.5 text-xs text-caption-color">{institution}</p>
-          </div>
-          <div class="shrink-0 text-left text-xs text-caption-color sm:text-right">
-            <time>{formatDate(startDate, locale)}</time>
-            <span> — </span>
-            <time>{current ? t.education.present : endDate ? formatDate(endDate, locale) : ""}</time>
-            {location && <p class="mt-0.5">{location}</p>}
-            {grade && (
-              <p class="mt-0.5 font-medium text-muted-foreground">
-                {t.education.grade}: {grade}
-              </p>
-            )}
-          </div>
-        </div>
-
-        {description && <p class="mt-4 max-w-[65ch] text-base leading-[1.60] text-muted-foreground">{description}</p>}
-
+        <span class="frame-node frame-node-tl" aria-hidden="true" />
+        <span class="frame-node frame-node-tr" aria-hidden="true" />
+        <p class="education-meta mono-label">
+          <span class="section-index">[EDU-{String(i + 1).padStart(2, "0")}]</span>
+          <time>{formatPeriod(startDate, endDate, current, locale)}</time>
+        </p>
+        <h3 class="education-degree">{degree}</h3>
+        <p class="education-institution mono-label">
+          <span>{institution}</span>
+          {location && <span>· {location}</span>}
+          {grade && (
+            <span>
+              · {t.education.grade}: {grade}
+            </span>
+          )}
+        </p>
+        {description && <p class="education-copy">{description}</p>}
         {skills && skills.length > 0 && (
-          <p class="mt-4 font-text text-xs text-muted-foreground">{skills.join(" · ")}</p>
+          <p class="education-skills">
+            {skills.map((skill) => (
+              <span class="chip">{skill}</span>
+            ))}
+          </p>
         )}
       </article>
     ))

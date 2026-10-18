@@ -12,7 +12,9 @@ test.describe("Hero — mensaje y conversión", () => {
       const styles = getComputedStyle(element)
       return { textTransform: styles.textTransform, fontFamily: styles.fontFamily }
     })
-    expect(roleStyles.textTransform).toBe("none")
+    // El rol es la voz técnica del sistema: mono en mayúsculas, nunca la fuente de código anterior.
+    expect(roleStyles.textTransform).toBe("uppercase")
+    expect(roleStyles.fontFamily).toContain("Geist Mono")
     expect(roleStyles.fontFamily).not.toContain("JetBrains")
     await expect(hero.locator(".hero-lede")).toContainText("plataformas web en producción")
     await expect(hero.locator(".hero-proof")).toHaveCount(0)
@@ -32,7 +34,7 @@ test.describe("Hero — mensaje y conversión", () => {
     const outcomes = page.locator("[data-project-outcomes] li")
     await expect(outcomes).toHaveCount(3)
     await expect(outcomes.first()).toContainText("94.1%")
-    await expect(outcomes.last()).toContainText("2 demos públicas")
+    await expect(outcomes.last()).toContainText("Demos públicas en vivo")
 
     const linkedinBtn = page.locator("footer a[data-track-social='linkedin']")
     await expect(linkedinBtn).toBeVisible()
@@ -123,7 +125,7 @@ test.describe("Projects — screenshots con fallback", () => {
     await expect(page.locator('meta[property="og:image"]')).toHaveAttribute("content", /\/og\/es\.png/)
   })
 
-  test("failed optimized screenshots reveal the flat typographic fallback", async ({ page }) => {
+  test("failed optimized screenshots reveal the typographic fallback inside the window", async ({ page }) => {
     await page.goto("/")
     const card = page.locator('[data-project="vulcania"]')
     const image = card.locator(".project-image")
@@ -137,8 +139,8 @@ test.describe("Projects — screenshots con fallback", () => {
     await expect(image).toHaveCSS("display", "none")
     await expect(card.locator(".project-media-name")).toBeVisible()
     await expect(card.locator(".project-media-name")).toHaveText(await card.locator("h3").innerText())
-    await expect(card.locator(".project-media")).toHaveCSS("background-image", "none")
-    await expect(card.locator(".project-media")).toHaveCSS("background-color", "rgb(21, 21, 19)")
+    await expect(card.locator(".project-window")).toBeVisible()
+    await expect(card.locator(".project-shot")).toHaveCSS("background-color", "rgb(18, 18, 22)")
     await expect(card.locator(".project-media-link")).toHaveAttribute("href", /\/blog\//)
   })
 
@@ -148,14 +150,15 @@ test.describe("Projects — screenshots con fallback", () => {
     await expect(cards).toHaveCount(4)
   })
 
-  test("each exhibit uses a flat image stage without card chrome", async ({ page }) => {
+  test("each case sits on a tinted stage inside a window, without card chrome", async ({ page }) => {
     await page.goto("/")
     const cards = page.locator("[data-project-card]")
     await expect(cards).toHaveCount(4)
     for (const card of await cards.all()) {
       await card.scrollIntoViewIfNeeded()
       await expect(card.locator(".project-media")).toBeVisible()
-      await expect(card.locator(".project-media")).toHaveCSS("background-image", "none")
+      await expect(card.locator(".project-media")).toHaveCSS("background-image", /radial-gradient/)
+      await expect(card.locator(".project-window .os-window-bar")).toBeVisible()
       await expect(card).toHaveCSS("border-top-width", "0px")
       await expect(card).toHaveCSS("box-shadow", "none")
     }
@@ -185,6 +188,14 @@ test.describe("Experience — Astro-managed logos", () => {
   test("renders the three linked logos with generated local images in both locales", async ({ page }) => {
     for (const route of ["/", "/en/"]) {
       await page.goto(route)
+      // Las filas cerradas no renderizan su detalle: se abren para cargar los logos.
+      // El acordeón es exclusivo (details[name]); sin el grupo pueden quedar todas abiertas a la vez.
+      await page.locator("#experiencia details").evaluateAll((rows) =>
+        rows.forEach((row) => {
+          row.removeAttribute("name")
+          row.setAttribute("open", "")
+        }),
+      )
       const logos = page.locator(".experience-item a:has(img)")
       await expect(logos).toHaveCount(3)
       for (const logo of await logos.all()) {

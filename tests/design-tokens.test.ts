@@ -52,28 +52,28 @@ function contrast(foreground: string, background: string): number {
 describe("documented light-theme semantic palette", () => {
   it("assigns identity colors to their semantic roles", () => {
     for (const [name, color] of Object.entries({
-      background: "#f1eeea",
-      foreground: "#11100e",
-      card: "#f7f5f3",
-      "card-foreground": "#11100e",
-      popover: "#f7f5f3",
-      "popover-foreground": "#11100e",
-      primary: "#885a16",
-      "primary-foreground": "#f1eeea",
-      secondary: "#dbd8d1",
-      "secondary-foreground": "#11100e",
-      muted: "#e4e2dd",
-      "muted-foreground": "#5c5851",
-      accent: "#885a16",
-      "accent-foreground": "#f1eeea",
-      border: "#d5d2cd",
-      input: "#d5d2cd",
-      ring: "#885a16",
-      "surface-soft": "#e7e4de",
-      parchment: "#d5d2cd",
-      "warm-cream": "#e7e4de",
-      charcoal: "#11100e",
-      "caption-color": "#5c5851",
+      background: "#f2ece0",
+      foreground: "#17140f",
+      card: "#f7f3ea",
+      "card-foreground": "#17140f",
+      popover: "#f7f3ea",
+      "popover-foreground": "#17140f",
+      primary: "#a3127a",
+      "primary-foreground": "#f7f3ea",
+      secondary: "#ddd4c2",
+      "secondary-foreground": "#17140f",
+      muted: "#e6dfd1",
+      "muted-foreground": "#5a5246",
+      accent: "#a3127a",
+      "accent-foreground": "#f7f3ea",
+      border: "#d2c9b8",
+      input: "#d2c9b8",
+      ring: "#a3127a",
+      "surface-soft": "#e9e2d4",
+      parchment: "#d2c9b8",
+      "warm-cream": "#e9e2d4",
+      charcoal: "#17140f",
+      "caption-color": "#5a5246",
     })) {
       expect(hex(name), name).toBe(color);
     }
@@ -85,7 +85,7 @@ describe("documented light-theme semantic palette", () => {
     }
   });
 
-  it("keeps small interactive text on amber and text/surface pairs readable", () => {
+  it("keeps small interactive text on magenta and text/surface pairs readable", () => {
     const link = css.match(/\.link-inline\s*\{([^}]*)\}/)?.[1];
     expect(link?.match(/\bcolor:\s*hsl\(var\(--([\w-]+)\)\)/)?.[1]).toBe("primary");
     for (const [foreground, background] of [
@@ -102,22 +102,25 @@ describe("documented light-theme semantic palette", () => {
   });
 });
 
-describe("flat certification categories and retained theme tokens", () => {
+describe("certification seals and inverted chapter tokens", () => {
   const certifications = readFileSync("src/components/Certifications.astro", "utf8");
-  const themeInline = css.match(/@theme inline\s*\{([^}]*)\}/)?.[1] ?? "";
 
-  it("uses plain category text while retaining named theme utilities", () => {
+  it("labels each seal with plain mono category text instead of colored chips", () => {
     expect(certifications).not.toMatch(/hsl\(144/);
-    expect(certifications).toContain("cert-category text-xs text-muted-foreground");
+    expect(certifications).toContain('class="cert-category mono-label"');
     expect(certifications).not.toContain("bg-cert-pro-bg");
     expect(certifications).not.toContain("text-cert-pro-text");
-    expect(certifications).not.toContain("border-cert-pro-border");
-    expect(themeInline).toMatch(/--color-cert-pro-bg:\s*hsl\(var\(--cert-pro\) \/ 0\.12\);/);
-    expect(themeInline).toMatch(/--color-cert-pro-text:\s*hsl\(var\(--cert-pro-text\)\);/);
-    expect(themeInline).toMatch(/--color-cert-pro-border:\s*hsl\(var\(--cert-pro\) \/ 0\.25\);/);
     for (const palette of [lightPalette, darkPalette]) {
-      expect(token("cert-pro", palette)).toMatch(/^[\d.]+\s+[\d.]+%\s+[\d.]+%$/);
-      expect(token("cert-pro-text", palette)).toMatch(/^[\d.]+\s+[\d.]+%\s+[\d.]+%$/);
+      expect(palette).not.toMatch(/--cert-pro\s*:/);
+    }
+  });
+
+  it("inverts the contact chapter between paper and screen with readable accents", () => {
+    expect(hex("inverted-bg", lightPalette)).toBe("#0b0b0d");
+    expect(hex("inverted-bg", darkPalette)).toBe("#efe6d2");
+    for (const palette of [lightPalette, darkPalette]) {
+      expect(contrast(hex("inverted-ink", palette), hex("inverted-bg", palette))).toBeGreaterThanOrEqual(4.5);
+      expect(contrast(hex("inverted-accent", palette), hex("inverted-bg", palette))).toBeGreaterThanOrEqual(4.5);
     }
   });
 });
@@ -196,8 +199,8 @@ describe("Button semantic color utilities", () => {
 });
 
 describe("documented dark-theme semantic palette", () => {
-  it("renders dark primary as the documented amber", () => {
-    expect(hex("primary", darkPalette)).toBe("#e7a23c");
+  it("renders dark primary as the documented phosphor magenta", () => {
+    expect(hex("primary", darkPalette)).toBe("#ff4fd8");
   });
 
   it("keeps accent foreground WCAG AA readable on the dark accent surface", () => {
@@ -206,28 +209,28 @@ describe("documented dark-theme semantic palette", () => {
 
   it("assigns night canvas, surface, border, text, muted text and warm cream to their roles", () => {
     for (const [name, color] of Object.entries({
-      background: "#080807",
-      foreground: "#f2efe8",
-      card: "#151513",
-      "card-foreground": "#f2efe8",
-      popover: "#151513",
-      "popover-foreground": "#f2efe8",
-      primary: "#e7a23c",
-      "primary-foreground": "#0b0b09",
-      secondary: "#292823",
-      "secondary-foreground": "#f2efe8",
-      muted: "#1b1a18",
-      "muted-foreground": "#a29b90",
-      accent: "#e7a23c",
-      "accent-foreground": "#0b0b09",
-      border: "#292823",
-      input: "#292823",
-      ring: "#e7a23c",
-      "surface-soft": "#10100f",
-      parchment: "#292823",
-      "warm-cream": "#151513",
-      charcoal: "#f2efe8",
-      "caption-color": "#aea89e",
+      background: "#0b0b0d",
+      foreground: "#f3efe6",
+      card: "#141417",
+      "card-foreground": "#f3efe6",
+      popover: "#141417",
+      "popover-foreground": "#f3efe6",
+      primary: "#ff4fd8",
+      "primary-foreground": "#0b0b0d",
+      secondary: "#26262c",
+      "secondary-foreground": "#f3efe6",
+      muted: "#1c1c21",
+      "muted-foreground": "#a6a29a",
+      accent: "#ff4fd8",
+      "accent-foreground": "#0b0b0d",
+      border: "#26262c",
+      input: "#26262c",
+      ring: "#ff4fd8",
+      "surface-soft": "#101013",
+      parchment: "#26262c",
+      "warm-cream": "#101013",
+      charcoal: "#f3efe6",
+      "caption-color": "#a6a29a",
     })) {
       expect(hex(name, darkPalette), name).toBe(color);
     }

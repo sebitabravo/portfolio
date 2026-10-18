@@ -13,13 +13,17 @@ const { id, headingId, tone = "base", class: className, ...attributes } = Astro.
 
 <div
   class:list={[
-    "section-band relative isolate w-full px-4 py-[clamp(4.25rem,7vw,7rem)]",
+    "section-band relative isolate w-full",
     { "section-band-tinted bg-surface-soft": tone === "tinted", "section-band-inverted": tone === "inverted" },
     className,
   ]}
   data-section-band={tone}
 >
-  <SectionContainer id={id} headingId={headingId} {...attributes}>
-    <slot />
-  </SectionContainer>
+  <div class="frame section-frame">
+    <span class="frame-node frame-node-tl" aria-hidden="true"></span>
+    <span class="frame-node frame-node-tr" aria-hidden="true"></span>
+    <SectionContainer id={id} headingId={headingId} {...attributes}>
+      <slot />
+    </SectionContainer>
+  </div>
 </div>

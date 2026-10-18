@@ -6,64 +6,118 @@
 
 /* Alpha lives inside the glass tokens so computed colors stay plain rgba() instead of color-mix(). */
 @theme inline {
-  --color-header-cta: #e7a23c;
-  --color-header-cta-ink: #0b0b09;
-  --color-nav-glass: rgb(241 238 234 / 0.82);
-  --color-nav-glass-dark: rgb(8 8 7 / 0.78);
-  --color-nav-glass-border-dark: rgb(242 239 232 / 0.12);
-  --color-nav-glass-text-dark: rgb(242 239 232 / 0.95);
-  --shadow-nav: none;
-  --shadow-nav-home: none;
-  --shadow-nav-scrolled: none;
-  --shadow-nav-dark: none;
-  --shadow-header-cta-hover: 0 0 16px hsl(var(--primary) / 0.12);
-  --shadow-header-cta-dot: 0 0 0 3px hsl(var(--primary-foreground) / 0.18);
+  --color-nav-glass: rgb(242 236 224 / 0.84);
+  --color-nav-glass-dark: rgb(11 11 13 / 0.8);
+  --color-nav-glass-border-dark: rgb(243 239 230 / 0.1);
+  --color-nav-glass-text-dark: rgb(243 239 230 / 0.95);
 }
 
 @layer components {
+  .site-header {
+    border-bottom: 1px solid hsl(var(--border));
+    background-color: var(--color-nav-glass);
+    backdrop-filter: blur(14px) saturate(1.3);
+    -webkit-backdrop-filter: blur(14px) saturate(1.3);
+  }
+
+  .dark .site-header {
+    background-color: var(--color-nav-glass-dark);
+  }
+
   .site-nav {
-    font-family: var(--font-switzer), system-ui, sans-serif;
-    border-radius: 4px;
-    border-color: hsl(var(--hairline));
-    backdrop-filter: blur(16px);
+    font-family: var(--font-geist-mono), ui-monospace, monospace;
+    letter-spacing: 0.04em;
+    transition: min-height 300ms var(--ease-out-expo);
+  }
+
+  .site-nav .brand-word {
+    font-family: var(--font-instrument), Georgia, serif;
+    font-size: 1.3125rem;
+    letter-spacing: -0.01em;
+    line-height: 1;
+    text-transform: none;
+  }
+
+  .site-nav .brand-lastname {
+    font-style: italic;
+    color: inherit;
+  }
+
+  .site-nav .nav-link,
+  .site-nav .header-social,
+  .site-nav .header-resume {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    border-radius: 0.25rem;
+    font-size: var(--text-2xs);
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: hsl(var(--muted-foreground));
+    transition: color 200ms ease;
+  }
+
+  .site-nav .nav-link:hover,
+  .site-nav .nav-link.nav-active,
+  .site-nav .header-social:hover,
+  .site-nav .header-resume:hover {
+    color: hsl(var(--foreground));
+  }
+
+  .site-nav .nav-link-index {
+    color: hsl(var(--signal));
+    font-size: 0.625rem;
+  }
+
+  .site-nav .header-cta {
+    min-height: 2.375rem;
+    padding: 0.55rem 0.9rem;
+    font-size: var(--text-2xs);
+    letter-spacing: 0.08em;
+  }
+
+  .site-nav .header-cta-dot {
+    width: 0.375rem;
+    height: 0.375rem;
     box-shadow: none;
   }
 
-  .site-nav:not(.scrolled),
-  .site-nav.scrolled {
-    background-color: var(--color-nav-glass);
+  .site-nav .header-cta:not(:hover) .header-cta-dot {
+    background: hsl(var(--signal));
   }
-  .dark .site-nav:not(.scrolled),
-  .dark .site-nav.scrolled {
-    background-color: var(--color-nav-glass-dark);
-    border-color: var(--color-nav-glass-border-dark);
+
+  .site-nav .header-cta:hover .header-cta-dot {
+    background: currentColor;
   }
-  .site-nav .nav-link,
-  .site-nav .header-cta,
-  .site-nav .header-social,
-  .site-nav .header-resume {
-    font-size: 0.8125rem;
-    letter-spacing: 0.12em;
+
+  @media (min-width: 640px) {
+    .site-nav .header-toggles {
+      padding-left: 0.375rem;
+      border-left: 1px solid hsl(var(--border));
+    }
+  }
+
+  .site-nav .mobile-nav-link {
+    border-radius: 0.25rem;
+    font-family: var(--font-geist-mono), ui-monospace, monospace;
+    font-size: var(--text-xs);
+    letter-spacing: 0.06em;
     text-transform: uppercase;
-    border-radius: 2px;
+    color: hsl(var(--foreground) / 0.9);
   }
-  .site-nav .brand-mark {
-    font-family: var(--font-switzer), system-ui, sans-serif;
-    border-radius: 2px;
-  }
-  .site-nav .brand-lastname {
-    color: inherit;
+
+  .site-nav .mobile-nav-link:hover {
+    background: hsl(var(--muted));
   }
 
   .site-nav .nav-link.nav-active::after {
     position: absolute;
-    right: 25%;
-    bottom: 0.18rem;
-    left: 25%;
-    height: 2px;
-    border-radius: 9999px;
+    right: 0.75rem;
+    bottom: 0.2rem;
+    left: 0.75rem;
+    height: 1px;
     background: hsl(var(--signal));
-    box-shadow: 0 0 10px hsl(var(--signal) / 0.2);
     content: "";
   }
 
@@ -78,9 +132,9 @@
     left: 0;
     width: 0;
     height: 0;
-    border-radius: 0.5rem;
-    background: hsl(var(--primary) / 0.09);
-    box-shadow: inset 0 0 0 1px hsl(var(--primary) / 0.16);
+    border-radius: 0.25rem;
+    background: hsl(var(--muted));
+    box-shadow: inset 0 0 0 1px hsl(var(--border));
     opacity: 0;
     pointer-events: none;
     transition: opacity 180ms ease;
@@ -89,6 +143,12 @@
 
   .site-nav .nav-indicator.nav-indicator-visible {
     opacity: 1;
+  }
+
+  @media (min-width: 768px) {
+    .site-header-frame {
+      border-inline-color: hsl(var(--border));
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {

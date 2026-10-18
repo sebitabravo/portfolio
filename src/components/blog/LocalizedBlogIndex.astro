@@ -21,6 +21,7 @@ const spanishUrl = "https://sebita.dev/blog"
 const englishUrl = "https://sebita.dev/en/blog"
 const canonicalUrl = isEnglish ? englishUrl : spanishUrl
 const alternates = createStaticAlternates(locale, spanishUrl, englishUrl)
+const postCount = String(posts.length).padStart(2, "0")
 ---
 
 <Layout
@@ -30,24 +31,28 @@ const alternates = createStaticAlternates(locale, spanishUrl, englishUrl)
   canonicalUrl={canonicalUrl}
   alternates={alternates}
 >
-  <main id="main-content" class="mx-auto max-w-[900px] px-4 pt-24 pb-12 sm:pb-16 md:pt-28 lg:pb-20">
-    <nav class="mb-6" aria-label={t.nav.breadcrumb}>
-      <ol class="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+  <main id="main-content" class="blog-index frame">
+    <nav class="blog-breadcrumb" aria-label={t.nav.breadcrumb}>
+      <ol class="mono-label flex flex-wrap items-center gap-2 text-muted-foreground">
         <li><a href={isEnglish ? "/en" : "/"} class="transition-colors hover:text-foreground">{t.nav.home}</a></li>
         <li aria-hidden="true">/</li>
-        <li class="font-medium text-foreground/80" aria-current="page">{t.blog.title}</li>
+        <li class="text-foreground" aria-current="page">{t.blog.title}</li>
       </ol>
     </nav>
-    <header class="blog-index-hero mb-12 py-12 sm:py-20" data-animate>
+    <header class="blog-index-hero" data-animate>
+      <div class="blog-index-meta mono-label">
+        <span class="section-index">[BLOG]</span>
+        <span>{t.blog.kicker}</span>
+        <span class="section-head-rule" aria-hidden="true"></span>
+        <span>{postCount}</span>
+      </div>
       <h1>{t.blog.title}</h1>
-      <p class="max-w-xl text-lg leading-relaxed text-muted-foreground">
-        {t.blog.intro}
-      </p>
+      <p class="blog-index-intro">{t.blog.intro}</p>
     </header>
 
     {
       hasFallbackPosts && (
-        <aside class="mb-10 text-base leading-relaxed text-muted-foreground" role="note">
+        <aside class="blog-index-note mono-label" role="note">
           {t.blog.fallbackNotice}
         </aside>
       )
@@ -55,9 +60,9 @@ const alternates = createStaticAlternates(locale, spanishUrl, englishUrl)
 
     {
       posts.length === 0 ? (
-        <p class="text-base text-muted-foreground dark:text-foreground/55">{t.blog.empty}</p>
+        <p class="text-base text-muted-foreground">{t.blog.empty}</p>
       ) : (
-        <div class="grid grid-cols-1 gap-10 md:grid-cols-2">
+        <div class="blog-grid">
           {posts.map((post, index) => (
             <BlogCard
               id={post.id}
@@ -66,7 +71,7 @@ const alternates = createStaticAlternates(locale, spanishUrl, englishUrl)
               publishDate={post.data.publishDate}
               tags={post.data.tags}
               image={post.data.image ? getProjectScreenshot(post.data.image) : undefined}
-              animateDelay={(index % 2) + 1}
+              animateDelay={(index % 3) + 1}
               locale={locale}
               contentLocale={post.data.locale === "en" ? "en" : "es"}
               fallbackLabel={isEnglish && (post.data.locale ?? "es") !== "en" ? t.blog.fallbackCardLabel : undefined}
@@ -79,12 +84,62 @@ const alternates = createStaticAlternates(locale, spanishUrl, englishUrl)
 </Layout>
 
 <style>
+  .blog-index {
+    padding: 6.5rem clamp(1rem, 4vw, 3.5rem) clamp(4rem, 8vw, 7rem);
+  }
+
+  .blog-breadcrumb {
+    margin-bottom: clamp(2.5rem, 6vw, 4.5rem);
+  }
+
+  .blog-index-hero {
+    margin-bottom: clamp(3rem, 6vw, 5rem);
+  }
+
+  .blog-index-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 0 0 1.25rem;
+  }
+
   .blog-index-hero h1 {
-    margin-bottom: 1.5rem;
-    font-family: var(--font-boska), Georgia, serif;
-    font-size: clamp(2.75rem, 6vw, 5.375rem);
-    font-weight: 500;
-    line-height: 0.95;
-    letter-spacing: -0.03em;
+    margin: 0 0 1.5rem;
+    font-size: clamp(4.5rem, 14vw, 12rem);
+    line-height: 0.82;
+    letter-spacing: -0.035em;
+  }
+
+  .blog-index-intro {
+    max-width: 46ch;
+    margin: 0;
+    color: hsl(var(--muted-foreground));
+    font-size: clamp(1.0625rem, 1.4vw, 1.25rem);
+    line-height: 1.5;
+  }
+
+  .blog-index-note {
+    max-width: 70ch;
+    margin: -1.5rem 0 3rem;
+    line-height: 1.6;
+    text-transform: none;
+    letter-spacing: 0.02em;
+  }
+
+  .blog-grid {
+    display: grid;
+    gap: clamp(2.5rem, 4vw, 3.5rem) clamp(1.25rem, 2.4vw, 2rem);
+  }
+
+  @media (min-width: 768px) {
+    .blog-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 1100px) {
+    .blog-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
   }
 </style>

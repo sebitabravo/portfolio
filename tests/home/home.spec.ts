@@ -348,9 +348,10 @@ test.describe("Home Page", () => {
       const colors = await page.evaluate(() => {
         const hero = document.querySelector(".hero-gradient")
         const nav = document.querySelector(".site-nav")
+        const bar = document.querySelector(".site-header")
         const status = document.querySelector(".hero-meta-status")
 
-        if (!hero || !nav || !status) return null
+        if (!hero || !nav || !bar || !status) return null
 
         return {
           htmlClass: document.documentElement.className,
@@ -358,19 +359,19 @@ test.describe("Home Page", () => {
           heroBackground: getComputedStyle(hero).backgroundColor,
           heroBackgroundImage: getComputedStyle(hero).backgroundImage,
           navColor: getComputedStyle(nav).color,
-          navBackground: getComputedStyle(nav).backgroundColor,
+          navBackground: getComputedStyle(bar).backgroundColor,
           statusColor: getComputedStyle(status).color,
         }
       })
 
       expect(colors).not.toBeNull()
       expect(colors?.htmlClass).not.toMatch(/\bdark\b/)
-      expect(colors?.heroColor).toBe("rgb(17, 16, 14)")
-      expect(colors?.heroBackground).toBe("rgb(241, 238, 234)")
+      expect(colors?.heroColor).toBe("rgb(23, 20, 15)")
+      expect(colors?.heroBackground).toBe("rgb(242, 236, 224)")
       expect(colors?.heroBackgroundImage).toBe("none")
-      expect(colors?.navColor).toBe("rgb(17, 16, 14)")
-      expect(colors?.navBackground).toBe("rgba(241, 238, 234, 0.82)")
-      expect(colors?.statusColor).toBe("rgb(92, 88, 81)")
+      expect(colors?.navColor).toBe("rgb(23, 20, 15)")
+      expect(colors?.navBackground).toBe("rgba(242, 236, 224, 0.84)")
+      expect(colors?.statusColor).toBe("rgb(23, 20, 15)")
     },
   )
 

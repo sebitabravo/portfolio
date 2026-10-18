@@ -16,9 +16,16 @@
     "linkedin": "LinkedIn",
     "cta": "Let's talk"
   },
+  "boot": {
+    "version": "Developer portfolio · Version 2.6",
+    "loading": "Loading modules",
+    "modules": "react · typescript · fastapi · ml · docker",
+    "copyright": "Copyright (c) Sebastian Bravo, 2026. All rights reserved.",
+    "skip": "Press any key to continue"
+  },
   "hero": {
     "role": "Full-Stack Developer",
-    "scroll": "Scroll",
+    "scroll": "Keep scrolling",
     "greeting": "Hi, I'm",
     "roleLocation": "Chile / Remote",
     "specialization": "Production web · Applied ML",
@@ -28,23 +35,66 @@
     "intro": "I turn ideas into production web platforms and apply Machine Learning to real-world problems, from concept to deployment.",
     "contact": "Contact",
     "available": "Available for work",
-    "downloadCv": "Download CV"
+    "downloadCv": "Download CV",
+    "kicker": "Portfolio / 2026 Edition",
+    "localTime": "Local time",
+    "timezone": "Chile"
+  },
+  "os": {
+    "screenLabel": "SB-OS desktop: decorative windows over a 3D landscape",
+    "shortcuts": "Desktop shortcuts",
+    "menu": ["File", "Edit", "View", "Help"],
+    "online": "Online",
+    "dragHint": "psst… the windows are draggable",
+    "folderProjects": "Projects",
+    "fileCv": "CV.pdf",
+    "appContact": "Contact",
+    "terminalTitle": "terminal — zsh",
+    "portraitTitle": "sebastian.jpg",
+    "terminal": [
+      {
+        "cmd": "whoami",
+        "out": "sebastian bravo — full-stack developer"
+      },
+      {
+        "cmd": "cat stack.txt",
+        "out": "typescript · react · next.js · python · fastapi"
+      },
+      {
+        "cmd": "./status --now",
+        "out": "● available for work"
+      }
+    ]
   },
   "projects": {
     "title": "Projects",
+    "kicker": "Selected work",
+    "meta": "2025 — 2026",
     "outcomesLabel": "Outcomes",
     "outcomesTitle": "Evidence over promises",
-    "outcomes": [
-      "94.1% F1-Score in ManttoAI for failure detection",
-      "Vulcania: community map, alerts and real-time notifications",
-      "4 full-stack projects shipped: 2 public demos and 2 available repositories"
+    "stats": [
+      {
+        "value": "94.1%",
+        "label": "F1-Score detecting failures in ManttoAI"
+      },
+      {
+        "value": "4",
+        "label": "Full-stack platforms shipped"
+      },
+      {
+        "value": "2",
+        "label": "Live public demos"
+      }
     ],
     "viewProject": "Demo",
     "viewCode": "Code",
     "readMore": "Read more",
+    "viewCase": "View case",
     "contactPrompt": "Interested in how I built it?",
     "contactCta": "Let's talk",
     "viewMoreGithub": "More projects on GitHub",
+    "archiveTitle": "Want to see more?",
+    "archiveText": "Experiments, notes and open source.",
     "featured": "Featured",
     "cardLabel": "PROJECT",
     "evidenceLabel": "Project evidence",
@@ -61,27 +111,40 @@
   },
   "work": {
     "title": "Experience",
+    "kicker": "Track record",
     "currently": "Currently...",
     "viewMore": "View more →",
     "viewCaseStudy": "Read case study",
     "evidenceLabel": "Work evidence",
+    "period": "Period",
+    "role": "Role",
+    "company": "Company",
+    "mode": "Type",
     "timeline": "Between contracts: 2023–2026 · Computer Engineering at INACAP and production personal projects.",
     "noExperience": "Work experience coming soon..."
   },
   "contact": {
+    "kicker": "Open channel",
+    "headline": "Had enough reading?",
+    "headlineAccent": "Let's build something.",
     "mailSubject": "Contact from your portfolio",
     "responseTime": "I'll reply within 24h",
     "linkedinDescription": "Let's connect professionally",
     "githubDescription": "Check my open source code",
-    "cvHelper": "Download the CV for the full experience overview."
+    "cvHelper": "Download the CV for the full experience overview.",
+    "copy": "Copy email",
+    "copied": "Email copied",
+    "seal": "Available for work · 2026 Edition · "
   },
   "education": {
     "title": "Education",
+    "kicker": "Training",
     "present": "Present",
     "grade": "Grade"
   },
   "certifications": {
     "title": "Certifications",
+    "kicker": "Credentials",
     "viewCertificate": "View certificate",
     "carouselLabel": "Certifications carousel",
     "professional": "Professional",
@@ -91,8 +154,14 @@
   },
   "about": {
     "title": "About",
+    "kicker": "The person behind the code",
     "focusTitle": "Where I do my best work",
-    "contactCta": "Let's talk"
+    "contactCta": "Let's talk",
+    "tvLabel": "Retro TV with three channels",
+    "channel": "Channel",
+    "channels": ["Portrait", "ASCII", "No signal"],
+    "noSignal": "No signal",
+    "facts": ["Computer Engineering · INACAP", "English C1", "Chile / Remote"]
   },
   "theme": {
     "toggle": "Toggle theme",
@@ -104,7 +173,11 @@
     "professionalProfiles": "Professional profiles",
     "links": "Footer links",
     "madeWith": "Made with",
-    "privacy": "Privacy"
+    "privacy": "Privacy",
+    "tagline": "High-tech full-stack development",
+    "rights": "All rights reserved.",
+    "sealMade": "Made in Chile · Remote worldwide · ",
+    "sealPrivacy": "Read our privacy statement"
   },
   "language": {
     "toggleLabel": "Toggle language (current: {code})"
@@ -123,6 +196,8 @@
     "empty": "No articles published yet.",
     "fallbackNotice": "This article is currently available in Spanish. The English route exists so case-study links never end in a 404.",
     "fallbackCardLabel": "Available in Spanish",
-    "back": "Back to blog"
+    "back": "Back to blog",
+    "kicker": "Logbook",
+    "readingTime": "min read"
   }
 }

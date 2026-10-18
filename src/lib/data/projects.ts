@@ -1,16 +1,17 @@
 import type { Locale } from "@/lib/i18n"
-import type { Project } from "./types"
+import { PROJECT_STAGES, type Project } from "./types"
 
 type SharedProject = Pick<
   Project,
-  "slug" | "tags" | "featured" | "status" | "publishDate" | "githubUrl" | "liveUrl" | "order"
+  "slug" | "tags" | "featured" | "status" | "publishDate" | "githubUrl" | "liveUrl" | "order" | "stage"
 >
-type LocalizedProject = Pick<Project, "title" | "description" | "metrics" | "blogSlug">
+type LocalizedProject = Pick<Project, "title" | "tagline" | "description" | "metrics" | "blogSlug">
 type ProjectEntry = SharedProject & Record<Locale, LocalizedProject>
 
 const projectEntries: ProjectEntry[] = [
   {
     slug: "manttoai",
+    stage: PROJECT_STAGES.BLUE,
     tags: ["FastAPI", "React", "Machine Learning", "Docker", "IoT"],
     featured: false,
     status: "production",
@@ -20,6 +21,7 @@ const projectEntries: ProjectEntry[] = [
     order: 3,
     es: {
       title: "ManttoAI",
+      tagline: "Mantenimiento predictivo con IoT y Machine Learning",
       description:
         "Mantenimiento predictivo para industria con IoT y ML: telemetría en tiempo real y dashboard interactivo.",
       metrics: [
@@ -30,6 +32,7 @@ const projectEntries: ProjectEntry[] = [
     },
     en: {
       title: "ManttoAI",
+      tagline: "Predictive maintenance with IoT and Machine Learning",
       description:
         "Predictive maintenance for industry with IoT and ML: real-time telemetry and interactive dashboard.",
       metrics: [
@@ -41,6 +44,7 @@ const projectEntries: ProjectEntry[] = [
   },
   {
     slug: "vulcania",
+    stage: PROJECT_STAGES.RED,
     tags: ["Next.js", "TypeScript", "Supabase", "shadcn/ui"],
     featured: true,
     status: "production",
@@ -50,6 +54,7 @@ const projectEntries: ProjectEntry[] = [
     order: 1,
     es: {
       title: "Vulcania",
+      tagline: "Monitoreo volcánico comunitario en tiempo real",
       description:
         "Monitoreo volcánico comunitario para zonas de riesgo sísmico: mapa colaborativo en tiempo real, chat, alertas tempranas y notificaciones push.",
       metrics: [
@@ -60,6 +65,7 @@ const projectEntries: ProjectEntry[] = [
     },
     en: {
       title: "Vulcania",
+      tagline: "Real-time community volcano monitoring",
       description:
         "Community volcanic monitoring for at-risk seismic zones: real-time collaborative map, chat, early alerts and push notifications.",
       metrics: [
@@ -71,6 +77,7 @@ const projectEntries: ProjectEntry[] = [
   },
   {
     slug: "rapido-sur",
+    stage: PROJECT_STAGES.YELLOW,
     tags: ["NestJS", "Next.js", "TypeScript", "PostgreSQL", "Docker"],
     featured: false,
     status: "production",
@@ -80,6 +87,7 @@ const projectEntries: ProjectEntry[] = [
     order: 4,
     es: {
       title: "Rápido Sur",
+      tagline: "ERP de mantenimiento para flotas enterprise",
       description:
         "Gestión de mantenimiento vehicular para flotas enterprise: backend NestJS con JWT, frontend Next.js y PostgreSQL con planes preventivos y órdenes de trabajo.",
       metrics: [
@@ -90,6 +98,7 @@ const projectEntries: ProjectEntry[] = [
     },
     en: {
       title: "Rápido Sur",
+      tagline: "Maintenance ERP for enterprise fleets",
       description:
         "Fleet vehicle maintenance management for enterprise: NestJS backend with JWT auth, Next.js frontend and PostgreSQL with preventive plans and work orders.",
       metrics: [
@@ -101,6 +110,7 @@ const projectEntries: ProjectEntry[] = [
   },
   {
     slug: "wenuke",
+    stage: PROJECT_STAGES.GREEN,
     tags: ["FastAPI", "Python", "Groq LLM", "WhatsApp API", "Turso"],
     featured: false,
     status: "production",
@@ -110,6 +120,7 @@ const projectEntries: ProjectEntry[] = [
     order: 2,
     es: {
       title: "Werken-mapu",
+      tagline: "Asistente climático agrícola vía WhatsApp",
       description:
         "Asistente climático agrícola para pequeños agricultores de Chile vía WhatsApp: IA conversacional con Groq Llama 3.1 70B, alertas de helada/lluvia en tiempo real y recomendaciones personalizadas por cultivo.",
       metrics: [
@@ -120,6 +131,7 @@ const projectEntries: ProjectEntry[] = [
     },
     en: {
       title: "Werken-mapu",
+      tagline: "Agricultural climate assistant on WhatsApp",
       description:
         "Agricultural climate assistant for small farmers in Chile via WhatsApp: conversational AI with Groq Llama 3.1 70B, real-time frost/rain alerts and personalized crop recommendations.",
       metrics: [

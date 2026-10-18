@@ -1,5 +1,6 @@
 ---
 import ArrowUpRight from "@/components/icons/ArrowUpRight.astro"
+import RetroTv from "@/components/RetroTv.astro"
 import { getAboutMe } from "@/lib/data"
 import { getTranslations, type Locale } from "@/lib/i18n"
 import { homeSectionFragment } from "@/lib/home-sections"
@@ -12,48 +13,57 @@ const { locale = "es" } = Astro.props
 const aboutMe = getAboutMe(locale)
 const t = getTranslations(locale)
 const contactId = homeSectionFragment(locale, "contact")
+// Cada palabra recibe su índice para que el scroll la encienda en orden, sin JS.
+const words = aboutMe.intro.split(/\s+/).filter(Boolean)
 ---
 
-<div
-  class="about-layout grid grid-cols-1 items-start gap-[clamp(2rem,6vw,5rem)] md:grid-cols-[minmax(0,1.15fr)_minmax(18rem,0.85fr)]"
->
-  <article
-    data-animate
-    data-animate-delay="1"
-    class="about-copy flex max-w-[45rem] flex-col gap-5 text-base leading-[1.65] text-muted-foreground"
-  >
-    <p class="about-lede font-display text-2xl leading-[1.35] font-medium tracking-[-0.03em] text-foreground">
-      {aboutMe.intro}
-    </p>
-    <p>{aboutMe.personal}</p>
-    <p class="about-signature font-display text-2xl font-medium text-signal italic">
-      {aboutMe.signature}
+<div class="about-layout">
+  <div class="about-media" data-animate data-animate-delay="1">
+    <RetroTv locale={locale}>
+      <p class="about-signature sticky-note">{aboutMe.signature}</p>
+    </RetroTv>
+  </div>
+
+  <div class="about-copy">
+    <p class="about-lede" data-reveal-words>
+      {
+        words.map((word, index) => (
+          <span class="reveal-word" style={`--w:${index}`}>
+            {word}{" "}
+          </span>
+        ))
+      }
     </p>
 
-    <div class="about-interests mt-6">
-      <h3 class="mb-[0.8rem] text-xl leading-[1.1] tracking-[-0.04em]">{aboutMe.interestsTitle}</h3>
-      <ul class="grid grid-cols-2 gap-x-4 gap-y-3">
+    <ul class="about-facts">
+      {t.about.facts.map((fact) => <li class="chip">{fact}</li>)}
+    </ul>
+
+    <div class="about-interests" data-animate>
+      <h3 class="about-interests-title mono-label">{aboutMe.interestsTitle}</h3>
+      <ul class="about-interest-list">
         {
-          aboutMe.interests.map((interest) => (
-            <li class="flex items-baseline gap-[0.55rem] text-base text-muted-foreground">
-              <span aria-hidden="true" class="size-[0.38rem] flex-none rounded-full bg-signal" />
+          aboutMe.interests.map((interest, index) => (
+            <li>
+              <span class="section-index" aria-hidden="true">
+                {String(index + 1).padStart(2, "0")}
+              </span>
               {interest}
             </li>
           ))
         }
       </ul>
     </div>
-  </article>
 
-  <div data-animate data-animate-delay="2" class="about-focus flex flex-col gap-4">
-    <h3 class="font-text text-base font-semibold">{t.about.focusTitle}</h3>
-    <p class="text-base leading-[1.6] text-muted-foreground">{aboutMe.lookingFor}</p>
-    <a
-      href={contactId}
-      class="about-cta inline-flex min-h-11 w-fit items-center gap-2 text-base text-signal underline underline-offset-4 focus-ring"
-    >
-      <span>{t.about.contactCta}</span>
-      <ArrowUpRight class="size-4 shrink-0" />
-    </a>
+    <div class="about-focus" data-animate>
+      <h3 class="about-focus-title mono-label">
+        <span class="status-dot" aria-hidden="true"></span>{t.about.focusTitle}
+      </h3>
+      <p>{aboutMe.lookingFor}</p>
+      <a href={contactId} class="about-cta btn btn-solid focus-ring">
+        <span>{t.about.contactCta}</span>
+        <ArrowUpRight class="btn-arrow size-4 shrink-0" />
+      </a>
+    </div>
   </div>
 </div>

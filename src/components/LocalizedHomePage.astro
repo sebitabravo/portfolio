@@ -1,8 +1,9 @@
 ---
 import Layout from "@/layouts/Layout.astro"
-import { personalInfo } from "@/lib/data"
+import { getProjects, personalInfo } from "@/lib/data"
 import { createStaticAlternates, getTranslations, type Locale } from "@/lib/i18n"
 import { homeSectionIds } from "@/lib/home-sections"
+import BootScreen from "@/components/BootScreen.astro"
 import Hero from "@/components/Hero.astro"
 import SignalStrip from "@/components/SignalStrip.astro"
 import Experience from "@/components/Experience.astro"
@@ -23,6 +24,7 @@ const t = getTranslations(locale)
 const canonicalUrl = locale === "es" ? "https://sebita.dev" : "https://sebita.dev/en/"
 const alternates = createStaticAlternates(locale, "https://sebita.dev", "https://sebita.dev/en/")
 const ids = homeSectionIds[locale]
+const projectCount = String(getProjects(locale).length).padStart(2, "0")
 ---
 
 <Layout
@@ -31,12 +33,18 @@ const ids = homeSectionIds[locale]
   canonicalUrl={canonicalUrl}
   alternates={alternates}
 >
+  <BootScreen locale={locale} />
   <main id="main-content">
     <Hero locale={locale} />
 
     <div class="home-sections w-full">
       <SectionBand id={ids.projects} headingId={`${ids.projects}-heading`}>
-        <TitleSection id={`${ids.projects}-heading`}>
+        <TitleSection
+          id={`${ids.projects}-heading`}
+          index="01"
+          kicker={t.projects.kicker}
+          meta={`${t.projects.meta} / ${projectCount}`}
+        >
           {t.projects.title}
         </TitleSection>
         <Projects locale={locale} />
@@ -45,35 +53,35 @@ const ids = homeSectionIds[locale]
       <SignalStrip locale={locale} />
 
       <SectionBand id={ids.experience} headingId={`${ids.experience}-heading`} tone="tinted">
-        <TitleSection id={`${ids.experience}-heading`}>
+        <TitleSection id={`${ids.experience}-heading`} index="02" kicker={t.work.kicker} meta="2022 — 2026">
           {t.work.title}
         </TitleSection>
         <Experience locale={locale} />
       </SectionBand>
 
       <SectionBand id={ids.education} headingId={`${ids.education}-heading`}>
-        <TitleSection id={`${ids.education}-heading`}>
+        <TitleSection id={`${ids.education}-heading`} index="03" kicker={t.education.kicker}>
           {t.education.title}
         </TitleSection>
         <Education locale={locale} />
       </SectionBand>
 
       <SectionBand id={ids.certifications} headingId={`${ids.certifications}-heading`} tone="tinted" data-animate>
-        <TitleSection id={`${ids.certifications}-heading`}>
+        <TitleSection id={`${ids.certifications}-heading`} index="04" kicker={t.certifications.kicker}>
           {t.certifications.title}
         </TitleSection>
         <Certifications locale={locale} />
       </SectionBand>
 
       <SectionBand id={ids.about} headingId={`${ids.about}-heading`}>
-        <TitleSection id={`${ids.about}-heading`}>
+        <TitleSection id={`${ids.about}-heading`} index="05" kicker={t.about.kicker}>
           {t.about.title}
         </TitleSection>
         <AboutMe locale={locale} />
       </SectionBand>
 
       <SectionBand id={ids.contact} headingId={`${ids.contact}-heading`} tone="inverted">
-        <TitleSection id={`${ids.contact}-heading`}>
+        <TitleSection id={`${ids.contact}-heading`} index="06" kicker={t.contact.kicker}>
           {t.nav.contact}
         </TitleSection>
         <Contact locale={locale} />

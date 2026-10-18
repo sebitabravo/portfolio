@@ -36,47 +36,150 @@ const headingId = `post-title-${id}`
 
 <article
   lang={contentLocale}
-  class="group min-w-0"
+  class="blog-card group min-w-0"
   aria-labelledby={headingId}
   data-animate
   data-animate-delay={String(animateDelay)}
 >
-  <a href={`${prefix}/blog/${id}`} class="block focus-ring">
-    {
-      image && (
-        <Image
-          src={image}
-          alt=""
-          widths={[480, 800, 1200]}
-          sizes="(min-width: 900px) 430px, (min-width: 768px) calc((100vw - 72px) / 2), calc(100vw - 32px)"
-          width={800}
-          height={450}
-          class="mb-6 aspect-video w-full object-cover grayscale"
-          loading="lazy"
-          decoding="async"
-        />
-      )
-    }
-    <div class="mb-3 flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
-      <p class="font-text text-xs text-muted-foreground">{tags.slice(0, 3).join(" · ")}</p>
-      <time lang={locale} datetime={publishDate.toISOString()} class="shrink-0 font-text text-xs text-muted-foreground">
+  <a href={`${prefix}/blog/${id}`} class="blog-card-link focus-ring">
+    <span class="blog-card-window os-window" aria-hidden="true">
+      <span class="os-window-bar">
+        <span class="os-window-lights"><span></span><span></span><span></span></span>
+        <span class="os-window-title">{id}.mdx</span>
+      </span>
+      <span class="blog-card-media">
+        {
+          image ? (
+            <Image
+              src={image}
+              alt=""
+              widths={[480, 800, 1200]}
+              sizes="(min-width: 1100px) 420px, (min-width: 768px) calc((100vw - 96px) / 2), calc(100vw - 32px)"
+              width={800}
+              height={450}
+              class="blog-card-image"
+              loading="lazy"
+              decoding="async"
+            />
+          ) : (
+            <span class="blog-card-placeholder">{title.slice(0, 1)}</span>
+          )
+        }
+      </span>
+    </span>
+    <span class="blog-card-meta">
+      <span class="mono-label">{tags.slice(0, 2).join(" · ")}</span>
+      <time lang={locale} datetime={publishDate.toISOString()} class="mono-label shrink-0 text-muted-foreground">
         {formatDate(publishDate, locale)}
       </time>
-    </div>
-    <h2
-      id={headingId}
-      transition:name={articleTitleTransitionName(id)}
-      class="mb-3 font-display text-2xl leading-tight font-medium tracking-[-0.03em] transition-colors group-focus-within:text-primary group-hover:text-primary"
-    >
+    </span>
+    <h2 id={headingId} transition:name={articleTitleTransitionName(id)} class="blog-card-title">
       {title}
     </h2>
     {
       fallbackLabel && (
-        <p lang={locale} class="mb-2 text-xs font-medium text-primary">
+        <span lang={locale} class="blog-card-fallback mono-label">
           {fallbackLabel}
-        </p>
+        </span>
       )
     }
-    <p class="text-base leading-relaxed text-muted-foreground">{description}</p>
+    <p class="blog-card-description">{description}</p>
   </a>
 </article>
+
+<style>
+  .blog-card-link {
+    display: grid;
+    gap: 0.85rem;
+    border-radius: 0.75rem;
+  }
+
+  .blog-card-window {
+    display: block;
+    margin-bottom: 0.5rem;
+    transition: transform 700ms var(--ease-out-expo);
+  }
+
+  .blog-card-link:hover .blog-card-window {
+    transform: translateY(-6px) rotate(-0.6deg);
+  }
+
+  .blog-card-media {
+    position: relative;
+    display: block;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background: radial-gradient(60% 70% at 50% 120%, rgb(255 79 216 / 0.35), transparent 70%), #101014;
+  }
+
+  .blog-card-media::after {
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(to bottom, transparent 0 2px, rgb(0 0 0 / 0.14) 2px 3px);
+    pointer-events: none;
+    content: "";
+  }
+
+  .blog-card-image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top;
+    filter: grayscale(1) contrast(1.05);
+    transition:
+      filter 600ms ease,
+      transform 1.2s var(--ease-out-expo);
+  }
+
+  .blog-card-link:hover .blog-card-image,
+  .blog-card-link:focus-visible .blog-card-image {
+    filter: none;
+    transform: scale(1.03);
+  }
+
+  .blog-card-placeholder {
+    display: grid;
+    height: 100%;
+    place-items: center;
+    color: rgb(243 239 230 / 0.85);
+    font-family: var(--font-instrument), Georgia, serif;
+    font-size: 5rem;
+    font-style: italic;
+  }
+
+  .blog-card-meta {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.35rem 1rem;
+  }
+
+  .blog-card-title {
+    margin: 0;
+    font-size: clamp(1.625rem, 2.2vw, 2rem);
+    line-height: 1.02;
+    letter-spacing: -0.02em;
+    transition: color 300ms ease;
+  }
+
+  .blog-card-link:hover .blog-card-title,
+  .blog-card-link:focus-visible .blog-card-title {
+    color: hsl(var(--signal));
+  }
+
+  .blog-card-fallback {
+    color: hsl(var(--signal));
+  }
+
+  .blog-card-description {
+    display: -webkit-box;
+    margin: 0;
+    overflow: hidden;
+    color: hsl(var(--muted-foreground));
+    font-size: var(--text-sm);
+    line-height: 1.55;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+  }
+</style>

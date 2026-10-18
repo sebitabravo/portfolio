@@ -549,12 +549,15 @@
 
   .prose-custom {
     color: hsl(var(--foreground));
+    font-family: var(--font-switzer);
+    font-size: 1.0625rem;
     line-height: 1.75;
   }
 
   .prose-custom h2 {
+    font-family: var(--font-boska);
     font-size: 1.3125rem;
-    font-weight: 700;
+    font-weight: 500;
     letter-spacing: -0.02em;
     margin-top: 2.5rem;
     margin-bottom: 1rem;
@@ -568,8 +571,9 @@
   }
 
   .prose-custom h3 {
+    font-family: var(--font-boska);
     font-size: 1.25rem;
-    font-weight: 600;
+    font-weight: 500;
     letter-spacing: -0.015em;
     margin-top: 2rem;
     margin-bottom: 0.75rem;
@@ -653,7 +657,9 @@
   .prose-custom pre {
     margin: 1.5rem 0;
     border-radius: 0.5rem;
-    background: hsl(var(--midnight));
+    /* El fondo de Shiki es inline; el bloque mantiene el tono oscuro en ambos temas. */
+    background: hsl(45 5% 8%) !important;
+    color: hsl(39 29% 93%) !important;
     padding: 1rem 1.25rem;
     overflow-x: auto;
     border: 1px solid hsl(var(--parchment));
@@ -662,16 +668,11 @@
   .prose-custom pre code {
     background: transparent;
     padding: 0;
-    color: hsl(var(--background));
+    color: hsl(39 29% 93%);
     font-size: 0.8125rem;
     line-height: 1.7;
   }
 
-  .dark .prose-custom pre {
-    background: hsl(var(--surface-soft));
-  }
-
-  /* Preserve the established dark prose palette; only light text needed correction. */
   .dark .prose-custom :is(p, ul, ol) {
     color: hsl(var(--foreground) / 0.82);
   }
@@ -682,10 +683,6 @@
 
   .dark .prose-custom td {
     color: hsl(var(--foreground) / 0.78);
-  }
-
-  .dark .prose-custom pre code {
-    color: hsl(var(--foreground) / 0.9);
   }
 
   .prose-custom :not(pre) > code {
@@ -709,7 +706,6 @@
 
   .prose-custom img {
     max-width: 100%;
-    border-radius: 0.5rem;
     margin: 1.5rem 0;
   }
 }

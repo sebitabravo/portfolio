@@ -3,6 +3,7 @@ import { render, type CollectionEntry } from "astro:content"
 import Layout from "@/layouts/Layout.astro"
 import { personalInfo } from "@/lib/data"
 import { getBlogImageUrl } from "@/lib/blog-image"
+import { getProjectSocialImage } from "@/lib/portfolio-images"
 import { createBlogAlternates } from "@/lib/blog-alternates"
 import { getTranslations, type Locale } from "@/lib/i18n"
 import { formatDate } from "@/lib/utils"
@@ -24,6 +25,9 @@ const englishUrl = `https://sebita.dev/en/blog/${post.id}`
 const canonicalUrl = isEnglish && !isFallback ? englishUrl : spanishUrl
 const alternates = createBlogAlternates({ locale, postId: post.id, translationId, isFallback })
 const optimizedImageUrl = await getBlogImageUrl(post.data.image)
+const heroImage = getProjectSocialImage(post.data.image)
+const heroImageWidth = heroImage && Math.min(heroImage.width, 1200)
+const heroImageHeight = heroImage && heroImageWidth && Math.round(heroImage.height * heroImageWidth / heroImage.width)
 const imageUrl = optimizedImageUrl && new URL(optimizedImageUrl, "https://sebita.dev").toString()
 const articleJsonLd = JSON.stringify({
   "@context": "https://schema.org",
@@ -68,58 +72,65 @@ const blogPath = isEnglish ? "/en/blog" : "/blog"
     </nav>
 
     <article lang={isEnglish ? (isFallback ? "es" : "en") : undefined}>
-      <header class="mb-10">
+      <header class="mb-10" data-animate>
         {
           isEnglish && isFallback && (
             <aside
               lang={locale}
-              class="mb-6 rounded-xl border border-primary/25 bg-primary/6 px-4 py-3 text-base text-muted-foreground dark:text-foreground/75"
+              class="mb-6 text-base text-muted-foreground"
               role="note"
             >
               {t.blog.fallbackNotice}
             </aside>
           )
         }
-        <div class="mb-4 flex flex-wrap gap-2">
-          {
-            post.data.tags.map((tag) => (
-              <span class="rounded-md border border-parchment bg-muted px-2 py-0.5 font-mono text-xs text-muted-foreground dark:text-foreground/60">
-                {tag}
-              </span>
-            ))
-          }
-        </div>
         <h1
           transition:name={articleTitleTransitionName(post.id)}
-          class="mb-4 text-3xl leading-tight font-bold tracking-tight sm:text-4xl"
+          class="mb-6 font-display text-[clamp(2.75rem,6vw,5.375rem)] leading-[0.95] font-medium tracking-[-0.03em]"
         >
           {post.data.title}
         </h1>
-        <p class="max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg dark:text-foreground/65">
+        <p class="max-w-[65ch] text-base leading-relaxed text-muted-foreground sm:text-lg">
           {post.data.description}
         </p>
+        <p class="mt-6 font-text text-xs text-muted-foreground">{post.data.tags.join(" · ")}</p>
         <time
           lang={locale}
           datetime={post.data.publishDate.toISOString()}
-          class="mt-4 inline-block font-mono text-xs text-muted-foreground"
+          class="mt-4 inline-block font-text text-xs text-muted-foreground"
         >
           {formatDate(post.data.publishDate, locale)}
         </time>
       </header>
+
+      {
+        optimizedImageUrl && heroImage && (
+          <img
+            src={optimizedImageUrl}
+            alt={post.data.title}
+            width={heroImageWidth}
+            height={heroImageHeight}
+            loading="eager"
+            fetchpriority="high"
+            class="mb-12 aspect-video w-full object-cover"
+            data-animate
+          />
+        )
+      }
 
       <div class="prose-custom">
         <Content />
       </div>
     </article>
 
-    <footer class="mt-16 border-t border-parchment pt-8">
+    <footer class="mt-16 pt-8" data-animate>
       <nav class="flex flex-wrap items-center justify-between gap-4" aria-label={t.blog.postNavigation}>
         <a href={blogPath} class="text-xs text-primary hover:underline">
           {`← ${t.blog.back}`}
         </a>
         <a
           href={homePath}
-          class="text-xs text-muted-foreground transition-colors hover:text-foreground dark:text-foreground/55"
+          class="text-xs text-muted-foreground transition-colors hover:text-foreground"
         >
           {`${t.nav.home} →`}
         </a>

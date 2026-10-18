@@ -34,9 +34,7 @@ const education = getEducation(locale)
           </div>
         </div>
 
-        {description && (
-          <p class="mt-4 max-w-[65ch] text-base leading-[1.60] text-muted-foreground">{description}</p>
-        )}
+        {description && <p class="mt-4 max-w-[65ch] text-base leading-[1.60] text-muted-foreground">{description}</p>}
 
         {skills && skills.length > 0 && (
           <p class="mt-4 font-text text-xs text-muted-foreground">{skills.join(" · ")}</p>

@@ -709,3 +709,27 @@
     margin: 1.5rem 0;
   }
 }
+
+/* La misma capa que las utilidades permite reemplazar las clases heredadas del MDX. */
+@layer utilities {
+  .prose-custom :where(h3, div).font-mono {
+    font-family: var(--font-switzer), system-ui, sans-serif;
+  }
+
+  .prose-custom .not-prose > div.rounded-xl,
+  .prose-custom div.grid > div.rounded-xl {
+    border-color: transparent;
+    background: transparent;
+    padding-inline: 0;
+  }
+
+  .prose-custom div.font-mono.text-foreground\/85 {
+    background: transparent;
+    border: none;
+    font-family: var(--font-switzer), system-ui, sans-serif;
+  }
+
+  .prose-custom :is(code, pre) {
+    font-family: var(--font-jetbrains-mono), monospace;
+  }
+}

@@ -50,7 +50,10 @@ const dateText = current
 <div
   data-animate
   data-animate-delay={String(index + 1)}
-  class:list={["experience-item grid gap-6 pb-12 md:grid-cols-[minmax(10rem,1fr)_3fr] md:gap-12", { "experience-item-secondary": index > 0 }]}
+  class:list={[
+    "experience-item grid gap-6 pb-12 md:grid-cols-[minmax(10rem,1fr)_3fr] md:gap-12",
+    { "experience-item-secondary": index > 0 },
+  ]}
 >
   <div class="experience-meta text-xs leading-[1.6] text-muted-foreground">
     <time class="block">{dateText}</time>
@@ -101,7 +104,7 @@ const dateText = current
               rel="noopener noreferrer"
               title={logo.alt}
               aria-label={logo.alt}
-              class="focus-ring flex size-12 items-center justify-center opacity-75 transition-opacity duration-200 hover:opacity-100"
+              class="flex size-12 items-center justify-center opacity-75 focus-ring transition-opacity duration-200 hover:opacity-100"
             >
               <Picture
                 src={logo.src}
@@ -128,7 +131,7 @@ const dateText = current
           href={url}
           target={externalUrl ? "_blank" : undefined}
           rel={externalUrl ? "noopener noreferrer" : undefined}
-          class="focus-ring inline-flex min-h-11 items-center gap-2 text-xs text-primary underline underline-offset-4"
+          class="inline-flex min-h-11 items-center gap-2 text-xs text-primary underline underline-offset-4 focus-ring"
         >
           {t.work.viewCaseStudy}
           <svg class="size-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">

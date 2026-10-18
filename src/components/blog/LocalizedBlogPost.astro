@@ -27,7 +27,7 @@ const alternates = createBlogAlternates({ locale, postId: post.id, translationId
 const optimizedImageUrl = await getBlogImageUrl(post.data.image)
 const heroImage = getProjectSocialImage(post.data.image)
 const heroImageWidth = heroImage && Math.min(heroImage.width, 1200)
-const heroImageHeight = heroImage && heroImageWidth && Math.round(heroImage.height * heroImageWidth / heroImage.width)
+const heroImageHeight = heroImage && heroImageWidth && Math.round((heroImage.height * heroImageWidth) / heroImage.width)
 const imageUrl = optimizedImageUrl && new URL(optimizedImageUrl, "https://sebita.dev").toString()
 const articleJsonLd = JSON.stringify({
   "@context": "https://schema.org",
@@ -58,7 +58,7 @@ const blogPath = isEnglish ? "/en/blog" : "/blog"
   canonicalUrl={canonicalUrl}
   alternates={alternates}
 >
-  <main id="main-content" class="mx-auto max-w-[780px] px-4 pt-24 pb-12 sm:pb-16 md:pt-28 lg:pb-20">
+  <main id="main-content" class="mx-auto max-w-[900px] px-4 pt-24 pb-12 sm:pb-16 md:pt-28 lg:pb-20">
     <nav class="mb-8" aria-label={t.nav.breadcrumb}>
       <ol class="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
         <li><a href={homePath} class="transition-colors hover:text-foreground">{t.nav.home}</a></li>
@@ -75,18 +75,14 @@ const blogPath = isEnglish ? "/en/blog" : "/blog"
       <header class="mb-10" data-animate>
         {
           isEnglish && isFallback && (
-            <aside
-              lang={locale}
-              class="mb-6 text-base text-muted-foreground"
-              role="note"
-            >
+            <aside lang={locale} class="mb-6 text-base text-muted-foreground" role="note">
               {t.blog.fallbackNotice}
             </aside>
           )
         }
         <h1
           transition:name={articleTitleTransitionName(post.id)}
-          class="mb-6 font-display text-[clamp(2.75rem,6vw,5.375rem)] leading-[0.95] font-medium tracking-[-0.03em]"
+          class="mb-6 font-display text-3xl leading-[0.95] font-medium tracking-[-0.03em]"
         >
           {post.data.title}
         </h1>
@@ -128,10 +124,7 @@ const blogPath = isEnglish ? "/en/blog" : "/blog"
         <a href={blogPath} class="text-xs text-primary hover:underline">
           {`← ${t.blog.back}`}
         </a>
-        <a
-          href={homePath}
-          class="text-xs text-muted-foreground transition-colors hover:text-foreground"
-        >
+        <a href={homePath} class="text-xs text-muted-foreground transition-colors hover:text-foreground">
           {`${t.nav.home} →`}
         </a>
       </nav>

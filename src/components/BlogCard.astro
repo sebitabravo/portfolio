@@ -18,7 +18,18 @@ interface Props {
   animateDelay?: number
 }
 
-const { id, title, description, publishDate, tags, locale, contentLocale, fallbackLabel, image, animateDelay = 1 } = Astro.props
+const {
+  id,
+  title,
+  description,
+  publishDate,
+  tags,
+  locale,
+  contentLocale,
+  fallbackLabel,
+  image,
+  animateDelay = 1,
+} = Astro.props
 const prefix = locale === "es" ? "" : "/en"
 const headingId = `post-title-${id}`
 ---
@@ -30,7 +41,7 @@ const headingId = `post-title-${id}`
   data-animate
   data-animate-delay={String(animateDelay)}
 >
-  <a href={`${prefix}/blog/${id}`} class="focus-ring block">
+  <a href={`${prefix}/blog/${id}`} class="block focus-ring">
     {
       image && (
         <Image
@@ -55,7 +66,7 @@ const headingId = `post-title-${id}`
     <h2
       id={headingId}
       transition:name={articleTitleTransitionName(id)}
-      class="mb-3 font-display text-2xl font-medium leading-tight tracking-[-0.03em] transition-colors group-hover:text-primary group-focus-within:text-primary"
+      class="mb-3 font-display text-2xl leading-tight font-medium tracking-[-0.03em] transition-colors group-focus-within:text-primary group-hover:text-primary"
     >
       {title}
     </h2>

@@ -38,8 +38,8 @@ const alternates = createStaticAlternates(locale, spanishUrl, englishUrl)
         <li class="font-medium text-foreground/80" aria-current="page">{t.blog.title}</li>
       </ol>
     </nav>
-    <header class="mb-12 py-12 sm:py-20" data-animate>
-      <h1 class="mb-6 font-display text-[clamp(2.75rem,6vw,5.375rem)] font-medium leading-[0.95] tracking-[-0.03em]">{t.blog.title}</h1>
+    <header class="blog-index-hero mb-12 py-12 sm:py-20" data-animate>
+      <h1>{t.blog.title}</h1>
       <p class="max-w-xl text-lg leading-relaxed text-muted-foreground">
         {t.blog.intro}
       </p>
@@ -47,10 +47,7 @@ const alternates = createStaticAlternates(locale, spanishUrl, englishUrl)
 
     {
       hasFallbackPosts && (
-        <aside
-          class="mb-10 text-base leading-relaxed text-muted-foreground"
-          role="note"
-        >
+        <aside class="mb-10 text-base leading-relaxed text-muted-foreground" role="note">
           {t.blog.fallbackNotice}
         </aside>
       )
@@ -80,3 +77,14 @@ const alternates = createStaticAlternates(locale, spanishUrl, englishUrl)
     }
   </main>
 </Layout>
+
+<style>
+  .blog-index-hero h1 {
+    margin-bottom: 1.5rem;
+    font-family: var(--font-boska), Georgia, serif;
+    font-size: clamp(2.75rem, 6vw, 5.375rem);
+    font-weight: 500;
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+  }
+</style>

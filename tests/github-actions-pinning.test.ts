@@ -3,15 +3,15 @@ import { describe, expect, it } from "vitest";
 
 const expectedUses = {
   ".github/workflows/ci.yml": [
-    "actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2",
-    "pnpm/action-setup@fe02b34f77f8bc703788d5817da081398fad5dd2 # v4.0.0",
-    "actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0",
-    "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2",
+    "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1",
+    "pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0",
+    "actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0",
+    "actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2",
   ],
   ".github/workflows/lighthouse.yml": [
-    "actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2",
-    "pnpm/action-setup@fe02b34f77f8bc703788d5817da081398fad5dd2 # v4.0.0",
-    "actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0",
+    "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1",
+    "pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0",
+    "actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0",
     "treosh/lighthouse-ci-action@3e7e23fb74242897f95c0ba9cabad3d0227b9b18 # 12.6.2",
   ],
 } as const;

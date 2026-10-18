@@ -15,6 +15,24 @@ export default defineConfig({
   },
   fonts: [
     {
+      name: "Boska",
+      cssVariable: "--font-boska",
+      provider: fontProviders.fontshare(),
+      weights: [400, 500],
+      styles: ["normal", "italic"],
+      subsets: ["latin"],
+      fallbacks: ["Georgia", "serif"],
+    },
+    {
+      name: "Switzer",
+      cssVariable: "--font-switzer",
+      provider: fontProviders.fontshare(),
+      weights: [400, 500, 600],
+      styles: ["normal"],
+      subsets: ["latin"],
+      fallbacks: ["system-ui", "sans-serif"],
+    },
+    {
       name: "Manrope",
       cssVariable: "--font-manrope",
       provider: fontProviders.google(),

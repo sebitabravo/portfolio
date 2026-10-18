@@ -5,6 +5,15 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme inline {
+  --color-canvas: hsl(var(--canvas));
+  --color-surface-raised: hsl(var(--surface-raised));
+  --color-ink: hsl(var(--ink));
+  --color-ink-muted: hsl(var(--ink-muted));
+  --color-hairline: hsl(var(--hairline));
+  --color-signal: hsl(var(--signal));
+  --color-signal-ink: hsl(var(--signal-ink));
+  --font-display: var(--font-boska);
+  --font-text: var(--font-switzer);
   --color-background: hsl(var(--background));
   --color-foreground: hsl(var(--foreground));
   --color-card: hsl(var(--card));
@@ -88,6 +97,14 @@
 
 @layer base {
   :root {
+    --canvas: 40 20% 93%;
+    --surface-raised: 40 16% 89%;
+    --ink: 45 10% 6%;
+    --ink-muted: 40 6% 34%;
+    --hairline: 40 8% 82%;
+    --signal: 36 72% 31%;
+    --signal-ink: 40 20% 93%;
+
     /* Light palette — documented canvas, ink and readable interactive text */
     --background: 0 0% 100%; /* #ffffff */
     --foreground: 30 2.5% 15.6863%; /* #292827 */
@@ -140,6 +157,14 @@
   }
 
   .dark {
+    --canvas: 60 4% 3%;
+    --surface-raised: 45 5% 8%;
+    --ink: 39 29% 93%;
+    --ink-muted: 37 9% 60%;
+    --hairline: 43 8% 15%;
+    --signal: 36 78% 57%;
+    --signal-ink: 45 10% 4%;
+
     /* Dark Palette — Lavender glow on night canvas */
     --background: 240 14.2857% 6.8627%; /* #0f0f14 */
     --foreground: 36 9.8039% 90%; /* #e8e6e3 */

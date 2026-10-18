@@ -629,7 +629,7 @@
     filter: none;
   }
 
-  /* Caja definida antes de cargar: un <img loading="lazy"> de 0x0 nunca se considera visible en Firefox. */
+  /* El <picture> ocupa el mosaico: sin una altura definida, el height: 100% del <img> no resuelve y el logo se aplasta. */
   .experience-logo picture {
     display: block;
     width: 100%;

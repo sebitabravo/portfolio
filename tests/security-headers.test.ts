@@ -52,7 +52,7 @@ describe("Vercel security-header contract", () => {
       "https://va.vercel-scripts.com",
     );
     expect(result.policy?.directives.get("connect-src")).toEqual(["'self'"]);
-    expect([...result.policy!.scriptHashes]).toHaveLength(12);
+    expect([...result.policy!.scriptHashes]).toHaveLength(11);
   });
 
   it.each([

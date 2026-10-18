@@ -189,8 +189,11 @@ test.describe("Experience — Astro-managed logos", () => {
       await page.goto(route)
       // Las filas cerradas no renderizan su detalle: se abren para cargar los logos.
       // El acordeón es exclusivo (details[name]); sin el grupo pueden quedar todas abiertas a la vez.
-      await page.locator("#experiencia details").evaluateAll((rows) =>
-        rows.forEach((row) => {
+      // El id de la sección cambia por idioma (#experiencia, #experience): se ubica por su hook de datos.
+      const rows = page.locator("[data-experience-list] details")
+      await expect(rows).toHaveCount(2)
+      await rows.evaluateAll((items) =>
+        items.forEach((row) => {
           row.removeAttribute("name")
           row.setAttribute("open", "")
         }),
@@ -204,11 +207,12 @@ test.describe("Experience — Astro-managed logos", () => {
         await expect(image).toHaveAttribute("decoding", "async")
         expect(await image.getAttribute("alt")).toBe(await logo.getAttribute("aria-label"))
         await image.scrollIntoViewIfNeeded()
+        // Chromium informa naturalWidth desde la caché antes de cargar una imagen diferida: se exige `complete`.
         await expect
-          .poll(() => image.evaluate((img) => (img as HTMLImageElement).naturalWidth), {
+          .poll(() => image.evaluate((img) => (img as HTMLImageElement).complete && (img as HTMLImageElement).naturalWidth > 0), {
             message: `${await logo.getAttribute("aria-label")} logo should load in ${route}`,
           })
-          .toBeGreaterThan(0)
+          .toBe(true)
       }
     }
   })

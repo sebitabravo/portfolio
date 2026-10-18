@@ -12,6 +12,8 @@ describe("pnpm build-script and CI policy", () => {
         "  esbuild: true",
         "  sharp: true",
         "minimumReleaseAge: 20160",
+        "minimumReleaseAgeExclude:",
+        "  - http-cache-semantics@4.3.0",
         "blockExoticSubdeps: true",
         "trustPolicy: no-downgrade",
       ].join("\n"),

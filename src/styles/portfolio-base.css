@@ -462,8 +462,7 @@
     height: 100%;
     transform: scaleX(0);
     transform-origin: left center;
-    background: linear-gradient(90deg, #8b7bff, #c7b7ff 55%, #f4efff);
-    box-shadow: 0 0 14px rgb(155 130 255 / 0.8);
+    background: hsl(var(--signal));
     transition: transform 120ms linear;
   }
 

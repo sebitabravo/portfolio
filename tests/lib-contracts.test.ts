@@ -1,7 +1,6 @@
 import { describe, expect, it } from "vitest"
 
 import { siteConfig } from "../src/lib/config"
-import { projectGradient } from "../src/lib/visual-gradients"
 import { cn, formatDate } from "../src/lib/utils"
 
 describe("shared library contracts", () => {
@@ -11,11 +10,6 @@ describe("shared library contracts", () => {
       title: expect.stringContaining("Full-Stack Developer"),
     })
     expect(siteConfig.description.length).toBeGreaterThan(40)
-  })
-
-  it("returns project gradients with a safe fallback", () => {
-    expect(projectGradient("wenuke")).toContain("#25d366")
-    expect(projectGradient("missing")).toContain("#2b2b2b")
   })
 
   it("formats dates and merges utility classes", () => {

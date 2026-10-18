@@ -1,27 +1,36 @@
 ---
 import { getCertifications } from "@/lib/data"
-import type { Locale } from "@/lib/i18n"
-import type { CarouselCertification } from "@/types"
-import CertificationCarousel from "@/components/CertificationCarousel.astro"
+import { getTranslations, type Locale } from "@/lib/i18n"
 
 interface Props {
   locale?: Locale
 }
 
 const { locale = "es" } = Astro.props
-const certifications = getCertifications(locale)
-
-const certificationsForCarousel: CarouselCertification[] = certifications.map((cert) => ({
-  data: {
-    name: cert.name,
-    organization: cert.organization,
-    logo: undefined,
-    pdfUrl: cert.pdfUrl || undefined,
-    category: cert.category,
-  },
-}))
+const t = getTranslations(locale)
+const certifications = [...getCertifications(locale)].sort((a, b) => a.order - b.order)
 ---
 
-<div>
-  <CertificationCarousel certifications={certificationsForCarousel} locale={locale} />
-</div>
+<ul class="grid grid-cols-1 gap-x-12 gap-y-10 font-text md:grid-cols-2">
+  {
+    certifications.map((cert) => (
+      <li class="flex flex-col items-start gap-2">
+        <p class="cert-category text-[13px] text-muted-foreground">
+          {t.certifications[cert.category]}
+        </p>
+        <h3 class="text-[1.0625rem] leading-snug font-semibold">{cert.name}</h3>
+        <p class="text-sm text-muted-foreground">{cert.organization}</p>
+        {cert.pdfUrl && (
+          <a
+            href={cert.pdfUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="mt-2 inline-flex min-h-11 items-center gap-2 text-sm text-signal underline underline-offset-4 focus-ring"
+          >
+            {t.certifications.viewCertificate}<span aria-hidden="true">↗</span>
+          </a>
+        )}
+      </li>
+    ))
+  }
+</ul>

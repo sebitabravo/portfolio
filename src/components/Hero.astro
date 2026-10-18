@@ -23,13 +23,14 @@ const heroTitleId = `hero-title-${locale}`
   data-portfolio-motion
 >
   <canvas class="hero-webgl" data-hero-webgl aria-hidden="true"></canvas>
+  <div class="hero-stage-glow" aria-hidden="true"></div>
   <div class="hero-stage-grid" aria-hidden="true"></div>
   <div class="hero-inner">
     <div class="hero-layout">
       <div class="hero-copy">
-        <h1 id={heroTitleId} class="hero-title">
+        <h1 id={heroTitleId} class="hero-title" aria-label="Sebastian Bravo">
           <span class="hero-title-name block">Sebastian</span>
-          <span class="hero-title-name hero-title-accent block">Bravo</span>
+          <span class="hero-title-name hero-title-accent block" data-text="Bravo">Bravo</span>
         </h1>
         <p class="hero-role hero-title-role">
           {t.hero.role}<span aria-hidden="true"> · </span>{t.hero.roleLocation}

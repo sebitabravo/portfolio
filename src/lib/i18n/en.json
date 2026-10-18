@@ -82,6 +82,7 @@
   },
   "certifications": {
     "title": "Certifications",
+    "viewCertificate": "View certificate",
     "carouselLabel": "Certifications carousel",
     "professional": "Professional",
     "academic": "Academic",

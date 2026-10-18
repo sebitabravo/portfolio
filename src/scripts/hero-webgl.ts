@@ -58,7 +58,7 @@ export function createHeroScene(canvas: HTMLCanvasElement, root: MotionRoot): Cl
   pointsGeometry.setAttribute("position", new Float32BufferAttribute(positions, 3))
 
   const pointsMaterial = new PointsMaterial({
-    color: 0xc7b7ff,
+    color: 0xe7a23c,
     size: isCompact ? 0.035 : 0.042,
     transparent: true,
     opacity: 0.76,
@@ -71,7 +71,7 @@ export function createHeroScene(canvas: HTMLCanvasElement, root: MotionRoot): Cl
   const lineGeometry = new BufferGeometry()
   lineGeometry.setAttribute("position", new Float32BufferAttribute(createSignalLines(positions), 3))
   const lineMaterial = new LineBasicMaterial({
-    color: 0x9b82ff,
+    color: 0xf2efe8,
     transparent: true,
     opacity: 0.17,
     depthWrite: false,
@@ -80,9 +80,9 @@ export function createHeroScene(canvas: HTMLCanvasElement, root: MotionRoot): Cl
   const lines = new LineSegments(lineGeometry, lineMaterial)
   group.add(lines)
 
-  const wireGeometry = new IcosahedronGeometry(0.82, 1)
+  const wireGeometry = new IcosahedronGeometry(0.95, 1)
   const wireMaterial = new MeshBasicMaterial({
-    color: 0x8bbcff,
+    color: 0xe7a23c,
     wireframe: true,
     transparent: true,
     opacity: 0.15,

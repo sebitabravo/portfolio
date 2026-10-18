@@ -103,15 +103,15 @@ describe("documented light-theme semantic palette", () => {
 });
 
 describe("flat certification categories and retained theme tokens", () => {
-  const carousel = readFileSync("src/components/CertificationCarousel.astro", "utf8");
+  const certifications = readFileSync("src/components/Certifications.astro", "utf8");
   const themeInline = css.match(/@theme inline\s*\{([^}]*)\}/)?.[1] ?? "";
 
   it("uses plain category text while retaining named theme utilities", () => {
-    expect(carousel).not.toMatch(/hsl\(144/);
-    expect(carousel).toContain("cert-category text-sm text-muted-foreground");
-    expect(carousel).not.toContain("bg-cert-pro-bg");
-    expect(carousel).not.toContain("text-cert-pro-text");
-    expect(carousel).not.toContain("border-cert-pro-border");
+    expect(certifications).not.toMatch(/hsl\(144/);
+    expect(certifications).toContain("cert-category text-[13px] text-muted-foreground");
+    expect(certifications).not.toContain("bg-cert-pro-bg");
+    expect(certifications).not.toContain("text-cert-pro-text");
+    expect(certifications).not.toContain("border-cert-pro-border");
     expect(themeInline).toMatch(/--color-cert-pro-bg:\s*hsl\(var\(--cert-pro\) \/ 0\.12\);/);
     expect(themeInline).toMatch(/--color-cert-pro-text:\s*hsl\(var\(--cert-pro-text\)\);/);
     expect(themeInline).toMatch(/--color-cert-pro-border:\s*hsl\(var\(--cert-pro\) \/ 0\.25\);/);

@@ -110,9 +110,8 @@ export function createMotionController(options: MotionControllerOptions = {}): M
 
   const load = (activation: number) => {
     const loadWebGL = preference?.matches !== true && canLoadWebGLEnhancement()
-    const loadFlip = Boolean(scope.querySelector("[data-nav-indicator]"))
 
-    void loadMotionLayer({ webgl: loadWebGL, flip: loadFlip })
+    void loadMotionLayer({ webgl: loadWebGL })
       .then((libraries) => {
         if (isStale(activation)) return
 

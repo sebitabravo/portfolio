@@ -20,6 +20,7 @@ interface NavIndicatorState {
   activeLink: HTMLAnchorElement | null
   gsap: MotionGsap | null
   Flip: MotionFlip | null
+  requestFlip?: () => void
   sync(animate: boolean): void
   destroy(): void
 }
@@ -98,6 +99,7 @@ export function setupNavIndicator(scope: Document = document): void {
     const detail = (event as CustomEvent<HeaderNavChangeDetail>).detail
     const link = detail?.link && links.includes(detail.link) ? detail.link : null
     fit(link, Boolean(state.gsap && state.Flip))
+    state.requestFlip?.()
   }
 
   scope.addEventListener(HEADER_NAV_CHANGE_EVENT, onNavChange, { signal })
@@ -119,12 +121,36 @@ export function teardownNavIndicator(): void {
 
 export function createNavIndicatorModule(): MotionModule {
   let state: NavIndicatorState | null = null
+  let flipModule: MotionFlip | null = null
+  let flipPromise: Promise<void> | null = null
+
+  const ensureFlip = () => {
+    if (!state?.gsap || state.Flip) return
+    if (flipModule) {
+      state.gsap.registerPlugin(flipModule)
+      state.Flip = flipModule
+      return
+    }
+    if (flipPromise) return
+
+    flipPromise = import("gsap/Flip")
+      .then(({ Flip }) => {
+        flipModule = Flip
+      })
+      .catch(() => undefined)
+      .then(() => {
+        if (!flipModule || !state?.gsap) return
+        state.gsap.registerPlugin(flipModule)
+        state.Flip = flipModule
+      })
+  }
 
   const release = () => {
     if (!state) return
     state.gsap?.killTweensOf(state.indicator)
     state.gsap = null
     state.Flip = null
+    state.requestFlip = undefined
     state.sync(false)
     state = null
   }
@@ -138,6 +164,7 @@ export function createNavIndicatorModule(): MotionModule {
       state = activeState
       state.gsap = context.libraries.gsap
       state.Flip = context.libraries.Flip
+      state.requestFlip = ensureFlip
       state.sync(false)
     },
     refresh() {

@@ -107,6 +107,8 @@ const heroTitleId = `hero-title-${locale}`
       }),
     )
   }
-  if (document.readyState === "complete") startWhenIdle()
+  // With reduced motion nothing is fetched, so waiting for load protects no LCP: claim now and settle "reduced".
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) claimMotion()
+  else if (document.readyState === "complete") startWhenIdle()
   else window.addEventListener("load", startWhenIdle, { once: true })
 </script>

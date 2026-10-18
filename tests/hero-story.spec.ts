@@ -9,7 +9,8 @@ async function scrollToProgress(page: Page, progress: number) {
     const header = document.querySelector<HTMLElement>(".site-header")?.offsetHeight ?? 0
     const top = track.getBoundingClientRect().top + window.scrollY
     const distance = track.offsetHeight - (window.innerHeight - header)
-    window.scrollTo(0, top - header + value * distance)
+    // Salto instantáneo: el sitio usa scroll suave y el test no debe medir a mitad del desplazamiento.
+    window.scrollTo({ top: top - header + value * distance, behavior: "instant" })
   }, progress)
 }
 
@@ -67,25 +68,31 @@ for (const viewport of [
   test.describe(`hero LCP at ${viewport.width}x${viewport.height}`, () => {
     test.use({ viewport })
 
-    test("keeps the hero title as the largest contentful paint", async ({ page }) => {
+    test("keeps the hero title as the largest contentful paint", async ({ page, browserName }) => {
+      // El presupuesto se audita con el LCP de Chromium (Lighthouse y Core Web Vitals);
+      // Firefox y WebKit atribuyen el texto a otros elementos y no son la métrica que se mide.
+      test.skip(browserName !== "chromium", "El LCP auditado es el de Chromium.")
       await page.goto("/")
       const supported = await page.evaluate(() =>
         PerformanceObserver.supportedEntryTypes.includes("largest-contentful-paint"),
       )
       test.skip(!supported, "Este navegador no expone Largest Contentful Paint.")
 
-      const lcpInsideTitle = await page.evaluate(
+      const lcp = await page.evaluate(
         () =>
-          new Promise<boolean>((resolve) => {
+          new Promise<{ insideTitle: boolean; element: string }>((resolve) => {
             let latest: Element | null = null
             new PerformanceObserver((list) => {
               const entries = list.getEntries() as (PerformanceEntry & { element?: Element | null })[]
               latest = entries.at(-1)?.element ?? latest
             }).observe({ type: "largest-contentful-paint", buffered: true })
-            setTimeout(() => resolve(Boolean(latest?.closest("h1"))), 1200)
+            setTimeout(() => {
+              const element = latest ? `${latest.tagName.toLowerCase()}.${latest.className}` : "none"
+              resolve({ insideTitle: Boolean(latest?.closest("h1")), element })
+            }, 1200)
           }),
       )
-      expect(lcpInsideTitle).toBe(true)
+      expect(lcp.insideTitle, `LCP element: ${lcp.element}`).toBe(true)
     })
   })
 }

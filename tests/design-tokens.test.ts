@@ -52,28 +52,28 @@ function contrast(foreground: string, background: string): number {
 describe("documented light-theme semantic palette", () => {
   it("assigns identity colors to their semantic roles", () => {
     for (const [name, color] of Object.entries({
-      background: "#ffffff",
-      foreground: "#292827",
-      card: "#ffffff",
-      "card-foreground": "#292827",
-      popover: "#ffffff",
-      "popover-foreground": "#292827",
-      primary: "#714cb6",
-      "primary-foreground": "#ffffff",
-      secondary: "#e9e5dd",
-      "secondary-foreground": "#292827",
-      muted: "#f4f3fa",
-      "muted-foreground": "#5c5955",
-      accent: "#cbb7fb",
-      "accent-foreground": "#292827",
-      border: "#dcd7d3",
-      input: "#dcd7d3",
-      ring: "#714cb6",
-      "surface-soft": "#f4f3fa",
-      parchment: "#dcd7d3",
-      "warm-cream": "#e9e5dd",
-      charcoal: "#292827",
-      "caption-color": "#69645f",
+      background: "#f1eeea",
+      foreground: "#11100e",
+      card: "#f7f5f3",
+      "card-foreground": "#11100e",
+      popover: "#f7f5f3",
+      "popover-foreground": "#11100e",
+      primary: "#885a16",
+      "primary-foreground": "#f1eeea",
+      secondary: "#dbd8d1",
+      "secondary-foreground": "#11100e",
+      muted: "#e4e2dd",
+      "muted-foreground": "#5c5851",
+      accent: "#885a16",
+      "accent-foreground": "#f1eeea",
+      border: "#d5d2cd",
+      input: "#d5d2cd",
+      ring: "#885a16",
+      "surface-soft": "#e7e4de",
+      parchment: "#d5d2cd",
+      "warm-cream": "#e7e4de",
+      charcoal: "#11100e",
+      "caption-color": "#5c5851",
     })) {
       expect(hex(name), name).toBe(color);
     }
@@ -85,7 +85,7 @@ describe("documented light-theme semantic palette", () => {
     }
   });
 
-  it("keeps small interactive text on amethyst and text/surface pairs readable", () => {
+  it("keeps small interactive text on amber and text/surface pairs readable", () => {
     const link = css.match(/\.link-inline\s*\{([^}]*)\}/)?.[1];
     expect(link?.match(/\bcolor:\s*hsl\(var\(--([\w-]+)\)\)/)?.[1]).toBe("primary");
     for (const [foreground, background] of [
@@ -195,8 +195,8 @@ describe("Button semantic color utilities", () => {
 });
 
 describe("documented dark-theme semantic palette", () => {
-  it("renders dark primary as the documented lavender", () => {
-    expect(hex("primary", darkPalette)).toBe("#cbb7fb");
+  it("renders dark primary as the documented amber", () => {
+    expect(hex("primary", darkPalette)).toBe("#e7a23c");
   });
 
   it("keeps accent foreground WCAG AA readable on the dark accent surface", () => {
@@ -205,23 +205,28 @@ describe("documented dark-theme semantic palette", () => {
 
   it("assigns night canvas, surface, border, text, muted text and warm cream to their roles", () => {
     for (const [name, color] of Object.entries({
-      background: "#0f0f14",
-      foreground: "#e8e6e3",
-      card: "#1a1a22",
-      "card-foreground": "#e8e6e3",
-      popover: "#1a1a22",
-      "popover-foreground": "#e8e6e3",
-      secondary: "#1a1a22",
-      "secondary-foreground": "#e8e6e3",
-      muted: "#1a1a22",
-      "muted-foreground": "#8a8780",
-      border: "#2a2a35",
-      input: "#2a2a35",
-      "surface-soft": "#1a1a22",
-      parchment: "#2a2a35",
-      "warm-cream": "#2a2826",
-      charcoal: "#e8e6e3",
-      "caption-color": "#8a8780",
+      background: "#080807",
+      foreground: "#f2efe8",
+      card: "#151513",
+      "card-foreground": "#f2efe8",
+      popover: "#151513",
+      "popover-foreground": "#f2efe8",
+      primary: "#e7a23c",
+      "primary-foreground": "#0b0b09",
+      secondary: "#292823",
+      "secondary-foreground": "#f2efe8",
+      muted: "#1b1a18",
+      "muted-foreground": "#a29b90",
+      accent: "#e7a23c",
+      "accent-foreground": "#0b0b09",
+      border: "#292823",
+      input: "#292823",
+      ring: "#e7a23c",
+      "surface-soft": "#10100f",
+      parchment: "#292823",
+      "warm-cream": "#151513",
+      charcoal: "#f2efe8",
+      "caption-color": "#aea89e",
     })) {
       expect(hex(name, darkPalette), name).toBe(color);
     }

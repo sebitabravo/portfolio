@@ -92,7 +92,7 @@
 
 /* ============================================
    Design System — Sebastian Bravo Portfolio
-   Editorial white canvas, charcoal ink and lavender accents.
+   Lienzo editorial, tinta contrastada y acentos ámbar.
    ============================================ */
 
 @layer base {
@@ -105,44 +105,44 @@
     --signal: 36 72% 31%;
     --signal-ink: 40 20% 93%;
 
-    /* Light palette — documented canvas, ink and readable interactive text */
-    --background: 0 0% 100%; /* #ffffff */
-    --foreground: 30 2.5% 15.6863%; /* #292827 */
-    --card: 0 0% 100%; /* #ffffff */
-    --card-foreground: 30 2.5% 15.6863%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 30 2.5% 15.6863%;
+    /* El ámbar oscuro mantiene legible el texto interactivo sobre superficies claras. */
+    --background: 40 20% 93%;
+    --foreground: 45 10% 6%;
+    --card: 40 20% 96%;
+    --card-foreground: 45 10% 6%;
+    --popover: 40 20% 96%;
+    --popover-foreground: 45 10% 6%;
 
-    /* Amethyst is interactive; lavender is an accent surface, not small text. */
-    --primary: 260.9434 42.0635% 50.5882%; /* #714cb6 */
-    --primary-foreground: 0 0% 100%;
+    /* Los estados interactivos comparten el color de señal. */
+    --primary: 36 72% 31%;
+    --primary-foreground: 40 20% 93%;
 
-    --secondary: 40 21.4286% 89.0196%; /* #e9e5dd */
-    --secondary-foreground: 30 2.5% 15.6863%;
+    --secondary: 40 12% 84%;
+    --secondary-foreground: 45 10% 6%;
 
-    --muted: 248.5714 41.1765% 96.6667%; /* #f4f3fa */
-    --muted-foreground: 34.2857 3.9548% 34.7059%; /* #5c5955 */
+    --muted: 40 12% 88%;
+    --muted-foreground: 40 6% 34%;
 
-    --accent: 257.6471 89.4737% 85.098%; /* #cbb7fb */
-    --accent-foreground: 30 2.5% 15.6863%;
+    --accent: 36 72% 31%;
+    --accent-foreground: 40 20% 93%;
 
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 26.6667 11.3924% 84.5098%; /* #dcd7d3 */
-    --input: 26.6667 11.3924% 84.5098%;
-    --ring: 260.9434 42.0635% 50.5882%;
+    --border: 40 8% 82%;
+    --input: 40 8% 82%;
+    --ring: 36 72% 31%;
 
     --radius: 0.5rem;
 
     /* Semantic tokens */
     --midnight: 245 45% 16%;
     --midnight-deep: 240 33% 8%;
-    --surface-soft: 248.5714 41.1765% 96.6667%;
-    --parchment: 26.6667 11.3924% 84.5098%;
-    --warm-cream: 40 21.4286% 89.0196%;
-    --charcoal: 30 2.5% 15.6863%;
-    --caption-color: 30 5% 39.2157%; /* #69645f */
+    --surface-soft: 40 16% 89%;
+    --parchment: 40 8% 82%;
+    --warm-cream: 40 16% 89%;
+    --charcoal: 45 10% 6%;
+    --caption-color: 40 6% 34%;
     --cert-pro: 144 37% 35%;
     --cert-pro-text: 144 45% 32%;
 
@@ -165,41 +165,41 @@
     --signal: 36 78% 57%;
     --signal-ink: 45 10% 4%;
 
-    /* Dark Palette — Lavender glow on night canvas */
-    --background: 240 14.2857% 6.8627%; /* #0f0f14 */
-    --foreground: 36 9.8039% 90%; /* #e8e6e3 */
-    --card: 240 13.3333% 11.7647%; /* #1a1a22 */
-    --card-foreground: 36 9.8039% 90%;
-    --popover: 240 13.3333% 11.7647%;
-    --popover-foreground: 36 9.8039% 90%;
+    /* El lienzo casi negro prioriza la tinta cálida y la señal ámbar. */
+    --background: 60 4% 3%;
+    --foreground: 39 29% 93%;
+    --card: 45 5% 8%;
+    --card-foreground: 39 29% 93%;
+    --popover: 45 5% 8%;
+    --popover-foreground: 39 29% 93%;
 
-    --primary: 257.6471 89.4737% 85.098%; /* #cbb7fb — lavender */
-    --primary-foreground: 264 40% 15%;
+    --primary: 36 78% 57%;
+    --primary-foreground: 45 10% 4%;
 
-    --secondary: 240 13.3333% 11.7647%; /* #1a1a22 */
-    --secondary-foreground: 36 9.8039% 90%;
+    --secondary: 43 8% 15%;
+    --secondary-foreground: 39 29% 93%;
 
-    --muted: 240 13.3333% 11.7647%;
-    --muted-foreground: 42 4.0984% 52.1569%; /* #8a8780 */
+    --muted: 45 5% 10%;
+    --muted-foreground: 37 9% 60%;
 
-    --accent: 264 60% 78%; /* lavender accent surface */
-    --accent-foreground: 30 2.5% 15.6863%; /* #292827 */
+    --accent: 36 78% 57%;
+    --accent-foreground: 45 10% 4%;
 
     --destructive: 0 62% 30%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 240 11.5789% 18.6275%; /* #2a2a35 */
-    --input: 240 11.5789% 18.6275%;
-    --ring: 264 60% 78%;
+    --border: 43 8% 15%;
+    --input: 43 8% 15%;
+    --ring: 36 78% 57%;
 
     /* Dark semantic tokens */
     --midnight: 245 45% 16%;
     --midnight-deep: 240 33% 8%;
-    --surface-soft: 240 13.3333% 11.7647%;
-    --parchment: 240 11.5789% 18.6275%;
-    --warm-cream: 30 5% 15.6863%; /* #2a2826 */
-    --charcoal: 36 9.8039% 90%;
-    --caption-color: 42 4.0984% 52.1569%;
+    --surface-soft: 45 5% 6%;
+    --parchment: 43 8% 15%;
+    --warm-cream: 45 5% 8%;
+    --charcoal: 39 29% 93%;
+    --caption-color: 37 9% 65%;
     --cert-pro: 144 37% 35%;
     --cert-pro-text: 144 45% 32%;
 
@@ -228,7 +228,7 @@
 
   body {
     font-family:
-      var(--font-manrope),
+      var(--font-switzer),
       system-ui,
       -apple-system,
       sans-serif;
@@ -264,7 +264,7 @@
 }
 
 /* ============================================
-   Typography — Syne display + Manrope body
+   Tipografía — Boska para títulos y Switzer para texto
    ============================================ */
 
 @layer base {
@@ -274,8 +274,8 @@
   h4,
   h5,
   h6 {
-    font-family: var(--font-syne), var(--font-manrope), system-ui, sans-serif;
-    font-weight: 700;
+    font-family: var(--font-boska), Georgia, serif;
+    font-weight: 500;
     letter-spacing: -0.025em;
     color: hsl(var(--foreground));
   }
@@ -284,7 +284,7 @@
     font-size: 2.25rem;
     line-height: 0.95;
     letter-spacing: -0.03em;
-    font-weight: 700;
+    font-weight: 500;
   }
 
   @media (min-width: 768px) {
@@ -307,7 +307,7 @@
     font-size: 1.75rem;
     line-height: 1.15;
     letter-spacing: -0.025em;
-    font-weight: 600;
+    font-weight: 500;
   }
 
   @media (min-width: 768px) {
@@ -329,7 +329,7 @@
     font-size: 1.375rem;
     line-height: 1.1;
     letter-spacing: -0.015em;
-    font-weight: 600;
+    font-weight: 500;
   }
 
   @media (min-width: 768px) {
@@ -341,7 +341,7 @@
   h4 {
     font-size: 1.125rem;
     line-height: 1.2;
-    font-weight: 600;
+    font-weight: 500;
   }
 
   @media (min-width: 768px) {

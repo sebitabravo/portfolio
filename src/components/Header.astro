@@ -74,7 +74,7 @@ const navSurfaceClass = home
           aria-hidden="true">SB</span
         >
         <span class="hidden whitespace-nowrap sm:inline"
-          >Sebastian <span class="brand-lastname text-primary">Bravo</span></span
+          >Sebastian <span class="brand-lastname text-inherit">Bravo</span></span
         >
       </a>
 
@@ -97,10 +97,9 @@ const navSurfaceClass = home
       <div class="flex items-center gap-1.5 sm:gap-2">
         <a
           href={contactUrl}
-          class="header-cta hidden items-center gap-2 rounded-lg bg-header-cta px-3 py-2 text-xs font-semibold text-header-cta-ink focus-ring transition hover:-translate-y-px hover:shadow-header-cta-hover sm:inline-flex"
+          class="header-cta hidden items-center gap-2 rounded-lg border border-hairline bg-transparent px-3 py-2 text-xs font-semibold text-foreground focus-ring transition-colors hover:bg-muted sm:inline-flex"
         >
-          <span class="header-cta-dot size-[0.38rem] rounded-full bg-current shadow-header-cta-dot" aria-hidden="true"
-          ></span>
+          <span class="header-cta-dot size-[0.38rem] rounded-full bg-current" aria-hidden="true"></span>
           {t.nav.cta}
         </a>
 

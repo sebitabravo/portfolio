@@ -17,17 +17,9 @@ const blogUrl = locale === "es" ? "/blog" : "/en/blog"
 const privacyUrl = locale === "es" ? "/privacy" : "/en/privacy"
 ---
 
-<footer class="mx-auto mt-16 w-full max-w-[1200px] px-4">
-  <div class="flex flex-col gap-8 py-12 font-text text-xs">
-    <div>
-      <a
-        href={locale === "en" ? "/en" : "/"}
-        class="inline-block font-display text-[clamp(2.5rem,6vw,5.375rem)] leading-[0.95] font-medium tracking-[-0.03em] text-foreground focus-ring transition-colors hover:text-primary"
-        >{personalInfo.name}</a
-      >
-    </div>
-
-    <div class="flex flex-wrap items-center gap-x-8 gap-y-6">
+<footer class="mt-16 w-full">
+  <div class="flex flex-col gap-12 pt-12 font-text text-xs">
+    <div class="mx-auto flex w-full max-w-[1200px] flex-wrap items-center gap-x-8 gap-y-6 px-4">
       <span class="text-caption-color">&copy; {currentYear}</span>
       <nav aria-label={t.footer.professionalProfiles}>
         <ul class="footer-socials flex items-center gap-4">
@@ -99,6 +91,13 @@ const privacyUrl = locale === "es" ? "/privacy" : "/en/privacy"
           </li>
         </ul>
       </nav>
+    </div>
+    <div class="w-full overflow-hidden px-4">
+      <a
+        href={locale === "en" ? "/en" : "/"}
+        class="-mb-[0.16em] block font-display text-[clamp(3.5rem,12.5vw,11rem)] leading-[0.78] font-medium tracking-[-0.03em] whitespace-nowrap text-foreground focus-ring focus-visible:outline-offset-[-4px]"
+        >{personalInfo.name}</a
+      >
     </div>
   </div>
 </footer>

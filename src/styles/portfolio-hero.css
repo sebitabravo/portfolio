@@ -88,6 +88,16 @@
     pointer-events: none;
   }
 
+  .hero-crt {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    pointer-events: none;
+    background-image:
+      repeating-linear-gradient(transparent 0 3px, rgb(0 0 0 / 0.06) 3px 4px),
+      radial-gradient(ellipse at center, transparent 45%, rgb(0 0 0 / 0.16) 100%);
+  }
+
   .hero-webgl {
     position: absolute;
     inset: 0;
@@ -149,6 +159,7 @@
     opacity: 0.2;
     mix-blend-mode: screen;
     pointer-events: none;
+    animation: hero-chromatic-glitch 7s steps(1, end) infinite;
   }
 
   .hero-title-accent::before {
@@ -159,6 +170,7 @@
   .hero-title-accent::after {
     color: #4dccd6;
     translate: 1px 0;
+    animation-delay: -3.5s;
   }
 
   .hero-role,
@@ -349,7 +361,20 @@
     }
   }
 
+  @keyframes hero-chromatic-glitch {
+    0%, 92%, 96%, 100% { transform: none; opacity: 0.2; }
+    93% { transform: translateX(1px); opacity: 0.08; }
+    94% { transform: translate(-1px, 1px); opacity: 0.24; }
+    95% { transform: translateY(-1px); opacity: 0.12; }
+  }
+
   @media (prefers-reduced-motion: reduce) {
+    .hero-title-accent::before,
+    .hero-title-accent::after {
+      animation: none;
+      transform: none;
+    }
+
     .hero-art-frame,
     .hero-btn-primary {
       transition: none;

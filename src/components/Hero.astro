@@ -1,4 +1,5 @@
 ---
+import ArrowUpRight from "@/components/icons/ArrowUpRight.astro"
 // El título permanece estático para proteger la pintura del LCP.
 import { Image } from "astro:assets"
 import { personalInfo } from "@/lib/data"
@@ -23,8 +24,9 @@ const heroTitleId = `hero-title-${locale}`
   data-portfolio-motion
 >
   <canvas class="hero-webgl" data-hero-webgl aria-hidden="true"></canvas>
-  <div class="hero-stage-glow" aria-hidden="true"></div>
+  <div class="hero-stage-glow bg-foreground" aria-hidden="true"></div>
   <div class="hero-stage-grid" aria-hidden="true"></div>
+  <div class="hero-crt" aria-hidden="true"></div>
   <div class="hero-inner">
     <div class="hero-layout">
       <div class="hero-copy">
@@ -40,7 +42,7 @@ const heroTitleId = `hero-title-${locale}`
           <a href={contactUrl} class="hero-btn-primary border-0 focus-ring" aria-label={t.hero.contact}>
             <MailIcon class="size-4" />
             <span>{t.hero.contact}</span>
-            <span class="hero-btn-arrow" aria-hidden="true">↗</span>
+            <ArrowUpRight class="hero-btn-arrow size-4 shrink-0" />
           </a>
           <a
             href="/cv/Sebastian_Bravo_CV.pdf"
@@ -48,11 +50,11 @@ const heroTitleId = `hero-title-${locale}`
             rel="noopener noreferrer"
             data-track-cv={locale}
             class="hero-cv-link focus-ring"
-          >{t.hero.downloadCv}<span aria-hidden="true"> ↗</span></a>
+          >{t.hero.downloadCv}<ArrowUpRight class="size-4 shrink-0" /></a>
         </div>
         <ul class="hero-meta" aria-label={t.hero.metaLabel}>
           {personalInfo.available && (
-            <li class="hero-meta-status">
+            <li class="hero-meta-status text-muted-foreground">
               <span class="hero-meta-pulse" aria-hidden="true"></span>
               {t.hero.available}
             </li>
@@ -62,8 +64,8 @@ const heroTitleId = `hero-title-${locale}`
       </div>
       <div class="hero-art" aria-hidden="true">
         <div class="hero-art-frame group-data-[motion-status=active]:will-change-transform">
-          <div class="hero-art-crosshair"></div>
-          <div class="hero-orbit hero-orbit-one"></div>
+          <div class="hero-art-crosshair border-foreground/20"></div>
+          <div class="hero-orbit hero-orbit-one border-foreground/10"></div>
           <div class="hero-portrait-shell">
             <Image
               src={profileImage}

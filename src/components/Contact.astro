@@ -1,4 +1,5 @@
 ---
+import ArrowUpRight from "@/components/icons/ArrowUpRight.astro"
 // Los enlaces directos evitan recopilar datos mediante un formulario.
 import { personalInfo, social } from "@/lib/data"
 import { getTranslations, type Locale } from "@/lib/i18n"
@@ -57,14 +58,17 @@ const contactLinks = [
           data-animate-delay={String(i + 1)}
           target={icon !== "mail" ? "_blank" : undefined}
           rel={icon !== "mail" ? "noopener noreferrer" : undefined}
-          class="group grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-x-6 gap-y-3 py-3 focus-ring"
+          class="group grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-3 py-3 focus-ring"
         >
-          <span class="font-text text-2xl font-semibold break-words text-inverted-accent underline decoration-transparent underline-offset-8 transition-colors group-hover:decoration-current md:text-3xl">
+          <span
+            class:list={[
+              "min-w-0 font-text font-semibold text-inverted-accent underline decoration-transparent underline-offset-8 transition-colors group-hover:decoration-current",
+              icon === "mail" ? "text-[clamp(1rem,2.4vw,1.75rem)] whitespace-nowrap" : "text-2xl md:text-3xl",
+            ]}
+          >
             {label}
           </span>
-          <span aria-hidden="true" class="row-span-2 text-2xl text-inverted-accent md:text-3xl">
-            ↗
-          </span>
+          <ArrowUpRight class="row-span-2 size-6 shrink-0 text-inverted-accent md:size-8" />
           <span class="text-base">{description}</span>
         </a>
       ))
@@ -80,7 +84,7 @@ const contactLinks = [
       class="contact-resume-action inline-flex min-h-11 w-fit items-center gap-2 text-base text-inverted-accent underline underline-offset-4 focus-ring"
     >
       <span>{t.hero.downloadCv}</span>
-      <span aria-hidden="true">↗</span>
+      <ArrowUpRight class="size-4 shrink-0" />
     </a>
     <p>{t.contact.cvHelper}</p>
   </div>

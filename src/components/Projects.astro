@@ -1,4 +1,5 @@
 ---
+import ArrowUpRight from "@/components/icons/ArrowUpRight.astro"
 import { Picture } from "astro:assets"
 import { getProjects, type Project } from "@/lib/data"
 import { getProjectScreenshot } from "@/lib/portfolio-images"
@@ -123,16 +124,16 @@ const actionPrimary = `${actionBase} text-primary`
             <footer class="project-actions mt-auto flex flex-wrap gap-x-6 pt-2">
               {githubUrl && (
                 <a href={githubUrl} target="_blank" rel="noopener noreferrer" data-track-project={slug} data-track-action="code" class={actionSecondary}>
-                  {t.projects.viewCode}<span aria-hidden="true">↗</span>
+                  {t.projects.viewCode}<ArrowUpRight class="size-4 shrink-0" />
                 </a>
               )}
               {liveUrl && (
                 <a href={liveUrl} target="_blank" rel="noopener noreferrer" data-track-project={slug} data-track-action="live" class={actionSecondary}>
-                  {t.projects.viewProject}<span aria-hidden="true">↗</span>
+                  {t.projects.viewProject}<ArrowUpRight class="size-4 shrink-0" />
                 </a>
               )}
               <a href={projectUrl} data-track-project={slug} data-track-action="casestudy" class={actionPrimary}>
-                {t.projects.readMore}<span aria-hidden="true">↗</span>
+                {t.projects.readMore}<ArrowUpRight class="size-4 shrink-0" />
               </a>
             </footer>
           </div>
@@ -144,7 +145,7 @@ const actionPrimary = `${actionBase} text-primary`
   <div class="projects-contact-cta mt-12 flex flex-col items-start gap-x-6 gap-y-2 md:flex-row md:items-center">
     <p class="text-base text-muted-foreground">{t.projects.contactPrompt}</p>
     <a href={contactUrl} class={`projects-contact-link ${actionPrimary}`}>
-      <span>{t.projects.contactCta}</span><span aria-hidden="true">↗</span>
+      <span>{t.projects.contactCta}</span><ArrowUpRight class="size-4 shrink-0" />
     </a>
   </div>
 
@@ -155,7 +156,7 @@ const actionPrimary = `${actionBase} text-primary`
       rel="noopener noreferrer"
       class={`projects-github-link ${actionSecondary}`}
     >
-      {t.projects.viewMoreGithub}<span aria-hidden="true">↗</span>
+      {t.projects.viewMoreGithub}<ArrowUpRight class="size-4 shrink-0" />
     </a>
   </div>
 </div>

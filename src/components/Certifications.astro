@@ -1,4 +1,5 @@
 ---
+import ArrowUpRight from "@/components/icons/ArrowUpRight.astro"
 import { getCertifications } from "@/lib/data"
 import { getTranslations, type Locale } from "@/lib/i18n"
 
@@ -26,7 +27,7 @@ const certifications = [...getCertifications(locale)].sort((a, b) => a.order - b
             class="mt-2 inline-flex min-h-11 items-center gap-2 text-xs text-signal underline underline-offset-4 focus-ring"
           >
             {t.certifications.viewCertificate}
-            <span aria-hidden="true">↗</span>
+            <ArrowUpRight class="size-4 shrink-0" />
           </a>
         )}
       </li>

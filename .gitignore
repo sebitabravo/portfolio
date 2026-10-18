@@ -59,3 +59,9 @@ qa-*.png
 *-postpolish.md
 *-menu-open.md
 lighthouse-scores.png
+
+# Claude Code local config
+.claude/skills/
+.mcp.json
+AGENTS.md
+DESIGN.md

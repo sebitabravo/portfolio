@@ -62,7 +62,7 @@ const readingMinutes = Math.max(1, Math.round((post.body ?? "").split(/\s+/).fil
 >
   <main id="main-content" class="blog-post frame">
     <nav class="blog-post-breadcrumb" aria-label={t.nav.breadcrumb}>
-      <ol class="mono-label flex flex-wrap items-center gap-2 text-muted-foreground">
+      <ol class="meta-label flex flex-wrap items-center gap-2 text-muted-foreground">
         <li><a href={homePath} class="transition-colors hover:text-foreground">{t.nav.home}</a></li>
         <li aria-hidden="true">/</li>
         <li><a href={blogPath} class="transition-colors hover:text-foreground">{t.blog.title}</a></li>
@@ -77,13 +77,12 @@ const readingMinutes = Math.max(1, Math.round((post.body ?? "").split(/\s+/).fil
       <header class="blog-post-header" data-animate>
         {
           isEnglish && isFallback && (
-            <aside lang={locale} class="blog-post-note mono-label" role="note">
+            <aside lang={locale} class="blog-post-note meta-label" role="note">
               {t.blog.fallbackNotice}
             </aside>
           )
         }
-        <p class="blog-post-meta mono-label">
-          <span class="section-index">[{t.blog.kicker}]</span>
+        <p class="blog-post-meta meta-label">
           <time lang={locale} datetime={post.data.publishDate.toISOString()} class="text-muted-foreground">
             {formatDate(post.data.publishDate, locale)}
           </time>

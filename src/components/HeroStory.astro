@@ -1,0 +1,117 @@
+---
+// Scrollytelling del hero: la pantalla queda fija y el scroll cuenta idea, código y producción.
+import { Picture } from "astro:assets"
+import { getProjects } from "@/lib/data"
+import { getTranslations, type Locale } from "@/lib/i18n"
+import { getProjectScreenshot } from "@/lib/portfolio-images"
+import HeroScreen from "./HeroScreen.astro"
+import OsWindowBar from "./OsWindowBar.astro"
+
+interface Props {
+  locale?: Locale
+}
+
+type TokenKind = "kw" | "str" | "fn" | "prop"
+type Token = readonly [text: string, kind?: TokenKind]
+
+const { locale = "es" } = Astro.props
+const t = getTranslations(locale)
+// Vulcania es el caso en producción con URL pública: la historia desemboca en la primera tarjeta de Proyectos.
+const project = getProjects(locale).find(({ slug }) => slug === "vulcania")
+const screenshot = project ? getProjectScreenshot(project.slug) : undefined
+const host = project?.liveUrl?.replace(/^https?:\/\//, "") ?? "sebita.dev"
+const proofs = project ? [`${project.title} · ${project.tagline}`, project.tags.slice(0, 3).join(" · "), host] : []
+
+// Fragmento ilustrativo del stack real del caso (canal en tiempo real de Supabase).
+const code: readonly (readonly Token[])[] = [
+  [["const ", "kw"], ["canal = supabase."], ["channel", "fn"], ["("], ['"alertas"', "str"], [")"]],
+  [["canal."], ["on", "fn"], ["("], ['"postgres_changes"', "str"], [","]],
+  [
+    ["  { "],
+    ["event", "prop"],
+    [": "],
+    ['"INSERT"', "str"],
+    [", "],
+    ["table", "prop"],
+    [": "],
+    ['"reportes"', "str"],
+    [" },"],
+  ],
+  [["  (reporte) => "], ["notificar", "fn"], ["(reporte.new))"]],
+  [["canal."], ["subscribe", "fn"], ["()"]],
+]
+---
+
+<div class="frame hero-story" data-hero-story>
+  <div class="hero-story-stage">
+    <div class="hero-art-frame">
+      <HeroScreen locale={locale}>
+        {
+          project && (
+            <Fragment slot="story">
+              <div class="os-window story-window story-note" style="--win-x: 7%; --win-y: 9%">
+                <OsWindowBar title="idea.txt" />
+                <p class="story-note-text">{project.tagline}</p>
+              </div>
+
+              <div class="os-window story-window story-editor" style="--win-x: 31%; --win-y: 33%">
+                <OsWindowBar title="alertas.ts" />
+                <pre class="story-code">
+                  <code>
+                    {code.map((line, index) => (
+                      <span class="story-code-line" style={`--l:${index}`}>
+                        {line.map(([text, kind]) => (
+                          <span class:list={["tok", kind && `tok-${kind}`]}>{text}</span>
+                        ))}
+                      </span>
+                    ))}
+                  </code>
+                </pre>
+              </div>
+
+              <div class="os-window story-window story-browser" style="--win-x: 15%; --win-y: 5%">
+                <OsWindowBar title={host} />
+                <div class="story-browser-view">
+                  {screenshot && (
+                    <Picture
+                      src={screenshot}
+                      formats={["avif"]}
+                      fallbackFormat="webp"
+                      widths={[800, 1600]}
+                      quality={90}
+                      width={800}
+                      height={500}
+                      sizes="(max-width: 767px) 100vw, 1200px"
+                      alt=""
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  )}
+                </div>
+                <p class="story-toast">
+                  <span class="status-dot" />
+                  {t.projects.statusProduction}
+                </p>
+              </div>
+            </Fragment>
+          )
+        }
+      </HeroScreen>
+    </div>
+
+    <div class="hero-story-captions">
+      <h2 class="sr-only">{t.story.label}</h2>
+      <ol class="hero-story-acts">
+        {
+          t.story.acts.map((act, index) => (
+            <li class="hero-story-act">
+              <p class="hero-story-title">{act}</p>
+              {proofs[index] && <p class="hero-story-proof meta-label">{proofs[index]}</p>}
+            </li>
+          ))
+        }
+      </ol>
+      <div class="hero-story-progress" aria-hidden="true"><span></span><span></span><span></span></div>
+    </div>
+  </div>
+</div>

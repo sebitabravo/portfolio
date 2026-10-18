@@ -1,5 +1,5 @@
 ---
-// Formación en celdas de plano: una ficha técnica por etapa, sin párrafos largos.
+// Formación: una ficha por etapa, sin párrafos largos.
 import { getEducation } from "@/lib/data"
 import { getTranslations, type Locale } from "@/lib/i18n"
 import { formatPeriod } from "@/lib/utils"
@@ -17,14 +17,11 @@ const education = getEducation(locale)
   {
     education.map(({ institution, degree, description, startDate, endDate, current, location, grade, skills }, i) => (
       <article data-animate data-animate-delay={String(i + 1)} class="education-row">
-        <span class="frame-node frame-node-tl" aria-hidden="true" />
-        <span class="frame-node frame-node-tr" aria-hidden="true" />
-        <p class="education-meta mono-label">
-          <span class="section-index">[EDU-{String(i + 1).padStart(2, "0")}]</span>
+        <p class="education-meta meta-label">
           <time>{formatPeriod(startDate, endDate, current, locale)}</time>
         </p>
         <h3 class="education-degree">{degree}</h3>
-        <p class="education-institution mono-label">
+        <p class="education-institution meta-label">
           <span>{institution}</span>
           {location && <span>· {location}</span>}
           {grade && (

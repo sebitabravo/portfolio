@@ -99,8 +99,9 @@ test.describe("Home Page", () => {
         ".site-nav .header-cta[href*='#']",
         "[data-dropdown-menu] a[href*='#']",
         "main a[href*='#']",
-        "footer nav a[href*='#']",
       ]
+      // El pie es un cierre, no un mapa del sitio: no repite los anclajes del nav.
+      await expect(page.locator("footer nav a[href*='#']")).toHaveCount(0)
       for (const group of groups) {
         const links = page.locator(group)
         expect(await links.count(), `${group} should include an in-page link`).toBeGreaterThan(0)

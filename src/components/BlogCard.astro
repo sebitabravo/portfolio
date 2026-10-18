@@ -68,8 +68,8 @@ const headingId = `post-title-${id}`
       </span>
     </span>
     <span class="blog-card-meta">
-      <span class="mono-label">{tags.slice(0, 2).join(" · ")}</span>
-      <time lang={locale} datetime={publishDate.toISOString()} class="mono-label shrink-0 text-muted-foreground">
+      <span class="meta-label">{tags.slice(0, 2).join(" · ")}</span>
+      <time lang={locale} datetime={publishDate.toISOString()} class="meta-label shrink-0 text-muted-foreground">
         {formatDate(publishDate, locale)}
       </time>
     </span>
@@ -78,7 +78,7 @@ const headingId = `post-title-${id}`
     </h2>
     {
       fallbackLabel && (
-        <span lang={locale} class="blog-card-fallback mono-label">
+        <span lang={locale} class="blog-card-fallback meta-label">
           {fallbackLabel}
         </span>
       )

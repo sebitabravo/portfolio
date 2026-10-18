@@ -32,7 +32,9 @@ test.describe("SB-OS interactions", () => {
     await expect(tv.getByRole("radio", { name: "Canal 2: ASCII" })).toBeChecked()
     await expect(ascii).toBeVisible()
     await expect(portrait).toBeHidden()
-    expect((await ascii.locator("pre").textContent())?.split("\n").length).toBe(24)
+    // El retrato ASCII se entrega como imagen SVG: una fila de texto por cada una de las 24 muestras.
+    const asciiSrc = (await ascii.locator("img.tv-ascii").getAttribute("src")) ?? ""
+    expect(decodeURIComponent(asciiSrc).match(/<text /g)).toHaveLength(24)
 
     await tv.getByRole("radio", { name: "Canal 2: ASCII" }).focus()
     await page.keyboard.press("ArrowRight")

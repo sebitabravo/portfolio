@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { ASCII_RAMP, luminanceToChar, pixelsToAscii } from "../src/lib/ascii-art"
+import { ASCII_RAMP, asciiToSvg, luminanceToChar, pixelsToAscii, svgDataUri } from "../src/lib/ascii-art"
 
 describe("ASCII portrait", () => {
   it("maps luminance from empty to dense characters", () => {
@@ -24,5 +24,32 @@ describe("ASCII portrait", () => {
   it("returns an empty portrait for invalid dimensions or short buffers", () => {
     expect(pixelsToAscii([1, 2, 3], 0, 2)).toBe("")
     expect(pixelsToAscii([1, 2, 3], 2, 2)).toBe("")
+  })
+})
+
+describe("ASCII portrait as an image", () => {
+  it("sizes the canvas from the widest row and pads every row to it", () => {
+    const svg = asciiToSvg("@@\n@", { color: "#7dffa0" })
+    expect(svg).toContain('viewBox="0 0 12 24"')
+    expect(svg.match(/<text /g)).toHaveLength(2)
+    expect(svg).toContain(">@ </text>")
+    expect(svg.match(/textLength="12"/g)).toHaveLength(2)
+    expect(svg).toContain('xml:space="preserve"')
+    expect(svg).not.toContain("filter")
+  })
+
+  it("escapes markup characters and adds the phosphor glow on request", () => {
+    const svg = asciiToSvg('<&">', { color: '"red"', glow: true })
+    expect(svg).toContain("&lt;&amp;&quot;&gt;")
+    expect(svg).toContain('fill="&quot;red&quot;"')
+    expect(svg).toContain('filter="url(#glow)"')
+  })
+
+  it("returns an empty canvas for an empty portrait", () => {
+    expect(asciiToSvg("", { color: "#fff" })).toContain('viewBox="0 0 0 0"')
+  })
+
+  it("encodes the SVG as a data URI", () => {
+    expect(svgDataUri("<svg/>")).toBe("data:image/svg+xml,%3Csvg%2F%3E")
   })
 })

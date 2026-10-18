@@ -192,24 +192,6 @@
     padding: clamp(1.25rem, 3vw, 2.25rem) clamp(1rem, 4vw, 3.5rem) clamp(2.5rem, 6vw, 5rem);
   }
 
-  .hero-topline {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    margin: 0 0 clamp(1.5rem, 3.5vw, 2.75rem);
-  }
-
-  .section-index {
-    color: hsl(var(--signal));
-  }
-
-  .section-head-rule {
-    flex: 1 1 2rem;
-    min-width: 1rem;
-    height: 1px;
-    background: hsl(var(--border));
-  }
-
   .hero-layout {
     display: grid;
     align-items: end;
@@ -249,7 +231,8 @@
     opacity: 0.55;
     mix-blend-mode: var(--chroma-blend);
     pointer-events: none;
-    animation: hero-chromatic-glitch 7s steps(1, end) infinite;
+    /* Un solo parpadeo de señal al asentarse la página; nada de bucles. */
+    animation: hero-chromatic-glitch 1.6s steps(1, end) 0.4s 1 both;
   }
 
   .hero-title-accent::before {
@@ -260,7 +243,20 @@
   .hero-title-accent::after {
     color: var(--chroma-b);
     translate: 0.035em 0;
-    animation-delay: -3.5s;
+    animation-delay: 0.47s;
+  }
+
+  /* El nombre domina también en móvil: así el h1 sigue siendo el LCP aunque la pantalla asome bajo el pliegue. */
+  @media (max-width: 639px) {
+    .hero-title {
+      font-size: clamp(4.25rem, 24vw, 6.5rem);
+    }
+  }
+
+  @media (min-width: 640px) and (max-width: 1023px) {
+    .hero-title {
+      font-size: 16vw;
+    }
   }
 
   .hero-aside {
@@ -271,15 +267,14 @@
     font-family: var(--font-geist), system-ui, sans-serif;
   }
 
+  /* Quién y qué hace, en la voz de texto: responde la primera pregunta del visitante. */
   .hero-role {
     margin: 0;
-    color: var(--hero-muted);
-    font-family: var(--font-geist-mono), ui-monospace, monospace;
-    font-size: var(--text-2xs);
+    color: hsl(var(--foreground));
+    font-size: clamp(1.125rem, 1.45vw, 1.375rem);
     font-weight: 500;
-    letter-spacing: 0.08em;
-    line-height: 1.6;
-    text-transform: uppercase;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
   }
 
   .hero-lede {
@@ -304,11 +299,8 @@
     margin: 0;
     padding: 0;
     color: var(--hero-faint);
-    font-family: var(--font-geist-mono), ui-monospace, monospace;
-    font-size: var(--text-2xs);
-    letter-spacing: 0.08em;
+    font-size: 0.875rem;
     list-style: none;
-    text-transform: uppercase;
   }
 
   .hero-meta-status {
@@ -324,14 +316,194 @@
     content: "/";
   }
 
-  .hero-art {
-    margin-top: clamp(2.25rem, 5vw, 4rem);
+  /* Scrollytelling: sin soporte de scroll timelines la historia se lee como lista estática. */
+  .hero-story {
+    --header-h: 3.5rem;
+    --captions-h: 8rem;
+    --screen-ratio: 0.75;
+    padding: 0 clamp(1rem, 4vw, 3.5rem) clamp(2.5rem, 6vw, 5rem);
+  }
+
+  .hero-story-stage {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: clamp(1rem, 2.5vh, 1.75rem);
+  }
+
+  /* La pantalla entra completa en el escenario fijo: el alto disponible manda sobre el ancho.
+     Los subtítulos comparten ese ancho para alinearse al borde de la pantalla. */
+  .hero-story .hero-art-frame,
+  .hero-story-captions {
+    width: min(100%, calc((100svh - var(--header-h) - var(--captions-h) - 3rem) * var(--screen-ratio)));
+    margin-inline: auto;
+  }
+
+  .hero-story-captions {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .hero-story-acts {
+    display: grid;
+    gap: 1.25rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .hero-story-title {
+    margin: 0;
+    color: hsl(var(--foreground));
+    font-family: var(--font-instrument), Georgia, serif;
+    font-size: clamp(1.75rem, 3.2vw, 3rem);
+    line-height: 1;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  .hero-story-proof {
+    margin: 0.5rem 0 0;
+  }
+
+  .hero-story-progress,
+  .story-window {
+    display: none;
+  }
+
+  /* Capa de la historia sobre los íconos y bajo el cristal: una ventana abierta tapa el escritorio. */
+  .os-story {
+    position: absolute;
+    inset: 1.875rem 0 0;
+    z-index: 4;
+    pointer-events: none;
+  }
+
+  .os-story .os-window {
+    position: absolute;
+    top: var(--win-y);
+    left: var(--win-x);
+  }
+
+  .story-note {
+    width: clamp(10rem, 34%, 17rem);
+    rotate: -1.5deg;
+  }
+
+  .story-note-text {
+    margin: 0;
+    padding: 0.9rem 1rem 1.1rem;
+    background: var(--sticky, #f6d365);
+    color: #17140f;
+    font-family: var(--font-instrument), Georgia, serif;
+    font-size: clamp(1rem, 1.6vw, 1.375rem);
+    font-style: italic;
+    line-height: 1.15;
+  }
+
+  .story-editor {
+    width: clamp(15rem, 62%, 34rem);
+  }
+
+  /* Código real del mundo SB-OS: el único lugar donde el mono es contenido y no disfraz. */
+  .story-code {
+    margin: 0;
+    padding: 0.85rem 1rem 1rem;
+    overflow: hidden;
+    background: hsl(240 9% 6%);
+    color: rgb(243 239 230 / 0.86);
+    font-family: var(--font-geist-mono), ui-monospace, monospace;
+    font-size: clamp(0.625rem, 0.95vw, 0.8125rem);
+    line-height: 1.7;
+    white-space: normal;
+  }
+
+  /* El formateo del template agrega saltos dentro del bloque: solo los tokens conservan sus espacios. */
+  .story-code code {
+    font: inherit;
+    white-space: normal;
+  }
+
+  .story-code-line {
+    display: block;
+    white-space: nowrap;
+  }
+
+  .story-code .tok {
+    white-space: pre;
+  }
+
+  .tok-kw {
+    color: var(--r6);
+  }
+
+  .tok-str {
+    color: var(--r3);
+  }
+
+  .tok-fn {
+    color: var(--r5);
+  }
+
+  .tok-prop {
+    color: var(--r2);
+  }
+
+  .story-browser {
+    width: clamp(16rem, 70%, 44rem);
+  }
+
+  .story-browser-view {
+    aspect-ratio: 16 / 10;
+    background: #0d0d10;
+  }
+
+  .story-browser-view img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top;
+  }
+
+  .story-toast {
+    position: absolute;
+    right: 0.75rem;
+    bottom: 0.75rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0;
+    padding: 0.45rem 0.8rem;
+    border-radius: 2px;
+    background: rgb(10 10 14 / 0.92);
+    color: var(--screen-ink);
+    font-size: 0.8125rem;
+    font-weight: 500;
+  }
+
+  @media (min-width: 640px) {
+    .hero-story {
+      --screen-ratio: 1.3333;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .hero-story-acts {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .hero-story {
+      --captions-h: 7rem;
+      --screen-ratio: 1.7778;
+    }
   }
 
   /* El handoff de scroll solo escala la pantalla; el h1 queda fuera del movimiento. */
   .hero-art-frame,
-  .hero-aside,
-  .hero-topline {
+  .hero-aside {
     --hero-exit-y: 0rem;
     --hero-exit-opacity: 1;
     translate: 0 var(--hero-exit-y);
@@ -648,22 +820,6 @@
     pointer-events: none;
   }
 
-  .hero-scroll-cue {
-    position: absolute;
-    bottom: 1rem;
-    left: 50%;
-    z-index: 6;
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-    color: rgb(243 239 230 / 0.78);
-    font-family: var(--font-geist-mono), ui-monospace, monospace;
-    font-size: var(--text-2xs);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    translate: -50% 0;
-  }
-
   @media (min-width: 640px) {
     .os-screen {
       aspect-ratio: 4 / 3;
@@ -713,11 +869,6 @@
 
   /* En móvil la pantalla se vuelve vertical: accesos a la izquierda, retrato a la derecha y terminal abajo. */
   @media (max-width: 639px) {
-    .hero-topline-time,
-    .hero-topline .section-head-rule {
-      display: none;
-    }
-
     .os-screen {
       aspect-ratio: 3 / 4;
     }
@@ -750,14 +901,28 @@
       width: 90%;
     }
 
+    .story-note {
+      --win-x: 6% !important;
+      --win-y: 5% !important;
+      width: 60%;
+    }
+
+    .story-editor {
+      --win-x: 4% !important;
+      --win-y: 36% !important;
+      width: 92%;
+    }
+
+    .story-browser {
+      --win-x: 4% !important;
+      --win-y: 6% !important;
+      width: 92%;
+    }
+
     .os-terminal {
       min-height: 0;
       padding: 0.7rem 0.8rem 0.8rem;
       font-size: 0.6875rem;
-    }
-
-    .hero-scroll-cue {
-      display: none;
     }
   }
 
@@ -786,10 +951,6 @@
   @media (prefers-reduced-motion: no-preference) {
     .os-terminal-caret {
       animation: caret-blink 1.05s steps(1) infinite;
-    }
-
-    .hero-scroll-arrow {
-      animation: cue-bob 1.6s ease-in-out infinite;
     }
 
     .os-wallpaper-stars circle {
@@ -886,14 +1047,281 @@
   }
 }
 
-@keyframes cue-bob {
-  50% {
-    transform: translateY(3px);
-  }
-}
-
 @keyframes star-twinkle {
   50% {
     opacity: 0.25;
+  }
+}
+
+/* La pista alta solo existe donde el navegador puede atar la historia al scroll y nadie pidió menos movimiento. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .hero-story {
+      height: 360svh;
+      view-timeline: --story block;
+      view-timeline-inset: var(--header-h) 0px;
+    }
+
+    .hero-story-stage {
+      position: sticky;
+      top: var(--header-h);
+      height: calc(100svh - var(--header-h));
+    }
+
+    /* Solo propiedades largas: el minificador funde "animation" + "animation-timeline" en un shorthand
+       inválido y el navegador descarta la regla entera. */
+    .hero-story .hero-art-frame,
+    .hero-story .os-desktop,
+    .hero-story-act,
+    .hero-story-progress span::after,
+    .story-window,
+    .story-code-line,
+    .story-toast,
+    .hero-story .os-window-portrait,
+    .hero-story .os-window-terminal,
+    .hero-story .os-note {
+      animation-duration: auto;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-timeline: --story;
+    }
+
+    .hero-story .hero-art-frame {
+      animation-name: story-screen;
+      animation-range: entry 0% contain 6%;
+    }
+
+    .hero-story .os-desktop {
+      animation-name: story-parallax;
+      animation-range: contain 0% contain 100%;
+    }
+
+    .hero-story-acts {
+      grid-template-columns: none;
+    }
+
+    .hero-story-act {
+      grid-area: 1 / 1;
+      animation-name: story-caption;
+    }
+
+    .hero-story-act:nth-child(1) {
+      animation-range: contain 10% contain 40%;
+    }
+
+    .hero-story-act:nth-child(2) {
+      animation-range: contain 40% contain 68%;
+    }
+
+    .hero-story-act:nth-child(3) {
+      animation-name: story-caption-last;
+      animation-range: contain 68% contain 84%;
+    }
+
+    .hero-story-progress {
+      display: flex;
+      gap: 0.4rem;
+      max-width: 18rem;
+    }
+
+    .hero-story-progress span {
+      position: relative;
+      flex: 1;
+      height: 2px;
+      overflow: hidden;
+      background: hsl(var(--border));
+    }
+
+    .hero-story-progress span::after {
+      position: absolute;
+      inset: 0;
+      background: hsl(var(--signal));
+      content: "";
+      transform-origin: left;
+      animation-name: story-progress;
+    }
+
+    .hero-story-progress span:nth-child(1)::after {
+      animation-range: contain 10% contain 40%;
+    }
+
+    .hero-story-progress span:nth-child(2)::after {
+      animation-range: contain 40% contain 68%;
+    }
+
+    .hero-story-progress span:nth-child(3)::after {
+      animation-range: contain 68% contain 92%;
+    }
+
+    .story-window {
+      display: block;
+    }
+
+    .story-note {
+      animation-name: story-note;
+      animation-range: contain 12% contain 48%;
+    }
+
+    .story-editor {
+      animation-name: story-editor;
+      animation-range: contain 40% contain 76%;
+    }
+
+    .story-browser {
+      animation-name: story-browser;
+      animation-range: contain 66% contain 80%;
+    }
+
+    /* El código se escribe al ritmo del scroll: cada línea es un tramo de la pista. */
+    .story-code-line {
+      animation-name: story-type;
+      animation-timing-function: steps(24, end);
+      animation-range: contain calc(45% + var(--l) * 3.4%) contain calc(48.5% + var(--l) * 3.4%);
+    }
+
+    .story-toast {
+      animation-name: story-toast;
+      animation-range: contain 80% contain 86%;
+    }
+
+    .hero-story .os-window-portrait,
+    .hero-story .os-window-terminal,
+    .hero-story .os-note {
+      animation-name: story-dim;
+      animation-range: contain 10% contain 18%;
+    }
+  }
+}
+
+@keyframes story-screen {
+  from {
+    scale: 0.9;
+  }
+  to {
+    scale: 1;
+  }
+}
+
+@keyframes story-parallax {
+  from {
+    translate: 0 1.5%;
+  }
+  to {
+    translate: 0 -2.5%;
+  }
+}
+
+@keyframes story-caption {
+  0% {
+    opacity: 0;
+    translate: 0 0.5em;
+    clip-path: inset(0 0 100% 0);
+  }
+  18%,
+  82% {
+    opacity: 1;
+    translate: 0 0;
+    clip-path: inset(0);
+  }
+  100% {
+    opacity: 0;
+    translate: 0 -0.5em;
+    clip-path: inset(100% 0 0 0);
+  }
+}
+
+@keyframes story-caption-last {
+  0% {
+    opacity: 0;
+    translate: 0 0.5em;
+    clip-path: inset(0 0 100% 0);
+  }
+  100% {
+    opacity: 1;
+    translate: 0 0;
+    clip-path: inset(0);
+  }
+}
+
+@keyframes story-progress {
+  from {
+    scale: 0 1;
+  }
+  to {
+    scale: 1 1;
+  }
+}
+
+@keyframes story-note {
+  0% {
+    opacity: 0;
+    translate: 0 18%;
+    scale: 0.96;
+  }
+  22%,
+  78% {
+    opacity: 1;
+    translate: 0 0;
+    scale: 1;
+  }
+  100% {
+    opacity: 0.3;
+    translate: 0 -6%;
+    scale: 0.98;
+  }
+}
+
+@keyframes story-editor {
+  0% {
+    opacity: 0;
+    translate: 0 14%;
+  }
+  22%,
+  80% {
+    opacity: 1;
+    translate: 0 0;
+  }
+  100% {
+    opacity: 0.3;
+    translate: 0 -5%;
+  }
+}
+
+@keyframes story-browser {
+  from {
+    opacity: 0;
+    scale: 0.94;
+    clip-path: inset(46% 46% round 10px);
+  }
+  to {
+    opacity: 1;
+    scale: 1;
+    clip-path: inset(0 round 10px);
+  }
+}
+
+@keyframes story-type {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0);
+  }
+}
+
+@keyframes story-toast {
+  from {
+    opacity: 0;
+    translate: 0 40%;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+@keyframes story-dim {
+  to {
+    opacity: 0.24;
   }
 }

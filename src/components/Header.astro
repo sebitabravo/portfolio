@@ -1,14 +1,11 @@
 ---
-// Barra del sistema: marca a rayas, navegación mono y acciones a la derecha.
+// Barra plana: marca, cuatro enlaces y una sola acción; el resto vive en el contenido.
 import { getTranslations, type Locale } from "@/lib/i18n"
 import { homeSectionFragment, homeSectionIds } from "@/lib/home-sections"
-import { social } from "@/lib/data"
 import BrandMark from "./BrandMark.astro"
 import ThemeToggle from "./ThemeToggle.astro"
 import LanguageToggle from "./LanguageToggle.astro"
 import DropdownMenu from "./ui/DropdownMenu.astro"
-import DownloadIcon from "./icons/Download.astro"
-import LinkedInIcon from "./icons/LinkedIn.astro"
 import ArrowUpRight from "./icons/ArrowUpRight.astro"
 
 interface Props {
@@ -24,7 +21,6 @@ const ids = homeSectionIds[locale]
 const mobileMenuId = `mobile-nav-${locale}`
 const homeUrl = prefix || "/"
 const contactUrl = `${homeUrl}${homeSectionFragment(locale, "contact")}`
-const cvHref = "/cv/Sebastian_Bravo_CV.pdf"
 
 const desktopNavItems = [
   { title: t.nav.projects, label: ids.projects, url: `${homeUrl}${homeSectionFragment(locale, "projects")}` },
@@ -69,16 +65,13 @@ const isCurrentRoute = (url: string) => {
       <div class="desktop-nav relative hidden items-center gap-1 lg:flex" data-nav-list>
         <span class="nav-indicator" data-nav-indicator aria-hidden="true"></span>
         {
-          desktopNavItems.map((link, index) => (
+          desktopNavItems.map((link) => (
             <a
               class="nav-link relative px-3 py-2 focus-ring"
               data-section={link.label}
               href={link.url}
               aria-current={isCurrentRoute(link.url) ? "page" : undefined}
             >
-              <span class="nav-link-index" aria-hidden="true">
-                {String(index + 1).padStart(2, "0")}
-              </span>
               {link.title}
             </a>
           ))
@@ -86,37 +79,12 @@ const isCurrentRoute = (url: string) => {
       </div>
 
       <div class="flex items-center gap-1.5 sm:gap-2">
-        <a
-          href={social.linkedin}
-          target="_blank"
-          rel="me noopener noreferrer"
-          data-track-social="linkedin"
-          class="header-social hidden items-center gap-1.5 px-2.5 py-2 focus-ring xl:inline-flex"
-          aria-label={t.nav.linkedin}
-        >
-          <LinkedInIcon class="size-3.5" />
-          <span>{t.nav.linkedin}</span>
-        </a>
-
-        <a
-          href={cvHref}
-          target="_blank"
-          rel="noopener noreferrer"
-          data-track-cv={locale}
-          class="header-resume hidden items-center gap-1.5 px-2.5 py-2 focus-ring sm:inline-flex"
-          aria-label={t.hero.downloadCv}
-        >
-          <DownloadIcon class="size-3.5" />
-          <span>CV</span>
-        </a>
-
         <div class="header-toggles flex items-center gap-0.5 sm:gap-1">
           <ThemeToggle locale={locale} />
           <LanguageToggle locale={locale} />
         </div>
 
         <a href={contactUrl} class="header-cta btn btn-solid hidden focus-ring sm:inline-flex">
-          <span class="header-cta-dot status-dot" aria-hidden="true"></span>
           {t.nav.cta}
           <ArrowUpRight class="btn-arrow size-3.5" />
         </a>
@@ -135,24 +103,6 @@ const isCurrentRoute = (url: string) => {
                   </a>
                 ))
               }
-              <a
-                href={social.linkedin}
-                target="_blank"
-                rel="me noopener noreferrer"
-                data-track-social="linkedin"
-                class="mobile-nav-link px-3 py-2.5 focus-ring"
-              >
-                {t.nav.linkedin}
-              </a>
-              <a
-                href={cvHref}
-                target="_blank"
-                rel="noopener noreferrer"
-                data-track-cv={locale}
-                class="mobile-nav-link px-3 py-2.5 focus-ring"
-              >
-                {t.hero.downloadCv}
-              </a>
             </div>
           </DropdownMenu>
         </div>

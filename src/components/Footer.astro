@@ -1,10 +1,7 @@
 ---
-// Pie corporativo de 1986: sellos a los lados, marca al centro y fila legal debajo.
+// Cierre del sitio: el nombre vuelve a todo el ancho y una sola fila reúne perfiles y legal.
 import { personalInfo, social } from "@/lib/data"
 import { getTranslations, type Locale } from "@/lib/i18n"
-import { homeSectionFragment } from "@/lib/home-sections"
-import BrandMark from "./BrandMark.astro"
-import RoundSeal from "./RoundSeal.astro"
 
 interface Props {
   locale?: Locale
@@ -14,8 +11,6 @@ const { locale = "es" } = Astro.props
 const t = getTranslations(locale)
 const currentYear = new Date().getFullYear()
 const homeUrl = locale === "es" ? "/" : "/en/"
-const aboutUrl = `${homeUrl}${homeSectionFragment(locale, "about")}`
-const contactUrl = `${homeUrl}${homeSectionFragment(locale, "contact")}`
 const blogUrl = locale === "es" ? "/blog" : "/en/blog"
 const privacyUrl = locale === "es" ? "/privacy" : "/en/privacy"
 const linkClass = "footer-link inline-flex min-h-11 items-center focus-ring"
@@ -24,26 +19,14 @@ const linkClass = "footer-link inline-flex min-h-11 items-center focus-ring"
 <footer class="site-footer w-full">
   <span class="rainbow-band rainbow-band-thin" aria-hidden="true"></span>
   <div class="frame site-footer-frame">
-    <div class="footer-seals">
-      <div class="footer-seal footer-seal-made" aria-hidden="true">
-        <RoundSeal text={t.footer.sealMade} variant="globe" size={124} />
-      </div>
-
-      <a href={homeUrl} class="footer-brand focus-ring" aria-label={t.nav.brandHome}>
-        <span class="footer-brand-row">
-          <BrandMark class="h-6 w-auto" />
-          <span class="footer-wordmark">{personalInfo.name}</span>
-        </span>
-        <span class="footer-tagline">{t.footer.tagline}</span>
-        <span class="footer-rights">&copy; {currentYear} {personalInfo.name} · Chile. {t.footer.rights}</span>
-      </a>
-
-      <a href={privacyUrl} class="footer-seal footer-seal-privacy focus-ring" aria-label={t.footer.sealPrivacy}>
-        <RoundSeal text={`${t.footer.sealPrivacy} · `} variant="laurel" center="§" size={124} />
-      </a>
-    </div>
+    <p class="footer-tagline">{t.footer.tagline}</p>
+    <a href={homeUrl} class="footer-brand focus-ring" aria-label={t.nav.brandHome}>
+      <span class="footer-wordmark">Sebastian <em>Bravo</em></span>
+    </a>
 
     <div class="footer-legal">
+      <p class="footer-rights">&copy; {currentYear} {personalInfo.name} · Chile. {t.footer.rights}</p>
+
       <nav aria-label={t.footer.professionalProfiles}>
         <ul class="footer-socials flex flex-wrap items-center gap-x-5">
           <li>
@@ -54,7 +37,7 @@ const linkClass = "footer-link inline-flex min-h-11 items-center focus-ring"
               data-track-social="linkedin"
               class={linkClass}
             >
-              <span>LinkedIn</span>
+              LinkedIn
             </a>
           </li>
           <li>
@@ -65,7 +48,7 @@ const linkClass = "footer-link inline-flex min-h-11 items-center focus-ring"
               data-track-social="github"
               class={linkClass}
             >
-              <span>GitHub</span>
+              GitHub
             </a>
           </li>
         </ul>
@@ -74,8 +57,6 @@ const linkClass = "footer-link inline-flex min-h-11 items-center focus-ring"
       <nav aria-label={t.footer.links}>
         <ul class="flex flex-wrap items-center gap-x-5">
           <li><a href={blogUrl} class={linkClass}>{t.nav.blog}</a></li>
-          <li><a href={aboutUrl} class={linkClass}>{t.nav.about}</a></li>
-          <li><a href={contactUrl} class={linkClass}>{t.nav.contact}</a></li>
           <li><a href={privacyUrl} class={linkClass}>{t.footer.privacy}</a></li>
         </ul>
       </nav>

@@ -25,7 +25,6 @@
   },
   "hero": {
     "role": "Full-Stack Developer",
-    "scroll": "Keep scrolling",
     "greeting": "Hi, I'm",
     "roleLocation": "Chile / Remote",
     "specialization": "Production web · Applied ML",
@@ -36,12 +35,13 @@
     "contact": "Contact",
     "available": "Available for work",
     "downloadCv": "Download CV",
-    "kicker": "Portfolio / 2026 Edition",
-    "localTime": "Local time",
     "timezone": "Chile"
   },
+  "story": {
+    "label": "From concept to deployment",
+    "acts": ["It starts with a real problem.", "It becomes code built to last.", "And ends up running in production."]
+  },
   "os": {
-    "screenLabel": "SB-OS desktop: decorative windows over a 3D landscape",
     "shortcuts": "Desktop shortcuts",
     "menu": ["File", "Edit", "View", "Help"],
     "online": "Online",
@@ -68,8 +68,6 @@
   },
   "projects": {
     "title": "Projects",
-    "kicker": "Selected work",
-    "meta": "2025 — 2026",
     "outcomesLabel": "Outcomes",
     "outcomesTitle": "Evidence over promises",
     "stats": [
@@ -88,8 +86,7 @@
     ],
     "viewProject": "Demo",
     "viewCode": "Code",
-    "readMore": "Read more",
-    "viewCase": "View case",
+    "readMore": "Read the case study",
     "contactPrompt": "Interested in how I built it?",
     "contactCta": "Let's talk",
     "viewMoreGithub": "More projects on GitHub",
@@ -111,7 +108,6 @@
   },
   "work": {
     "title": "Experience",
-    "kicker": "Track record",
     "currently": "Currently...",
     "viewMore": "View more →",
     "viewCaseStudy": "Read case study",
@@ -124,7 +120,6 @@
     "noExperience": "Work experience coming soon..."
   },
   "contact": {
-    "kicker": "Open channel",
     "headline": "Had enough reading?",
     "headlineAccent": "Let's build something.",
     "mailSubject": "Contact from your portfolio",
@@ -133,18 +128,15 @@
     "githubDescription": "Check my open source code",
     "cvHelper": "Download the CV for the full experience overview.",
     "copy": "Copy email",
-    "copied": "Email copied",
-    "seal": "Available for work · 2026 Edition · "
+    "copied": "Email copied"
   },
   "education": {
     "title": "Education",
-    "kicker": "Training",
     "present": "Present",
     "grade": "Grade"
   },
   "certifications": {
     "title": "Certifications",
-    "kicker": "Credentials",
     "viewCertificate": "View certificate",
     "carouselLabel": "Certifications carousel",
     "professional": "Professional",
@@ -154,7 +146,6 @@
   },
   "about": {
     "title": "About",
-    "kicker": "The person behind the code",
     "focusTitle": "Where I do my best work",
     "contactCta": "Let's talk",
     "tvLabel": "Retro TV with three channels",
@@ -175,9 +166,7 @@
     "madeWith": "Made with",
     "privacy": "Privacy",
     "tagline": "High-tech full-stack development",
-    "rights": "All rights reserved.",
-    "sealMade": "Made in Chile · Remote worldwide · ",
-    "sealPrivacy": "Read our privacy statement"
+    "rights": "All rights reserved."
   },
   "language": {
     "toggleLabel": "Toggle language (current: {code})"
@@ -197,7 +186,6 @@
     "fallbackNotice": "This article is currently available in Spanish. The English route exists so case-study links never end in a 404.",
     "fallbackCardLabel": "Available in Spanish",
     "back": "Back to blog",
-    "kicker": "Logbook",
     "readingTime": "min read"
   }
 }

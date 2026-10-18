@@ -105,9 +105,9 @@ describe("documented light-theme semantic palette", () => {
 describe("certification seals and inverted chapter tokens", () => {
   const certifications = readFileSync("src/components/Certifications.astro", "utf8");
 
-  it("labels each seal with plain mono category text instead of colored chips", () => {
+  it("labels each seal with plain category text instead of colored chips", () => {
     expect(certifications).not.toMatch(/hsl\(144/);
-    expect(certifications).toContain('class="cert-category mono-label"');
+    expect(certifications).toContain('class="cert-category meta-label"');
     expect(certifications).not.toContain("bg-cert-pro-bg");
     expect(certifications).not.toContain("text-cert-pro-text");
     for (const palette of [lightPalette, darkPalette]) {

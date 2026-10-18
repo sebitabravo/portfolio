@@ -16,15 +16,7 @@ export type MotionLifecyclePhase = MotionStatus | "destroyed"
 export type MotionModuleState = "idle" | "initializing" | "active" | "destroyed"
 
 export type MotionModuleId =
-  | "cards"
-  | "hero"
-  | "nav-indicator"
-  | "experience-timeline"
-  | "page-transitions"
-  | "reveal"
-  | "terminal"
-  | "cursor"
-  | "counters"
+  "cards" | "hero" | "nav-indicator" | "experience-timeline" | "page-transitions" | "reveal" | "terminal" | "counters"
 
 export type MotionRefreshReason =
   "viewport" | "fonts" | "images" | "breakpoint" | "reduced-motion" | "page-load" | "view-transition" | "manual"
@@ -186,7 +178,6 @@ export function isMotionModuleId(value: unknown): value is MotionModuleId {
     value === "page-transitions" ||
     value === "reveal" ||
     value === "terminal" ||
-    value === "cursor" ||
     value === "counters"
   )
 }

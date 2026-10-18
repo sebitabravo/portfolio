@@ -17,7 +17,7 @@ import {
   WebGLRenderer,
 } from "three"
 import WebGL from "three/addons/capabilities/WebGL.js"
-import { BASE_FOV, approach, computeHeroCamera, heroScrollProgress } from "./hero-camera"
+import { BASE_FOV, approach, computeHeroCamera, heroScrollProgress, storyProgress } from "./hero-camera"
 import { CRT_FRAGMENT, CRT_VERTEX, SKY_FRAGMENT, SKY_VERTEX, TERRAIN_FRAGMENT, TERRAIN_VERTEX } from "./hero-shaders"
 
 type MotionRoot = HTMLElement & {
@@ -29,6 +29,8 @@ type MotionRoot = HTMLElement & {
 type Cleanup = () => void
 
 const FRAME_INTERVAL = 32
+// Distancia que recorre el terreno a lo largo de la historia: el scroll avanza y retrocede el vuelo.
+const STORY_TRAVEL = 46
 
 function createFullscreenTriangle(): BufferGeometry {
   const geometry = new BufferGeometry()
@@ -108,6 +110,8 @@ export function createHeroScene(canvas: HTMLCanvasElement, root: MotionRoot): Cl
   const state = { scroll: 0, scrollTarget: 0, turbo: 0, turboTarget: 0, offset: 0, x: 0, y: 2.15, lookY: 1.05, roll: 0 }
   const size = new Vector2()
   let bounds = root.getBoundingClientRect()
+  const track = root.querySelector<HTMLElement>("[data-hero-story]")
+  let headerHeight = 0
   let animationFrame = 0
   let lastFrame = 0
   let disposed = false
@@ -119,6 +123,7 @@ export function createHeroScene(canvas: HTMLCanvasElement, root: MotionRoot): Cl
     if (disposed) return
     const rect = canvas.getBoundingClientRect()
     bounds = root.getBoundingClientRect()
+    headerHeight = document.querySelector<HTMLElement>(".site-header")?.offsetHeight ?? 0
     const width = Math.max(1, Math.round(rect.width))
     const height = Math.max(1, Math.round(rect.height))
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, compact ? 1 : 1.5))
@@ -157,7 +162,7 @@ export function createHeroScene(canvas: HTMLCanvasElement, root: MotionRoot): Cl
     }
     sky.position.copy(camera.position)
 
-    terrainMaterial.uniforms.uOffset.value = state.offset
+    terrainMaterial.uniforms.uOffset.value = state.offset + state.scroll * STORY_TRAVEL
     terrainMaterial.uniforms.uPulse.value = state.turbo
     skyMaterial.uniforms.uTime.value = time / 1000
     postMaterial.uniforms.uTime.value = time / 1000
@@ -211,7 +216,10 @@ export function createHeroScene(canvas: HTMLCanvasElement, root: MotionRoot): Cl
   }
   const onVisibilityChange = () => setVisibility(document.visibilityState !== "hidden")
   const onScroll = () => {
-    state.scrollTarget = heroScrollProgress(window.scrollY || 0, root.offsetHeight)
+    // La caja de la pista se lee en coordenadas de viewport: sigue correcta aunque cambie el alto del hero.
+    const trackRect = track?.getBoundingClientRect()
+    const story = trackRect ? storyProgress(0, trackRect, window.innerHeight, headerHeight) : null
+    state.scrollTarget = story ?? heroScrollProgress(window.scrollY || 0, root.offsetHeight)
     bounds = root.getBoundingClientRect()
   }
   const onContextLost = (event: Event) => {
@@ -237,8 +245,8 @@ export function createHeroScene(canvas: HTMLCanvasElement, root: MotionRoot): Cl
   document.addEventListener("visibilitychange", onVisibilityChange)
   window.addEventListener("scroll", onScroll, { passive: true })
   canvas.addEventListener("webglcontextlost", onContextLost)
-  onScroll()
   resize()
+  onScroll()
   root.dataset.motionStatus = "active"
   start()
 

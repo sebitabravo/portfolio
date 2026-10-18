@@ -4,7 +4,7 @@ import ArrowUpRight from "@/components/icons/ArrowUpRight.astro"
 import { getTranslations, type Locale } from "@/lib/i18n"
 import { homeSectionFragment } from "@/lib/home-sections"
 import { personalInfo } from "@/lib/data"
-import HeroScreen from "./HeroScreen.astro"
+import HeroStory from "./HeroStory.astro"
 import MailIcon from "./icons/Mail.astro"
 
 interface Props {
@@ -19,13 +19,6 @@ const heroTitleId = `hero-title-${locale}`
 
 <section class="hero-gradient group relative isolate w-full text-hero-ink" aria-labelledby={heroTitleId} data-portfolio-motion>
   <div class="frame hero-frame">
-    <p class="hero-topline mono-label">
-      <span class="section-index">[00]</span>
-      <span>{t.hero.kicker}</span>
-      <span class="section-head-rule" aria-hidden="true"></span>
-      <span class="hero-topline-time">{t.hero.localTime} · {t.hero.timezone}</span>
-    </p>
-
     <div class="hero-layout">
       <h1 id={heroTitleId} class="hero-title" aria-label="Sebastian Bravo">
         <span class="hero-title-name block">Sebastian</span>
@@ -62,13 +55,9 @@ const heroTitleId = `hero-title-${locale}`
         </ul>
       </div>
     </div>
-
-    <div class="hero-art">
-      <div class="hero-art-frame">
-        <HeroScreen locale={locale} />
-      </div>
-    </div>
   </div>
+
+  <HeroStory locale={locale} />
 </section>
 
 <script is:inline>

@@ -78,7 +78,7 @@ const navSurfaceClass = home
         >
       </a>
 
-      <div class="desktop-nav relative hidden items-center gap-1 md:flex" data-nav-list>
+      <div class="desktop-nav relative hidden items-center gap-1 lg:flex" data-nav-list>
         <span class="nav-indicator" data-nav-indicator aria-hidden="true"></span>
         {
           desktopNavItems.map((link) => (
@@ -109,7 +109,7 @@ const navSurfaceClass = home
           target="_blank"
           rel="me noopener noreferrer"
           data-track-social="linkedin"
-          class="header-social hidden items-center gap-1.5 rounded-lg bg-card/45 px-2.5 py-2 text-xs font-semibold text-muted-foreground focus-ring transition hover:bg-primary/8 hover:text-primary lg:inline-flex"
+          class="header-social hidden items-center gap-1.5 rounded-lg bg-card/45 px-2.5 py-2 text-xs font-semibold text-muted-foreground focus-ring transition hover:bg-primary/8 hover:text-primary xl:inline-flex"
           aria-label={t.nav.linkedin}
         >
           <LinkedInIcon class="size-3.5" />
@@ -133,7 +133,7 @@ const navSurfaceClass = home
           <LanguageToggle locale={locale} />
         </div>
 
-        <div class="md:hidden">
+        <div class="lg:hidden">
           <DropdownMenu id={mobileMenuId} triggerLabel={t.nav.menu}>
             <div class="flex min-w-52 flex-col gap-1 p-1">
               {

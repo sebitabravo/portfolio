@@ -1,5 +1,5 @@
 ---
-import { Font, getImage } from "astro:assets"
+import { Font } from "astro:assets"
 import { ClientRouter } from "astro:transitions"
 import { SEO } from "astro-seo"
 
@@ -35,10 +35,7 @@ const {
 
 const description = pageDescription ?? (locale === 'en' ? personalInfo.descriptionEn : personalInfo.description)
 
-const isHome = Astro.url.pathname === '/' || Astro.url.pathname === '/en' || Astro.url.pathname === '/en/'
-const heroPortrait = isHome
-  ? await getImage({ src: perfilImage, width: 320, height: 320, format: "webp", quality: 90 })
-  : undefined
+const isHome = Astro.url.pathname === "/" || Astro.url.pathname === "/en" || Astro.url.pathname === "/en/"
 
 const profileUrl = locale === "es" ? "https://sebita.dev/" : "https://sebita.dev/en/"
 const canonical = canonicalUrl ?? profileUrl
@@ -78,12 +75,9 @@ const jsonLdString = buildLayoutJsonLd({
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <ClientRouter />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    {heroPortrait && (
-      <link rel="preload" as="image" href={heroPortrait.src} fetchpriority="high" />
-    )}
     <Font cssVariable="--font-jetbrains-mono" />
-    <Font cssVariable="--font-boska" preload />
-    <Font cssVariable="--font-switzer" preload />
+    <Font cssVariable="--font-boska" />
+    <Font cssVariable="--font-switzer" />
 
     {alternates.map(({ hreflang, href }) => (
       <link rel="alternate" hreflang={hreflang} href={href} />

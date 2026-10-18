@@ -44,15 +44,15 @@ test.describe("Home Page", () => {
     }
   })
 
-  for (const { locale, route, cardLabel, projectEvidence, technologies, workEvidence, mailSubject, responseTime, linkedin, github, cvHelper } of [
+  for (const { locale, route, projectEvidence, technologies, workEvidence, mailSubject, responseTime, linkedin, github, cvHelper } of [
     {
-      locale: "Spanish", route: "/", cardLabel: "PROYECTO", projectEvidence: "Evidencia del proyecto",
+      locale: "Spanish", route: "/", projectEvidence: "Evidencia del proyecto",
       technologies: "Tecnologías", workEvidence: "Evidencia del trabajo", mailSubject: "Contacto desde tu portfolio",
       responseTime: "Te respondo en menos de 24h", linkedin: "Conectemos profesionalmente",
       github: "Mirá mi código abierto", cvHelper: "CV disponible para revisar mi experiencia completa.",
     },
     {
-      locale: "English", route: "/en/", cardLabel: "PROJECT", projectEvidence: "Project evidence",
+      locale: "English", route: "/en/", projectEvidence: "Project evidence",
       technologies: "Technologies", workEvidence: "Work evidence", mailSubject: "Contact from your portfolio",
       responseTime: "I'll reply within 24h", linkedin: "Let's connect professionally",
       github: "Check my open source code", cvHelper: "Download the CV for the full experience overview.",
@@ -61,7 +61,7 @@ test.describe("Home Page", () => {
     test(`${locale} home renders localized project, work, and contact UI labels`, async ({ page }) => {
       await page.goto(route)
       const regularProject = page.locator(".project-card:not(.project-card-featured)").first()
-      await expect(regularProject.locator(".project-media-kicker")).toHaveText(cardLabel)
+      await expect(regularProject.locator(".project-media-kicker")).toHaveCount(0)
       const metrics = page.locator(".project-metrics")
       expect(await metrics.count()).toBeGreaterThan(0)
       await expect(metrics.first()).toHaveAttribute("aria-label", projectEvidence)

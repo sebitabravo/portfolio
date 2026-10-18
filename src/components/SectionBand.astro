@@ -1,5 +1,5 @@
 ---
-import SectionContainer from "./SectionContainer.astro"
+import SectionContainer from "@/components/SectionContainer.astro"
 
 interface Props {
   id: string
@@ -14,7 +14,7 @@ const { id, headingId, tone = "base", class: className, ...attributes } = Astro.
 <div
   class:list={[
     "section-band relative isolate w-full px-4 py-[clamp(4.25rem,7vw,7rem)]",
-    { "section-band-tinted overflow-hidden border-y border-section-band-line bg-section-band-bg": tone === "tinted" },
+    { "section-band-tinted bg-surface-soft": tone === "tinted" },
     className,
   ]}
   data-section-band={tone}

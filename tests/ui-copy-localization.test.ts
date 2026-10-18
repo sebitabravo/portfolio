@@ -113,7 +113,7 @@ describe("project, work, and contact UI copy", () => {
   })
 
   it("binds project and work labels to the dictionary without changing data-driven metric or tag content", () => {
-    expect(projects).toContain("featured ? t.projects.featured : t.projects.cardLabel")
+    expect(projects).not.toContain("project-media-kicker")
     expect(projects).toContain('aria-label={t.projects.evidenceLabel}')
     expect(projects).toContain('aria-label={t.projects.technologiesLabel}')
     expect(projects).toContain("<span>{metric.label}</span>")

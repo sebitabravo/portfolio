@@ -292,8 +292,8 @@
   }
 
   .hero-reveal {
-    opacity: 0;
-    animation: hero-reveal 800ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    opacity: 1;
+    animation: hero-reveal 800ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
   }
 
   /* The heading is the LCP candidate: never hide or blur it behind enhancement motion. */
@@ -302,6 +302,35 @@
     animation: none;
     filter: none;
     transform: none;
+  }
+
+  /* En mobile el lede puede ser el LCP: revelarlo sin opacidad mantiene la pintura temprana. */
+  .hero-lede.hero-reveal {
+    opacity: 1;
+    animation-name: hero-reveal-lede;
+  }
+
+  /* El handoff escribe estas variables; translate/opacity independientes no
+     pisan el transform de entrada ni el tilt del frame. */
+  .hero-art-frame,
+  .hero-actions,
+  .hero-meta {
+    --hero-exit-y: 0rem;
+    --hero-exit-opacity: 1;
+    translate: 0 var(--hero-exit-y);
+    opacity: var(--hero-exit-opacity);
+  }
+
+  /* El magnetismo usa variables con unidad para que GSAP conserve el px. */
+  .hero-btn-primary {
+    --magnet-x: 0px;
+    --magnet-y: 0px;
+    --hero-btn-hover-lift: 0px;
+    translate: var(--magnet-x) calc(var(--magnet-y) - var(--hero-btn-hover-lift));
+  }
+
+  .hero-btn-primary:hover {
+    --hero-btn-hover-lift: 1px;
   }
 
   .hero-reveal-1 {
@@ -330,6 +359,15 @@
     }
     to {
       opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes hero-reveal-lede {
+    from {
+      transform: translateY(1rem);
+    }
+    to {
       transform: translateY(0);
     }
   }

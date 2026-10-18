@@ -72,10 +72,10 @@ format checks.
 
 `vercel.json` is the authority for Vercel response headers; Astro application code and
 `pnpm preview` neither apply nor prove those deployed headers. After changing an
-executable inline script, inspect the generated change and run `pnpm build`: it
-regenerates `dist/` and verifies exact CSP hash parity in both directions. Review a
-reported hash before updating the global `script-src` policy; never blindly authorize
-unknown generated output.
+executable inline script, run `pnpm update:csp` to preview the hash changes and
+`pnpm update:csp:write` to apply them. Review the `vercel.json` diff, then run
+`pnpm build`: it regenerates `dist/` and verifies exact CSP hash parity in both
+directions. Never blindly authorize unknown generated output.
 
 After a Vercel release, a separate observer must inspect `/`, `/en`, one blog page,
 `/.well-known/security.txt`, one `/_astro/` asset, and `/og/es.svg`. Confirm global

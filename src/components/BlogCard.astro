@@ -1,6 +1,7 @@
 ---
 import type { Locale } from "@/lib/i18n"
 import { formatDate } from "@/lib/utils"
+import { articleTitleTransitionName } from "@/scripts/transitions"
 
 interface Props {
   id: string
@@ -42,6 +43,7 @@ const headingId = `post-title-${id}`
     </div>
     <h2
       id={headingId}
+      transition:name={articleTitleTransitionName(id)}
       class="mb-2 text-xl font-bold tracking-tight transition-colors group-hover:text-primary sm:text-2xl"
     >
       {title}

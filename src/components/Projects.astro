@@ -23,7 +23,7 @@ const statusLabels: Record<Project["status"], string> = {
   demo: t.projects.statusDemo,
 }
 
-const actionBase = "project-action focus-ring inline-flex min-h-11 items-center gap-2 text-sm underline underline-offset-4 transition-colors hover:text-primary"
+const actionBase = "project-action focus-ring inline-flex min-h-11 items-center gap-2 text-xs underline underline-offset-4 transition-colors hover:text-primary"
 const actionSecondary = `${actionBase} text-muted-foreground`
 const actionPrimary = `${actionBase} text-primary`
 ---
@@ -94,7 +94,7 @@ const actionPrimary = `${actionBase} text-primary`
             >
               {title}
             </h3>
-            <p class="project-status inline-flex items-center gap-2 text-sm text-muted-foreground">
+            <p class="project-status inline-flex items-center gap-2 text-xs text-muted-foreground">
               <span class="size-1.5 shrink-0 rounded-full bg-signal" aria-hidden="true"></span>
               {publicStatusLabel}
             </p>
@@ -111,7 +111,7 @@ const actionPrimary = `${actionBase} text-primary`
               </div>
             )}
 
-            <div class="project-tags flex flex-wrap gap-x-2 text-sm text-muted-foreground" aria-label={t.projects.technologiesLabel}>
+            <div class="project-tags flex flex-wrap gap-x-2 text-xs text-muted-foreground" aria-label={t.projects.technologiesLabel}>
               {visibleTags.map((tag, index) => (
                 <>
                   {index > 0 && <span aria-hidden="true">·</span>}

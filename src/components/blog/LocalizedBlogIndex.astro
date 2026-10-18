@@ -31,7 +31,7 @@ const alternates = createStaticAlternates(locale, spanishUrl, englishUrl)
 >
   <main id="main-content" class="mx-auto max-w-[900px] px-4 pt-24 pb-12 sm:pb-16 md:pt-28 lg:pb-20">
     <nav class="mb-6" aria-label={t.nav.breadcrumb}>
-      <ol class="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
+      <ol class="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
         <li><a href={isEnglish ? "/en" : "/"} class="transition-colors hover:text-foreground">{t.nav.home}</a></li>
         <li aria-hidden="true">/</li>
         <li class="font-medium text-foreground/80" aria-current="page">{t.blog.title}</li>
@@ -45,7 +45,7 @@ const alternates = createStaticAlternates(locale, spanishUrl, englishUrl)
     {
       hasFallbackPosts && (
         <aside
-          class="mb-8 rounded-xl border border-primary/25 bg-primary/6 px-4 py-3 text-sm text-muted-foreground dark:text-foreground/75"
+          class="mb-8 rounded-xl border border-primary/25 bg-primary/6 px-4 py-3 text-base text-muted-foreground dark:text-foreground/75"
           role="note"
         >
           {t.blog.fallbackNotice}
@@ -55,7 +55,7 @@ const alternates = createStaticAlternates(locale, spanishUrl, englishUrl)
 
     {
       posts.length === 0 ? (
-        <p class="text-sm text-muted-foreground dark:text-foreground/55">{t.blog.empty}</p>
+        <p class="text-base text-muted-foreground dark:text-foreground/55">{t.blog.empty}</p>
       ) : (
         <div class="space-y-8">
           {posts.map((post) => (

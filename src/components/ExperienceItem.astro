@@ -52,7 +52,7 @@ const dateText = current
   data-animate-delay={String(index + 1)}
   class:list={["experience-item grid gap-6 pb-12 md:grid-cols-[minmax(10rem,1fr)_3fr] md:gap-12", { "experience-item-secondary": index > 0 }]}
 >
-  <div class="experience-meta text-sm leading-[1.6] text-muted-foreground">
+  <div class="experience-meta text-xs leading-[1.6] text-muted-foreground">
     <time class="block">{dateText}</time>
     {location && <p>{location}</p>}
     {employmentType && <p class="experience-employment-type mt-2">{employmentType}</p>}
@@ -80,7 +80,7 @@ const dateText = current
 
     {
       skills.length > 0 && (
-        <div class="experience-skills flex flex-wrap gap-x-2 text-sm text-muted-foreground">
+        <div class="experience-skills flex flex-wrap gap-x-2 text-xs text-muted-foreground">
           {skills.map((skill, skillIndex) => (
             <>
               {skillIndex > 0 && <span aria-hidden="true">·</span>}
@@ -128,7 +128,7 @@ const dateText = current
           href={url}
           target={externalUrl ? "_blank" : undefined}
           rel={externalUrl ? "noopener noreferrer" : undefined}
-          class="focus-ring inline-flex min-h-11 items-center gap-2 text-sm text-primary underline underline-offset-4"
+          class="focus-ring inline-flex min-h-11 items-center gap-2 text-xs text-primary underline underline-offset-4"
         >
           {t.work.viewCaseStudy}
           <svg class="size-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -152,6 +152,6 @@ const dateText = current
 
   .experience-highlight span {
     color: hsl(var(--muted-foreground));
-    font-size: 0.875rem;
+    font-size: var(--text-xs);
   }
 </style>

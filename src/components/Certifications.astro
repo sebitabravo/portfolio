@@ -19,13 +19,13 @@ const certifications = [...getCertifications(locale)].sort((a, b) => a.order - b
           {t.certifications[cert.category]}
         </p>
         <h3 class="text-base leading-snug font-semibold">{cert.name}</h3>
-        <p class="text-sm text-muted-foreground">{cert.organization}</p>
+        <p class="text-xs text-muted-foreground">{cert.organization}</p>
         {cert.pdfUrl && (
           <a
             href={cert.pdfUrl}
             target="_blank"
             rel="noopener noreferrer"
-            class="mt-2 inline-flex min-h-11 items-center gap-2 text-sm text-signal underline underline-offset-4 focus-ring"
+            class="mt-2 inline-flex min-h-11 items-center gap-2 text-xs text-signal underline underline-offset-4 focus-ring"
           >
             {t.certifications.viewCertificate}<span aria-hidden="true">↗</span>
           </a>

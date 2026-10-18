@@ -18,11 +18,11 @@ const privacyUrl = locale === "es" ? "/privacy" : "/en/privacy"
 ---
 
 <footer class="mx-auto mt-16 w-full max-w-[1200px] px-4">
-  <div class="flex flex-col gap-8 py-12 font-text text-sm">
+  <div class="flex flex-col gap-8 py-12 font-text text-xs">
     <div>
       <a
         href={locale === "en" ? "/en" : "/"}
-        class="inline-block font-display text-[clamp(2.5rem,5vw,5.375rem)] leading-[0.95] font-medium tracking-[-0.03em] text-foreground focus-ring transition-colors hover:text-primary"
+        class="inline-block font-display text-[clamp(2.5rem,6vw,5.375rem)] leading-[0.95] font-medium tracking-[-0.03em] text-foreground focus-ring transition-colors hover:text-primary"
         >{personalInfo.name}</a
       >
     </div>
@@ -56,7 +56,7 @@ const privacyUrl = locale === "es" ? "/privacy" : "/en/privacy"
         </ul>
       </nav>
 
-      <span class="text-sm text-caption-color">
+      <span class="text-xs text-caption-color">
         {t.footer.madeWith}
         <a
           href="https://astro.build"

@@ -16,7 +16,7 @@
   --text-base: 1.0625rem;
   --text-lg: 1.3125rem;
   --text-xl: 1.3125rem;
-  --text-2xl: 1.5rem;
+  --text-2xl: 1.3125rem;
   --text-3xl: 2.6875rem;
   --color-inverted-bg: hsl(var(--inverted-bg));
   --color-inverted-ink: hsl(var(--inverted-ink));
@@ -78,7 +78,7 @@
 
 @utility tech-badge {
   font-family: var(--font-code);
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
   font-weight: 500;
   padding: 0.25rem 0.625rem;
   border-radius: 6px;
@@ -338,7 +338,7 @@
 
   @media (min-width: 768px) {
     h3 {
-      font-size: 1.5rem;
+      font-size: 1.3125rem;
     }
   }
 
@@ -553,7 +553,7 @@
   }
 
   .prose-custom h2 {
-    font-size: 1.5rem;
+    font-size: 1.3125rem;
     font-weight: 700;
     letter-spacing: -0.02em;
     margin-top: 2.5rem;

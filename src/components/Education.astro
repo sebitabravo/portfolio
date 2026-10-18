@@ -19,9 +19,9 @@ const education = getEducation(locale)
         <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div>
             <h3 class="font-text text-2xl font-semibold text-foreground">{degree}</h3>
-            <p class="mt-0.5 text-sm text-caption-color">{institution}</p>
+            <p class="mt-0.5 text-xs text-caption-color">{institution}</p>
           </div>
-          <div class="shrink-0 text-left text-sm text-caption-color sm:text-right">
+          <div class="shrink-0 text-left text-xs text-caption-color sm:text-right">
             <time>{formatDate(startDate, locale)}</time>
             <span> — </span>
             <time>{current ? t.education.present : endDate ? formatDate(endDate, locale) : ""}</time>
@@ -39,7 +39,7 @@ const education = getEducation(locale)
         )}
 
         {skills && skills.length > 0 && (
-          <p class="mt-4 font-text text-sm text-muted-foreground">{skills.join(" · ")}</p>
+          <p class="mt-4 font-text text-xs text-muted-foreground">{skills.join(" · ")}</p>
         )}
       </article>
     ))

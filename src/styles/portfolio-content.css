@@ -4,7 +4,6 @@
     color: hsl(var(--inverted-ink));
   }
 
-
   .section-heading,
   .project-outcomes-title,
   .project-title,
@@ -51,4 +50,9 @@
 /* La tinta contextual prevalece sobre la utilidad global del título compartido. */
 .section-band-inverted .section-heading {
   color: inherit;
+}
+
+/* El ancla del capítulo conserva espacio para la navegación fija. */
+.section-band-inverted > .portfolio-section {
+  scroll-margin-top: 6rem;
 }

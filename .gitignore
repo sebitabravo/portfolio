@@ -62,6 +62,10 @@ lighthouse-scores.png
 
 # Claude Code local config
 .claude/skills/
+.claude/agents/
 .mcp.json
 AGENTS.md
 DESIGN.md
+PRODUCT.md
+.impeccable/
+.atl/

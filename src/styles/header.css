@@ -61,3 +61,29 @@
     }
   }
 }
+
+/* El icono entra al elegir tema; reduced motion mantiene el cambio instantáneo. */
+@media (prefers-reduced-motion: no-preference) {
+  .theme-icon-light,
+  .theme-icon-dark,
+  .theme-icon-system {
+    transform-origin: center;
+  }
+
+  [data-theme-icon-animate="true"] .theme-icon-light:not(.hidden),
+  [data-theme-icon-animate="true"] .theme-icon-dark:not(.hidden),
+  [data-theme-icon-animate="true"] .theme-icon-system:not(.hidden) {
+    animation: theme-icon-enter 320ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+}
+
+@keyframes theme-icon-enter {
+  from {
+    opacity: 0;
+    transform: rotate(-90deg) scale(0.65);
+  }
+  to {
+    opacity: 1;
+    transform: rotate(0deg) scale(1);
+  }
+}

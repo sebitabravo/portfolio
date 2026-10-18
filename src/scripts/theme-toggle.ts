@@ -38,7 +38,7 @@ export function initThemeToggle() {
     return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"
   }
 
-  function updateThemeIcon(theme: ThemePreference) {
+  function updateThemeIcon(theme: ThemePreference, animate = false) {
     const lightIcon = wrapper.querySelector(".theme-icon-light")
     const darkIcon = wrapper.querySelector(".theme-icon-dark")
     const systemIcon = wrapper.querySelector(".theme-icon-system")
@@ -51,6 +51,9 @@ export function initThemeToggle() {
     const optionSystem = wrapper.querySelector('[data-theme="system"]')
 
     if (!lightIcon || !darkIcon || !systemIcon) return
+
+    if (animate) wrapper.dataset.themeIconAnimate = "true"
+    else delete wrapper.dataset.themeIconAnimate
 
     lightIcon.classList.add("hidden")
     darkIcon.classList.add("hidden")
@@ -90,7 +93,7 @@ export function initThemeToggle() {
     })
   }
 
-  function applyTheme(theme: ThemePreference) {
+  function applyTheme(theme: ThemePreference, animate = false) {
     const effectiveTheme = theme === "system" ? getSystemTheme() : theme
     const html = document.documentElement
 
@@ -100,7 +103,7 @@ export function initThemeToggle() {
       html.classList.remove("dark")
     }
 
-    updateThemeIcon(theme)
+    updateThemeIcon(theme, animate)
   }
 
   const currentTheme = getThemePreference()
@@ -137,7 +140,7 @@ export function initThemeToggle() {
         const theme = (e.currentTarget as HTMLElement).dataset.theme
         if (theme === "light" || theme === "dark" || theme === "system") {
           setThemePreference(theme)
-          applyTheme(theme)
+          applyTheme(theme, true)
           menu.classList.add("hidden")
           toggle.setAttribute("aria-expanded", "false")
           toggle.focus()

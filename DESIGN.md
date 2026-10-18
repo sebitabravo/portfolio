@@ -68,8 +68,8 @@ Header glass is `rgb(241 238 234 / 0.82)` light and `rgb(8 8 7 / 0.78)` dark, wi
 
 ## 3. Typography
 
-- **Display:** Boska 400/500, normal and italic, Fontshare provider, fallback Georgia/serif, `--font-boska`, preloaded. Weight 500 carries display.
-- **Text:** Switzer 400/500/600, Fontshare provider, fallback system-ui/-apple-system/sans-serif, `--font-switzer`, preloaded.
+- **Display:** Boska 400/500, normal and italic, Fontshare provider, fallback Georgia/serif, `--font-boska`, loaded with `font-display: swap` and metric-matched fallbacks; not preloaded (keeps the LCP image from competing with font requests). Weight 500 carries display.
+- **Text:** Switzer 400/500/600, Fontshare provider, fallback system-ui/-apple-system/sans-serif, `--font-switzer`, loaded with `font-display: swap` and metric-matched fallbacks; not preloaded.
 - **Code:** JetBrains Mono 400/500, Fontsource provider, fallback monospace, `--font-jetbrains-mono`, not preloaded.
 
 | Step | Size | Use |
@@ -129,6 +129,8 @@ Display tracking is `-0.03em`; nav and header CTA are uppercase at `0.12em`; all
 - **Reduced motion:** no GSAP, ScrollTrigger, Flip, or WebGL chunks are fetched; CSS forces all reveals visible, removes transforms/transitions, hides the WebGL canvas, and leaves the static stack band unchanged. Theme icons and nav indicators become instantaneous.
 
 **The LCP Stillness Rule.** The hero `<h1>` never animates and never receives inline opacity, filter, transform, or animation styles. It is the LCP; motion starts after it can paint.
+
+**The LCP Competition Rule.** The portrait is `loading="eager"`, `fetchpriority="high"` and `decoding="sync"`; fonts are not preloaded and the frame transform applies on hover only, so the LCP image does not compete with font requests or enhancement work.
 
 **The Enhancement Rule.** Content is complete without JS. Motion may decorate reading, never gate it.
 

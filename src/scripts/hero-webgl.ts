@@ -100,6 +100,8 @@ export function createHeroScene(canvas: HTMLCanvasElement, root: MotionRoot): Cl
   let lastFrame = 0
   let isVisible = true
   let isRunning = false
+  let scrollProgress = 0
+  let scrollTarget = 0
   const pointerTarget = canvas.parentElement ?? canvas
   let pointerBounds = pointerTarget.getBoundingClientRect()
 
@@ -129,13 +131,15 @@ export function createHeroScene(canvas: HTMLCanvasElement, root: MotionRoot): Cl
     lastFrame = time
     pointer.x += (target.x - pointer.x) * 0.045
     pointer.y += (target.y - pointer.y) * 0.045
-    group.rotation.y = Math.sin(time * 0.00004) * 0.1
-    group.rotation.x += (pointer.y * 0.22 - group.rotation.x) * 0.03
+    scrollProgress += (scrollTarget - scrollProgress) * 0.06
+    group.rotation.y = Math.sin(time * 0.00004) * 0.1 + scrollProgress * 0.35
+    group.rotation.x += (pointer.y * 0.22 + scrollProgress * 0.5 - group.rotation.x) * 0.03
     group.rotation.z += (pointer.x * 0.12 - group.rotation.z) * 0.03
     wire.rotation.y -= 0.0018
     wire.rotation.x += 0.0009
     group.position.x += (pointer.x * 0.08 - group.position.x) * 0.035
-    group.position.y += (-pointer.y * 0.08 - group.position.y) * 0.035
+    group.position.y += (-pointer.y * 0.08 - scrollProgress * 0.35 - group.position.y) * 0.035
+    group.scale.setScalar(1 - scrollProgress * 0.12)
     renderer.render(scene, camera)
   }
 
@@ -164,6 +168,9 @@ export function createHeroScene(canvas: HTMLCanvasElement, root: MotionRoot): Cl
     target.y = 0
   }
   const onVisibilityChange = () => setVisibility(document.visibilityState !== "hidden")
+  const onScroll = () => {
+    scrollTarget = heroScrollProgress(window.scrollY || 0, root.offsetHeight)
+  }
 
   const resizeObserver = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(resize)
   const visibilityObserver =
@@ -178,6 +185,8 @@ export function createHeroScene(canvas: HTMLCanvasElement, root: MotionRoot): Cl
   pointerTarget.addEventListener("pointermove", onPointerMove)
   pointerTarget.addEventListener("pointerleave", resetPointer)
   document.addEventListener("visibilitychange", onVisibilityChange)
+  window.addEventListener("scroll", onScroll, { passive: true })
+  onScroll()
   resize()
   canvas.dataset.webglStatus = "ready"
   root.dataset.motionStatus = "active"
@@ -193,6 +202,7 @@ export function createHeroScene(canvas: HTMLCanvasElement, root: MotionRoot): Cl
     pointerTarget.removeEventListener("pointermove", onPointerMove)
     pointerTarget.removeEventListener("pointerleave", resetPointer)
     document.removeEventListener("visibilitychange", onVisibilityChange)
+    window.removeEventListener("scroll", onScroll)
     group.traverse((object) => {
       const mesh = object as Mesh
       if (mesh.geometry) mesh.geometry.dispose()
@@ -243,4 +253,10 @@ export function createSignalLines(positions: Float32Array): Float32Array {
   }
 
   return linePositions
+}
+
+// Progreso del hero para el scroll narrativo: 0 arriba, 1 cuando el hero ya salió.
+export function heroScrollProgress(scrollY: number, heroHeight: number): number {
+  if (!Number.isFinite(scrollY) || !Number.isFinite(heroHeight) || heroHeight <= 0) return 0
+  return Math.min(1, Math.max(0, scrollY / heroHeight))
 }

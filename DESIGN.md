@@ -120,6 +120,8 @@ Display tracking is `-0.03em`; nav and header CTA are uppercase at `0.12em`; all
 ## 6. Motion
 
 - **Baseline reveal:** `[data-animate]` starts at `opacity: 0`, `translateY(1.4rem)`, and resolves over `650ms cubic-bezier(0.16, 1, 0.3, 1)` once, via `IntersectionObserver` at threshold 0.08 and `-8%` bottom margin. Only elements within 1.1 viewport heights are pre-hidden.
+- **Scroll story:** `[data-story-heading]` and `[data-story-wipe]` are driven by CSS `animation-timeline: view()` (entry 5% to cover 28% for headings; entry 8% to cover 38% for the inverted contact chapter). No JavaScript; browsers without scroll timelines show the content unstyled, and reduced motion disables both.
+- **Hero scroll:** `heroScrollProgress(scrollY, heroHeight)` maps hero scroll to 0-1; the Three.js group rotates on x/y, drifts down and scales to 0.88, smoothed per frame. The passive scroll listener is removed with the scene.
 - **Deferred enhancement:** GSAP/ScrollTrigger and Three.js load after `load`, two animation frames, and an idle callback (timeout 1500ms; 200ms fallback). Activation starts when the hero is within 200px or on pointer/focus/touch. Startup is bounded at 3s inline / 4s controller.
 - **Hero handoff:** only `.hero-art-frame`, `.hero-actions`, and `.hero-meta` move; they translate to `-3.25rem` and opacity 0, scrubbed 0.5 from hero top to 30% viewport. The `<h1>` is excluded.
 - **Work wall:** cards start at `--motion-y: 1.2rem`, `scale: 0.985`, then resolve with `0.9s power2.out`, `0.09` stagger, scrubbed 0.75 between section top at 88% and 36% viewport. Card transform transition is `350ms` with the same cubic-bezier.

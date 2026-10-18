@@ -42,7 +42,7 @@ const toggleLabel = labels[locale].replace('{code}', currentLangCode)
         aria-checked={locale === 'es' ? 'true' : 'false'}
         tabindex={locale === 'es' ? 0 : -1}
         data-lang="es"
-        class="language-option flex items-center justify-between w-full px-4 py-2 text-xs text-foreground/80 hover:bg-muted/50 text-left"
+        class="language-option focus-ring flex items-center justify-between w-full px-4 py-2 text-xs text-foreground/80 hover:bg-muted/50 text-left"
       >
         <span>Español</span>
         <span class="check-es hidden" aria-hidden="true">✓</span>
@@ -53,7 +53,7 @@ const toggleLabel = labels[locale].replace('{code}', currentLangCode)
         aria-checked={locale === 'en' ? 'true' : 'false'}
         tabindex={locale === 'en' ? 0 : -1}
         data-lang="en"
-        class="language-option flex items-center justify-between w-full px-4 py-2 text-xs text-foreground/80 hover:bg-muted/50 text-left"
+        class="language-option focus-ring flex items-center justify-between w-full px-4 py-2 text-xs text-foreground/80 hover:bg-muted/50 text-left"
       >
         <span>English</span>
         <span class="check-en hidden" aria-hidden="true">✓</span>

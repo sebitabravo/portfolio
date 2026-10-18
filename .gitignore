@@ -61,6 +61,7 @@ qa-*.png
 lighthouse-scores.png
 
 # Claude Code local config
+.playwright-mcp/
 .claude/skills/
 .claude/agents/
 .mcp.json

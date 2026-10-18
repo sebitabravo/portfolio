@@ -29,7 +29,7 @@ test("live reduced-motion changes retain the static hero and only activate optio
   await page.emulateMedia({ reducedMotion: "reduce" })
   await expect(hero).toHaveAttribute("data-motion-status", "reduced")
   await expect(canvas).toHaveAttribute("data-webgl-status", "reduced")
-  await expect(page.locator(".hero-orbit-one")).toBeVisible()
+  await expect(page.locator(".os-screen")).toBeVisible()
 
   await page.emulateMedia({ reducedMotion: "no-preference" })
   await expect(hero).toHaveAttribute("data-motion-status", "active")

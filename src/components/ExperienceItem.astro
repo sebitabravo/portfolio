@@ -1,6 +1,8 @@
 ---
+// Fila de trayectoria: el resumen se lee de un vistazo y el detalle se despliega nativo.
 import { Picture } from "astro:assets"
-import { formatDate } from "@/lib/utils"
+import ArrowUpRight from "@/components/icons/ArrowUpRight.astro"
+import { formatPeriod } from "@/lib/utils"
 import { getTranslations, type Locale } from "@/lib/i18n"
 import type { ExperienceLogo } from "@/lib/data"
 
@@ -39,42 +41,37 @@ const {
 } = Astro.props
 const t = getTranslations(locale)
 const externalUrl = url?.startsWith("http")
-
-const dateText = current
-  ? t.work.currently
-  : endDate
-    ? `${formatDate(startDate, locale)} — ${formatDate(endDate, locale)}`
-    : formatDate(startDate, locale)
+const period = current ? t.work.currently : formatPeriod(startDate, endDate, current, locale)
+const number = String(index + 1).padStart(2, "0")
 ---
 
-<div
+<details
   data-animate
   data-animate-delay={String(index + 1)}
-  class:list={[
-    "experience-item grid gap-6 pb-12 md:grid-cols-[minmax(10rem,1fr)_3fr] md:gap-12",
-    { "experience-item-secondary": index > 0 },
-  ]}
+  class:list={["experience-item", { "experience-item-secondary": index > 0 }]}
+  name={`experience-${locale}`}
+  open={index === 0}
 >
-  <div class="experience-meta text-xs leading-[1.6] text-muted-foreground">
-    <time class="block">{dateText}</time>
-    {location && <p>{location}</p>}
-    {employmentType && <p class="experience-employment-type mt-2">{employmentType}</p>}
-  </div>
+  <summary class="experience-summary focus-ring">
+    <span class="experience-index mono-label" aria-hidden="true">[{number}]</span>
+    <span class="experience-meta mono-label"><time datetime={startDate.toISOString().slice(0, 7)}>{period}</time></span>
+    <h3 class="experience-role">{position}</h3>
+    <span class="experience-company">{company}</span>
+    <span class="experience-employment-type mono-label">{employmentType}</span>
+    <span class="experience-toggle" aria-hidden="true"></span>
+  </summary>
 
-  <div class="experience-description flex min-w-0 flex-col items-start gap-4">
-    <div>
-      <h3 class="experience-role text-2xl leading-tight text-foreground">{position}</h3>
-      <h4 class="mt-2 text-xl leading-6 text-primary">{company}</h4>
-    </div>
-    <p class="max-w-[60ch] text-base leading-relaxed text-muted-foreground">{description}</p>
+  <div class="experience-description">
+    {location && <p class="experience-location mono-label">{location}</p>}
+    <p class="experience-copy">{description}</p>
 
     {
       highlights.length > 0 && (
-        <div class="experience-highlights flex flex-wrap gap-x-8 gap-y-4" aria-label={t.work.evidenceLabel}>
+        <div class="experience-highlights" aria-label={t.work.evidenceLabel}>
           {highlights.map((highlight) => (
-            <div class="experience-highlight flex min-w-0 flex-col gap-1">
+            <div class="experience-highlight">
               <span>{highlight.label}</span>
-              <strong class="text-base font-medium text-primary">{highlight.value}</strong>
+              <strong>{highlight.value}</strong>
             </div>
           ))}
         </div>
@@ -83,78 +80,58 @@ const dateText = current
 
     {
       skills.length > 0 && (
-        <div class="experience-skills flex flex-wrap gap-x-2 text-xs text-muted-foreground">
-          {skills.map((skill, skillIndex) => (
-            <>
-              {skillIndex > 0 && <span aria-hidden="true">·</span>}
-              <span>{skill}</span>
-            </>
+        <div class="experience-skills">
+          {skills.map((skill) => (
+            <span class="chip">{skill}</span>
           ))}
         </div>
       )
     }
 
-    {
-      logos && logos.length > 0 && (
-        <div class="flex flex-wrap items-center gap-4">
-          {logos.map((logo) => (
-            <a
-              href={logo.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              title={logo.alt}
-              aria-label={logo.alt}
-              class="flex size-12 items-center justify-center opacity-75 focus-ring transition-opacity duration-200 hover:opacity-100"
-            >
-              <Picture
-                src={logo.src}
-                formats={["avif"]}
-                fallbackFormat="webp"
-                alt={logo.alt}
-                width={48}
-                height={48}
-                densities={[1, 2]}
-                fit="contain"
-                loading="lazy"
-                decoding="async"
-                class="size-full object-contain grayscale"
-              />
-            </a>
-          ))}
-        </div>
-      )
-    }
-
-    {
-      url && (
-        <a
-          href={url}
-          target={externalUrl ? "_blank" : undefined}
-          rel={externalUrl ? "noopener noreferrer" : undefined}
-          class="inline-flex min-h-11 items-center gap-2 text-xs text-primary underline underline-offset-4 focus-ring"
-        >
-          {t.work.viewCaseStudy}
-          <svg class="size-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-          </svg>
-        </a>
-      )
-    }
+    <div class="experience-footer">
+      {
+        logos && logos.length > 0 && (
+          <div class="experience-logos">
+            {logos.map((logo) => (
+              <a
+                href={logo.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                title={logo.alt}
+                aria-label={logo.alt}
+                class="experience-logo focus-ring"
+              >
+                <Picture
+                  src={logo.src}
+                  formats={["avif"]}
+                  fallbackFormat="webp"
+                  alt={logo.alt}
+                  width={48}
+                  height={48}
+                  densities={[1, 2]}
+                  fit="contain"
+                  loading="lazy"
+                  decoding="async"
+                  class="size-full object-contain"
+                />
+              </a>
+            ))}
+          </div>
+        )
+      }
+      {
+        url && (
+          <a
+            href={url}
+            target={externalUrl ? "_blank" : undefined}
+            rel={externalUrl ? "noopener noreferrer" : undefined}
+            class="experience-case project-action project-action-primary focus-ring"
+          >
+            {t.work.viewCaseStudy}
+            <ArrowUpRight class="size-3.5 shrink-0" />
+          </a>
+        )
+      }
+    </div>
   </div>
-</div>
-
-<style>
-  .experience-item {
-    font-family: var(--font-switzer);
-  }
-
-  .experience-role {
-    font-family: var(--font-boska);
-    font-weight: 500;
-  }
-
-  .experience-highlight span {
-    color: hsl(var(--muted-foreground));
-    font-size: var(--text-xs);
-  }
-</style>
+</details>

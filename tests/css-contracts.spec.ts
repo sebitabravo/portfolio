@@ -29,11 +29,11 @@ test("theme aliases follow the active runtime palette in both locales", async ({
   }
 })
 
-test("hero title is solid and certifications form a static responsive five-item grid", async ({ page }) => {
+test("hero title is solid and certifications form a static responsive five-seal grid", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" })
   await page.goto("/")
   const title = page.locator(".hero-title-accent")
-  await expect(title).toHaveCSS("color", "rgb(242, 239, 232)")
+  await expect(title).toHaveCSS("color", "rgb(243, 239, 230)")
   await expect(title).toHaveCSS("background-image", "none")
   await expect(title).not.toHaveCSS("background-clip", "text")
   const grid = page.locator("#certificaciones ul")
@@ -48,7 +48,7 @@ test("hero title is solid and certifications form a static responsive five-item 
       overflow: element.scrollWidth > element.clientWidth,
       animations: element.getAnimations({ subtree: true }).length,
     }))
-    expect(state).toEqual({ columns: width < 768 ? 1 : 2, overflow: false, animations: 0 })
+    expect(state).toEqual({ columns: width < 768 ? 2 : 5, overflow: false, animations: 0 })
     for (const item of await grid.locator(":scope > li").all()) await expect(item).toBeVisible()
   }
 })

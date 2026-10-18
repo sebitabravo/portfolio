@@ -44,22 +44,22 @@ function contrast(foreground: string, background: string): number {
 
 describe("hero contrast contract", () => {
   it("keeps the faint hero token above WCAG AA on both base canvases", () => {
-    expect(heroCss).toContain("--hero-faint: #5c5851");
-    expect(heroCss).toContain("--hero-faint: #aea89e");
-    expect(contrast("#5c5851", "#f1eeea")).toBeGreaterThanOrEqual(4.5);
-    expect(contrast("#aea89e", "#080807")).toBeGreaterThanOrEqual(4.5);
+    expect(heroCss).toContain("--hero-faint: #5a5246");
+    expect(heroCss).toContain("--hero-faint: #a6a29a");
+    expect(contrast("#5a5246", "#f2ece0")).toBeGreaterThanOrEqual(4.5);
+    expect(contrast("#a6a29a", "#0b0b0d")).toBeGreaterThanOrEqual(4.5);
   });
 
-  it("keeps the surname on its accent token, amber readable, and availability as one copy-level status", () => {
+  it("keeps the surname on its accent token, magenta readable, and availability as one copy-level status", () => {
     expect(heroCss).toMatch(/\.hero-title-accent\s*\{[^}]*color:\s*var\(--hero-accent\)/);
     expect(heroMarkup).not.toContain("text-gradient");
-    expect(heroCss).toContain("--hero-accent-strong: #885a16");
-    expect(heroCss).toContain("--hero-accent-strong: #e7a23c");
+    expect(heroCss).toContain("--hero-accent-strong: #a3127a");
+    expect(heroCss).toContain("--hero-accent-strong: #ff4fd8");
     expect(heroMarkup).toContain("hero-meta-status");
     expect(heroMarkup).not.toContain("available-badge");
     expect(heroMarkup).not.toContain("hero-art-status");
-    expect(contrast("#885a16", "#f1eeea")).toBeGreaterThanOrEqual(4.5);
-    expect(contrast("#e7a23c", "#080807")).toBeGreaterThanOrEqual(4.5);
+    expect(contrast("#a3127a", "#f2ece0")).toBeGreaterThanOrEqual(4.5);
+    expect(contrast("#ff4fd8", "#0b0b0d")).toBeGreaterThanOrEqual(4.5);
   });
 });
 

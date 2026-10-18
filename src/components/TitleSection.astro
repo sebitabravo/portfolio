@@ -1,15 +1,27 @@
 ---
+// Encabezado de capítulo: fila técnica en mono sobre un título editorial gigante.
 interface Props {
   id: string
+  index?: string
+  kicker?: string
+  meta?: string
 }
 
-const { id } = Astro.props
+const { id, index, kicker, meta } = Astro.props
 ---
 
-<h2
-  id={id}
-  data-story-heading
-  class="section-heading mb-12 text-[clamp(2.75rem,6vw,5.375rem)] leading-[0.95] tracking-[-0.03em] text-foreground"
->
-  <slot />
-</h2>
+<header class="section-head">
+  {
+    (index || kicker || meta) && (
+      <p class="section-head-meta mono-label">
+        {index && <span class="section-index">[{index}]</span>}
+        {kicker && <span class="section-kicker">{kicker}</span>}
+        <span class="section-head-rule" aria-hidden="true" />
+        {meta && <span class="section-meta">{meta}</span>}
+      </p>
+    )
+  }
+  <h2 id={id} data-story-heading class="section-heading">
+    <slot />
+  </h2>
+</header>

@@ -1,196 +1,144 @@
-# Design System — Sebastian Bravo Portfolio
+# Design System — Sebastian Bravo Portfolio (SB-OS 2.6)
 
-Local, gitignored record of the shipped redesign on `feat/visual-shader-overhaul`. Values below come from the built CSS and components; where `.impeccable/visual-direction.md` differs, the build is normative.
+Record of the shipped rebrand on `feat/visual-shader-overhaul`. Values come from the built CSS and components; the build is normative.
 
-## 1. Concept and Shader reference
+## 1. Concept and references
 
-**Creative North Star: "Monument in the dark."** A near-black stage holds one lit object: the name in Boska, a grayscale portrait, and a wireframe amber instrument. The page reads as a lit control room; each project is an exhibit, not a card.
+**Creative North Star: "A 1986 workstation that ships to production in 2026."** The portfolio boots like a retro computer, then becomes a dark, precise technical desktop. Every chapter is a "program" in the OS: CRT phosphor, rainbow-stripe corporate branding and a hairline blueprint grid.
 
-Shader (Mobbin) is the binding reference: the near-black stage, large editorial serif over a scene, chromatic aberration instead of gradient, small uppercase navigation with one bordered action, and sections that alternate dark exhibits with one inverted chapter.
+Two Mobbin references are binding:
 
-- About hero: <https://mobbin.com/sites/sections/55940443-b601-4f42-a9ff-1c31f5b48885>
-- CRT / light chapter: <https://mobbin.com/sites/sections/db7ca27c-ff93-4469-9cb3-2a965439b122>
-- Contact: <https://mobbin.com/sites/sections/b3a90496-c0c1-4123-b206-d5fda20f0c42>
-- Footer: <https://mobbin.com/sites/sections/90f14e56-2133-4493-8249-8c4b284c06d8>
+- **Shader** — BIOS boot screen, CRT curvature and chromatic aberration, rainbow stripes, cream paper chapters, large serif headlines, retro corporate seals in the footer, humorous copy ("Had enough reading?").
+  - Boot: <https://mobbin.com/sites/sections/acc902bb-ea91-4876-ad44-a2378a7c778e>
+  - Paper chapter with stripes: <https://mobbin.com/sites/sections/db7ca27c-ff93-4469-9cb3-2a965439b122>
+  - Footer seals: <https://mobbin.com/sites/sections/90f14e56-2133-4493-8249-8c4b284c06d8>
+- **Save.design** — near-black canvas, monospace interface voice, hairline grid with diamond nodes, app windows over a 3D landscape, hot magenta accent, accordion rows.
+  - Hero: <https://mobbin.com/sites/sections/91bc03ad-15c4-44df-b93c-710288796d65>
+  - Grid cards: <https://mobbin.com/sites/sections/d4edc1a9-1dc4-459e-bd9d-c1d6574aa618>
+  - Membership grid: <https://mobbin.com/sites/sections/8310aad8-6473-4310-9b07-85251a7623b5>
 
-The build diverges from the direction draft in four places: hero type is `clamp(4rem, 15vw, 12.5rem)`; project media uses a 1.03 image scale and 2.5° tilt rather than a clip-path shutter; there is no 12-column wall, only a two-column grid with one full-width featured exhibit; the footer closes with a full-width wordmark cropped by the bottom edge. No dashed rules ship.
-
-**Key characteristics:** dark-first canvas; warm bone ink; one amber signal; Boska display against Switzer text; flat exhibits separated by air and hairlines; an inverted contact chapter; quiet, deferred motion.
+**Key characteristics:** dark technical canvas; cream paper as the light theme and the inverted contact chapter; one phosphor-magenta signal; rainbow stripes as the brand ornament; Instrument Serif display against Geist text and Geist Mono labels; screens, windows and seals instead of text blocks; motion that decorates reading and never gates it.
 
 ## 2. Colors
 
-Dark is the primary theme. Light is a complete alternate. The only structural inversion is the contact chapter.
+Dark is the default theme. Light ("paper") is a complete alternate. Tokens are HSL channels consumed through `hsl(var(--token))` and Tailwind aliases in `@theme inline`.
 
-### Dark (primary)
+### Dark (default)
 
-| Token | HSL | Hex | Role |
-|---|---|---|---|
-| `--canvas` | `60 4% 3%` | `#080807` | Page background, footer |
-| `--surface-raised` | `45 5% 8%` | `#151513` | Portrait shell, media fallback, cards/popovers |
-| `--surface-soft` | `45 5% 6%` | `#10100f` | Tinted bands and signal strip |
-| `--ink` | `39 29% 93%` | `#f2efe8` | Headings and primary text |
-| `--ink-muted` | `37 9% 60%` | `#a29b90` | Descriptions, metadata, tags |
-| `--caption-color` | `37 9% 65%` | `#aea89e` | Footer captions and legal line |
-| `--hairline` | `43 8% 15%` | `#292823` | Borders and dividers |
-| `--signal` | `36 78% 57%` | `#e7a23c` | Primary action, status, metrics, focus |
-| `--signal-ink` | `45 10% 4%` | `#0b0b09` | Text on amber |
+| Token | Hex | Role |
+|---|---|---|
+| `--background` / `--canvas` | `#0b0b0d` | Page canvas |
+| `--surface-soft` | `#101013` | Tinted bands |
+| `--card` | `#141417` | Cards, menus |
+| `--muted` | `#1c1c21` | Hover fills |
+| `--border` / `--hairline` | `#26262c` | Grid lines, dividers |
+| `--line-strong` | `#36363e` | Nodes, ghost buttons |
+| `--foreground` / `--ink` | `#f3efe6` | Text |
+| `--muted-foreground` | `#a6a29a` | Secondary text, mono labels |
+| `--primary` / `--signal` | `#ff4fd8` | Signal: actions, status, focus, indices |
+| `--primary-foreground` | `#0b0b0d` | Text on signal |
 
-### Light
+### Light (paper)
 
-| Token | HSL | Hex | Role |
-|---|---|---|---|
-| `--canvas` | `40 20% 93%` | `#f1eeea` | Page background, footer |
-| `--surface-raised` | `40 16% 89%` | `#e7e4de` | Portrait shell, media fallback, tinted bands |
-| `--surface-soft` | `40 16% 89%` | `#e7e4de` | Tinted bands and signal strip |
-| `--ink` | `45 10% 6%` | `#11100e` | Headings and primary text |
-| `--ink-muted` | `40 6% 34%` | `#5c5851` | Descriptions, metadata, tags |
-| `--caption-color` | `40 6% 34%` | `#5c5851` | Footer captions and legal line |
-| `--hairline` | `40 8% 82%` | `#d5d2cd` | Borders and dividers |
-| `--signal` | `36 72% 31%` | `#885a16` | Primary action, status, metrics, focus |
-| `--signal-ink` | `40 20% 93%` | `#f1eeea` | Text on amber |
-
-`card`/`popover` are `#f7f5f3` light and `#151513` dark; `muted` is `#e4e2dd` light and `#1b1a18` dark. Tailwind utilities are aliases over these HSL channels in `@theme inline`.
+| Token | Hex | Role |
+|---|---|---|
+| `--background` | `#f2ece0` | Cream paper |
+| `--surface-soft` | `#e9e2d4` | Tinted bands |
+| `--card` | `#f7f3ea` | Cards, menus |
+| `--border` | `#d2c9b8` | Grid lines |
+| `--foreground` | `#17140f` | Ink |
+| `--muted-foreground` | `#5a5246` | Secondary text |
+| `--primary` | `#a3127a` | Signal on paper |
 
 ### Inverted contact chapter
 
-| Theme | `--inverted-bg` | `--inverted-ink` | `--inverted-accent` |
-|---|---|---|---|
-| Light theme (dark chapter) | `40 9.677419% 6.078431%` / `#11100e` | `42 27.777778% 92.941176%` / `#f2efe8` | `35.789474 78.082192% 57.058824%` / `#e7a23c` |
-| Dark theme (light chapter) | `42 27.777778% 92.941176%` / `#f2efe8` | `40 9.677419% 6.078431%` / `#11100e` | `35.172414 72.5% 31.372549%` / `#8a5a16` |
+Dark theme → paper chapter (`#efe6d2` / ink `#17140f` / accent `#a3127a`). Light theme → screen chapter (`#0b0b0d` / ink `#f3efe6` / accent `#ff4fd8`). `.section-band-inverted` re-points `--background`, `--foreground`, `--border` and `--signal` so every child component adapts.
 
-Header glass is `rgb(241 238 234 / 0.82)` light and `rgb(8 8 7 / 0.78)` dark, with a `rgb(242 239 232 / 0.12)` dark border and `rgb(242 239 232 / 0.95)` dark text. The header CTA is a hairline-bordered ink action (transparent background, `--hairline` border, `--ink` text) in both themes; the hero CTA carries the amber signal. Hero CTA: `#885a16` on light, hover `#744c13`, label `#f1eeea`; `#e7a23c` on dark, hover `#efb45a`, label `#0b0b09`.
+### Theme-independent identity
 
-**The No Violet Rule.** The interface uses no violet or purple: no violet tokens, purple gradients, or gradient blobs. Project screenshots are evidence and may contain any color; never sample them into UI chrome.
+| Token | Hex | Use |
+|---|---|---|
+| `--r1`…`--r6` | `#e5483a` `#f08a2b` `#f2c12e` `#4fb35a` `#3f8ee0` `#8e62e8` | Rainbow stripes, project stages, seal glows |
+| `--bios` / `--bios-ink` | `#2b30c4` / `#ece6d2` | Boot screen |
+| `--screen` | `#07070a` | Screens and windows (dark in both themes) |
+| `--sticky` | `#f6d365` | Sticky notes |
 
-**The Signal Scarcity Rule.** Amber is a signal, not a surface. Use it for the primary action, availability/status dots, metric values, active indicators, and focus. Never fill a large panel with it.
+**The Signal Scarcity Rule.** Magenta marks action, status, indices and focus. Never fill large surfaces with it; screens, stages and stripes carry the color.
 
-**The Inverted Chapter Rule.** Only contact inverts the theme: dark theme gets the bone field, light theme gets near-black. Footer returns to `--canvas`.
+**The Screen Rule.** Screens (hero desktop, project stages, TV, 404 card, blog windows) stay dark in both themes, like CRT monitors on a cream desk.
 
 ## 3. Typography
 
-- **Display:** Boska 400/500, normal and italic, Fontshare provider, fallback Georgia/serif, `--font-boska`, loaded with `font-display: swap` and metric-matched fallbacks; not preloaded (keeps the LCP image from competing with font requests). Weight 500 carries display.
-- **Text:** Switzer 400/500/600, Fontshare provider, fallback system-ui/-apple-system/sans-serif, `--font-switzer`, loaded with `font-display: swap` and metric-matched fallbacks; not preloaded.
-- **Code:** JetBrains Mono 400/500, Fontsource provider, fallback monospace, `--font-jetbrains-mono`, not preloaded.
+- **Display:** Instrument Serif 400 normal/italic (`--font-instrument`). Hero name, chapter titles, statements, project titles, stats.
+- **Text:** Geist 400/500/600 (`--font-geist`). Body, descriptions, prose.
+- **Interface:** Geist Mono 400/500 (`--font-geist-mono`). Navigation, labels, chips, buttons, metadata, code.
+- **Pixel:** VT323 400 (`--font-vt323`). Boot screen, TV on-screen display, 404 code only.
 
-| Step | Size | Use |
-|---|---|---|
-| Display | `clamp(4rem, 15vw, 12.5rem)` (64–200px), weight 500, leading 0.82 | Hero name only; line breaks as "Sebastian" / "Bravo" |
-| Section | `clamp(2.75rem, 6vw, 5.375rem)` (44–86px), leading 0.95 | Section titles; contact uses `clamp(2.75rem, 8vw, 5.375rem)` italic; footer name `clamp(2.5rem, 6vw, 5.375rem)` |
-| 43px | `2.6875rem` (`--text-3xl`) | Project outcomes title; contact links at `md` |
-| 21px | `1.3125rem` (`--text-lg`/`xl`/`2xl`) | Project titles, experience role/company, blog titles, about lede/signature, contact links at base, timeline note |
-| 17px | `1.0625rem` (`--text-base`) | Body, descriptions, metric values, certification names, blog descriptions, prose |
-| 13px | `0.8125rem` (`--text-xs`) | Nav, meta, tags, buttons, status, dates, certification organization/link, footer |
-| Code | `0.8125rem` | `code` and `pre` only |
+All fonts are self-hosted through the Astro Fonts API (Fontsource provider) with metric-matched fallbacks and `font-display: swap`; none is preloaded.
 
-Display tracking is `-0.03em`; nav and header CTA are uppercase at `0.12em`; all other labels and body stay at normal tracking. Leading: hero 0.82; section/contact/footer 0.95; project titles and outcomes 1.05; experience role and blog title 1.25; body 1.6; about copy 1.65; article prose 1.75.
-
-**The Two-Family Rule.** Boska is the only display face and Switzer the only text face. JetBrains Mono appears only on `code`/`pre`; project tags, metrics, labels, nav, and buttons are Switzer.
-
-**The Surface Scale Rule.** Public surfaces resolve to 13/17/21/43/86/200. Article prose may step to 20/28 for `h3`/`h2`; do not introduce new display sizes elsewhere.
+| Role | Size |
+|---|---|
+| Hero name | `clamp(4.25rem, 13.4vw, 12.5rem)`, leading 0.82, tracking -0.035em |
+| Chapter title | `clamp(3.5rem, 10vw, 9rem)`, leading 0.86 |
+| Statement / contact headline | `clamp(2rem, 3.5vw, 3.25rem)` / `clamp(3.25rem, 8.5vw, 8rem)` |
+| Project title | `clamp(2.125rem, 3.6vw, 3.25rem)` |
+| Body | 16–17px, leading 1.5–1.65 |
+| Mono label | 11px uppercase, tracking 0.08em |
 
 ## 4. Layout
 
-- **Columns:** shared sections and header/footer max `1200px`; hero inner max `90rem` (1440px); blog index `900px`; signal strip `1280px`.
-- **Band rhythm:** `SectionBand` is full width with `16px` side padding and `clamp(4.25rem, 7vw, 7rem)` (68–112px) vertical padding. Section titles have `48px` bottom margin. Anchors reserve `scroll-margin-top: 6–7rem` for the fixed header.
-- **Section order:** Hero → Projects (canvas) → Signal strip (`surface-soft`) → Experience (tinted `surface-soft`) → Education (canvas) → Certifications (tinted) → About (canvas) → Contact (inverted) → Footer (canvas).
-- **Hero:** `92svh` minimum on mobile, `100svh` from `768px`; single column below `768px`, then `1.6fr / 1fr` with `2rem` gap. Inner padding `8rem` top, `6rem` bottom, `clamp(1.25rem, 4vw, 4rem)` sides. Copy sits left; portrait is a `4/5` frame, right-aligned, max `26rem`, grayscale at contrast 1.08. Decorative layers: `88px` grid at 3.5% ink, 2.5% grain, an amber glow of `min(45vw, 36rem)` blurred `100px` at 8%, an orbit ellipse at 20% signal, and a 24px crosshair at 35% signal. All are `aria-hidden` and pointer-transparent. A CRT scanline overlay and a slow glitch on the chromatic pseudo-layers sit above the stage; the `<h1>` itself never animates.
-- **Work wall:** one column below `768px`, two columns above with `48px` gaps. The featured exhibit spans both columns. Media is `8/5`; featured media is `8/5` on mobile and `2/1` at `md`. No 12-column grid ships.
-- **Contact:** inverted band; content grid is one column, then `0.85fr / 1.15fr` with `48px` gap and `70svh` minimum height. The right link column adds `80px` top padding at `md`; the resume row spans both columns.
-- **Footer:** `1200px`, `64px` top margin, `48px` vertical padding, name link above a wrapping row of 13px legal, social, and nav links.
-- **Breakpoints:** `768px` (hero split, work wall, contact split, certifications two columns), `1024px` (desktop nav), `1200px` container. Verify at 375, 768, 1024, and 1440.
-
-**The Flat Exhibit Rule.** Work, experience, certifications, blog, and about sit directly on the canvas with no card box, border, or resting shadow. The fixed header and transient menus are the only boxed surfaces.
+- **Blueprint frame:** blueprint frame max `1440px` (`.frame`, `90rem`) with hairline side guides from `768px` and diamond nodes (`.frame-node`) where chapters meet the guides. Chapter padding `clamp(4.5rem, 9vw, 8.5rem)` vertical, `clamp(1rem, 4vw, 3.5rem)` horizontal.
+- **Chapter head:** mono row `[NN] kicker ——— meta` above a giant serif title (`TitleSection`).
+- **Order:** Boot → Hero (SB-OS desktop) → Projects (stats + bento) → Stack marquee → Experience (accordion table, tinted) → Education (cards) → Certifications (seals, tinted) → About (TV + statement) → Contact (inverted paper) → Footer (seals).
+- **Breakpoints:** 640 (screen 4:3, sticky note), 768 (frame guides, two-column grids), 1024 (hero split, desktop nav, TV sticky), 1100 (five seals, three blog columns). Verify at 375, 768, 1024 and 1440 in both themes.
 
 ## 5. Components
 
-**Header and navigation.** Fixed, pointer-transparent shell; nav max `1200px`, `min-height: 56px`, `8/12px` top margin, `13.6px`/`16px` radius, glass background, `1px` hairline border at 85–90%, `blur(16px)` and `saturate(1.35)`, no resting shadow. Brand is a `1.9rem` SB mark plus the name from `sm`; links are 13px uppercase at `0.12em`, `8px` radius, with a moving primary-tinted indicator (`primary/9%` fill, `primary/16%` inset ring). Route links use a `2px` signal underline. Header CTA is a 13px uppercase hairline-bordered ink action; LinkedIn shows at `xl` and CV at `sm`, both 13px on `card/45`; theme/language buttons are `44px`. Below `1024px`, a dropdown holds the mobile links with `8px` radius, card background, and a transient shadow.
-
-**Buttons and links.** Hero CTA: 13px/600, `min-height: 44px`, `12px 24px`, `2px` radius, amber with `#f1eeea`/`#0b0b09` label, `180ms` background transition. Header CTA: 13px/600 uppercase, `8px` radius, `12px 8px`, amber `#e7a23c`/`#0b0b09`, with a `6px` dot. Text actions are 13px underlined with `4px` offset and `44px` minimum height: case-study links use `--primary`, external project links `--ink-muted`, certificate links `--signal`. The shared `Button` primitive is reserved for inner pages: 44px height, `8px` radius, semantic token variants, active scale 0.95.
-
-**Project exhibits.** No box, border, or shadow. Title is Boska 21px/1.05 at `-0.03em`; status is a 13px muted line with a `6px` amber dot; description is 17px, max `60ch`; metrics pair a 13px muted label with a 17px amber value; tags are 13px separated by middots. Media is AVIF/WebP at 800/1600 widths, lazy, `object-top`; the project title sits behind the screenshot as a fallback. Hover/focus-within scales the image 1.03 over `700ms ease-out`, turns the title amber, and adds a `2.5°` pointer tilt on fine pointers.
-
-**Experience rows.** Timeline note 21px, max `60ch`; list has `24px` left padding and a `2px` signal progress line. Each row is `minmax(10rem, 1fr) / 3fr` with `48px` gap and `48px` bottom padding. Meta is 13px muted; role is Boska 21px; company is 21px `--primary`; description 17px, max `60ch`; highlights pair 13px labels with 17px amber values; skills are 13px middot-separated. No card-in-card.
-
-**Certifications grid.** One column, two columns from `md`, `48px` column gap and `40px` row gap. Category is 13px muted; name is 17px semibold; organization is 13px muted; certificate link is 13px `--signal` underlined. Flat presentation, no category badge or colored chip.
-
-**Blog cards.** Index is `900px`, one column then two from `md`, `40px` gap. Each card is one link with no box: 16:9 grayscale image, 13px tags/date, Boska 21px title at `-0.03em`, 17px description; hover/focus turns the title amber. Article prose is 17px/1.75; `h2` is Boska 21→28px, `h3` Boska 20px, code 13px mono. Keep a 60–70ch measure.
-
-**Contact and footer.** Contact heading is italic Boska `clamp(2.75rem, 8vw, 5.375rem)` with an `8px` availability dot in the inverted accent. Links are Switzer 21px, 43px from `md`, in the inverted accent with an arrow; descriptions are 17px. The CV row uses a 44px target. Footer puts the legal line, social links, and nav row above the wordmark; the name is the last element at `clamp(3.5rem,12.5vw,11rem)`, `white-space: nowrap`, leading 0.78, cropped by the footer's bottom edge. No dashed rules.
+- **Boot screen (`BootScreen`).** BIOS-blue CRT with logo, version, 24-segment loader and copyright in VT323. Armed by an inline `<head>` script only on the home, once per session, with `(min-width: 1024px) and (hover: hover) and (pointer: fine)`, without reduced motion and never under automation (`navigator.webdriver`); `?boot` forces it. Any key, pointer, wheel or touch skips it; a CSS failsafe hides it after 4.2s. Without JS it never appears.
+- **Header.** Full-width glass bar, hairline bottom, striped mark + italic serif wordmark, mono nav with signal indices and the moving indicator, ghost LinkedIn/CV, theme/language toggles and a solid "Hablemos" button.
+- **Hero (`Hero`, `HeroScreen`, `HeroWallpaper`).** Static LCP `<h1>` with decorative chromatic layers on the italic surname. A CRT screen hosts the SB-OS desktop: menubar with live Chile clock, pixel-art shortcuts (real links), draggable portrait and terminal windows, a sticky note and a scroll cue. The wallpaper is a build-time SVG (striped sun + noise ridgelines) that the WebGL terrain replaces when available.
+- **Projects (`Projects`, `ProjectTile`).** Stats band with count-up numbers, then a bento: featured tile spans both columns, a GitHub archive tile closes the grid. Each tile is a dark stage tinted by its rainbow stripe (`--stage`), a giant outline index, a tilted OS window with the screenshot (AVIF/WebP 800/1600) that straightens on hover, floating metric chips, mono tags and three mono actions.
+- **Stack marquee (`SignalStrip`).** Rainbow stripes frame a looping italic-serif marquee with signal diamonds; hover/focus pause and an explicit pause/resume button (WCAG 2.2.2). Reduced motion wraps the list statically and hides the clone and the button.
+- **Experience.** `<details name>` rows in a five-column table (period, role, company, type, toggle); the first row is open; highlights become bordered stat cells; a 1px signal progress line scrubs with scroll.
+- **Education / certifications.** Hairline cards with diamond nodes; certifications are rotating SVG seals (`RoundSeal`) with organization and category in orbit, a serif monogram and a rainbow glow.
+- **About (`AboutMe`, `RetroTv`).** Beige CSS TV with three channels switched by native radios (`:has()`): grayscale portrait, a build-time ASCII portrait (sharp + `pixelsToAscii`) and SMPTE bars ("Sin señal"). A sticky note carries the signature; the statement lights up word by word with a CSS scroll timeline.
+- **Contact.** Inverted paper chapter with a rainbow band, giant headline ("¿Suficiente lectura? Hagamos algo juntos."), rotating availability seal, serif link rows with mono descriptions, a clipboard button (hidden without the Clipboard API) and a TV bezel that closes the chapter.
+- **Footer.** Globe seal ("Hecho en Chile · Remoto mundial"), centered wordmark and tagline, laurel seal linking to privacy, mono legal row.
+- **Inner pages.** Blog index as "Bitácora" with window-framed grayscale thumbnails that color on hover; articles with mono meta, reading time, chips and a window-framed hero image; 404 as a TV test card.
 
 ## 6. Motion
 
-- **Baseline reveal:** `[data-animate]` starts at `opacity: 0`, `translateY(1.4rem)`, and resolves over `650ms cubic-bezier(0.16, 1, 0.3, 1)` once, via `IntersectionObserver` at threshold 0.08 and `-8%` bottom margin. Only elements within 1.1 viewport heights are pre-hidden.
-- **Scroll story:** `[data-story-heading]` and `[data-story-wipe]` are driven by CSS `animation-timeline: view()` (entry 5% to cover 28% for headings; entry 8% to cover 38% for the inverted contact chapter). No JavaScript; browsers without scroll timelines show the content unstyled, and reduced motion disables both.
-- **Hero scroll:** `heroScrollProgress(scrollY, heroHeight)` maps hero scroll to 0-1; the Three.js group rotates on x/y, drifts down and scales to 0.88, smoothed per frame. The passive scroll listener is removed with the scene.
-- **Deferred enhancement:** GSAP/ScrollTrigger and Three.js load after `load`, two animation frames, and an idle callback (timeout 1500ms; 200ms fallback). Activation starts when the hero is within 200px or on pointer/focus/touch. Startup is bounded at 3s inline / 4s controller.
-- **Hero handoff:** only `.hero-art-frame`, `.hero-actions`, and `.hero-meta` move; they translate to `-3.25rem` and opacity 0, scrubbed 0.5 from hero top to 30% viewport. The `<h1>` is excluded.
-- **Work wall:** cards start at `--motion-y: 1.2rem`, `scale: 0.985`, then resolve with `0.9s power2.out`, `0.09` stagger, scrubbed 0.75 between section top at 88% and 36% viewport. Card transform transition is `350ms` with the same cubic-bezier.
-- **Pointers:** hero frame tilts ±4.5° (`0.55s power3.out`); cards tilt ±2.5° (`0.45s power3.out`); the hero CTA magnetizes up to `7px`. Fine pointers only.
-- **WebGL:** one Three.js scene: 78 points desktop / 42 compact, amber points and wireframe icosahedron (`#e7a23c`), warm-white lines (`#f2efe8`), plus an isometric wireframe workstation (floor grid, desk, monitor, chair, floating cubes) in amber and bone, additive blending, 30fps cap, pixel ratio ≤1.5/1.2, paused offscreen and on hidden tabs. Eligibility: WebGL2 available, no touch points, no Save-Data/2G, `deviceMemory >= 2`, reduced motion off. The canvas is `aria-hidden`, pointer-transparent, opacity 0.5, screen blend.
-- **Signal strip:** static stack band; technologies wrap in a flex row with no animation and no pause control.
-- **Reduced motion:** no GSAP, ScrollTrigger, Flip, or WebGL chunks are fetched; CSS forces all reveals visible, removes transforms/transitions, hides the WebGL canvas, and leaves the static stack band unchanged. Theme icons and nav indicators become instantaneous.
+- **Deferred controller.** GSAP/ScrollTrigger and Three.js load after `load`, two animation frames and an idle callback, once the hero is within 200px or receives input. Startup is bounded at 3s inline / 4s controller. Modules: cards, hero, nav indicator, experience timeline, terminal, counters, cursor.
+- **WebGL terrain (`hero-webgl.ts`, `hero-shaders.ts`).** Faceted fBm ridged terrain with a flat valley, neon ridge/contour lines, fog to the horizon and a striped sun in the sky dome, rendered to a target and composited by a CRT pass (barrel, RGB split, cheap bloom, rolling band, vignette, grain). Pointer moves the camera, scroll lifts it, holding the landscape engages turbo. 30fps cap, DPR ≤ 1.5 (1 on compact), paused offscreen and on hidden tabs, disposed on swap. Eligibility: WebGL2, no touch, no Save-Data/2G, `deviceMemory ≥ 2`, no reduced motion.
+- **CSS scroll timelines.** Chapter titles wipe in, the hero screen scales 0.92 → 1, the contact chapter wipes, and About words light up. Browsers without scroll timelines show final states.
+- **Micro-interactions.** Draggable windows (pointer events, bounded to the screen), terminal typing, stat counters (only for counters still offscreen), cursor pill on projects (fine pointer only), magnetic hero CTA, glass glare following the pointer, tilted project windows, spinning seals, TV static on channel change.
+- **Reduced motion.** No GSAP, ScrollTrigger or WebGL chunk is fetched; reveals and scroll timelines are disabled; the marquee wraps; seals stop; the terminal is written in full.
 
-**The LCP Stillness Rule.** The hero `<h1>` never animates and never receives inline opacity, filter, transform, or animation styles. It is the LCP; motion starts after it can paint.
+**The LCP Stillness Rule.** The hero `<h1>` never animates and never receives inline styles; only its decorative pseudo-layers glitch.
 
-**The LCP Competition Rule.** The portrait is `loading="eager"`, `fetchpriority="high"` and `decoding="sync"`; fonts are not preloaded and the frame transform applies on hover only, so the LCP image does not compete with font requests or enhancement work.
-
-**The Enhancement Rule.** Content is complete without JS. Motion may decorate reading, never gate it.
+**The Enhancement Rule.** Content is complete without JS: shortcuts are links, channels are radios, accordions are `<details>`, the wallpaper is SVG.
 
 ## 7. Accessibility
 
-- **Contrast:** dark `#f2efe8` on `#080807` 17.45:1; dark muted `#a29b90` 7.28:1; dark amber `#e7a23c` 9.19:1. Light `#11100e` on `#f1eeea` 16.44:1; light muted `#5c5851` 6.11:1; light amber `#885a16` 5.16:1. Inverted dark chapter: `#f2efe8` on `#11100e` 16.56:1, `#e7a23c` 8.72:1. Inverted light chapter: `#11100e` on `#f2efe8` 16.56:1, `#8a5a16` 5.14:1. Header CTA `#0b0b09` on `#e7a23c` 9.03:1.
-- **Focus:** `2px` solid `--primary`, `2px` offset, via the `focus-ring` utility. The inverted contact chapter overrides the ring to `--inverted-accent`.
-- **Keyboard:** skip link visible on focus; `aria-current="page"` on route links; mobile dropdown uses `aria-expanded`/`aria-controls` and returns focus; all actions have a `44px` minimum target.
-- **Semantics:** nav and section labels are localized; the hero `<h1>` carries an explicit "Sebastian Bravo" label; decorative canvas, glyph arrows, dots, and grain are `aria-hidden`; the surname chromatic layers are decorative pseudo-elements.
-- **Reduced motion:** honored in CSS, in the deferred loader, and in the signal strip; static content is always visible.
-- **i18n:** Spanish is default at `/`, English mirrored at `/en`; all translatable copy comes from `getTranslations(locale)` with key parity in `src/lib/i18n/es.json` and `en.json`. Dates, mail subject, and sr-only labels localize. Proper nouns and the name stay literal.
-- **Theme:** dark is the default when no preference is stored; light and system are complete, with an inline pre-paint bootstrap to prevent a theme flash.
+- Text pairs meet WCAG AA: dark `#f3efe6`/`#0b0b0d` 17.1:1, muted 7.7:1, magenta 6.9:1; paper `#17140f`/`#f2ece0` 15.6:1, muted 6.5:1, magenta 6.1:1; inverted chapters ≥ 5.7:1.
+- Focus: 2px `--ring` outline with 2px offset; knobs, summaries and media links have visible focus.
+- Decorative layers (boot, desktop windows, wallpaper, seals, bezel, cursor pill) are `aria-hidden`; shortcuts and the TV radios are real controls with localized names.
+- All copy comes from `src/lib/i18n/{es,en}.json` with key parity.
 
 ## 8. Constraints
 
-- **CSP:** `font-src 'self' data:`; `style-src 'self' 'unsafe-inline'`; `script-src 'self'` plus exact hashes; `script-src-attr 'none'`. Never edit hashes in `vercel.json` by hand. Review reported changes, then run `pnpm update:csp:write`; `pnpm build` verifies parity.
-- **Fonts:** all self-hosted through the Astro Fonts API. Boska/Switzer use Fontshare, JetBrains Mono uses Fontsource. Manrope and Syne were removed after the redesign; only Boska, Switzer, and JetBrains Mono are configured. Do not add a remote font.
-- **Stylesheets:** `global.css` imports exactly five: `portfolio-base.css`, `portfolio-hero.css`, `portfolio-content.css`, `portfolio-responsive.css`, `header.css`. Put global tokens in `portfolio-base.css`, header tokens in `header.css`; do not add a sixth global stylesheet. Scoped component `<style>` blocks remain allowed.
-- **Bundle:** every JS chunk in `dist/_astro` must stay ≤600 KiB raw and ≤150 KiB gzip. The lazy WebGL chunk is about 523 KiB raw / 129 KiB gzip. Keep `three@0.185.1` and `gsap@3.15.0`; do not add a new visual dependency.
-- **Source limits:** `.astro` 250 lines, `.ts` 300, `.css` 1500. Exceptions in `scripts/check-source-limits.ts`: `src/layouts/Layout.astro` and `src/components/LocalizedPrivacy.astro`.
-- **Copy:** no hardcoded translatable strings. Use `getTranslations(locale)` and keep `es.json`/`en.json` key parity. Code comments are Spanish; identifiers, commits, and documentation are English.
-- **Assets:** project screenshots are the only saturated color fields; use the existing optimized image pipeline. Icons are inline SVG or typographic arrows, never emoji or an icon font.
+- **CSP:** `script-src 'self'` plus exact hashes for the inline theme, boot and startup scripts. Run `pnpm update:csp:write` after editing inline scripts; `pnpm build` verifies parity.
+- **Stylesheets:** `global.css` imports exactly five files: `portfolio-base.css` (tokens, primitives, prose), `portfolio-hero.css` (boot + hero), `portfolio-content.css` (chapters, projects, experience, credentials), `portfolio-chapters.css` (about, contact, footer, motion layer), `header.css`.
+- **Bundle:** every JS chunk ≤ 600 KiB raw / 150 KiB gzip; Three.js stays the only 3D dependency and GSAP the only motion dependency.
+- **Source limits:** `.astro` 250 lines, `.ts` 300, `.css` 1500 (exceptions in `scripts/check-source-limits.ts`).
+- **Copy:** no hardcoded translatable strings; code comments in Spanish, identifiers/docs/commits in English.
 
-## 9. Do's and Don'ts
-
-**Do**
-- Use the dark canvas as the primary world and keep light a complete alternate.
-- Use Boska 500 for display and Switzer for all text; keep the six-step surface scale.
-- Keep the hero `<h1>` static and let the portrait, grid, and amber glow carry the stage.
-- Keep amber as a small signal and shift its lightness per surface to preserve 4.5:1.
-- Let project screenshots supply color and let whitespace separate exhibits.
-- Keep surfaces flat, borders hairline, and depth limited to the header and transient menus.
-- Keep all interactive targets at least 44px and visible focus rings.
-- Route every translatable string through i18n and preserve reduced motion.
-
-**Don't**
-- Don't introduce violet or purple into UI chrome, gradients, or accents; screenshots are exempt.
-- Don't use decorative gradient fills or gradient blobs; functional grid lines and mask gradients are allowed.
-- Don't wrap content in cards, add resting shadows, or nest card-in-card.
-- Don't use JetBrains Mono outside code, and don't use it for nav, labels, tags, or metrics.
-- Don't use emoji, icon fonts, or glyph icons; use inline SVG or the existing typographic arrows.
-- Don't add eyebrow labels, kickers, or decorative numbering above headings.
-- Don't animate, filter, transform, or inline-style the hero LCP heading.
-- Don't add a sixth global stylesheet, a remote font, or a new visual dependency.
-- Don't hand-edit CSP hashes or hardcode translatable copy.
-
-## 10. Verification and current gates
+## 9. Verification
 
 ```bash
-pnpm check          # astro check
-pnpm test           # vitest run
-pnpm build          # check + verify:limits + build:static + verify:bundle + verify:csp
-pnpm test:e2e       # Playwright, including accessibility checks
-pnpm format:check   # Prettier contract
-pnpm validate:links # project link validation
+pnpm check
+pnpm test && pnpm test:coverage
+pnpm build
+pnpm exec playwright test
+pnpm format:check
 ```
-
-- `tests/design-tokens.test.ts` pins the semantic hex values and 4.5:1 pairs; `tests/contrast.test.ts` pins the hero faint/accent tokens. Do not change either contract without explicit approval.
-- `verify:limits` enforces the source line limits; `verify:bundle` enforces 600/150 KiB per JS chunk; `verify:csp` enforces hash parity.
-- Motion and WebGL contracts live in `tests/hero-webgl.test.ts`, `tests/motion-environment.test.ts`, `tests/motion-load-order.test.ts`, and the motion Playwright specs. Localization parity is covered by `tests/ui-copy-localization.test.ts` and its spec.
-- CI runs the same check/test/build gates. Visual changes require a real-browser look at 375, 768, 1024, and 1440 in both themes.

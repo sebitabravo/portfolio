@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { heroScrollProgress } from "../src/scripts/hero-webgl"
+import { heroScrollProgress } from "../src/scripts/hero-camera"
 
 describe("hero scroll progress", () => {
   it("starts at zero before scrolling", () => {

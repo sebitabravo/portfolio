@@ -11,6 +11,8 @@ interface Props {
 const { locale } = Astro.props
 const t = getTranslations(locale)
 const homeUrl = locale === "es" ? "/" : "/en"
+// Carta de ajuste: barras SMPTE simplificadas como fondo del "canal perdido".
+const bars = ["#c8c8c8", "#d6c93a", "#3fc5c9", "#3fbf4a", "#c93fb8", "#cf3a35", "#3a45c9"]
 ---
 
 <Layout
@@ -20,13 +22,99 @@ const homeUrl = locale === "es" ? "/" : "/en"
   canonicalUrl={locale === "es" ? "https://sebita.dev/404" : "https://sebita.dev/en/404"}
   noindex
 >
-  <main
-    id="main-content"
-    class="mx-auto flex min-h-[60vh] max-w-2xl flex-col items-center justify-center gap-6 px-4 text-center"
-  >
-    <p class="text-xs font-semibold tracking-[0.2em] text-muted-foreground uppercase">Error 404</p>
-    <h1 class="text-4xl font-bold text-foreground md:text-5xl">{t.error404.heading}</h1>
-    <p class="max-w-xl text-foreground/80">{t.error404.message}</p>
-    <Button href={homeUrl} variant="default" size="lg">{t.error404.backHome}</Button>
+  <main id="main-content" class="not-found frame">
+    <div class="not-found-card" aria-hidden="true">
+      <div class="not-found-bars">{bars.map((color) => <span style={`background:${color}`} />)}</div>
+      <div class="not-found-strip"></div>
+      <span class="not-found-code pixel-text">404</span>
+    </div>
+    <div class="not-found-copy">
+      <p class="mono-label">Error 404 · {t.about.noSignal}</p>
+      <h1>{t.error404.heading}</h1>
+      <p class="not-found-message">{t.error404.message}</p>
+      <Button href={homeUrl} variant="default" size="lg">{t.error404.backHome}</Button>
+    </div>
   </main>
 </Layout>
+
+<style>
+  .not-found {
+    display: grid;
+    min-height: 80vh;
+    align-content: center;
+    gap: clamp(2rem, 5vw, 3.5rem);
+    padding: 7rem clamp(1rem, 4vw, 3.5rem) 4rem;
+  }
+
+  .not-found-card {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 16 / 7;
+    border-radius: clamp(1rem, 2.5vw, 2rem);
+    background: #000;
+    box-shadow: 0 40px 90px -40px rgb(0 0 0 / 0.8);
+  }
+
+  .not-found-card::after {
+    position: absolute;
+    inset: 0;
+    background:
+      repeating-linear-gradient(to bottom, transparent 0 2px, rgb(0 0 0 / 0.2) 2px 3px),
+      radial-gradient(ellipse at center, transparent 55%, rgb(0 0 0 / 0.6) 100%);
+    content: "";
+  }
+
+  .not-found-bars {
+    display: grid;
+    height: 72%;
+    grid-template-columns: repeat(7, 1fr);
+  }
+
+  .not-found-strip {
+    height: 28%;
+    background: linear-gradient(
+      90deg,
+      #2b2f8a 0 14.3%,
+      #111 14.3% 28.6%,
+      #b23aa6 28.6% 42.9%,
+      #111 42.9% 57.1%,
+      #3fc5c9 57.1% 71.4%,
+      #111 71.4% 85.7%,
+      #e9e9e9 85.7%
+    );
+  }
+
+  .not-found-code {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    z-index: 1;
+    padding: 0.1em 0.6em;
+    border: 3px solid #fff;
+    background: #000;
+    color: #fff;
+    font-size: clamp(3rem, 9vw, 7rem);
+    line-height: 1;
+    translate: -50% -60%;
+  }
+
+  .not-found-copy {
+    display: grid;
+    max-width: 44rem;
+    justify-items: start;
+    gap: 1.25rem;
+  }
+
+  .not-found-copy h1 {
+    margin: 0;
+    font-size: clamp(2.75rem, 6vw, 5rem);
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+  }
+
+  .not-found-message {
+    margin: 0;
+    color: hsl(var(--muted-foreground));
+    font-size: 1.125rem;
+  }
+</style>

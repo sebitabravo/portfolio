@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test"
 import { canonicalTechnologies } from "../src/lib/data/skills"
 
 test.describe("Regression contracts", () => {
-  test("keeps hero LCP visible, the stack static, and navigation controls accessible", async ({ page }) => {
+  test("keeps hero LCP visible, the stack accessible, and navigation controls accessible", async ({ page }) => {
     await page.goto("/")
 
     const heroState = await page.locator(".hero-title").evaluate((element) => {
@@ -14,11 +14,10 @@ test.describe("Regression contracts", () => {
     const signal = page.locator(".signal-strip")
     await expect(signal).toHaveAttribute("role", "region")
     await expect(signal).toHaveAttribute("aria-label", "Stack con el que construyo")
+    // La copia del bucle es decorativa: el árbol accesible expone una sola lista.
     await expect(signal.getByRole("listitem")).toHaveText([...canonicalTechnologies])
-    await expect(signal.locator("[data-duplicate], [aria-hidden='true'].signal-technologies")).toHaveCount(0)
-    await expect(signal.getByRole("button")).toHaveCount(0)
-    await expect(signal.locator(".signal-marquee")).toHaveCount(0)
-    expect(await signal.evaluate((element) => element.getAnimations({ subtree: true }).length)).toBe(0)
+    await expect(signal.locator("[aria-hidden='true'].signal-technologies")).toHaveCount(1)
+    await expect(signal.locator("[data-duplicate], .signal-marquee")).toHaveCount(0)
 
     await expect(page.locator("#language-toggle")).toHaveAttribute("aria-haspopup", "menu")
     await expect(page.locator("#language-toggle")).toHaveAttribute("aria-controls", "language-menu")
@@ -33,43 +32,58 @@ test.describe("Regression contracts", () => {
     await expect(webpFallback).toHaveAttribute("srcset", /\/_astro\/[^,\s]+\.webp 1600w(?:,|$)/)
   })
 
-  for (const { route, label } of [
-    { route: "/", label: "Stack con el que construyo" },
-    { route: "/en/", label: "The stack I build with" },
+  for (const { route, label, pause, resume } of [
+    { route: "/", label: "Stack con el que construyo", pause: "Pausar tecnologías en movimiento", resume: "Reanudar tecnologías en movimiento" },
+    { route: "/en/", label: "The stack I build with", pause: "Pause moving technologies", resume: "Resume moving technologies" },
   ]) {
-    for (const reducedMotion of ["no-preference", "reduce"] as const) {
-      test(`stack wraps without movement at ${route} with ${reducedMotion}`, async ({ page }) => {
-        await page.setViewportSize({ width: 375, height: 812 })
-        await page.emulateMedia({ reducedMotion })
-        await page.goto(route)
-        const signal = page.getByRole("region", { name: label, exact: true })
-        const technologies = signal.getByRole("listitem")
-        await signal.scrollIntoViewIfNeeded()
-        await expect(signal).toBeVisible()
-        await expect(technologies).toHaveText([...canonicalTechnologies])
-        await expect(signal.getByRole("list")).toHaveCSS("flex-wrap", "wrap")
-        await expect(signal.getByRole("button")).toHaveCount(0)
-        for (const technology of await technologies.all()) {
-          await expect(technology).toBeVisible()
-          await expect(technology).toHaveCSS("font-size", "13px")
+    test(`stack marquee loops with a pause control at ${route}`, async ({ page }) => {
+      await page.emulateMedia({ reducedMotion: "no-preference" })
+      await page.goto(route)
+      const signal = page.getByRole("region", { name: label, exact: true })
+      await signal.scrollIntoViewIfNeeded()
+      await expect(signal.getByRole("listitem")).toHaveText([...canonicalTechnologies])
+      const track = signal.locator("[data-marquee-track]")
+      expect(await track.evaluate((element) => element.getAnimations().length)).toBe(1)
+
+      const toggle = signal.getByRole("button", { name: pause, exact: true })
+      await toggle.click()
+      await expect(signal).toHaveAttribute("data-paused", "true")
+      await expect(signal.getByRole("button", { name: resume, exact: true })).toBeVisible()
+      // Pausado no se mueve aunque el puntero salga de la banda.
+      await page.mouse.move(0, 0)
+      await expect.poll(() => track.evaluate((element) => element.getAnimations()[0]?.playState)).toBe("paused")
+      await signal.getByRole("button", { name: resume, exact: true }).click()
+      await expect(signal).toHaveAttribute("data-paused", "false")
+    })
+
+    test(`stack wraps without movement or controls at ${route} with reduced motion`, async ({ page }) => {
+      await page.setViewportSize({ width: 375, height: 812 })
+      await page.emulateMedia({ reducedMotion: "reduce" })
+      await page.goto(route)
+      const signal = page.getByRole("region", { name: label, exact: true })
+      const technologies = signal.getByRole("listitem")
+      await signal.scrollIntoViewIfNeeded()
+      await expect(signal).toBeVisible()
+      await expect(technologies).toHaveText([...canonicalTechnologies])
+      await expect(signal.getByRole("list")).toHaveCSS("flex-wrap", "wrap")
+      await expect(signal.getByRole("button")).toHaveCount(0)
+      for (const technology of await technologies.all()) await expect(technology).toBeVisible()
+      const state = await signal.evaluate((element) => {
+        const items = [...element.querySelectorAll(".signal-technologies:not([aria-hidden]) li")]
+        const bounds = element.getBoundingClientRect()
+        return {
+          animationCount: element.getAnimations({ subtree: true }).length,
+          fits: items.every((item) => {
+            const rect = item.getBoundingClientRect()
+            return rect.left >= bounds.left && rect.right <= bounds.right
+          }),
+          rows: new Set(items.map((item) => Math.round(item.getBoundingClientRect().top))).size,
         }
-        const state = await signal.evaluate((element) => {
-          const items = [...element.querySelectorAll("li")]
-          const bounds = element.getBoundingClientRect()
-          return {
-            animationCount: element.getAnimations({ subtree: true }).length,
-            fits: items.every((item) => {
-              const rect = item.getBoundingClientRect()
-              return rect.left >= bounds.left && rect.right <= bounds.right
-            }),
-            rows: new Set(items.map((item) => item.getBoundingClientRect().top)).size,
-          }
-        })
-        expect(state.animationCount).toBe(0)
-        expect(state.fits).toBe(true)
-        expect(state.rows).toBeGreaterThan(1)
       })
-    }
+      expect(state.animationCount).toBe(0)
+      expect(state.fits).toBe(true)
+      expect(state.rows).toBeGreaterThan(1)
+    })
   }
 
   test("English blog and project case studies never render the empty state", async ({ page }) => {
@@ -99,34 +113,27 @@ test.describe("Regression contracts", () => {
     }
   })
 
-  test("renders experience as unboxed editorial rows", async ({ page }) => {
+  test("renders experience as an exclusive disclosure table", async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 720 })
+    await page.emulateMedia({ reducedMotion: "reduce" })
     await page.goto("/")
 
-    const cascade = await page.locator("#experiencia").evaluate((section) => {
-      const secondaryRow = section.querySelector<HTMLElement>(".experience-item-secondary")
-      const company = section.querySelector<HTMLElement>("h4")
-      const location = section.querySelector<HTMLElement>(".experience-meta p")
+    const rows = page.locator("#experiencia details.experience-item")
+    await expect(rows).toHaveCount(2)
+    await expect(rows.first()).toHaveAttribute("open", "")
+    await expect(rows.nth(1)).not.toHaveAttribute("open", "")
+    await expect(rows.first().locator("summary h3")).toHaveText("Desarrollador Full Stack")
+    await expect(rows.first().locator(".experience-company")).toHaveText("MIMASOFT")
+    await expect(rows.first().locator(".experience-copy")).toBeVisible()
+    await expect(page.locator("#experiencia .experience-columns")).toHaveCSS("display", "grid")
 
-      return {
-        secondaryBorder: secondaryRow ? getComputedStyle(secondaryRow).borderTopWidth : null,
-        secondaryBackground: secondaryRow ? getComputedStyle(secondaryRow).backgroundColor : null,
-        secondaryShadow: secondaryRow ? getComputedStyle(secondaryRow).boxShadow : null,
-        secondaryDisplay: secondaryRow ? getComputedStyle(secondaryRow).display : null,
-        companyFontSize: company ? getComputedStyle(company).fontSize : null,
-        companyLineHeight: company ? getComputedStyle(company).lineHeight : null,
-        locationLineHeight: location ? getComputedStyle(location).lineHeight : null,
-      }
-    })
+    await rows.nth(1).locator("summary").click()
+    await expect(rows.nth(1)).toHaveAttribute("open", "")
+    await expect(rows.first()).not.toHaveAttribute("open", "")
+    await expect(rows.nth(1).locator(".experience-copy")).toContainText("Telsur")
 
-    expect(cascade).toMatchObject({
-      secondaryBorder: "0px",
-      secondaryBackground: "rgba(0, 0, 0, 0)",
-      secondaryShadow: "none",
-      secondaryDisplay: "grid",
-      companyFontSize: "21px",
-      companyLineHeight: "24px",
-    })
-    expect(Number.parseFloat(cascade.locationLineHeight ?? "")).toBeCloseTo(20.8, 1)
+    await rows.nth(1).locator("summary").focus()
+    await page.keyboard.press("Enter")
+    await expect(rows.nth(1)).not.toHaveAttribute("open", "")
   })
 })

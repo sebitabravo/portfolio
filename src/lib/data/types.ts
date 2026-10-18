@@ -8,6 +8,18 @@ export const PROJECT_STATUSES = {
 
 export type ProjectStatus = (typeof PROJECT_STATUSES)[keyof typeof PROJECT_STATUSES]
 
+// Cada proyecto toma una franja del arcoíris de la marca como color de escenario.
+export const PROJECT_STAGES = {
+  RED: "r1",
+  ORANGE: "r2",
+  YELLOW: "r3",
+  GREEN: "r4",
+  BLUE: "r5",
+  VIOLET: "r6",
+} as const
+
+export type ProjectStage = (typeof PROJECT_STAGES)[keyof typeof PROJECT_STAGES]
+
 export const CERTIFICATION_CATEGORIES = {
   PROFESSIONAL: "professional",
   ACADEMIC: "academic",
@@ -39,7 +51,9 @@ export interface WorkExperience {
 export interface Project {
   slug: string
   title: string
+  tagline: string
   description: string
+  stage: ProjectStage
   tags: string[]
   featured: boolean
   status: ProjectStatus
@@ -67,6 +81,7 @@ export interface Education {
 export interface Certification {
   name: string
   organization: string
+  monogram: string
   pdfUrl?: string
   order: number
   category: CertificationCategory

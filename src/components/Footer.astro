@@ -1,7 +1,10 @@
 ---
+// Pie corporativo de 1986: sellos a los lados, marca al centro y fila legal debajo.
 import { personalInfo, social } from "@/lib/data"
 import { getTranslations, type Locale } from "@/lib/i18n"
 import { homeSectionFragment } from "@/lib/home-sections"
+import BrandMark from "./BrandMark.astro"
+import RoundSeal from "./RoundSeal.astro"
 
 interface Props {
   locale?: Locale
@@ -15,21 +18,41 @@ const aboutUrl = `${homeUrl}${homeSectionFragment(locale, "about")}`
 const contactUrl = `${homeUrl}${homeSectionFragment(locale, "contact")}`
 const blogUrl = locale === "es" ? "/blog" : "/en/blog"
 const privacyUrl = locale === "es" ? "/privacy" : "/en/privacy"
+const linkClass = "footer-link inline-flex min-h-11 items-center focus-ring"
 ---
 
-<footer class="mt-16 w-full">
-  <div class="flex flex-col gap-12 pt-12 font-text text-xs">
-    <div class="mx-auto flex w-full max-w-[1200px] flex-wrap items-center gap-x-8 gap-y-6 px-4">
-      <span class="text-caption-color">&copy; {currentYear}</span>
+<footer class="site-footer w-full">
+  <span class="rainbow-band rainbow-band-thin" aria-hidden="true"></span>
+  <div class="frame site-footer-frame">
+    <div class="footer-seals">
+      <div class="footer-seal footer-seal-made" aria-hidden="true">
+        <RoundSeal text={t.footer.sealMade} variant="globe" size={124} />
+      </div>
+
+      <a href={homeUrl} class="footer-brand focus-ring" aria-label={t.nav.brandHome}>
+        <span class="footer-brand-row">
+          <BrandMark class="h-6 w-auto" />
+          <span class="footer-wordmark">{personalInfo.name}</span>
+        </span>
+        <span class="footer-tagline">{t.footer.tagline}</span>
+        <span class="footer-rights">&copy; {currentYear} {personalInfo.name} · Chile. {t.footer.rights}</span>
+      </a>
+
+      <a href={privacyUrl} class="footer-seal footer-seal-privacy focus-ring" aria-label={t.footer.sealPrivacy}>
+        <RoundSeal text={`${t.footer.sealPrivacy} · `} variant="laurel" center="§" size={124} />
+      </a>
+    </div>
+
+    <div class="footer-legal">
       <nav aria-label={t.footer.professionalProfiles}>
-        <ul class="footer-socials flex items-center gap-4">
+        <ul class="footer-socials flex flex-wrap items-center gap-x-5">
           <li>
             <a
               href={social.linkedin}
               target="_blank"
               rel="me noopener noreferrer"
               data-track-social="linkedin"
-              class="inline-flex min-h-11 items-center text-caption-color focus-ring transition-colors hover:text-foreground"
+              class={linkClass}
             >
               <span>LinkedIn</span>
             </a>
@@ -40,7 +63,7 @@ const privacyUrl = locale === "es" ? "/privacy" : "/en/privacy"
               target="_blank"
               rel="me noopener noreferrer"
               data-track-social="github"
-              class="inline-flex min-h-11 items-center text-caption-color focus-ring transition-colors hover:text-foreground"
+              class={linkClass}
             >
               <span>GitHub</span>
             </a>
@@ -48,56 +71,21 @@ const privacyUrl = locale === "es" ? "/privacy" : "/en/privacy"
         </ul>
       </nav>
 
-      <span class="text-xs text-caption-color">
-        {t.footer.madeWith}
-        <a
-          href="https://astro.build"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="text-primary focus-ring hover:underline">Astro</a
-        >
-        +
-        <a
-          href="https://tailwindcss.com"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="text-primary focus-ring hover:underline">Tailwind</a
-        >
-      </span>
-
-      <span class="text-caption-color/30" aria-hidden="true">&middot;</span>
-
       <nav aria-label={t.footer.links}>
-        <ul class="flex flex-wrap items-center gap-4">
-          <li>
-            <a href={blogUrl} class="text-caption-color focus-ring transition-colors hover:text-foreground"
-              >{t.nav.blog}</a
-            >
-          </li>
-          <li>
-            <a href={aboutUrl} class="text-caption-color focus-ring transition-colors hover:text-foreground"
-              >{t.nav.about}</a
-            >
-          </li>
-          <li>
-            <a href={contactUrl} class="text-caption-color focus-ring transition-colors hover:text-foreground"
-              >{t.nav.contact}</a
-            >
-          </li>
-          <li>
-            <a href={privacyUrl} class="text-caption-color focus-ring transition-colors hover:text-foreground"
-              >{t.footer.privacy}</a
-            >
-          </li>
+        <ul class="flex flex-wrap items-center gap-x-5">
+          <li><a href={blogUrl} class={linkClass}>{t.nav.blog}</a></li>
+          <li><a href={aboutUrl} class={linkClass}>{t.nav.about}</a></li>
+          <li><a href={contactUrl} class={linkClass}>{t.nav.contact}</a></li>
+          <li><a href={privacyUrl} class={linkClass}>{t.footer.privacy}</a></li>
         </ul>
       </nav>
-    </div>
-    <div class="w-full overflow-hidden px-4">
-      <a
-        href={locale === "en" ? "/en" : "/"}
-        class="-mb-[0.16em] block font-display text-[clamp(3.5rem,12.5vw,11rem)] leading-[0.78] font-medium tracking-[-0.03em] whitespace-nowrap text-foreground focus-ring focus-visible:outline-offset-[-4px]"
-        >{personalInfo.name}</a
-      >
+
+      <p class="footer-made">
+        {t.footer.madeWith}{" "}
+        <a href="https://astro.build" target="_blank" rel="noopener noreferrer" class="focus-ring">Astro</a>
+        {" + "}
+        <a href="https://threejs.org" target="_blank" rel="noopener noreferrer" class="focus-ring">Three.js</a>
+      </p>
     </div>
   </div>
 </footer>

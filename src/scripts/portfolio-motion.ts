@@ -1,16 +1,27 @@
 import { createMotionBootstrap } from "./motion/bootstrap"
 import { createCardsModule } from "./motion/cards"
 import { createMotionController } from "./motion/controller"
+import { createCountersModule } from "./motion/counters"
+import { createCursorModule } from "./motion/cursor"
 import { shouldLoadWebGLEnhancement } from "./motion/environment"
 import { createExperienceTimelineModule } from "./motion/experience-timeline"
 import { createHeroModule } from "./motion/hero"
 import { createNavIndicatorModule } from "./motion/nav-indicator"
+import { createTerminalModule } from "./motion/terminal"
 
 export { shouldLoadWebGLEnhancement }
 
 const bootstrap = createMotionBootstrap(() =>
   createMotionController({
-    modules: [createCardsModule(), createHeroModule(), createNavIndicatorModule(), createExperienceTimelineModule()],
+    modules: [
+      createCardsModule(),
+      createHeroModule(),
+      createNavIndicatorModule(),
+      createExperienceTimelineModule(),
+      createTerminalModule(),
+      createCountersModule(),
+      createCursorModule(),
+    ],
   }),
 )
 

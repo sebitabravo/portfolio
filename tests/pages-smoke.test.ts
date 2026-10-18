@@ -83,15 +83,15 @@ describe("remaining localized pages", () => {
     expect(route).not.toMatch(/<(?:main|h1)\b/)
   })
 
-  it("keeps the Header and footer legal row at 1200px with a full-width footer wordmark", () => {
-    expect(design).toContain("shared sections and header/footer max `1200px`")
+  it("keeps the Header and footer inside the 1440px blueprint frame with a full-width footer band", () => {
+    expect(design).toContain("blueprint frame max `1440px`")
     const headerWrapper = header.match(/<header\b[^>]*>\s*<div class="([^"]+)"/)?.[1]
     const footerWrapper = footer.match(/<footer\b[^>]*class="([^"]+)"/)?.[1]
-    const footerLegalRow = footer.match(/<div class="([^"]*max-w-\[1200px\][^"]*)"/)?.[1]
+    const footerFrame = footer.match(/<div class="([^"]*\bframe\b[^"]*)"/)?.[1]
     expect(footerWrapper).toMatch(/(?:^|\s)w-full(?:\s|$)/)
     expect(footerWrapper).not.toMatch(/(?:^|\s)max-w-/)
-    for (const wrapper of [headerWrapper, footerLegalRow]) {
-      expect(wrapper).toMatch(/(?:^|\s)max-w-\[1200px\](?:\s|$)/)
+    for (const wrapper of [headerWrapper, footerFrame]) {
+      expect(wrapper).toMatch(/(?:^|\s)frame(?:\s|$)/)
     }
   })
 })

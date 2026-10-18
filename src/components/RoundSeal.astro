@@ -1,0 +1,127 @@
+---
+// Sello circular con texto en órbita: credenciales y guiños corporativos estilo Shader.
+interface Props {
+  text: string
+  center?: string
+  variant?: "globe" | "laurel" | "badge"
+  size?: number
+  class?: string
+  spin?: boolean
+}
+
+const { text, center, variant = "badge", size = 132, class: className, spin = true } = Astro.props
+// Un id determinista mantiene el build reproducible aunque haya varios sellos por página.
+const hash = [...`${variant}${text}${center ?? ""}`].reduce((total, char) => (total * 31 + char.charCodeAt(0)) >>> 0, 7)
+const pathId = `seal-path-${hash.toString(36)}`
+// Hojas del laurel sobre un arco de radio 23: rama izquierda y su espejo.
+const laurel = [0, 1, 2, 3, 4, 5].flatMap((index) => {
+  const angle = ((112 + index * 24) * Math.PI) / 180
+  const x = +(60 + 23 * Math.cos(angle)).toFixed(2)
+  const y = +(60 + 23 * Math.sin(angle)).toFixed(2)
+  const rotation = +((angle * 180) / Math.PI + 70).toFixed(1)
+  return [
+    { x, y, r: rotation },
+    { x: +(120 - x).toFixed(2), y, r: -rotation },
+  ]
+})
+// El texto se repite hasta cubrir la circunferencia sin cortar palabras.
+const ring = text.repeat(Math.max(1, Math.floor(70 / Math.max(text.length, 1))))
+---
+
+<svg
+  class:list={["round-seal", { "round-seal-spin": spin }, className]}
+  viewBox="0 0 120 120"
+  width={size}
+  height={size}
+  aria-hidden="true"
+  focusable="false"
+>
+  <defs>
+    <path id={pathId} d="M60,60 m-47,0 a47,47 0 1,1 94,0 a47,47 0 1,1 -94,0"></path>
+  </defs>
+  <circle class="round-seal-ring" cx="60" cy="60" r="57" fill="none" stroke="currentColor" stroke-width="1"></circle>
+  <circle class="round-seal-ring" cx="60" cy="60" r="37" fill="none" stroke="currentColor" stroke-width="1"></circle>
+  <g class="round-seal-orbit">
+    <text class="round-seal-text" fill="currentColor">
+      <textPath href={`#${pathId}`} xlink:href={`#${pathId}`} textLength="292" lengthAdjust="spacing">{ring}</textPath>
+    </text>
+  </g>
+  {
+    variant === "globe" && (
+      <g class="round-seal-globe" fill="none" stroke="currentColor" stroke-width="1.1">
+        <ellipse cx="60" cy="60" rx="24" ry="24" />
+        <ellipse cx="60" cy="60" rx="10" ry="24" />
+        <path d="M36 60h48M39 48h42M39 72h42" />
+      </g>
+    )
+  }
+  {
+    variant === "laurel" && (
+      <g class="round-seal-laurel" fill="currentColor">
+        {laurel.map((leaf) => (
+          <ellipse cx={leaf.x} cy={leaf.y} rx="2.3" ry="5.4" transform={`rotate(${leaf.r} ${leaf.x} ${leaf.y})`} />
+        ))}
+      </g>
+    )
+  }
+  {
+    center && (
+      <text
+        class="round-seal-center"
+        x="60"
+        y="60"
+        text-anchor="middle"
+        dominant-baseline="central"
+        fill="currentColor"
+      >
+        {center}
+      </text>
+    )
+  }
+</svg>
+
+<style>
+  .round-seal {
+    display: block;
+    overflow: visible;
+  }
+
+  .round-seal-ring {
+    opacity: 0.55;
+  }
+
+  .round-seal-text {
+    font-family: var(--font-geist-mono), ui-monospace, monospace;
+    font-size: 7.4px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .round-seal-center {
+    font-family: var(--font-instrument), Georgia, serif;
+    font-size: 22px;
+    font-style: italic;
+  }
+
+  .round-seal-orbit {
+    transform-origin: 60px 60px;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .round-seal-spin .round-seal-orbit {
+      animation: seal-spin 26s linear infinite;
+    }
+
+    :global(a:hover) > .round-seal-spin .round-seal-orbit,
+    :global(a:focus-visible) > .round-seal-spin .round-seal-orbit {
+      animation-duration: 6s;
+    }
+  }
+
+  @keyframes seal-spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+</style>

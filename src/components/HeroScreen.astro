@@ -1,0 +1,139 @@
+---
+// Pantalla del escritorio SB-OS: fondo 3D, accesos reales y ventanas decorativas arrastrables.
+import { Image } from "astro:assets"
+import { getTranslations, type Locale } from "@/lib/i18n"
+import { homeSectionFragment } from "@/lib/home-sections"
+import profileImage from "@/assets/perfil.jpeg"
+import BrandMark from "./BrandMark.astro"
+import HeroWallpaper from "./HeroWallpaper.astro"
+
+interface Props {
+  locale?: Locale
+}
+
+const { locale = "es" } = Astro.props
+const t = getTranslations(locale)
+const shortcuts = [
+  { label: t.os.folderProjects, href: homeSectionFragment(locale, "projects"), icon: "folder" },
+  { label: t.os.fileCv, href: "/cv/Sebastian_Bravo_CV.pdf", icon: "file", external: true },
+  { label: t.os.appContact, href: homeSectionFragment(locale, "contact"), icon: "mail" },
+] as const
+---
+
+<div class="os-screen" data-os-screen>
+  <div class="os-wallpaper" aria-hidden="true">
+    <HeroWallpaper />
+    <canvas class="hero-webgl" data-hero-webgl></canvas>
+  </div>
+
+  <div class="os-menubar" aria-hidden="true">
+    <span class="os-menubar-brand"><BrandMark class="h-3 w-auto" />SB-OS</span>
+    {t.os.menu.map((item) => <span class="os-menubar-item">{item}</span>)}
+    <span class="os-menubar-spacer"></span>
+    <span class="os-menubar-status"><span class="status-dot"></span>{t.os.online}</span>
+    <time class="os-menubar-clock" data-os-clock>{t.hero.timezone}</time>
+  </div>
+
+  <nav class="os-shortcuts" aria-label={t.os.shortcuts}>
+    {
+      shortcuts.map((shortcut) => (
+        <a
+          href={shortcut.href}
+          class="os-shortcut focus-ring"
+          target={"external" in shortcut ? "_blank" : undefined}
+          rel={"external" in shortcut ? "noopener noreferrer" : undefined}
+        >
+          <svg class="os-shortcut-icon" viewBox="0 0 16 16" aria-hidden="true" shape-rendering="crispEdges">
+            {shortcut.icon === "folder" && (
+              <>
+                <rect x="1" y="3" width="6" height="2" fill="#c9971f" />
+                <rect x="1" y="5" width="14" height="9" fill="var(--r3)" />
+                <rect x="1" y="5" width="14" height="1" fill="#fff3c4" />
+              </>
+            )}
+            {shortcut.icon === "file" && (
+              <>
+                <rect x="3" y="1" width="8" height="14" fill="#f3efe6" />
+                <rect x="11" y="4" width="2" height="11" fill="#f3efe6" />
+                <rect x="11" y="1" width="1" height="3" fill="#bdb6a8" />
+                <rect x="5" y="6" width="6" height="1" fill="var(--r1)" />
+                <rect x="5" y="9" width="6" height="1" fill="#8a867f" />
+                <rect x="5" y="11" width="4" height="1" fill="#8a867f" />
+              </>
+            )}
+            {shortcut.icon === "mail" && (
+              <>
+                <rect x="1" y="3" width="14" height="10" fill="var(--r5)" />
+                <rect x="3" y="5" width="2" height="1" fill="#f3efe6" />
+                <rect x="5" y="6" width="2" height="1" fill="#f3efe6" />
+                <rect x="7" y="7" width="2" height="1" fill="#f3efe6" />
+                <rect x="9" y="6" width="2" height="1" fill="#f3efe6" />
+                <rect x="11" y="5" width="2" height="1" fill="#f3efe6" />
+              </>
+            )}
+          </svg>
+          <span class="os-shortcut-label">{shortcut.label}</span>
+        </a>
+      ))
+    }
+  </nav>
+
+  <div class="os-desktop" aria-hidden="true">
+    <div class="os-window os-window-portrait" data-os-window style="--win-x: 52%; --win-y: 13%">
+      <div class="os-window-bar" data-os-window-handle>
+        <span class="os-window-lights"><span></span><span></span><span></span></span>
+        <span class="os-window-title">{t.os.portraitTitle}</span>
+      </div>
+      <div class="os-portrait">
+        <Image
+          src={profileImage}
+          alt=""
+          width={360}
+          height={450}
+          sizes="(max-width: 767px) 46vw, 300px"
+          format="webp"
+          quality={88}
+          loading="eager"
+          fetchpriority="high"
+          decoding="sync"
+          class="hero-portrait"
+        />
+      </div>
+    </div>
+
+    <div class="os-window os-window-terminal" data-os-window style="--win-x: 9%; --win-y: 47%">
+      <div class="os-window-bar" data-os-window-handle>
+        <span class="os-window-lights"><span></span><span></span><span></span></span>
+        <span class="os-window-title">{t.os.terminalTitle}</span>
+      </div>
+      <div class="os-terminal" data-terminal>
+        {
+          t.os.terminal.map((line) => (
+            <p class="os-terminal-line">
+              <span class="os-terminal-prompt">~ %</span> <span data-terminal-cmd>{line.cmd}</span>
+              <span class="os-terminal-out" data-terminal-out>
+                {line.out}
+              </span>
+            </p>
+          ))
+        }
+        <span class="os-terminal-caret"></span>
+      </div>
+    </div>
+
+    <p class="os-note">{t.os.dragHint}</p>
+  </div>
+
+  <div class="os-crt" aria-hidden="true"></div>
+  <div class="hero-scroll-cue" aria-hidden="true">
+    <span>{t.hero.scroll}</span><span class="hero-scroll-arrow">↓</span>
+  </div>
+</div>
+
+<script>
+  import { setupOsDesktop, teardownOsDesktop } from "@/scripts/os-desktop"
+
+  setupOsDesktop()
+  document.addEventListener("astro:page-load", () => setupOsDesktop())
+  document.addEventListener("astro:before-swap", teardownOsDesktop)
+</script>

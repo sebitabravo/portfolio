@@ -60,17 +60,20 @@ test.describe("Regression contracts", () => {
     }
   })
 
-  test("preserves the legacy experience cascade after CSS layering", async ({ page }) => {
+  test("renders experience as unboxed editorial rows", async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 720 })
     await page.goto("/")
 
     const cascade = await page.locator("#experiencia").evaluate((section) => {
-      const secondaryCard = section.querySelector<HTMLElement>(".experience-item-secondary .experience-item-card")
+      const secondaryRow = section.querySelector<HTMLElement>(".experience-item-secondary")
       const company = section.querySelector<HTMLElement>("h4")
-      const location = section.querySelector<HTMLElement>(".experience-item p")
+      const location = section.querySelector<HTMLElement>(".experience-meta p")
 
       return {
-        secondaryPadding: secondaryCard ? getComputedStyle(secondaryCard).padding : null,
+        secondaryBorder: secondaryRow ? getComputedStyle(secondaryRow).borderTopWidth : null,
+        secondaryBackground: secondaryRow ? getComputedStyle(secondaryRow).backgroundColor : null,
+        secondaryShadow: secondaryRow ? getComputedStyle(secondaryRow).boxShadow : null,
+        secondaryDisplay: secondaryRow ? getComputedStyle(secondaryRow).display : null,
         companyFontSize: company ? getComputedStyle(company).fontSize : null,
         companyLineHeight: company ? getComputedStyle(company).lineHeight : null,
         locationLineHeight: location ? getComputedStyle(location).lineHeight : null,
@@ -78,10 +81,13 @@ test.describe("Regression contracts", () => {
     })
 
     expect(cascade).toMatchObject({
-      secondaryPadding: "18.4px 24px",
+      secondaryBorder: "0px",
+      secondaryBackground: "rgba(0, 0, 0, 0)",
+      secondaryShadow: "none",
+      secondaryDisplay: "grid",
       companyFontSize: "20px",
       companyLineHeight: "24px",
     })
-    expect(Number.parseFloat(cascade.locationLineHeight ?? "")).toBeCloseTo(19.2, 1)
+    expect(Number.parseFloat(cascade.locationLineHeight ?? "")).toBeCloseTo(22.4, 1)
   })
 })

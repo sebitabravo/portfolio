@@ -12,7 +12,6 @@ const t = getTranslations(locale)
 const technologies = [...canonicalTechnologies]
 const repeatedTechnologies = [...technologies, ...technologies]
 const label = t.signal.label
-const technologyCount = String(technologies.length).padStart(2, "0")
 ---
 
 <div
@@ -33,7 +32,6 @@ const technologyCount = String(technologies.length).padStart(2, "0")
         {
           repeatedTechnologies.map((technology, index) => (
             <span class="signal-tech" data-duplicate={index >= technologies.length ? "true" : undefined}>
-              <span class="signal-tech-mark">✳</span>
               {technology}
             </span>
           ))
@@ -41,7 +39,6 @@ const technologyCount = String(technologies.length).padStart(2, "0")
       </div>
     </div>
     <div class="signal-strip-actions">
-      <span class="signal-strip-index" aria-hidden="true">{technologyCount} / {technologyCount}</span>
       <button
         type="button"
         class="signal-marquee-toggle focus-ring"
@@ -60,11 +57,9 @@ const technologyCount = String(technologies.length).padStart(2, "0")
   .signal-strip {
     position: relative;
     overflow: hidden;
-    border-top: 1px solid var(--hero-line);
-    border-bottom: 1px solid var(--hero-line);
-    background: hsl(var(--surface-soft) / 0.76);
-    box-shadow: 0 12px 30px rgb(45 42 105 / 0.04);
-    backdrop-filter: blur(12px) saturate(1.08);
+    background: hsl(var(--surface-soft));
+    font-family: var(--font-switzer);
+    font-size: 0.875rem;
   }
 
   .signal-strip-inner {
@@ -83,7 +78,7 @@ const technologyCount = String(technologies.length).padStart(2, "0")
     align-items: center;
     gap: 0.55rem;
     color: hsl(var(--muted-foreground));
-    font-size: 0.68rem;
+    font-size: 0.875rem;
     white-space: nowrap;
   }
 
@@ -92,7 +87,6 @@ const technologyCount = String(technologies.length).padStart(2, "0")
     height: 0.42rem;
     border-radius: 50%;
     background: hsl(var(--primary));
-    box-shadow: 0 0 0 4px hsl(var(--primary) / 0.12);
   }
 
   .signal-marquee-window {
@@ -118,29 +112,17 @@ const technologyCount = String(technologies.length).padStart(2, "0")
     display: inline-flex;
     align-items: center;
     gap: 0.45rem;
-    color: hsl(var(--foreground) / 0.78);
-    font-family: var(--font-jetbrains-mono), monospace;
-    font-size: 0.7rem;
+    color: hsl(var(--muted-foreground));
+    font-size: 0.875rem;
     white-space: nowrap;
   }
 
-  .signal-strip-label,
-  .signal-strip-index,
-  .signal-tech {
-    font-family: var(--font-jetbrains-mono), ui-monospace, monospace;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-  }
-
-  .signal-tech-mark {
-    color: hsl(var(--primary));
-    font-size: 0.75rem;
-  }
-
-  .signal-strip-index {
-    color: var(--hero-faint);
-    font-size: 0.68rem;
-    white-space: nowrap;
+  .signal-tech::before {
+    content: "";
+    width: 0.2rem;
+    height: 0.2rem;
+    border-radius: 50%;
+    background: hsl(var(--muted-foreground) / 0.5);
   }
 
   .signal-strip-actions {
@@ -155,23 +137,21 @@ const technologyCount = String(technologies.length).padStart(2, "0")
     height: 2rem;
     align-items: center;
     justify-content: center;
-    border: 1px solid hsl(var(--border));
-    border-radius: 0.45rem;
+    border: 1px solid transparent;
     color: hsl(var(--muted-foreground));
-    background: hsl(var(--card) / 0.5);
-    font-family: var(--font-jetbrains-mono), monospace;
-    font-size: 0.68rem;
+    background: transparent;
+    font-family: var(--font-switzer);
+    font-size: 0.875rem;
     cursor: pointer;
-    transition:
-      color 180ms ease,
-      border-color 180ms ease,
-      background 180ms ease;
+    transition: color 180ms ease;
   }
 
   .signal-marquee-toggle:hover {
-    border-color: hsl(var(--primary) / 0.55);
     color: hsl(var(--primary));
-    background: hsl(var(--muted));
+  }
+
+  .signal-marquee-toggle:focus-visible {
+    border-color: hsl(var(--primary));
   }
 
   @keyframes signal-marquee {
@@ -208,12 +188,8 @@ const technologyCount = String(technologies.length).padStart(2, "0")
       padding: 0 1rem;
     }
 
-    .signal-strip-index {
-      display: none;
-    }
-
     .signal-strip-label {
-      font-size: 0.68rem;
+      font-size: 0.875rem;
       white-space: normal;
     }
 
@@ -222,7 +198,7 @@ const technologyCount = String(technologies.length).padStart(2, "0")
     }
 
     .signal-tech {
-      font-size: 0.68rem;
+      font-size: 0.875rem;
     }
   }
 </style>

@@ -38,9 +38,8 @@
     position: absolute;
     top: 0.35rem;
     bottom: 2.4rem;
-    left: calc(1rem - 1px);
+    left: 0;
     width: 2px;
-    border-radius: 9999px;
     background: hsl(var(--signal));
     pointer-events: none;
     transform: scaleY(var(--timeline-progress, 1));

@@ -88,13 +88,16 @@ const actionPrimary = `${actionBase} text-primary`
           </div>
 
           <div class="project-body flex min-w-0 flex-1 flex-col items-start gap-4 pt-6">
-            <p class="project-status text-sm text-muted-foreground">{publicStatusLabel}</p>
             <h3
               transition:name={articleTitleTransitionName(resolvedBlogSlug)}
               class="project-title text-[clamp(1.6rem,2.4vw,2.4rem)] leading-[1.05] tracking-[-0.03em] text-foreground transition-colors group-hover:text-primary group-focus-within:text-primary"
             >
               {title}
             </h3>
+            <p class="project-status inline-flex items-center gap-2 text-sm text-muted-foreground">
+              <span class="size-1.5 shrink-0 rounded-full bg-signal" aria-hidden="true"></span>
+              {publicStatusLabel}
+            </p>
             <p class="project-description max-w-[60ch] text-[1.0625rem] leading-relaxed text-muted-foreground">{description}</p>
 
             {visualStats.length > 0 && (

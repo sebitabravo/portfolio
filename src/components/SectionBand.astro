@@ -1,10 +1,10 @@
 ---
-import SectionContainer from "./SectionContainer.astro"
+import SectionContainer from "@/components/SectionContainer.astro"
 
 interface Props {
   id: string
   headingId: string
-  tone?: "base" | "tinted"
+  tone?: "base" | "tinted" | "inverted"
   class?: string
 }
 
@@ -13,13 +13,15 @@ const { id, headingId, tone = "base", class: className, ...attributes } = Astro.
 
 <div
   class:list={[
-    "section-band relative isolate w-full px-4 py-[clamp(4.25rem,7vw,7rem)]",
-    { "section-band-tinted overflow-hidden border-y border-section-band-line bg-section-band-bg": tone === "tinted" },
+    "section-band relative isolate w-full",
+    { "section-band-tinted bg-surface-soft": tone === "tinted", "section-band-inverted": tone === "inverted" },
     className,
   ]}
   data-section-band={tone}
 >
-  <SectionContainer id={id} headingId={headingId} {...attributes}>
-    <slot />
-  </SectionContainer>
+  <div class="frame section-frame">
+    <SectionContainer id={id} headingId={headingId} {...attributes}>
+      <slot />
+    </SectionContainer>
+  </div>
 </div>

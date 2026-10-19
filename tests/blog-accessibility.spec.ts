@@ -60,7 +60,7 @@ test.describe("Blog accessibility", () => {
       await page.goto(indexPath);
       await expect(page.locator("main#main-content h1")).toHaveText(t.blog.title);
       await expect(page.locator('head meta[name="description"]')).toHaveAttribute("content", t.blog.description);
-      await expect(page.locator("main#main-content > p")).toHaveText(t.blog.intro);
+      await expect(page.locator("main#main-content header").getByRole("paragraph")).toHaveText(t.blog.intro);
       const breadcrumb = page.getByRole("navigation", { name: t.nav.breadcrumb });
       await expect(breadcrumb.getByRole("link", { name: t.nav.home })).toHaveAttribute("href", homePath);
       await expect(breadcrumb.locator('[aria-current="page"]')).toHaveText(t.blog.title);

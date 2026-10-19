@@ -36,13 +36,16 @@ vi.mock("../src/scripts/motion/interactions", () => ({
 function renderHero() {
   document.body.innerHTML = `
     <section data-portfolio-motion>
+      <div class="hero-frame">
       <h1 id="hero-title" class="hero-title hero-reveal">Sebastian Bravo</h1>
-      <div class="hero-art-frame"></div>
-      <div class="hero-actions">
-        <a class="hero-btn-primary" href="/#contacto">Contactar</a>
+      <div class="hero-aside">
+        <div class="hero-actions">
+          <a class="hero-btn-primary" href="/#contacto">Contactar</a>
+        </div>
+        <ul class="hero-meta"></ul>
       </div>
-      <ul class="hero-meta"></ul>
-      <canvas data-hero-webgl></canvas>
+      </div>
+      <div class="hero-art-frame"><canvas data-hero-webgl></canvas></div>
     </section>
   `
 }
@@ -74,7 +77,7 @@ describe("hero motion module", () => {
     document.body.innerHTML = ""
   })
 
-  it("never targets the LCP heading and wires pointer, magnet and scroll handoff", () => {
+  it("never targets the LCP heading or the screen and wires pointer, magnet and scroll handoff", () => {
     renderHero()
     const module = createHeroModule()
     const context = createContext()
@@ -86,7 +89,7 @@ describe("hero motion module", () => {
     const title = document.querySelector<HTMLElement>("#hero-title")!
     const targets = harness.fromTo.mock.calls[0]?.[0] as HTMLElement[]
     const options = harness.fromTo.mock.calls[0]?.[2] as {
-      scrollTrigger: { start: string; end: string; pin?: boolean }
+      scrollTrigger: { trigger: Element; start: string; end: string; pin?: boolean }
     }
 
     expect(harness.createHeroScene).toHaveBeenCalledWith(canvas, root)
@@ -99,16 +102,16 @@ describe("hero motion module", () => {
       document.querySelector(".hero-btn-primary"),
       { maxOffset: 7, signal: context.signal },
     )
-    expect(targets).toEqual([
-      document.querySelector(".hero-art-frame"),
-      document.querySelector(".hero-actions"),
-      document.querySelector(".hero-meta"),
-    ])
+    expect(targets).toEqual([document.querySelector(".hero-aside")])
     expect(targets).not.toContain(title)
+    // La pantalla escala con un scroll timeline CSS; GSAP nunca la desvanece.
+    expect(targets).not.toContain(document.querySelector(".hero-art-frame"))
     expect(options.scrollTrigger).toMatchObject({
       start: "top top",
       end: "bottom 30%",
     })
+    // La copia del hero dispara el handoff; la pista del scrollytelling no lo estira.
+    expect(options.scrollTrigger.trigger).toBe(document.querySelector(".hero-frame"))
     expect(options.scrollTrigger).not.toHaveProperty("pin")
     expect(title.getAttribute("style")).toBeNull()
   })
@@ -118,7 +121,7 @@ describe("hero motion module", () => {
     const module = createHeroModule()
     module.init(createContext())
 
-    const art = document.querySelector<HTMLElement>(".hero-art-frame")!
+    const art = document.querySelector<HTMLElement>(".hero-aside")!
     art.style.setProperty("--hero-exit-y", "-2rem")
     art.style.setProperty("--hero-exit-opacity", "0.4")
 

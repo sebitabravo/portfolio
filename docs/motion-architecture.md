@@ -23,7 +23,7 @@ src/scripts/motion/
   bootstrap.ts           Astro event wiring and singleton controller
   cards.ts               unified project-card manager
   hero.ts                hero pointer, magnetic CTA, scroll handoff, WebGL scene
-  interactions.ts        pointer primitives, tilt, spotlight, magnetic target
+  interactions.ts        pointer primitives, tilt, magnetic target
   reveal.ts              non-card [data-animate] reveal
   nav-indicator.ts       active-pill positioning with Flip.fit
   experience-timeline.ts timeline scrub and item reveal
@@ -38,7 +38,7 @@ src/scripts/motion/
 | `src/scripts/motion-capabilities.ts` | Re-exported by `environment.ts` and `loaders.ts`; deleted after callers migrate. |
 | `src/scripts/motion-interactions.ts` | Re-exported by `motion/interactions.ts`; kept until tests import the new path. |
 | `src/scripts/scroll-reveal.ts` | Thin wrapper around `motion/reveal.ts`; same public behavior for generic `[data-animate]` elements. |
-| `src/scripts/projects.ts` | Thin wrapper around the cards module's spotlight and image-fallback behavior until tests migrate. |
+| `src/scripts/projects.ts` | Thin wrapper around the cards module's image-fallback behavior until tests migrate. |
 | `src/scripts/hero-webgl.ts` | Unchanged in Phase 3. Imported by `hero.ts`. |
 | `src/scripts/header-nav.ts` | Keeps `.nav-active` and `aria-current`. Adds a custom event consumed by the nav indicator. |
 | `src/scripts/reading-progress.ts` | Not part of the motion controller. Keep as the single owner of `[data-reading-progress]`. |
@@ -91,7 +91,7 @@ Order matters:
 4. Kill tracked tweens with `gsap.killTweensOf(targets)`.
 5. Kill remaining triggers with `ScrollTrigger.getAll().forEach((trigger) => trigger.kill())` as a safety net. The site owns all ScrollTriggers.
 6. Revert `gsap.matchMedia()` contexts.
-7. Restore `--project-progress`, meter `scaleX(0)`, spotlight/tilt/magnetic variables, and nav indicator inline styles.
+7. Restore tilt/magnetic variables and nav indicator inline styles.
 8. Set `data-motion-status="idle"`; convert only `pending` WebGL state to `idle`. Preserve `fallback`, `reduced`, `ready`, and `disposed` terminal values.
 9. `controller.cleanup()`.
 
@@ -146,7 +146,6 @@ This module becomes the only owner of `[data-project-card]`. It absorbs:
 
 - Card reveal classes currently owned by `scroll-reveal.ts`.
 - Card lift/scale and section progress currently owned by `portfolio-motion.ts`.
-- Spotlight currently owned by `projects.ts`.
 - Image error fallback currently owned by `projects.ts`.
 
 DOM contract:
@@ -154,24 +153,23 @@ DOM contract:
 ```text
 [data-projects-list]                 grid
 [data-project-card]                  card
-[data-project-scroll-meter] span     progress meter
 img[data-img-fallback]               broken-image fallback
 ```
 
 Behavior:
 
-- Eager layer (no GSAP): image fallback, spotlight, and IntersectionObserver reveal. This layer works even if GSAP falls back.
-- GSAP layer: card tilt, scroll-scrubbed `--motion-y` / `--motion-scale`, and section progress through one `ScrollTrigger.create`.
-- One pointer lifecycle per card: a single `AbortController`, one `ResizeObserver`, one rAF loop. Spotlight and tilt share the same pointer event rather than registering two listeners.
+- Eager layer (no GSAP): image fallback and IntersectionObserver reveal. This layer works even if GSAP falls back.
+- GSAP layer: card tilt and scroll-scrubbed `--motion-y` / `--motion-scale`. No section progress trigger: the page renders no meter that would consume it.
+- One pointer lifecycle per card: a single `AbortController`, one `ResizeObserver`, one rAF loop for the tilt.
 - `ScrollTrigger.batch` is typed and available for a one-time stagger, but Phase 3 keeps the existing scroll-scrubbed entrance to avoid a visual regression. If batch is adopted, it must feature-detect `typeof ScrollTrigger.batch === "function"` so the current unit harness still exercises the `fromTo` fallback path.
-- `destroy()` kills the card timeline and its trigger, kills the section trigger, calls every pointer cleanup, removes `--project-progress`, and resets the meter to `scaleX(0)`.
+- `destroy()` kills the card timeline and its trigger and calls every pointer cleanup.
 
-Ownership rule: no other module may add `reveal-pending`, `animate-in`, or write `--motion-*`, `--card-*`, `--spotlight-*` on a project card.
+Ownership rule: no other module may add `reveal-pending`, `animate-in`, or write `--motion-*`, `--card-*` on a project card.
 
 ### 6.2 Hero (`hero.ts`)
 
 - The `h1` is never selected. A regression test should assert that the hero title has no inline transform, opacity, or filter after activation.
-- Pointer tilt and glow reuse the existing `.hero-art-frame` variables and GSAP `quickTo`.
+- The pointer drives only the glass glow (`--hero-glow-x/y` on `.hero-art-frame`, read by `.os-crt`) through GSAP `quickTo`; the frame no longer tilts.
 - Magnetic CTA: new `createMagneticTarget` primitive in `interactions.ts` writes `--magnet-x` and `--magnet-y`. CSS applies them with the independent `translate` property, so existing hover `transform` rules remain intact. Maximum displacement is 6–8 px, only on fine pointers, and never created under reduced motion. Keyboard focus gets no displacement.
 - Scroll handoff: a scrub tween moves/fades only `.hero-art-frame`, `.hero-actions`, and `.hero-meta` as the hero exits. No pin, no layout-shifting trigger. The `h1` and its copy column stay static.
 - WebGL scene creation and disposal remain in `hero-webgl.ts`. The hero module passes the same canvas and root elements the current tests expect.
@@ -237,7 +235,7 @@ data-experience-progress   progress line overlay
 | --- | --- | --- |
 | CSS hero reveals / orbit | active | disabled by CSS |
 | GSAP imports | deferred, on activation | never requested initially |
-| Card tilt / spotlight / scrub | active | not created; destroyed if preference changes live |
+| Card tilt / scrub | active | not created; destroyed if preference changes live |
 | Hero magnetic CTA | active on fine pointer | not created |
 | WebGL scene | created if capable | never created; canvas hidden by CSS; disposed if live change |
 | Nav Flip pill | animated | positioned instantly |
@@ -271,18 +269,18 @@ Current evidence before implementation: `pnpm check` passes and Vitest reports 2
 
 | Test | Contract to preserve |
 | --- | --- |
-| `tests/portfolio-motion.test.ts` (24) | Compatibility exports; activation gate; 4s fallback; `gsap.matchMedia`; `registerPlugin` once; `createPointerMotion`, `createCardTilt`, `createHeroScene` calls; progress var/meter; teardown statuses; claimed event; stale callback rejection. |
+| `tests/portfolio-motion.test.ts` (24) | Compatibility exports; activation gate; 4s fallback; `gsap.matchMedia`; `registerPlugin` once; `createPointerMotion`, `createCardTilt`, `createHeroScene` calls; no project section trigger; teardown statuses; claimed event; stale callback rejection. |
 | `tests/motion-fallback.spec.ts` | Inline 3s fallback; `portfolio-motion:started`; stale timer cannot settle a newer loading state. |
 | `tests/motion-load-order.spec.ts` | GSAP/ScrollTrigger/WebGL chunks start after the page load event. |
 | `tests/motion-late-startup.spec.ts` | Late claim still settles to fallback when the observer never activates. |
 | `tests/animation-behavior.spec.ts` | Reduced motion keeps the hero visible with zero animations; live changes re-arm and tear down. |
 | `tests/hero-webgl.test.ts` | Scene lifecycle, fallback, observer/frame cleanup, post-dispose callbacks ignored. Do not edit `hero-webgl.ts` in Phase 3. |
 | `tests/motion-interactions.test.ts` | Existing `createPointerMotion` / `createCardTilt` signatures and variable values. New options must be optional. |
-| `tests/projects-script.test.ts` | Spotlight coordinates and image fallback; teardown removes listeners. The compatibility wrapper must keep this behavior. |
+| `tests/projects-script.test.ts` | Image fallback and no pointer writes on cards; teardown removes listeners. The compatibility wrapper must keep this behavior. |
 | `tests/scroll-reveal.test.ts` | Generic `[data-animate]` lifecycle. The wrapper must keep same class and observer behavior; cards must be excluded only in the new reveal module, not in the wrapper's generic test fixtures. |
 | `tests/header-nav.test.ts` | `.nav-active`, `aria-current`, scrolled threshold, observer visibility, teardown, no stacked listeners. The custom event is additive. |
-| `tests/reading-progress.test.ts` | Global scroll progress remains owned by `reading-progress.ts`. The cards progress meter is separate. |
-| `tests/home/home.spec.ts` | `[data-project-scroll-meter] span` style uses `scaleX(...)` and progresses on scroll while active. |
+| `tests/reading-progress.test.ts` | Global scroll progress remains owned by `reading-progress.ts`. |
+| `tests/home/home.spec.ts` | `[data-reading-progress]` style uses `scaleX(...)` and progresses on scroll while active. |
 | `tests/css-contracts`, design-token, performance, security tests | No new global stylesheet entrypoints; CSP and bundle gates unchanged. |
 
 Migration rule: keep compatibility facades and feature detection until the new modules are proven. Do not rewrite or relax an assertion to make a new implementation pass. If a test must change, stop and ask first with the exact contract and replacement coverage.

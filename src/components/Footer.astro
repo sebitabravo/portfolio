@@ -1,9 +1,7 @@
 ---
+// Cierre del sitio: el nombre vuelve a todo el ancho y una sola fila reúne perfiles y legal.
 import { personalInfo, social } from "@/lib/data"
 import { getTranslations, type Locale } from "@/lib/i18n"
-import { homeSectionFragment } from "@/lib/home-sections"
-import GitHubIcon from "./icons/GitHub.astro"
-import LinkedInIcon from "./icons/LinkedIn.astro"
 
 interface Props {
   locale?: Locale
@@ -13,36 +11,33 @@ const { locale = "es" } = Astro.props
 const t = getTranslations(locale)
 const currentYear = new Date().getFullYear()
 const homeUrl = locale === "es" ? "/" : "/en/"
-const aboutUrl = `${homeUrl}${homeSectionFragment(locale, "about")}`
-const contactUrl = `${homeUrl}${homeSectionFragment(locale, "contact")}`
 const blogUrl = locale === "es" ? "/blog" : "/en/blog"
 const privacyUrl = locale === "es" ? "/privacy" : "/en/privacy"
+const linkClass = "footer-link inline-flex min-h-11 items-center focus-ring"
 ---
 
-<footer class="mx-auto mt-16 w-full max-w-[1200px] px-4">
-  <div class="flex flex-col gap-3 py-6 text-sm md:flex-row md:items-center md:justify-between">
-    <div class="text-caption-color">
-      <span>&copy; {currentYear} &middot; </span>
-      <a
-        href={locale === "en" ? "/en" : "/"}
-        class="rounded font-medium text-foreground focus-ring transition-colors hover:text-primary"
-        >{personalInfo.name}</a
-      >
-    </div>
+<footer class="site-footer w-full">
+  <span class="rainbow-band rainbow-band-thin" aria-hidden="true"></span>
+  <div class="frame site-footer-frame">
+    <p class="footer-tagline">{t.footer.tagline}</p>
+    <a href={homeUrl} class="footer-brand focus-ring" aria-label={t.nav.brandHome}>
+      <span class="footer-wordmark">Sebastian <em>Bravo</em></span>
+    </a>
 
-    <div class="flex flex-wrap items-center gap-4">
+    <div class="footer-legal">
+      <p class="footer-rights">&copy; {currentYear} {personalInfo.name} · Chile. {t.footer.rights}</p>
+
       <nav aria-label={t.footer.professionalProfiles}>
-        <ul class="footer-socials flex items-center gap-2">
+        <ul class="footer-socials flex flex-wrap items-center gap-x-5">
           <li>
             <a
               href={social.linkedin}
               target="_blank"
               rel="me noopener noreferrer"
               data-track-social="linkedin"
-              class="inline-flex items-center gap-1.5 rounded-md px-2 py-1.5 text-caption-color focus-ring transition-colors hover:text-foreground"
+              class={linkClass}
             >
-              <LinkedInIcon class="size-4" />
-              <span>LinkedIn</span>
+              LinkedIn
             </a>
           </li>
           <li>
@@ -51,58 +46,27 @@ const privacyUrl = locale === "es" ? "/privacy" : "/en/privacy"
               target="_blank"
               rel="me noopener noreferrer"
               data-track-social="github"
-              class="inline-flex items-center gap-1.5 rounded-md px-2 py-1.5 text-caption-color focus-ring transition-colors hover:text-foreground"
+              class={linkClass}
             >
-              <GitHubIcon class="size-4" />
-              <span>GitHub</span>
+              GitHub
             </a>
           </li>
         </ul>
       </nav>
 
-      <span class="text-xs text-caption-color">
-        {t.footer.madeWith}
-        <a
-          href="https://astro.build"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="rounded text-primary focus-ring hover:underline">Astro</a
-        >
-        +
-        <a
-          href="https://tailwindcss.com"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="rounded text-primary focus-ring hover:underline">Tailwind</a
-        >
-      </span>
-
-      <span class="text-caption-color/30" aria-hidden="true">&middot;</span>
-
       <nav aria-label={t.footer.links}>
-        <ul class="flex items-center gap-4">
-          <li>
-            <a href={blogUrl} class="rounded text-caption-color focus-ring transition-colors hover:text-foreground"
-              >{t.nav.blog}</a
-            >
-          </li>
-          <li>
-            <a href={aboutUrl} class="rounded text-caption-color focus-ring transition-colors hover:text-foreground"
-              >{t.nav.about}</a
-            >
-          </li>
-          <li>
-            <a href={contactUrl} class="rounded text-caption-color focus-ring transition-colors hover:text-foreground"
-              >{t.nav.contact}</a
-            >
-          </li>
-          <li>
-            <a href={privacyUrl} class="rounded text-caption-color focus-ring transition-colors hover:text-foreground"
-              >{t.footer.privacy}</a
-            >
-          </li>
+        <ul class="flex flex-wrap items-center gap-x-5">
+          <li><a href={blogUrl} class={linkClass}>{t.nav.blog}</a></li>
+          <li><a href={privacyUrl} class={linkClass}>{t.footer.privacy}</a></li>
         </ul>
       </nav>
+
+      <p class="footer-made">
+        {t.footer.madeWith}{" "}
+        <a href="https://astro.build" target="_blank" rel="noopener noreferrer" class="focus-ring">Astro</a>
+        {" + "}
+        <a href="https://threejs.org" target="_blank" rel="noopener noreferrer" class="focus-ring">Three.js</a>
+      </p>
     </div>
   </div>
 </footer>

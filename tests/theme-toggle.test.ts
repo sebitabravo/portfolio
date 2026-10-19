@@ -122,7 +122,7 @@ describe("theme toggle lifecycle", () => {
     initThemeToggle()
 
     const options = [...document.querySelectorAll<HTMLButtonElement>('#theme-menu [role="menuitemradio"]')]
-    expect(options.map((option) => option.tabIndex)).toEqual([-1, -1, 0])
+    expect(options.map((option) => option.tabIndex)).toEqual([-1, 0, -1])
     expect(options.filter((option) => option.tabIndex === 0)).toHaveLength(1)
   })
 

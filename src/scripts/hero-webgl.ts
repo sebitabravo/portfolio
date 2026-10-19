@@ -1,20 +1,22 @@
 import {
-  AdditiveBlending,
-  BufferGeometry,
-  Float32BufferAttribute,
-  Group,
-  IcosahedronGeometry,
-  LineBasicMaterial,
-  LineSegments,
+  BackSide,
+  Color,
+  LinearFilter,
   Mesh,
-  MeshBasicMaterial,
+  OrthographicCamera,
   PerspectiveCamera,
-  Points,
-  PointsMaterial,
   Scene,
+  ShaderMaterial,
+  SphereGeometry,
+  Vector2,
+  Vector3,
+  WebGLRenderTarget,
   WebGLRenderer,
 } from "three"
 import WebGL from "three/addons/capabilities/WebGL.js"
+import { BASE_FOV, approach, computeHeroCamera, heroScrollProgress, storyProgress } from "./hero-camera"
+import { createFullscreenTriangle, createTerrainGeometry } from "./hero-geometry"
+import { CRT_FRAGMENT, CRT_VERTEX, SKY_FRAGMENT, SKY_VERTEX, TERRAIN_FRAGMENT, TERRAIN_VERTEX } from "./hero-shaders"
 
 type MotionRoot = HTMLElement & {
   dataset: DOMStringMap & {
@@ -24,6 +26,10 @@ type MotionRoot = HTMLElement & {
 
 type Cleanup = () => void
 
+const FRAME_INTERVAL = 32
+// Distancia que recorre el terreno a lo largo de la historia: el scroll avanza y retrocede el vuelo.
+const STORY_TRAVEL = 46
+
 export function createHeroScene(canvas: HTMLCanvasElement, root: MotionRoot): Cleanup | null {
   if (!WebGL.isWebGL2Available()) {
     canvas.dataset.webglStatus = "fallback"
@@ -32,112 +38,140 @@ export function createHeroScene(canvas: HTMLCanvasElement, root: MotionRoot): Cl
 
   let renderer: WebGLRenderer
   try {
-    renderer = new WebGLRenderer({
-      canvas,
-      alpha: true,
-      antialias: false,
-      powerPreference: "low-power",
-    })
+    renderer = new WebGLRenderer({ canvas, alpha: false, antialias: false, powerPreference: "low-power" })
   } catch {
     canvas.dataset.webglStatus = "fallback"
     return null
   }
+  renderer.setClearColor(0x07060d, 1)
 
+  const compactQuery = window.matchMedia("(max-width: 1023px)")
+  let compact = compactQuery.matches
   const scene = new Scene()
-  const camera = new PerspectiveCamera(35, 1, 0.1, 10)
-  camera.position.z = 4.2
+  const camera = new PerspectiveCamera(BASE_FOV, 1, 0.1, 140)
 
-  const group = new Group()
-  scene.add(group)
-
-  const compactQuery = window.matchMedia("(max-width: 767px)")
-  let isCompact = compactQuery.matches
-  const pointCount = isCompact ? 42 : 78
-  const positions = createSignalPositions(pointCount)
-  const pointsGeometry = new BufferGeometry()
-  pointsGeometry.setAttribute("position", new Float32BufferAttribute(positions, 3))
-
-  const pointsMaterial = new PointsMaterial({
-    color: 0xc7b7ff,
-    size: isCompact ? 0.035 : 0.042,
-    transparent: true,
-    opacity: 0.76,
+  const skyMaterial = new ShaderMaterial({
+    vertexShader: SKY_VERTEX,
+    fragmentShader: SKY_FRAGMENT,
+    uniforms: { uSunDirection: { value: new Vector3(0, 0.2, -1) }, uTime: { value: 0 } },
+    side: BackSide,
     depthWrite: false,
-    blending: AdditiveBlending,
   })
-  const points = new Points(pointsGeometry, pointsMaterial)
-  group.add(points)
+  const sky = new Mesh(new SphereGeometry(100, 32, 16), skyMaterial)
+  sky.renderOrder = -1
+  scene.add(sky)
 
-  const lineGeometry = new BufferGeometry()
-  lineGeometry.setAttribute("position", new Float32BufferAttribute(createSignalLines(positions), 3))
-  const lineMaterial = new LineBasicMaterial({
-    color: 0x9b82ff,
-    transparent: true,
-    opacity: 0.17,
+  const terrainMaterial = new ShaderMaterial({
+    vertexShader: TERRAIN_VERTEX,
+    fragmentShader: TERRAIN_FRAGMENT,
+    uniforms: {
+      uOffset: { value: 0 },
+      uPulse: { value: 0 },
+      uFogColor: { value: new Color(0.62, 0.2, 0.5) },
+      uFogNear: { value: 12 },
+      uFogFar: { value: 58 },
+    },
+  })
+  const terrain = new Mesh(createTerrainGeometry(compact), terrainMaterial)
+  scene.add(terrain)
+
+  const target = new WebGLRenderTarget(1, 1, { minFilter: LinearFilter, magFilter: LinearFilter })
+  const postScene = new Scene()
+  const postCamera = new OrthographicCamera(-1, 1, 1, -1, 0, 1)
+  const postMaterial = new ShaderMaterial({
+    vertexShader: CRT_VERTEX,
+    fragmentShader: CRT_FRAGMENT,
+    uniforms: {
+      tScene: { value: target.texture },
+      uResolution: { value: new Vector2(1, 1) },
+      uTime: { value: 0 },
+      uAberration: { value: 0.0024 },
+    },
+    depthTest: false,
     depthWrite: false,
-    blending: AdditiveBlending,
   })
-  const lines = new LineSegments(lineGeometry, lineMaterial)
-  group.add(lines)
+  const postGeometry = createFullscreenTriangle()
+  postScene.add(new Mesh(postGeometry, postMaterial))
 
-  const wireGeometry = new IcosahedronGeometry(0.82, 1)
-  const wireMaterial = new MeshBasicMaterial({
-    color: 0x8bbcff,
-    wireframe: true,
-    transparent: true,
-    opacity: 0.15,
-  })
-  const wire = new Mesh(wireGeometry, wireMaterial)
-  group.add(wire)
-
+  const screen = canvas.closest<HTMLElement>("[data-os-screen]") ?? canvas.parentElement ?? canvas
   const pointer = { x: 0, y: 0 }
-  const target = { x: 0, y: 0 }
+  const pointerTarget = { x: 0, y: 0 }
+  const state = { scroll: 0, scrollTarget: 0, turbo: 0, turboTarget: 0, offset: 0, x: 0, y: 2.15, lookY: 1.05, roll: 0 }
+  const size = new Vector2()
+  // El puntero se mide contra la pantalla visible, no contra la pista de la historia (varios altos de viewport).
+  let bounds = screen.getBoundingClientRect()
+  const track = root.querySelector<HTMLElement>("[data-hero-story]")
+  let headerHeight = 0
   let animationFrame = 0
-  let disposed = false
   let lastFrame = 0
+  let disposed = false
   let isVisible = true
   let isRunning = false
-  const pointerTarget = canvas.parentElement ?? canvas
-  let pointerBounds = pointerTarget.getBoundingClientRect()
+  let painted = false
+  let contextLost = false
 
   const resize = () => {
     if (disposed) return
-    const bounds = canvas.getBoundingClientRect()
-    pointerBounds = pointerTarget.getBoundingClientRect()
-    const width = Math.max(1, Math.round(bounds.width))
-    const height = Math.max(1, Math.round(bounds.height))
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, isCompact ? 1.2 : 1.5))
+    bounds = screen.getBoundingClientRect()
+    headerHeight = document.querySelector<HTMLElement>(".site-header")?.offsetHeight ?? 0
+    // Caja de layout: el rect transformado incluye la escala del escenario, que ResizeObserver no informa.
+    const width = Math.max(1, canvas.clientWidth)
+    const height = Math.max(1, canvas.clientHeight)
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, compact ? 1 : 1.5))
     renderer.setSize(width, height, false)
+    renderer.getDrawingBufferSize(size)
+    target.setSize(size.x, size.y)
+    postMaterial.uniforms.uResolution.value.copy(size)
     camera.aspect = width / height
     camera.updateProjectionMatrix()
-  }
-  const onCompactChange = (event: MediaQueryListEvent) => {
-    if (disposed) return
-    isCompact = event.matches
-    pointsMaterial.size = isCompact ? 0.035 : 0.042
-    resize()
   }
 
   const render = (time: number) => {
     if (disposed || !isRunning) return
     animationFrame = requestAnimationFrame(render)
-    if (!isVisible || document.visibilityState === "hidden" || time - lastFrame < 32) return
+    if (!isVisible || document.visibilityState === "hidden" || time - lastFrame < FRAME_INTERVAL) return
 
+    const delta = lastFrame === 0 ? FRAME_INTERVAL / 1000 : Math.min(0.1, (time - lastFrame) / 1000)
     lastFrame = time
-    pointer.x += (target.x - pointer.x) * 0.045
-    pointer.y += (target.y - pointer.y) * 0.045
-    group.rotation.y += 0.0013
-    group.rotation.x += (pointer.y * 0.22 - group.rotation.x) * 0.03
-    group.rotation.z += (pointer.x * 0.12 - group.rotation.z) * 0.03
-    wire.rotation.y -= 0.0018
-    wire.rotation.x += 0.0009
-    group.position.x += (pointer.x * 0.08 - group.position.x) * 0.035
-    group.position.y += (-pointer.y * 0.08 - group.position.y) * 0.035
+    pointer.x = approach(pointer.x, pointerTarget.x, 0.05)
+    pointer.y = approach(pointer.y, pointerTarget.y, 0.05)
+    state.scroll = approach(state.scroll, state.scrollTarget, 0.08)
+    state.turbo = approach(state.turbo, state.turboTarget, 0.06)
+    const next = computeHeroCamera(pointer, state.scroll, state.turbo)
+
+    state.offset += delta * next.speed
+    state.x = approach(state.x, next.x, 0.06)
+    state.y = approach(state.y, next.y, 0.06)
+    state.lookY = approach(state.lookY, next.lookY, 0.06)
+    state.roll = approach(state.roll, next.roll, 0.06)
+    camera.position.set(state.x, state.y, 6)
+    camera.lookAt(state.x * 0.35, state.lookY, -24)
+    camera.rotation.z += state.roll
+    if (Math.abs(camera.fov - next.fov) > 0.01) {
+      camera.fov = approach(camera.fov, next.fov, 0.08)
+      camera.updateProjectionMatrix()
+    }
+    sky.position.copy(camera.position)
+
+    terrainMaterial.uniforms.uOffset.value = state.offset + state.scroll * STORY_TRAVEL
+    terrainMaterial.uniforms.uPulse.value = state.turbo
+    skyMaterial.uniforms.uTime.value = time / 1000
+    postMaterial.uniforms.uTime.value = time / 1000
+    postMaterial.uniforms.uAberration.value = 0.0024 + state.turbo * 0.006
+
+    renderer.setRenderTarget(target)
     renderer.render(scene, camera)
+    renderer.setRenderTarget(null)
+    renderer.render(postScene, postCamera)
+
+    if (!painted) {
+      painted = true
+      canvas.dataset.webglStatus = "ready"
+    }
   }
 
   const start = () => {
-    if (disposed || isRunning || !isVisible) return
+    if (disposed || isRunning || !isVisible || contextLost) return
     isRunning = true
     animationFrame = requestAnimationFrame(render)
   }
@@ -152,31 +186,75 @@ export function createHeroScene(canvas: HTMLCanvasElement, root: MotionRoot): Cl
     if (visible) start()
     else stop()
   }
+
   const onPointerMove = (event: PointerEvent) => {
-    target.x = ((event.clientX - pointerBounds.left) / pointerBounds.width - 0.5) * 2
-    target.y = ((event.clientY - pointerBounds.top) / pointerBounds.height - 0.5) * 2
+    pointerTarget.x = Math.max(-1, Math.min(1, ((event.clientX - bounds.left) / bounds.width - 0.5) * 2))
+    pointerTarget.y = Math.max(-1, Math.min(1, ((event.clientY - bounds.top) / bounds.height - 0.5) * 2))
   }
   const resetPointer = () => {
-    target.x = 0
-    target.y = 0
+    pointerTarget.x = 0
+    pointerTarget.y = 0
+    state.turboTarget = 0
+  }
+  // Mantener presionado el paisaje acelera el vuelo; ventanas y accesos quedan fuera.
+  const onPointerDown = (event: PointerEvent) => {
+    const origin = event.target instanceof Element ? event.target : null
+    if (origin?.closest("[data-os-window], .os-shortcut, a, button")) return
+    state.turboTarget = 1
+  }
+  const releaseTurbo = () => {
+    state.turboTarget = 0
   }
   const onVisibilityChange = () => setVisibility(document.visibilityState !== "hidden")
+  const onScroll = () => {
+    // La caja de la pista se lee en coordenadas de viewport: sigue correcta aunque cambie el alto del hero.
+    const trackRect = track?.getBoundingClientRect()
+    const story = trackRect ? storyProgress(0, trackRect, window.innerHeight, headerHeight) : null
+    state.scrollTarget = story ?? heroScrollProgress(window.scrollY || 0, root.offsetHeight)
+    bounds = screen.getBoundingClientRect()
+  }
+  const onContextLost = (event: Event) => {
+    event.preventDefault()
+    contextLost = true
+    stop()
+    canvas.dataset.webglStatus = "fallback"
+  }
+  // three.js reconstruye su estado GL al restaurarse el contexto: basta volver a medir y reanudar.
+  const onContextRestored = () => {
+    contextLost = false
+    painted = false
+    resize()
+    start()
+  }
+  // La densidad y el tope de DPR siguen al breakpoint en vivo: al cruzarlo se reconstruye la malla.
+  const onCompactChange = (event: MediaQueryListEvent) => {
+    compact = event.matches
+    terrain.geometry.dispose()
+    terrain.geometry = createTerrainGeometry(compact)
+    resize()
+  }
 
   const resizeObserver = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(resize)
   const visibilityObserver =
     typeof IntersectionObserver === "undefined"
       ? null
-      : new IntersectionObserver(([entry]) => setVisibility(Boolean(entry?.isIntersecting)), { threshold: 0.05 })
+      : new IntersectionObserver(([entry]) => setVisibility(Boolean(entry?.isIntersecting)), { threshold: 0.02 })
 
   resizeObserver?.observe(canvas)
   if (!resizeObserver) window.addEventListener("resize", resize)
-  compactQuery.addEventListener("change", onCompactChange)
   visibilityObserver?.observe(root)
-  pointerTarget.addEventListener("pointermove", onPointerMove)
-  pointerTarget.addEventListener("pointerleave", resetPointer)
+  root.addEventListener("pointermove", onPointerMove)
+  root.addEventListener("pointerleave", resetPointer)
+  screen.addEventListener("pointerdown", onPointerDown)
+  window.addEventListener("pointerup", releaseTurbo)
+  window.addEventListener("pointercancel", releaseTurbo)
   document.addEventListener("visibilitychange", onVisibilityChange)
+  window.addEventListener("scroll", onScroll, { passive: true })
+  canvas.addEventListener("webglcontextlost", onContextLost)
+  canvas.addEventListener("webglcontextrestored", onContextRestored)
+  compactQuery.addEventListener?.("change", onCompactChange)
   resize()
-  canvas.dataset.webglStatus = "ready"
+  onScroll()
   root.dataset.motionStatus = "active"
   start()
 
@@ -185,59 +263,30 @@ export function createHeroScene(canvas: HTMLCanvasElement, root: MotionRoot): Cl
     stop()
     resizeObserver?.disconnect()
     if (!resizeObserver) window.removeEventListener("resize", resize)
-    compactQuery.removeEventListener("change", onCompactChange)
     visibilityObserver?.disconnect()
-    pointerTarget.removeEventListener("pointermove", onPointerMove)
-    pointerTarget.removeEventListener("pointerleave", resetPointer)
+    root.removeEventListener("pointermove", onPointerMove)
+    root.removeEventListener("pointerleave", resetPointer)
+    screen.removeEventListener("pointerdown", onPointerDown)
+    window.removeEventListener("pointerup", releaseTurbo)
+    window.removeEventListener("pointercancel", releaseTurbo)
     document.removeEventListener("visibilitychange", onVisibilityChange)
-    group.traverse((object) => {
-      const mesh = object as Mesh
-      if (mesh.geometry) mesh.geometry.dispose()
-      if (mesh.material) {
-        const materials = Array.isArray(mesh.material) ? mesh.material : [mesh.material]
-        materials.forEach((material) => material.dispose())
-      }
-    })
+    window.removeEventListener("scroll", onScroll)
+    canvas.removeEventListener("webglcontextlost", onContextLost)
+    canvas.removeEventListener("webglcontextrestored", onContextRestored)
+    compactQuery.removeEventListener?.("change", onCompactChange)
+    for (const disposable of [
+      terrain.geometry,
+      terrainMaterial,
+      sky.geometry,
+      skyMaterial,
+      postGeometry,
+      postMaterial,
+      target,
+    ]) {
+      disposable.dispose()
+    }
     renderer.dispose()
     renderer.forceContextLoss()
     canvas.dataset.webglStatus = "disposed"
   }
-}
-
-export function createSignalPositions(count: number): Float32Array {
-  const positions = new Float32Array(count * 3)
-  let seed = 731
-
-  for (let index = 0; index < count; index += 1) {
-    seed = (seed * 9301 + 49297) % 233280
-    const randomA = seed / 233280
-    seed = (seed * 9301 + 49297) % 233280
-    const randomB = seed / 233280
-    const angle = (index / count) * Math.PI * 2 + randomA * 0.35
-    const radius = 0.72 + randomB * 0.48
-    positions[index * 3] = Math.cos(angle) * radius
-    positions[index * 3 + 1] = Math.sin(angle) * radius
-    positions[index * 3 + 2] = (randomA - 0.5) * 0.7
-  }
-
-  return positions
-}
-
-export function createSignalLines(positions: Float32Array): Float32Array {
-  const count = positions.length / 3
-  const linePositions = new Float32Array((count - 1) * 6)
-
-  for (let index = 0; index < count - 1; index += 1) {
-    const source = index * 3
-    const target = (index + 1) * 3
-    const line = index * 6
-    linePositions[line] = positions[source]
-    linePositions[line + 1] = positions[source + 1]
-    linePositions[line + 2] = positions[source + 2]
-    linePositions[line + 3] = positions[target]
-    linePositions[line + 4] = positions[target + 1]
-    linePositions[line + 5] = positions[target + 2]
-  }
-
-  return linePositions
 }

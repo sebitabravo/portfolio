@@ -1,234 +1,162 @@
-# Design System — Sebastian Bravo Portfolio
-> Adapted from Superhuman's design language. Premium, confident, developer-forward.
+# Design System — Sebastian Bravo Portfolio (SB-OS 2.6)
 
-## 1. Visual Theme & Atmosphere
+Record of the shipped rebrand on `feat/visual-shader-overhaul`. Values come from the built CSS and components; the build is normative.
 
-A developer portfolio that feels like opening a precision tool — confident, restrained, every element intentional. By default, the hero uses a pale lavender gradient (`#f6f5ff` → `#eef0ff` → `#fbfcff`) with dark ink; `.dark` switches it to a dark-indigo gradient (`#10143a` → `#090d29` → `#050713`) with light text. Below, the same language continues through full-bleed lavender-neutral bands, glass surfaces and technical section markers instead of reverting to a flat resume canvas.
+## 1. Concept and references
 
-The typography is the voice: the hero title compresses to line-height 0.82 on desktop (0.84 on mobile) and section headings to 0.98, while body text breathes at 1.60. This tension — compressed authority vs. generous readability — defines the portfolio's rhythm.
+**Creative North Star: "A 1986 workstation that ships to production in 2026."** The portfolio boots like a retro computer, then becomes a dark, precise desktop whose screen tells one story while you scroll: an idea becomes code and the code reaches production. CRT phosphor, rainbow-stripe corporate branding and large serif type carry the identity.
 
-The current experience layer adds controlled character instead of generic decoration: a floating glass navigation, orbital profile visual, technical signal strip, WebGL constellation and asymmetric project index. These elements are progressive enhancement; the content and routes remain usable without motion or WebGL support.
+**Visitor mode: Experience.** The work leads from the first viewport and the interface recedes: a plain bar, chapter titles without labels, and one authored scroll sequence instead of the same entrance on every section.
 
-**Key Characteristics:**
-- Light-first lavender grid hero with compressed dark-ink headlines; dark-indigo gradient and light text under `.dark`
-- Cool white content canvas with charcoal ink text and alternating `#f4f3fa` bands
-- Lavender glow (`#c7b7ff`) as the primary hero accent
-- Floating glass navigation that resolves to a readable surface on scroll
-- Orbital profile visual and ambient layers, disabled under reduced motion
-- Optional Three.js constellation behind the portrait, loaded progressively when eligible with WebGL fallback
-- GSAP/ScrollTrigger choreography, dynamically imported after hero proximity or interaction, for project entry, card tilt and project-scroll meter; native scroll remains authoritative
-- Signal marquee for stack context and an asymmetric featured-project grid
-- Project screenshots as primary visual content
-- Generous whitespace, progressive density and recruiter-first CTAs
+Two Mobbin references are binding:
 
-## 2. Color Palette
+- **Shader** — BIOS boot screen, CRT curvature and chromatic aberration, rainbow stripes, cream paper chapters, large serif headlines, the name returning at full width in the footer, humorous copy ("Had enough reading?").
+  - Boot: <https://mobbin.com/sites/sections/acc902bb-ea91-4876-ad44-a2378a7c778e>
+  - Paper chapter with stripes: <https://mobbin.com/sites/sections/db7ca27c-ff93-4469-9cb3-2a965439b122>
+  - Footer seals: <https://mobbin.com/sites/sections/90f14e56-2133-4493-8249-8c4b284c06d8>
+- **Save.design** — near-black canvas, app windows over a 3D landscape, hot magenta accent, accordion rows.
+  - Hero: <https://mobbin.com/sites/sections/91bc03ad-15c4-44df-b93c-710288796d65>
+  - Grid cards: <https://mobbin.com/sites/sections/d4edc1a9-1dc4-459e-bd9d-c1d6574aa618>
+  - Membership grid: <https://mobbin.com/sites/sections/8310aad8-6473-4310-9b07-85251a7623b5>
 
-### Hero (Light by Default; Dark with `.dark`)
-| Name | Hex | Role |
+**Key characteristics:** dark canvas; cream paper as the light theme and the inverted contact chapter; one phosphor-magenta signal; rainbow stripes as the brand ornament; Instrument Serif display against Geist text; monospace only where the OS shows real interface or code; screens, windows and seals instead of text blocks.
+
+**The Distill Rules** (adopted from the `impeccable` and `design-taste-frontend` skills):
+
+- No eyebrow or kicker above a heading, and no section or item numbering (01 / [EDU-01]) where order carries no information.
+- No uppercase letter-spaced monospace labels outside the SB-OS interface; secondary data uses `.meta-label` (Geist 14px, tabular numbers).
+- No hairline guides, crop-mark nodes or 1px outlined boxes; surfaces separate by a step in tone (`--muted`, `--surface-soft`). Real tables and list rows keep their rules.
+- No custom cursor and no loops that mean nothing (pulsing dots, idle seal rotation, infinite glitch).
+- Say it once: the header carries navigation and one action; profiles and the CV live in the hero, contact and footer.
+- Brand exception: the italic serif surname ("Sebastian *Bravo*") is the logotype and stays styled in the hero, header and footer.
+
+## 2. Colors
+
+Dark is the default theme. Light ("paper") is a complete alternate. Tokens are HSL channels consumed through `hsl(var(--token))` and Tailwind aliases in `@theme inline`.
+
+### Dark (default)
+
+| Token | Hex | Role |
 |---|---|---|
-| Lavender Mist | `#f6f5ff` | Default hero gradient start |
-| Lavender Haze | `#eef0ff` | Default hero gradient middle |
-| Cool White | `#fbfcff` | Default hero gradient end |
-| Dark Ink | `#171329` | Default hero text |
-| Dark Indigo | `#10143a` | `.dark` hero gradient start |
-| Indigo Night | `#090d29` | `.dark` hero gradient middle |
-| Deep Night | `#050713` | `.dark` hero gradient end |
-| Light Ink | `#f7f8ff` | `.dark` hero text |
-| Lavender Glow | `#c7b7ff` | `.dark` hero accent |
+| `--background` / `--canvas` | `#0b0b0d` | Page canvas |
+| `--surface-soft` | `#101013` | Tinted bands, cards |
+| `--card` | `#141417` | Menus |
+| `--muted` | `#1c1c21` | Chips, highlight cells, hover fills |
+| `--border` / `--hairline` | `#26262c` | Table and list rules |
+| `--line-strong` | `#36363e` | Ghost buttons |
+| `--foreground` / `--ink` | `#f3efe6` | Text |
+| `--muted-foreground` | `#a6a29a` | Secondary text, meta labels |
+| `--primary` / `--signal` | `#ff4fd8` | Signal: actions, status, focus, story progress |
+| `--primary-foreground` | `#0b0b0d` | Text on signal |
 
-### Light Mode (Content Sections)
-| Name | Hex | Role |
-|---|---|---|
-| Pure White | `#ffffff` | Page canvas |
-| Charcoal Ink | `#292827` | Headlines, primary text |
-| Body Muted | `#5c5955` | Running body text |
-| Caption | `#69645f` | Captions, metadata, labels on light surfaces (WCAG AA small text) |
-| Warm Cream | `#e9e5dd` | Button backgrounds, subtle surfaces |
-| Parchment Border | `#dcd7d3` | Card borders, dividers |
-| Surface Soft | `#f4f3fa` | Alternating section background |
-| Lavender Glow | `#cbb7fb` | Accent (consistent across modes) |
-| Amethyst | `#714cb6` | Link text, interactive elements |
-| Emerald Muted | `#4a9d6e` | "Available" badge, success states |
+### Light (paper)
 
-### Dark Mode (Full Dark Variant)
-| Name | Hex | Role |
+| Token | Hex | Role |
 |---|---|---|
-| Night Canvas | `#0f0f14` | Page background |
-| Night Surface | `#1a1a22` | Card surfaces |
-| Night Border | `#2a2a35` | Card borders |
-| Night Text | `#e8e6e3` | Primary text |
-| Night Muted | `#8a8780` | Secondary text |
-| Warm Cream Dark | `#2a2826` | Button surfaces (dark variant) |
+| `--background` | `#f2ece0` | Cream paper |
+| `--surface-soft` | `#e9e2d4` | Tinted bands, cards |
+| `--card` | `#f7f3ea` | Menus |
+| `--border` | `#d2c9b8` | Table and list rules |
+| `--foreground` | `#17140f` | Ink |
+| `--muted-foreground` | `#5a5246` | Secondary text |
+| `--primary` | `#a3127a` | Signal on paper |
+
+### Inverted contact chapter
+
+Dark theme → paper chapter (`#efe6d2` / ink `#17140f` / accent `#a3127a`). Light theme → screen chapter (`#0b0b0d` / ink `#f3efe6` / accent `#ff4fd8`). `.section-band-inverted` re-points `--background`, `--foreground`, `--border` and `--signal` so every child component adapts.
+
+### Theme-independent identity
+
+| Token | Hex | Use |
+|---|---|---|
+| `--r1`…`--r6` | `#e5483a` `#f08a2b` `#f2c12e` `#4fb35a` `#3f8ee0` `#8e62e8` | Rainbow stripes, project stages, seal glows, code tokens |
+| `--bios` / `--bios-ink` | `#2b30c4` / `#ece6d2` | Boot screen |
+| `--screen` | `#07070a` | Screens and windows (dark in both themes) |
+| `--sticky` | `#f6d365` | Sticky notes, `idea.txt` |
+
+**The Signal Scarcity Rule.** Magenta marks action, status, focus and story progress. Never fill large surfaces with it; screens, stages and stripes carry the color.
+
+**The Screen Rule.** Screens (hero desktop, project stages, TV, 404 card, blog windows) stay dark in both themes, like CRT monitors on a cream desk.
 
 ## 3. Typography
 
-### Font Stack
-- **Display & Headlines**: `Syne`, system-ui, sans-serif (weight 600–700, tight tracking)
-- **Body & UI**: `Manrope`, system-ui, sans-serif (weight 400–700, normal tracking)
-- **Code / Accent**: `'JetBrains Mono'`, monospace (used for tech labels, inline code, role badges)
+- **Display:** Instrument Serif 400 normal/italic (`--font-instrument`). Hero name, chapter titles, story captions, statements, project titles, stats, footer wordmark.
+- **Text:** Geist 400/500/600 (`--font-geist`). Body, navigation, buttons, chips, meta labels.
+- **Interface and code:** Geist Mono 400/500 (`--font-geist-mono`). Only the SB-OS interface (menubar, window titles, terminal, shortcuts) and the story's code window.
+- **Pixel:** VT323 400 (`--font-vt323`). Boot screen, TV on-screen display, 404 code only.
 
-### Hierarchy
+All fonts are self-hosted through the Astro Fonts API (Fontsource provider) with metric-matched fallbacks and `font-display: swap`; none is preloaded.
 
-| Token | Size | Weight | Line Height | Letter Spacing | Use |
-|---|---|---|---|---|---|
-| Display Hero | `clamp(3.7rem, 8vw, 8rem)` | 700 | 0.82 | `-0.085em` | Hero headline — name |
-| Display Section | `clamp(2.25rem, 4.5vw, 3.75rem)` | 600 | 0.98 | `-0.065em` | Section headings |
-| Display Card | 24px | 600 | 1.10 | -0.5px | Card titles, project names |
-| Title Large | 20px | 600 | 1.20 | 0 | Subsection headings |
-| Title | 18px | 500 | 1.30 | 0 | Card subtitles |
-| Body | 16px | 400 | 1.60 | 0 | Running text |
-| Body Small | 14px | 400 | 1.55 | 0 | Secondary text, descriptions |
-| Caption | 13px | 500 | 1.30 | 0.5px | Labels, metadata |
-| Button | 14px | 600 | 1.00 | 0.3px | CTA labels |
-| Nav Link | 14px | 500 | 1.20 | 0 | Navigation items |
-| Monospace | 13px | 500 | 1.40 | 0 | Tech badges, code references |
+| Role | Size |
+|---|---|
+| Hero name | `clamp(4.25rem, 24vw, 6.5rem)` below 640, `16vw` to 1023, `clamp(4.25rem, 13.4vw, 12.5rem)` from 1024; leading 0.82 |
+| Chapter title | `clamp(2.75rem, 6.6vw, 6rem)`, leading 0.9, balanced |
+| Story caption | `clamp(1.75rem, 3.2vw, 3rem)` |
+| Statement / contact headline | `clamp(2rem, 3.5vw, 3.25rem)` / `clamp(3.25rem, 8.5vw, 8rem)` |
+| Footer wordmark | `clamp(3.5rem, 17vw, 15.5rem)`, one line |
+| Body | 16–17px, leading 1.5–1.65 |
+| Meta label / chip | 14px / 13px Geist, sentence case |
 
-### Principles
-- Hero title line-height is 0.82 on desktop and 0.84 on mobile; section headings use 0.98 — component-specific compression creates architectural confidence
-- Body at 1.60 line-height ensures comfortable reading after headline impact
-- Negative letter-spacing on headlines only — body stays at 0
-- Monospace for tech/role labels adds developer identity without decoration
+## 4. Layout
 
-## 4. Components
+- **Frame:** blueprint frame max `1440px` (`.frame`, `90rem`); the grid reads through alignment and space, with no drawn guides or nodes. Chapter padding `clamp(5rem, 10vw, 9rem)` vertical, `clamp(1rem, 4vw, 3.5rem)` horizontal.
+- **Chapter head:** the serif title alone (`TitleSection`). The contact chapter opens with its own headline, so its `h2` is screen-reader only (`srOnly`).
+- **Order:** Boot → Hero copy → Pinned story (SB-OS screen) → Projects (proof band + bento) → Stack marquee → Experience (accordion table, tinted) → Education (cards) → Certifications (seals, tinted) → About (TV + statement) → Contact (inverted paper) → Footer (full-width name).
+- **Breakpoints:** 640 (screen 4:3, sticky note), 768 (two-column grids, story list in three columns), 1024 (hero split, desktop nav, screen 16:9), 1100 (five seals, three blog columns). Verify at 375, 768, 1024 and 1440 in both themes.
 
-### Buttons
-- **Warm Cream Primary**: `#e9e5dd` bg, `#292827` text, 8px radius, no border — the signature CTA
-- **Dark Primary**: `#292827` bg, white text, 8px radius — inverse variant
-- **Ghost**: No background, underline decoration, Amethyst color
-- **Hero CTA**: Amethyst on the pale hero; `.dark` adapts its contrast on the indigo gradient
-- Height: 44px, Padding: 12px 24px
+## 5. Components
 
-### Cards
-- **Content Card**: White bg, 1px `#dcd7d3` border, 16px radius, 24px padding
-- **Project Card**: White bg, 1px `#dcd7d3` border, 16px radius, screenshot-dominant
-- **Feature Card**: Surface Soft bg, no border, 16px radius
-- **Dark Card**: Night Surface bg, Night Border, 16px radius
-- Hover: Subtle lift/spotlight; fine pointers may add a bounded 2.5° tilt, never replacing focus or readable actions
+- **Boot screen (`BootScreen`).** BIOS-blue CRT with logo, version, 24-segment loader and copyright in VT323. Armed by an inline `<head>` script only on the home, once per session, with `(min-width: 1024px) and (hover: hover) and (pointer: fine)`, without reduced motion and never under automation (`navigator.webdriver`); `?boot` forces it. Any key, pointer, wheel or touch skips it; a CSS failsafe hides it after 4.2s. Without JS it never appears.
+- **Header.** Full-width frosted bar: striped mark + italic serif wordmark, four plain links in Geist with the moving indicator, icon-only theme and language toggles, one solid "Hablemos" action. The mobile menu repeats the links and contact only.
+- **Hero (`Hero`).** Static LCP `<h1>` with chromatic layers on the italic surname that flicker once on load. The aside answers who and what in the text voice (role and location), then the thesis, two actions (contact, CV) and one availability line.
+- **Pinned story (`HeroStory`, `HeroScreen`, `HeroWallpaper`, `OsWindowBar`).** A 360svh track whose sticky stage holds the SB-OS screen while three acts play: _the problem_ (an `idea.txt` note with Vulcania's tagline), _the code_ (an `alertas.ts` editor typed line by line by the scroll) and _production_ (a browser window with the real Vulcania screenshot and an "In production" toast). Captions sit under the screen as subtitles with a three-step progress bar; intro windows dim; story windows live in their own layer above the desktop icons. The screen shows the menubar with the live Chile clock, pixel-art shortcuts (real links), draggable portrait and terminal windows and a sticky note; the wallpaper is a build-time SVG the WebGL terrain replaces when available.
+- **Projects (`Projects`, `ProjectTile`).** A proof band of three outcomes, then a bento: featured tile spans both columns, a GitHub archive tile closes the grid. Each tile is a dark stage tinted by its rainbow stripe (`--stage`), a tilted OS window with the screenshot (AVIF/WebP 800/1600) that straightens on hover, solid metric plates, text chips and actions; the case link reads "Leer el caso" with the project name for assistive technology.
+- **Stack marquee (`SignalStrip`).** Rainbow stripes frame a looping italic-serif marquee with signal diamonds; hover/focus pause and an explicit pause/resume button (WCAG 2.2.2). Reduced motion wraps the list statically and hides the clone and the button.
+- **Experience.** `<details name>` rows in a five-column table (period, role, company, type, toggle); the first row is open; highlights sit on tone-step cells; a 1px signal progress line scrubs with scroll.
+- **Education / certifications.** Tone-step cards; certifications are SVG seals (`RoundSeal`) whose orbit text is a build-time image painted with `currentColor` through a mask, a serif monogram and a rainbow glow. The issuer and category sit under the name; the seal turns only under the pointer or focus.
+- **About (`AboutMe`, `RetroTv`).** Beige CSS TV with three channels switched by native radios (`:has()`): grayscale portrait, a build-time ASCII portrait delivered as an SVG image (sharp + `pixelsToAscii` + `asciiToSvg`) and SMPTE bars ("Sin señal"). A sticky note carries the signature; the statement turns from grey to ink word by word with a CSS scroll timeline.
+- **Contact.** Inverted paper chapter with a rainbow band, giant headline ("¿Suficiente lectura? Hagamos algo juntos."), serif link rows with text descriptions, a clipboard button (hidden without the Clipboard API), the CV action and a TV bezel that closes the chapter.
+- **Footer.** Tagline, then the name at full width as the close (`Sebastian *Bravo*` linking home), and one legal row: rights, LinkedIn/GitHub, blog/privacy and the Astro + Three.js credit.
+- **Inner pages.** Blog index as "Bitácora" with the post count under the intro and window-framed grayscale thumbnails that color on hover; articles with date and reading time, chips and a window-framed hero image; 404 as a TV test card.
 
-### Navigation
-- Fixed top, glass on hero → readable card surface on scroll
-- Nav links: Manrope 14px, weight 500
-- Active indicator: Lavender Glow underline
-- CTA: Lavender primary action with explicit contact destination
-- Mobile: Hamburger with slide-down panel
+## 6. Motion
 
-### Section Container
-- Max-width: 1200px centered
-- Section padding: 80px–96px vertical (desktop), 48px (mobile)
-- Card internal padding: 24px–32px
+**Motion thesis.** One focal moment: the pinned story. Everything else is feedback (hover, press, focus), continuity (view transitions, accordion) or a single meaningful scrub (experience progress, About words).
 
-### Badges / Tags
-- Tech badges: Monospace 13px, Parchment Border bg, 8px radius, tight padding
-- "Available" badge: Emerald Muted dot + text, no background
-- Lavender accent badges for featured/highlighted items
+- **Pinned story (CSS scroll-driven).** `.hero-story` declares `view-timeline: --story` with `view-timeline-inset` equal to the header; every act uses `animation-range: contain …` on that timeline. The screen scales 0.9 → 1 on entry, the desktop layer drifts under 4% (parallax), captions cross-fade with a clip mask, code lines type with `steps()`, the browser opens from an inset clip. It runs without JS and never hijacks scrolling (sticky positioning).
+- **The Longhand Rule.** Scroll-driven animations declare `animation-name`, `animation-duration: auto`, `animation-timing-function`, `animation-fill-mode` and `animation-timeline` as longhands. Lightning CSS (Tailwind v4's minifier) merges `animation` + `animation-timeline` into an invalid shorthand and the browser drops the whole rule.
+- **Deferred controller.** GSAP/ScrollTrigger and Three.js load after `load`, two animation frames and an idle callback, once the hero is within 200px or receives input. Startup is bounded at 3s inline / 4s controller. Modules: cards, hero, nav indicator, experience timeline, terminal, counters.
+- **WebGL terrain (`hero-webgl.ts`, `hero-shaders.ts`, `hero-camera.ts`).** Faceted fBm ridged terrain with a flat valley, neon ridge/contour lines, fog to the horizon and a striped sun in the sky dome, rendered to a target and composited by a CRT pass (barrel, RGB split, cheap bloom, rolling band, vignette, grain). The flight is scrubbed by the story progress (`storyProgress`): scrolling forward flies forward and lifts the camera, scrolling back flies back. Pointer steers, holding the landscape engages turbo. 30fps cap, DPR ≤ 1.5 (1 on compact), paused offscreen and on hidden tabs, disposed on swap. Eligibility: WebGL2, no touch, no Save-Data/2G, `deviceMemory ≥ 2`, no reduced motion.
+- **Micro-interactions.** Draggable windows (pointer events, bounded to the screen), terminal typing, stat counters (only for counters still offscreen, hidden from assistive technology behind a static value), magnetic hero CTA, glass glare following the pointer, tilted project windows, seals turning under the pointer, TV static on channel change.
+- **Reduced motion and unsupported browsers.** No GSAP, ScrollTrigger or WebGL chunk is fetched under reduced motion; the story track collapses and the three acts read as a static list; reveals and scroll timelines are disabled; the marquee wraps; the terminal is written in full.
 
-## 5. Layout
+**The LCP Stillness Rule.** The hero `<h1>` never animates and never receives inline styles, and it stays the largest contentful paint at every width: the mobile title scale keeps it larger than the portrait window, and the portrait loads eagerly without high fetch priority. `tests/hero-story.spec.ts` asserts the LCP element at 390×844 and 430×932.
 
-### Spacing
-- Base unit: 8px
-- Scale: 4, 8, 12, 16, 24, 32, 48, 64, 80, 96
-- Section rhythm: 80px–96px between major bands
+**The Enhancement Rule.** Content is complete without JS: shortcuts are links, channels are radios, accordions are `<details>`, the wallpaper is SVG, the story is CSS.
 
-### Grid
-- Max content: 1200px
-- Hero: Full-width light lavender gradient by default, dark indigo under `.dark`; content centered
-- Feature grids: 2–3 columns desktop, 1 column mobile
-- Projects: 12-column desktop index with one featured card, 1 column mobile
+## 7. Accessibility
 
-### Whitespace
-- Confident emptiness between sections
-- Projects fill space with screenshots, not decoration
-- Progressive density: spacious hero → denser content → open CTAs
+- Text pairs meet WCAG AA: dark `#f3efe6`/`#0b0b0d` 17.1:1, muted 7.7:1, magenta 6.9:1; paper `#17140f`/`#f2ece0` 15.6:1, muted 6.5:1, magenta 6.1:1; inverted chapters ≥ 5.7:1. Scroll-driven text never starts below AA: About words go from `--muted-foreground` to ink, captions start fully transparent.
+- Focus: 2px `--ring` outline with 2px offset; knobs, summaries and media links have visible focus.
+- Decorative layers (boot, desktop and story windows, wallpaper, seals, bezel) are `aria-hidden`; shortcuts and the TV radios are real controls with localized names. The story's acts are an ordered list under a screen-reader heading.
+- Accessible names contain the visible text (WCAG 2.5.3): certificate links take their name from their content; the theme label is screen-reader only.
+- Decorative glyphs are images, not text: the ASCII portrait and the seal orbit text are build-time SVGs, so legible-text audits measure real copy.
+- All copy comes from `src/lib/i18n/{es,en}.json` with key parity.
 
-## 6. Elevation
+## 8. Constraints
 
-| Level | Treatment | Use |
-|---|---|---|
-| Flat | No shadow | Primary canvas, most surfaces |
-| Border | 1px `#dcd7d3` | Card containment |
-| Hover | Subtle shadow increase | Interactive card states |
-| Hero Depth | Gradient + translucent borders | Hero elements |
+- **CSP:** `script-src 'self'` plus exact hashes for the inline theme, boot and startup scripts. Run `pnpm update:csp:write` after editing inline scripts; `pnpm build` verifies parity.
+- **Stylesheets:** `global.css` imports exactly five files: `portfolio-base.css` (tokens, primitives, prose), `portfolio-hero.css` (boot, hero and pinned story), `portfolio-content.css` (chapters, projects, experience, credentials), `portfolio-chapters.css` (about, contact, footer, motion layer), `header.css`.
+- **Bundle:** every JS chunk ≤ 600 KiB raw / 150 KiB gzip; Three.js stays the only 3D dependency and GSAP the only motion dependency.
+- **Source limits:** `.astro` 250 lines, `.ts` 300, `.css` 1500 (exceptions in `scripts/check-source-limits.ts`).
+- **Copy:** no hardcoded translatable strings; code comments in Spanish, identifiers/docs/commits in English.
 
-## 7. Do's and Don'ts
+## 9. Verification
 
-### Do
-- Keep the hero title at 0.82 line-height on desktop (0.84 on mobile) and section headings at 0.98
-- Use Warm Cream for primary buttons — not white, not gray
-- Keep radii bounded and purposeful; use larger rounding only for circular/orbital visual elements
-- Let project screenshots be the primary visual content
-- Use Lavender Glow as the primary accent; reserve emerald/blue for status or telemetry cues
-- Maintain the hero gradient as a singular dramatic gesture
-- Use monospace for tech/developer identity elements
-
-### Don't
-- Use saturated multi-color palettes — one accent only
-- Apply shadows generously — depth from borders and contrast
-- Use tight line-height on body text
-- Add decorative layers only when they reinforce the technical narrative and remain non-blocking
-- Do not use ornamental motion as a substitute for content or focus states
-- Use pure black (`#000000`) — Charcoal Ink is warmer
-
-## 8. Responsive
-
-| Breakpoint | Width | Key Changes |
-|---|---|---|
-| Mobile | <768px | Single column, hamburger nav; hero `clamp(3.45rem, 17vw, 5.3rem)` (`3.35rem` at ≤420px) |
-| Tablet | 768–1023px | 2-column projects; hero `clamp(3.6rem, 8vw, 6rem)` |
-| Desktop | 1024–1440px | Full layout; hero `clamp(3.7rem, 8vw, 8rem)` |
-| Wide | >1440px | Max-width 1200px centered; desktop hero clamp continues |
-
-## 9. Dark Mode Strategy
-
-- Dark mode is a FIRST-CLASS citizen, not an afterthought
-- Light lavender hero is the default; `.dark` gives the hero its dark-indigo anchor
-- Light → Dark: Canvas becomes Night Canvas, borders become Night Border
-- Warm Cream buttons become Warm Cream Dark
-- Lavender Glow accent stays consistent across both modes
-- No jarring transitions — smooth 300ms shifts on toggle
-
-## 10. Motion Architecture
-
-Motion is layered, not required for understanding the page:
-
-1. **CSS baseline:** hero reveal, orbital rings, marquee and reduced-motion fallback.
-2. **GSAP layer:** GSAP and ScrollTrigger are dynamically imported only after hero proximity (within 200px of the viewport) or pointer, focus or touch interaction. `matchMedia()` gates fine-pointer and `prefers-reduced-motion`, while `ScrollTrigger` follows the native document scroll instead of replacing it.
-3. **Three.js layer:** an optional, progressively loaded small deterministic point/line constellation with no external model or texture. It is skipped for Save-Data/2G/low-memory or reduced-motion preferences, pauses offscreen/hidden tabs, caps its pixel ratio and disposes renderer resources on Astro navigation.
-
-The canvas is `aria-hidden`, pointer-transparent and decorative. The portrait, availability link, CTAs and project content remain HTML. If WebGL2 is unavailable, the existing CSS orbital visual is the fallback.
-
-## 11. Maintainability & delivery limits
-
-The source surface has explicit size gates so visual iteration does not turn
-into unreviewable files:
-
-| Extension | Limit | Gate |
-|---|---:|---|
-| `.astro` | 250 lines | `pnpm verify:limits` |
-| `.ts` | 300 lines | `pnpm verify:limits` |
-| `.css` | 1500 lines | `pnpm verify:limits` |
-
-The documented exceptions are the shared `Layout` shell, the content-heavy
-certification carousel and privacy documents. Technology badges use the
-`src/lib/tech-badges.ts` registry (brand color per technology through CSS
-variables, one static utility set). The former monolithic stylesheet is split into base, hero,
-content, responsive and header layers. Repeated icons use the immutable
-`public/icons/sprite.svg` instead of embedding the same paths in every page.
-
-No general formatter or linter is currently configured. The size, test and
-build gates do not replace lint or format rules. Defer new tooling and
-dependencies until a concrete recurring formatting or lint gap justifies them.
-
-## 12. Reference Decisions
-
-The visual direction borrows interaction principles—not copied layouts—from the reviewed Chinese, Korean and Japanese references:
-
-- **Chinese:** Chang Liu's unified carousel/menu and restrained distortion; Du Haihang's WebGL typography that still supports drag, swipe and scroll on mobile; Lan Zhang's people-centered work index; Lyfar Studio's Astro/Three.js approach that keeps the stack small.
-- **Korean:** Portfoli-oh's bilingual/theme-aware onboarding and measurable performance; VibeLabs' description of a 3D world where projects become the narrative instead of a decorative resume.
-- **Japanese:** Koh Fukuzawa's explicit performance/accessibility discipline; Tao Tajima's shader illusion that creates depth without a heavy 3D model.
-
-### Tool selection
-
-- `three@0.185.1` + `@types/three@0.185.1`: selected for one bounded WebGL scene, not a 3D model or full-screen takeover.
-- `gsap@3.15.0`: selected for deterministic pointer/scroll interpolation and cleanup through `matchMedia()`.
-- **ScrollXUI:** audited as a Next.js/TypeScript/Tailwind/Motion registry. Its cursor, spotlight, stagger and parallax patterns are useful references, but importing its React-oriented registry would widen this Astro static site's runtime unnecessarily.
-- **shadcn CLI:** audited as Astro-compatible, but it is a component source/registry rather than an animation system. The repo already has native Astro `Button` and `DropdownMenu` primitives; adding a React integration or remote registry component would add surface without improving this home.
+```bash
+pnpm check
+pnpm test && pnpm test:coverage
+pnpm build
+pnpm exec playwright test
+pnpm format:check
+```

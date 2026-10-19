@@ -23,7 +23,7 @@ const t = getTranslations(locale)
   <button
     id="theme-toggle"
     type="button"
-    class="inline-flex h-11 min-w-11 items-center justify-center gap-2 rounded-md px-2.5 py-2 text-sm font-medium text-current transition-colors hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary dark:group-[:not(.scrolled)]:text-nav-glass-text-dark dark:hover:bg-white/10"
+    class="inline-flex h-11 min-w-11 items-center justify-center gap-2 rounded-md px-2.5 py-2 text-xs font-medium text-current transition-colors hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary dark:group-[:not(.scrolled)]:text-nav-glass-text-dark dark:hover:bg-white/10"
     aria-label={t.theme.toggle}
     aria-haspopup="menu"
     aria-expanded="false"
@@ -32,7 +32,7 @@ const t = getTranslations(locale)
     <SunIcon class="theme-icon-light hidden size-4" />
     <MoonIcon class="theme-icon-dark hidden size-4" />
     <MonitorIcon class="theme-icon-system size-4" />
-    <span id="current-theme" class="hidden xl:inline">{t.theme.system}</span>
+    <span id="current-theme" class="sr-only">{t.theme.system}</span>
   </button>
 
   <div
@@ -46,7 +46,7 @@ const t = getTranslations(locale)
         role="menuitemradio"
         aria-checked="false"
         data-theme="light"
-        class="theme-option flex w-full items-center justify-between px-4 py-2 text-left text-sm text-foreground/80 hover:bg-muted/50"
+        class="theme-option flex w-full items-center justify-between px-4 py-2 text-left text-xs text-foreground/80 focus-ring hover:bg-muted/50"
       >
         <span class="flex items-center gap-3">
           <SunIcon class="size-4" />
@@ -59,7 +59,7 @@ const t = getTranslations(locale)
         role="menuitemradio"
         aria-checked="false"
         data-theme="dark"
-        class="theme-option flex w-full items-center justify-between px-4 py-2 text-left text-sm text-foreground/80 hover:bg-muted/50"
+        class="theme-option flex w-full items-center justify-between px-4 py-2 text-left text-xs text-foreground/80 focus-ring hover:bg-muted/50"
       >
         <span class="flex items-center gap-3">
           <MoonIcon class="size-4" />
@@ -72,7 +72,7 @@ const t = getTranslations(locale)
         role="menuitemradio"
         aria-checked="true"
         data-theme="system"
-        class="theme-option flex w-full items-center justify-between px-4 py-2 text-left text-sm text-foreground/80 hover:bg-muted/50"
+        class="theme-option flex w-full items-center justify-between px-4 py-2 text-left text-xs text-foreground/80 focus-ring hover:bg-muted/50"
       >
         <span class="flex items-center gap-3">
           <MonitorIcon class="size-4" />

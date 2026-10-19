@@ -1,0 +1,59 @@
+---
+// Arranque BIOS de SB-OS: decorativo, una vez por sesión y solo si <head> lo armó.
+import { getTranslations, type Locale } from "@/lib/i18n"
+import BrandMark from "./BrandMark.astro"
+
+interface Props {
+  locale?: Locale
+}
+
+const { locale = "es" } = Astro.props
+const t = getTranslations(locale)
+const segments = Array.from({ length: 24 }, (_, index) => index)
+---
+
+<div class="boot" data-boot aria-hidden="true">
+  <div class="boot-screen">
+    <div class="boot-content">
+      <div class="boot-logo">
+        <BrandMark class="boot-mark" />
+        <span class="boot-wordmark">Sebastian Bravo</span>
+      </div>
+      <p class="boot-version pixel-text">
+        Sebastian Bravo — {t.hero.role}<br />
+        {t.boot.version}
+      </p>
+      <div class="boot-bar">
+        {segments.map((segment) => <span style={`--segment:${segment}`} />)}
+      </div>
+      <p class="boot-modules pixel-text">{t.boot.loading}: {t.boot.modules}</p>
+      <p class="boot-copy pixel-text">{t.boot.copyright}</p>
+      <p class="boot-skip pixel-text">{t.boot.skip}</p>
+    </div>
+  </div>
+</div>
+
+<script is:inline>
+  ;(() => {
+    const root = document.documentElement
+    if (!root.classList.contains("boot-armed")) return
+    try {
+      sessionStorage.setItem("sb-os-booted", "1")
+    } catch (error) {}
+    const events = ["keydown", "pointerdown", "wheel", "touchstart"]
+    let done = false
+    const release = () => {
+      root.classList.remove("boot-armed", "boot-done")
+    }
+    const finish = () => {
+      if (done) return
+      done = true
+      window.clearTimeout(timer)
+      events.forEach((name) => window.removeEventListener(name, finish, true))
+      root.classList.add("boot-done")
+      window.setTimeout(release, 560)
+    }
+    const timer = window.setTimeout(finish, 2100)
+    events.forEach((name) => window.addEventListener(name, finish, { capture: true, passive: true }))
+  })()
+</script>

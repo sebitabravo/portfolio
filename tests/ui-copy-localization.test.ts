@@ -4,7 +4,7 @@ type ShellCopy = {
   nav: { mainNavigation: string; brandHome: string }
   footer: { professionalProfiles: string; links: string }
   language: { toggleLabel: string }
-  projects: { cardLabel: string; evidenceLabel: string; technologiesLabel: string }
+  projects: { screenshotAlt: string; evidenceLabel: string; technologiesLabel: string }
   work: { evidenceLabel: string }
   contact: { mailSubject: string; responseTime: string; linkedinDescription: string; githubDescription: string; cvHelper: string }
   error404: { description: string; heading: string; message: string; backHome: string }
@@ -17,7 +17,7 @@ const header = readFileSync("src/components/Header.astro", "utf8")
 const footer = readFileSync("src/components/Footer.astro", "utf8")
 const languageToggle = readFileSync("src/components/LanguageToggle.astro", "utf8")
 const languageToggleScript = readFileSync("src/scripts/language-toggle.ts", "utf8")
-const projects = readFileSync("src/components/Projects.astro", "utf8")
+const projects = readFileSync("src/components/ProjectTile.astro", "utf8")
 const experienceItem = readFileSync("src/components/ExperienceItem.astro", "utf8")
 const contact = readFileSync("src/components/Contact.astro", "utf8")
 const notFound = readFileSync("src/components/LocalizedNotFoundPage.astro", "utf8")
@@ -84,14 +84,14 @@ describe("site-shell accessible copy", () => {
 
 const localizedUiCopy = [
   {
-    dictionary: es, locale: "Spanish", cardLabel: "PROYECTO",
+    dictionary: es, locale: "Spanish", screenshotAlt: "Captura de {title}",
     projectEvidence: "Evidencia del proyecto", technologies: "Tecnologías",
     workEvidence: "Evidencia del trabajo", mailSubject: "Contacto desde tu portfolio",
     responseTime: "Te respondo en menos de 24h", linkedin: "Conectemos profesionalmente",
     github: "Mirá mi código abierto", cvHelper: "CV disponible para revisar mi experiencia completa.",
   },
   {
-    dictionary: en, locale: "English", cardLabel: "PROJECT",
+    dictionary: en, locale: "English", screenshotAlt: "{title} screenshot",
     projectEvidence: "Project evidence", technologies: "Technologies",
     workEvidence: "Work evidence", mailSubject: "Contact from your portfolio",
     responseTime: "I'll reply within 24h", linkedin: "Let's connect professionally",
@@ -100,8 +100,8 @@ const localizedUiCopy = [
 ] as const
 
 describe("project, work, and contact UI copy", () => {
-  it.each(localizedUiCopy)("keeps exact $locale labels and helper text in the dictionary", ({ dictionary, cardLabel, projectEvidence, technologies, workEvidence, mailSubject, responseTime, linkedin, github, cvHelper }) => {
-    expect(dictionary.projects.cardLabel).toBe(cardLabel)
+  it.each(localizedUiCopy)("keeps exact $locale labels and helper text in the dictionary", ({ dictionary, screenshotAlt, projectEvidence, technologies, workEvidence, mailSubject, responseTime, linkedin, github, cvHelper }) => {
+    expect(dictionary.projects.screenshotAlt).toBe(screenshotAlt)
     expect(dictionary.projects.evidenceLabel).toBe(projectEvidence)
     expect(dictionary.projects.technologiesLabel).toBe(technologies)
     expect(dictionary.work.evidenceLabel).toBe(workEvidence)
@@ -113,7 +113,7 @@ describe("project, work, and contact UI copy", () => {
   })
 
   it("binds project and work labels to the dictionary without changing data-driven metric or tag content", () => {
-    expect(projects).toContain("featured ? t.projects.featured : t.projects.cardLabel")
+    expect(projects).toContain('alt={t.projects.screenshotAlt.replace("{title}", title)}')
     expect(projects).toContain('aria-label={t.projects.evidenceLabel}')
     expect(projects).toContain('aria-label={t.projects.technologiesLabel}')
     expect(projects).toContain("<span>{metric.label}</span>")

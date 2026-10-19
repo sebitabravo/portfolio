@@ -15,7 +15,8 @@ export type WebglStatus = (typeof WEBGL_STATUSES)[number]
 export type MotionLifecyclePhase = MotionStatus | "destroyed"
 export type MotionModuleState = "idle" | "initializing" | "active" | "destroyed"
 
-export type MotionModuleId = "cards" | "hero" | "nav-indicator" | "experience-timeline" | "page-transitions" | "reveal"
+export type MotionModuleId =
+  "cards" | "hero" | "nav-indicator" | "experience-timeline" | "page-transitions" | "reveal" | "terminal" | "counters"
 
 export type MotionRefreshReason =
   "viewport" | "fonts" | "images" | "breakpoint" | "reduced-motion" | "page-load" | "view-transition" | "manual"
@@ -175,7 +176,9 @@ export function isMotionModuleId(value: unknown): value is MotionModuleId {
     value === "nav-indicator" ||
     value === "experience-timeline" ||
     value === "page-transitions" ||
-    value === "reveal"
+    value === "reveal" ||
+    value === "terminal" ||
+    value === "counters"
   )
 }
 

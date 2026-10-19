@@ -1,0 +1,90 @@
+---
+// Sello circular de credencial: anillo de texto en órbita y monograma al centro.
+import { svgDataUri } from "@/lib/ascii-art"
+import { sealRingSvg } from "@/lib/seal"
+
+interface Props {
+  text: string
+  center?: string
+  size?: number
+  class?: string
+  spin?: boolean
+  locale?: string
+}
+
+const { text, center, size = 132, class: className, spin = true, locale = "es" } = Astro.props
+// Un id determinista mantiene el build reproducible aunque haya varios sellos por página.
+const hash = [...`${text}${center ?? ""}`].reduce((total, char) => (total * 31 + char.charCodeAt(0)) >>> 0, 7)
+const maskId = `seal-mask-${hash.toString(36)}`
+// El anillo se rasteriza como imagen y se pinta con currentColor a través de la máscara.
+const ringSrc = svgDataUri(sealRingSvg(text, locale))
+---
+
+<svg
+  class:list={["round-seal", { "round-seal-spin": spin }, className]}
+  viewBox="0 0 120 120"
+  width={size}
+  height={size}
+  aria-hidden="true"
+  focusable="false"
+>
+  <defs>
+    <mask id={maskId} maskUnits="userSpaceOnUse" x="0" y="0" width="120" height="120">
+      <image href={ringSrc} x="0" y="0" width="120" height="120" />
+    </mask>
+  </defs>
+  <circle class="round-seal-ring" cx="60" cy="60" r="57" fill="none" stroke="currentColor" stroke-width="1"></circle>
+  <circle class="round-seal-ring" cx="60" cy="60" r="37" fill="none" stroke="currentColor" stroke-width="1"></circle>
+  <g class="round-seal-orbit">
+    <rect width="120" height="120" fill="currentColor" mask={`url(#${maskId})`}></rect>
+  </g>
+  {
+    center && (
+      <text
+        class="round-seal-center"
+        x="60"
+        y="60"
+        text-anchor="middle"
+        dominant-baseline="central"
+        fill="currentColor"
+      >
+        {center}
+      </text>
+    )
+  }
+</svg>
+
+<style>
+  .round-seal {
+    display: block;
+    overflow: visible;
+  }
+
+  .round-seal-ring {
+    opacity: 0.55;
+  }
+
+  .round-seal-center {
+    font-family: var(--font-instrument), Georgia, serif;
+    font-size: 22px;
+    font-style: italic;
+  }
+
+  .round-seal-orbit {
+    transform-origin: 60px 60px;
+  }
+
+  /* El sello gira solo bajo la mano: responde al hover o al foco, nunca un bucle en reposo. */
+  @media (prefers-reduced-motion: no-preference) {
+    :global(a:hover) .round-seal-spin .round-seal-orbit,
+    :global(a:focus-visible) .round-seal-spin .round-seal-orbit {
+      animation: seal-spin 8s linear infinite;
+    }
+  }
+
+  @keyframes seal-spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+</style>

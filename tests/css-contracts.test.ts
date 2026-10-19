@@ -9,7 +9,7 @@ describe("global stylesheet architecture", () => {
     const imports = [...globalCss.matchAll(/@import\s+["']\.\/([^"']+)["'];?/g)]
     expect(imports.map((match) => match[1]).sort()).toEqual([
       "portfolio-base.css", "portfolio-hero.css", "portfolio-content.css",
-      "portfolio-responsive.css", "header.css",
+      "portfolio-chapters.css", "header.css",
     ].sort())
     expect(globalCss.replace(/@import\s+["']\.\/[^"']+["'];?/g, "").trim()).toBe("")
   })

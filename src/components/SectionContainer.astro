@@ -1,12 +1,12 @@
 ---
-// Shared reading column for the public portfolio sections.
+// Columna compartida de las secciones del portfolio; el marco define el ancho.
 const { class: className, headingId, ...rest } = Astro.props
 ---
 
 <section
   {...rest}
   aria-labelledby={headingId}
-  class:list={["portfolio-section relative z-10 mx-auto w-full max-w-[1200px] scroll-mt-24 md:scroll-mt-28", className]}
+  class:list={["portfolio-section relative z-10 w-full scroll-mt-24 md:scroll-mt-28", className]}
 >
   <slot />
 </section>

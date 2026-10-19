@@ -1,35 +1,34 @@
 :root {
-  --hero-ink: #171329;
-  --hero-muted: rgb(45 48 82 / 0.78);
-  --hero-faint: #4c527b;
-  --hero-line: rgb(79 70 229 / 0.22);
-  --hero-accent: #4338ca;
-  --hero-accent-strong: #3730a3;
-  --hero-btn-border: rgb(79 70 229 / 0.34);
+  --hero-ink: #17140f;
+  --hero-muted: #5a5246;
+  --hero-faint: #5a5246;
+  --hero-line: hsl(var(--hairline));
+  --hero-accent: #17140f;
+  --hero-accent-strong: #a3127a;
+  --hero-btn-border: #a3127a;
   --hero-btn-bg: var(--hero-accent-strong);
-  --hero-btn-bg-hover: #4338ca;
-  --hero-btn-color: #fff;
-  --hero-btn-shadow: rgb(79 70 229 / 0.2);
-  --hero-btn-shadow-hover: rgb(79 70 229 / 0.3);
+  --hero-btn-bg-hover: #870f65;
+  --hero-btn-color: #f7f3ea;
+  --chroma-a: #ff2fb9;
+  --chroma-b: #1fb6c9;
+  --chroma-blend: multiply;
 }
 
 .dark {
-  --hero-ink: #f7f8ff;
-  --hero-muted: rgb(229 232 255 / 0.68);
-  --hero-faint: #bac5ef;
-  --hero-line: rgb(218 222 255 / 0.18);
-  --hero-accent: #c7b7ff;
-  --hero-accent-strong: #9b82ff;
-  --hero-btn-border: rgb(255 255 255 / 0.35);
-  --hero-btn-bg: var(--hero-accent);
-  --hero-btn-bg-hover: #ddd4ff;
-  --hero-btn-color: #171329;
-  --hero-btn-shadow: rgb(155 130 255 / 0.22);
-  --hero-btn-shadow-hover: rgb(155 130 255 / 0.33);
+  --hero-ink: #f3efe6;
+  --hero-muted: #a6a29a;
+  --hero-faint: #a6a29a;
+  --hero-line: hsl(var(--hairline));
+  --hero-accent: #f3efe6;
+  --hero-accent-strong: #ff4fd8;
+  --hero-btn-border: #ff4fd8;
+  --hero-btn-bg-hover: #ff7ae2;
+  --hero-btn-color: #0b0b0d;
+  --chroma-a: #ff4fd8;
+  --chroma-b: #4dd6e6;
+  --chroma-blend: screen;
 }
 
-/* Theme colors/fonts/shadows so hover and typography can move to utilities
-   in Hero.astro; alpha stays inside the token so computed colors read as plain rgba. */
 @theme inline {
   --color-hero-ink: var(--hero-ink);
   --color-hero-muted: var(--hero-muted);
@@ -41,343 +40,1288 @@
   --color-hero-btn-bg: var(--hero-btn-bg);
   --color-hero-btn-bg-hover: var(--hero-btn-bg-hover);
   --color-hero-btn-color: var(--hero-btn-color);
-  --color-hero-pulse: #8bf3be;
-  --shadow-hero-btn: 0 10px 30px var(--hero-btn-shadow);
-  --shadow-hero-btn-hover: 0 13px 36px var(--hero-btn-shadow-hover);
-  --shadow-hero-pulse: 0 0 0 4px rgb(139 243 190 / 0.12), 0 0 16px rgb(139 243 190 / 0.7);
-  --font-hero-heading: var(--font-syne), var(--font-manrope), sans-serif;
-  --font-hero-body: var(--font-manrope), system-ui, sans-serif;
+  --color-hero-pulse: var(--hero-accent-strong);
+  --font-hero-heading: var(--font-instrument), Georgia, serif;
+  --font-hero-body: var(--font-geist), system-ui, sans-serif;
 }
 
+/* ============================================
+   Arranque BIOS — solo existe con html.boot-armed
+   ============================================ */
+
 @layer components {
+  .boot {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    display: none;
+    place-items: center;
+    background: #000;
+    /* Red de seguridad: si el script de arranque no corre, el overlay se retira solo. */
+    animation: boot-failsafe 0.3s 4.2s forwards;
+  }
+
+  .boot-armed .boot {
+    display: grid;
+  }
+
+  .boot-screen {
+    position: absolute;
+    inset: clamp(0.75rem, 1.6vw, 1.5rem);
+    overflow: hidden;
+    border-radius: clamp(1.25rem, 3vw, 3rem) / clamp(1.5rem, 3.6vw, 3.5rem);
+    background: radial-gradient(ellipse at 50% 45%, rgb(255 255 255 / 0.1), transparent 62%), var(--bios);
+    box-shadow:
+      inset 0 0 0 2px rgb(255 255 255 / 0.04),
+      inset 0 0 140px rgb(0 0 0 / 0.65);
+    color: var(--bios-ink);
+    animation: crt-on 420ms cubic-bezier(0.2, 0.9, 0.3, 1) both;
+  }
+
+  .boot-screen::after {
+    position: absolute;
+    inset: 0;
+    background:
+      repeating-linear-gradient(to bottom, transparent 0 2px, rgb(0 0 0 / 0.16) 2px 3px),
+      radial-gradient(ellipse at center, transparent 55%, rgb(0 0 0 / 0.5) 100%);
+    pointer-events: none;
+    content: "";
+  }
+
+  .boot-content {
+    position: relative;
+    display: grid;
+    height: 100%;
+    grid-template-rows: 1fr auto auto auto 1fr auto auto;
+    justify-items: center;
+    gap: 1.4rem;
+    padding: clamp(2rem, 5vw, 4rem);
+    text-align: center;
+    text-shadow:
+      -1.5px 0 rgb(255 70 120 / 0.55),
+      1.5px 0 rgb(80 220 255 / 0.5),
+      0 0 18px rgb(236 230 210 / 0.35);
+  }
+
+  .boot-logo {
+    display: flex;
+    align-items: center;
+    align-self: end;
+    gap: clamp(1rem, 2.4vw, 2rem);
+    opacity: 0;
+    animation: boot-rise 600ms 260ms var(--ease-out-expo) forwards;
+  }
+
+  .boot-mark {
+    width: clamp(5rem, 11vw, 9rem);
+    height: auto;
+  }
+
+  .boot-wordmark {
+    font-family: var(--font-instrument), Georgia, serif;
+    font-size: clamp(3.5rem, 9.5vw, 8.5rem);
+    font-style: italic;
+    line-height: 0.9;
+    letter-spacing: -0.02em;
+    -webkit-text-stroke: 1.5px currentColor;
+  }
+
+  .boot-version,
+  .boot-modules,
+  .boot-copy,
+  .boot-skip {
+    font-size: clamp(1.15rem, 1.7vw, 1.6rem);
+    line-height: 1.25;
+    opacity: 0;
+    animation: boot-fade 200ms 520ms steps(2) forwards;
+  }
+
+  .boot-bar {
+    display: grid;
+    width: min(32rem, 70vw);
+    grid-template-columns: repeat(24, 1fr);
+    gap: 3px;
+    padding: 5px;
+    border: 2px solid currentColor;
+  }
+
+  .boot-bar span {
+    height: 1.5rem;
+    background: currentColor;
+    opacity: 0;
+    animation: boot-segment 1ms forwards;
+    animation-delay: calc(560ms + var(--segment) * 52ms);
+  }
+
+  .boot-modules {
+    animation-delay: 720ms;
+  }
+
+  .boot-copy {
+    align-self: end;
+    animation-delay: 380ms;
+  }
+
+  .boot-skip {
+    font-size: clamp(1rem, 1.3vw, 1.25rem);
+    animation:
+      boot-fade 200ms 900ms steps(2) forwards,
+      boot-blink 1s 1.2s steps(1) infinite;
+  }
+
+  .boot-done .boot {
+    background: transparent;
+    transition: background-color 260ms 220ms ease;
+  }
+
+  .boot-done .boot-screen {
+    animation: crt-off 480ms cubic-bezier(0.7, 0, 0.84, 0) forwards;
+  }
+
+  /* ============================================
+     Hero — escritorio SB-OS
+     ============================================ */
+
   .hero-gradient {
-    background:
-      radial-gradient(circle at 78% 18%, rgb(118 97 255 / 0.16), transparent 27%),
-      radial-gradient(circle at 12% 75%, rgb(73 112 255 / 0.1), transparent 25%),
-      linear-gradient(135deg, #f6f5ff 0%, #eef0ff 46%, #fbfcff 100%);
+    min-height: 92svh;
+    padding-top: 3.5rem;
+    background: hsl(var(--canvas));
   }
 
-  .dark .hero-gradient {
-    background:
-      radial-gradient(circle at 78% 18%, rgb(118 97 255 / 0.2), transparent 27%),
-      radial-gradient(circle at 12% 75%, rgb(73 112 255 / 0.12), transparent 25%),
-      linear-gradient(135deg, #10143a 0%, #090d29 46%, #050713 100%);
+  .hero-frame {
+    padding: clamp(1.25rem, 3vw, 2.25rem) clamp(1rem, 4vw, 3.5rem) clamp(2.5rem, 6vw, 5rem);
   }
 
-  .hero-gradient::before {
-    z-index: -1;
-    background-image:
-      linear-gradient(rgb(75 70 140 / 0.1) 1px, transparent 1px),
-      linear-gradient(90deg, rgb(75 70 140 / 0.1) 1px, transparent 1px);
-    background-size: 72px 72px;
-    opacity: 0.45;
-    mask-image: linear-gradient(to bottom, black, transparent 92%);
+  .hero-layout {
+    display: grid;
+    align-items: end;
+    gap: 1.75rem;
   }
 
-  .dark .hero-gradient::before {
-    background-image:
-      linear-gradient(rgb(255 255 255 / 0.055) 1px, transparent 1px),
-      linear-gradient(90deg, rgb(255 255 255 / 0.055) 1px, transparent 1px);
-    background-size: 72px 72px;
-    opacity: 0.45;
-  }
-
-  .hero-gradient::after {
-    position: absolute;
-    inset: 0;
-    content: "";
-    z-index: -1;
-    background:
-      linear-gradient(110deg, transparent 0 48%, rgb(79 70 229 / 0.1) 48.2% 48.4%, transparent 48.6%),
-      radial-gradient(circle at 50% 0%, transparent 0 35%, rgb(67 70 110 / 0.08) 90%);
-    mix-blend-mode: multiply;
-    pointer-events: none;
-  }
-
-  .dark .hero-gradient::after {
-    background:
-      linear-gradient(110deg, transparent 0 48%, rgb(199 183 255 / 0.06) 48.2% 48.4%, transparent 48.6%),
-      radial-gradient(circle at 50% 0%, transparent 0 35%, rgb(2 4 17 / 0.35) 90%);
-    mix-blend-mode: screen;
-  }
-
-  :root:not(.dark) .hero-ambient-one {
-    border-color: rgb(91 82 214 / 0.18);
-    box-shadow:
-      0 0 120px rgb(126 103 255 / 0.14),
-      inset 0 0 80px rgb(126 103 255 / 0.06);
-  }
-
-  :root:not(.dark) .hero-ambient-two {
-    border-color: rgb(37 99 235 / 0.14);
-    box-shadow: 0 0 100px rgb(80 143 255 / 0.1);
-  }
-
-  :root:not(.dark) .hero-art-frame {
-    border-color: rgb(79 70 229 / 0.24);
-    background: radial-gradient(circle at 50% 50%, rgb(138 117 255 / 0.14), transparent 41%), rgb(255 255 255 / 0.56);
-    box-shadow:
-      inset 0 0 80px rgb(79 70 229 / 0.08),
-      0 28px 90px rgb(43 39 95 / 0.14);
-  }
-
-  :root:not(.dark) .hero-art-frame::after {
-    background: radial-gradient(
-      circle at calc(var(--hero-glow-x) * 1%) calc(var(--hero-glow-y) * 1%),
-      rgb(99 91 255 / 0.14),
-      transparent 30%
-    );
-  }
-
-  :root:not(.dark) .hero-art-grid {
-    background-image:
-      linear-gradient(rgb(79 70 229 / 0.12) 1px, transparent 1px),
-      linear-gradient(90deg, rgb(79 70 229 / 0.12) 1px, transparent 1px);
-    opacity: 0.28;
-  }
-
-  :root:not(.dark) .hero-portrait-shell {
-    border-color: rgb(79 70 229 / 0.38);
-    background: linear-gradient(135deg, rgb(255 255 255 / 0.86), rgb(199 183 255 / 0.38));
-    box-shadow:
-      0 0 0 12px rgb(99 91 255 / 0.06),
-      0 0 90px rgb(99 91 255 / 0.18);
-  }
-
-  :root:not(.dark) .hero-orbit {
-    border-color: rgb(79 70 229 / 0.28);
-  }
-
-  :root:not(.dark) .hero-orbit-two {
-    border-color: rgb(37 99 235 / 0.24);
-  }
-
-  :root:not(.dark) .hero-orbit-dot {
-    background: var(--hero-accent);
-    box-shadow:
-      0 0 0 4px rgb(91 82 214 / 0.14),
-      0 0 18px rgb(91 82 214 / 0.48);
-  }
-
-  :root:not(.dark) .hero-orbit-dot-two {
-    background: #2563eb;
-    box-shadow:
-      0 0 0 4px rgb(37 99 235 / 0.12),
-      0 0 18px rgb(37 99 235 / 0.42);
-  }
-
-  .hero-ambient-one {
-    border: 1px solid rgb(199 183 255 / 0.13);
-    box-shadow:
-      0 0 120px rgb(126 103 255 / 0.18),
-      inset 0 0 80px rgb(126 103 255 / 0.08);
-    animation: ambient-drift 18s ease-in-out infinite;
-  }
-
-  .hero-ambient-two {
-    border: 1px solid rgb(112 183 255 / 0.1);
-    box-shadow: 0 0 100px rgb(80 143 255 / 0.12);
-    animation: ambient-drift 23s ease-in-out infinite reverse;
-  }
-
-  @keyframes ambient-drift {
-    0%,
-    100% {
-      transform: translate3d(0, 0, 0) scale(1);
-    }
-    50% {
-      transform: translate3d(0, 18px, 0) scale(1.06);
-    }
-  }
-
-  .hero-kicker,
-  .section-heading-meta,
-  .project-eyebrow,
-  .project-media-kicker,
-  .project-media-topline,
-  .project-metric span {
-    font-family: var(--font-jetbrains-mono), ui-monospace, monospace;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-  }
-
-  .hero-title-accent {
-    background: linear-gradient(100deg, var(--hero-ink) 12%, var(--hero-accent) 78%, #8873e8 100%);
-  }
-
-  :root:not(.dark) .hero-title-accent {
-    background-image: linear-gradient(100deg, var(--hero-ink) 12%, #3730a3 78%, #312e81 100%);
-  }
-
-  .hero-meta-item::before {
-    margin-right: 0.65rem;
-    color: var(--hero-line);
-    content: "/";
-  }
-
-  .hero-art-frame {
-    border: 1px solid rgb(217 220 255 / 0.16);
-    background: radial-gradient(circle at 50% 50%, rgb(138 117 255 / 0.14), transparent 41%), rgb(255 255 255 / 0.025);
-    box-shadow:
-      inset 0 0 80px rgb(0 0 0 / 0.2),
-      0 28px 90px rgb(2 5 25 / 0.24);
-    --hero-tilt-x: 0deg;
-    --hero-tilt-y: 0deg;
-    --hero-glow-x: 50;
-    --hero-glow-y: 50;
-    transform: perspective(1200px) rotateX(var(--hero-tilt-y)) rotateY(var(--hero-tilt-x));
-    transform-style: preserve-3d;
-    transition: transform 650ms cubic-bezier(0.16, 1, 0.3, 1);
-  }
-
-  .hero-art-frame::after {
-    position: absolute;
-    inset: 0;
-    z-index: 1;
-    background: radial-gradient(
-      circle at calc(var(--hero-glow-x) * 1%) calc(var(--hero-glow-y) * 1%),
-      rgb(199 183 255 / 0.16),
-      transparent 30%
-    );
-    content: "";
-    opacity: 0.8;
-    pointer-events: none;
-  }
-
-  .hero-art-grid {
-    position: absolute;
-    inset: 0;
-    z-index: 0;
-    background-image:
-      linear-gradient(rgb(255 255 255 / 0.08) 1px, transparent 1px),
-      linear-gradient(90deg, rgb(255 255 255 / 0.08) 1px, transparent 1px);
-    background-size: 38px 38px;
-    mask-image: radial-gradient(circle at center, black, transparent 72%);
-    opacity: 0.32;
-  }
-
-  .hero-portrait-shell {
-    border: 1px solid rgb(255 255 255 / 0.55);
-    background: linear-gradient(135deg, rgb(255 255 255 / 0.24), rgb(199 183 255 / 0.08));
-    box-shadow:
-      0 0 0 12px rgb(199 183 255 / 0.035),
-      0 0 90px rgb(155 130 255 / 0.33);
-  }
-
-  .hero-orbit {
-    border: 1px solid rgb(199 183 255 / 0.28);
-    transform: rotate(-28deg);
-    animation: hero-orbit 15s linear infinite;
-  }
-
-  .hero-orbit-two {
-    border-color: rgb(135 191 255 / 0.2);
-    transform: rotate(36deg);
-    animation-duration: 21s;
-    animation-direction: reverse;
-  }
-
-  .hero-orbit-dot {
-    background: var(--hero-accent);
-    box-shadow:
-      0 0 0 4px rgb(199 183 255 / 0.15),
-      0 0 18px rgb(199 183 255 / 0.8);
-  }
-
-  .hero-orbit-dot-two {
-    background: #8bbcff;
-    box-shadow:
-      0 0 0 4px rgb(139 188 255 / 0.13),
-      0 0 18px rgb(139 188 255 / 0.8);
-  }
-
-  .hero-reveal {
-    opacity: 1;
-    animation: hero-reveal 800ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
-  }
-
-  /* The heading is the LCP candidate: never hide or blur it behind enhancement motion. */
-  .hero-title.hero-reveal {
+  /* El LCP permanece visible sin depender de la inicialización del movimiento. */
+  .hero-title {
+    margin: 0;
+    font-family: var(--font-instrument), Georgia, serif;
+    font-size: clamp(4.25rem, 13.4vw, 12.5rem);
+    font-weight: 400;
+    line-height: 0.82;
+    letter-spacing: -0.035em;
+    text-transform: none;
     opacity: 1;
     animation: none;
     filter: none;
     transform: none;
   }
 
-  /* En mobile el lede puede ser el LCP: revelarlo sin opacidad mantiene la pintura temprana. */
-  .hero-lede.hero-reveal {
-    opacity: 1;
-    animation-name: hero-reveal-lede;
+  .hero-title-accent {
+    position: relative;
+    width: fit-content;
+    padding-left: 0.12em;
+    color: var(--hero-accent);
+    font-style: italic;
   }
 
-  /* El handoff escribe estas variables; translate/opacity independientes no
-     pisan el transform de entrada ni el tilt del frame. */
-  .hero-art-frame,
-  .hero-actions,
+  /* Las capas decorativas no alteran el texto accesible ni la pintura del título. */
+  .hero-title-accent::before,
+  .hero-title-accent::after {
+    position: absolute;
+    inset: 0;
+    padding-left: inherit;
+    content: attr(data-text);
+    opacity: 0.55;
+    mix-blend-mode: var(--chroma-blend);
+    pointer-events: none;
+    /* Un solo parpadeo de señal al asentarse la página; nada de bucles. */
+    animation: hero-chromatic-glitch 1.6s steps(1, end) 0.4s 1 both;
+  }
+
+  .hero-title-accent::before {
+    color: var(--chroma-a);
+    translate: -0.035em 0;
+  }
+
+  .hero-title-accent::after {
+    color: var(--chroma-b);
+    translate: 0.035em 0;
+    animation-delay: 0.47s;
+  }
+
+  /* El nombre domina también en móvil: así el h1 sigue siendo el LCP aunque la pantalla asome bajo el pliegue. */
+  @media (max-width: 639px) {
+    .hero-title {
+      font-size: clamp(4.25rem, 24vw, 6.5rem);
+    }
+  }
+
+  @media (min-width: 640px) and (max-width: 1023px) {
+    .hero-title {
+      font-size: 16vw;
+    }
+  }
+
+  .hero-aside {
+    display: grid;
+    max-width: 31rem;
+    gap: 1.25rem;
+    padding-bottom: 0.4rem;
+    font-family: var(--font-geist), system-ui, sans-serif;
+  }
+
+  /* Quién y qué hace, en la voz de texto: responde la primera pregunta del visitante. */
+  .hero-role {
+    margin: 0;
+    color: hsl(var(--foreground));
+    font-size: clamp(1.125rem, 1.45vw, 1.375rem);
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+  }
+
+  .hero-lede {
+    margin: 0;
+    color: hsl(var(--foreground));
+    font-size: clamp(1.0625rem, 1.25vw, 1.25rem);
+    line-height: 1.5;
+    text-wrap: pretty;
+  }
+
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
   .hero-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.25rem;
+    margin: 0;
+    padding: 0;
+    color: var(--hero-faint);
+    font-size: 0.875rem;
+    list-style: none;
+  }
+
+  .hero-meta-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    color: hsl(var(--foreground));
+  }
+
+  .hero-meta-item::before {
+    margin-right: 1.25rem;
+    color: hsl(var(--line-strong));
+    content: "/";
+  }
+
+  /* Scrollytelling: sin soporte de scroll timelines la historia se lee como lista estática. */
+  .hero-story {
+    --header-h: 3.5rem;
+    --captions-h: 8rem;
+    --screen-ratio: 0.75;
+    padding: 0 clamp(1rem, 4vw, 3.5rem) clamp(2.5rem, 6vw, 5rem);
+  }
+
+  .hero-story-stage {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: clamp(1rem, 2.5vh, 1.75rem);
+  }
+
+  /* La pantalla entra completa en el escenario fijo: el alto disponible manda sobre el ancho.
+     Los subtítulos comparten ese ancho para alinearse al borde de la pantalla. */
+  .hero-story .hero-art-frame,
+  .hero-story-captions {
+    width: min(100%, calc((100svh - var(--header-h) - var(--captions-h) - 3rem) * var(--screen-ratio)));
+    margin-inline: auto;
+  }
+
+  .hero-story-captions {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .hero-story-acts {
+    display: grid;
+    gap: 1.25rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .hero-story-title {
+    margin: 0;
+    color: hsl(var(--foreground));
+    font-family: var(--font-instrument), Georgia, serif;
+    font-size: clamp(1.75rem, 3.2vw, 3rem);
+    line-height: 1;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  .hero-story-proof {
+    margin: 0.5rem 0 0;
+  }
+
+  .hero-story-progress,
+  .story-window {
+    display: none;
+  }
+
+  /* Capa de la historia sobre los íconos y bajo el cristal: una ventana abierta tapa el escritorio. */
+  .os-story {
+    position: absolute;
+    inset: 1.875rem 0 0;
+    z-index: 4;
+    pointer-events: none;
+  }
+
+  .os-story .os-window {
+    position: absolute;
+    top: var(--win-y);
+    left: var(--win-x);
+  }
+
+  .story-note {
+    width: clamp(10rem, 34%, 17rem);
+    rotate: -1.5deg;
+  }
+
+  .story-note-text {
+    margin: 0;
+    padding: 0.9rem 1rem 1.1rem;
+    background: var(--sticky, #f6d365);
+    color: #17140f;
+    font-family: var(--font-instrument), Georgia, serif;
+    font-size: clamp(1rem, 1.6vw, 1.375rem);
+    font-style: italic;
+    line-height: 1.15;
+  }
+
+  .story-editor {
+    width: clamp(15rem, 62%, 34rem);
+  }
+
+  /* Código real del mundo SB-OS: el único lugar donde el mono es contenido y no disfraz. */
+  .story-code {
+    margin: 0;
+    padding: 0.85rem 1rem 1rem;
+    overflow: hidden;
+    background: hsl(240 9% 6%);
+    color: rgb(243 239 230 / 0.86);
+    font-family: var(--font-geist-mono), ui-monospace, monospace;
+    font-size: clamp(0.625rem, 0.95vw, 0.8125rem);
+    line-height: 1.7;
+    white-space: normal;
+  }
+
+  /* El formateo del template agrega saltos dentro del bloque: solo los tokens conservan sus espacios. */
+  .story-code code {
+    font: inherit;
+    white-space: normal;
+  }
+
+  .story-code-line {
+    display: block;
+    white-space: nowrap;
+  }
+
+  .story-code .tok {
+    white-space: pre;
+  }
+
+  .tok-kw {
+    color: var(--r6);
+  }
+
+  .tok-str {
+    color: var(--r3);
+  }
+
+  .tok-fn {
+    color: var(--r5);
+  }
+
+  .tok-prop {
+    color: var(--r2);
+  }
+
+  .story-browser {
+    width: clamp(16rem, 70%, 44rem);
+  }
+
+  .story-browser-view {
+    aspect-ratio: 16 / 10;
+    background: #0d0d10;
+  }
+
+  .story-browser-view img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top;
+  }
+
+  .story-toast {
+    position: absolute;
+    right: 0.75rem;
+    bottom: 0.75rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0;
+    padding: 0.45rem 0.8rem;
+    border-radius: 2px;
+    background: rgb(10 10 14 / 0.92);
+    color: var(--screen-ink);
+    font-size: 0.8125rem;
+    font-weight: 500;
+  }
+
+  @media (min-width: 640px) {
+    .hero-story {
+      --screen-ratio: 1.3333;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .hero-story-acts {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .hero-story {
+      --captions-h: 7rem;
+      --screen-ratio: 1.7778;
+    }
+  }
+
+  /* El handoff de scroll solo escala la pantalla; el h1 queda fuera del movimiento. */
+  .hero-art-frame,
+  .hero-aside {
     --hero-exit-y: 0rem;
     --hero-exit-opacity: 1;
     translate: 0 var(--hero-exit-y);
     opacity: var(--hero-exit-opacity);
   }
 
-  /* El magnetismo usa variables con unidad para que GSAP conserve el px. */
-  .hero-btn-primary {
-    --magnet-x: 0px;
-    --magnet-y: 0px;
-    --hero-btn-hover-lift: 0px;
-    translate: var(--magnet-x) calc(var(--magnet-y) - var(--hero-btn-hover-lift));
+  .hero-art-frame {
+    --screen-scale: 1;
+    scale: var(--screen-scale);
+    transform-origin: 50% 0;
   }
 
-  .hero-btn-primary:hover {
-    --hero-btn-hover-lift: 1px;
+  .os-screen {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    aspect-ratio: 4 / 5;
+    border-radius: clamp(0.9rem, 2vw, 1.75rem);
+    background: var(--screen);
+    color: var(--screen-ink);
+    box-shadow:
+      0 0 0 1px rgb(255 255 255 / 0.06),
+      0 60px 120px -50px rgb(255 79 216 / 0.35),
+      0 30px 60px -30px rgb(0 0 0 / 0.5);
   }
 
-  .hero-reveal-1 {
-    animation-delay: 60ms;
-  }
-  .hero-reveal-2 {
-    animation-delay: 130ms;
-  }
-  .hero-reveal-3 {
-    animation-delay: 210ms;
-  }
-  .hero-reveal-4 {
-    animation-delay: 300ms;
-  }
-  .hero-reveal-5 {
-    animation-delay: 390ms;
-  }
-  .hero-reveal-6 {
-    animation-delay: 500ms;
+  .os-wallpaper {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
   }
 
-  @keyframes hero-reveal {
-    from {
-      opacity: 0;
-      transform: translateY(1rem);
+  .os-wallpaper-svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  .hero-webgl {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    display: block;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 1.1s ease;
+  }
+
+  .hero-webgl[data-webgl-status="ready"] {
+    opacity: 1;
+  }
+
+  .os-menubar {
+    position: absolute;
+    inset: 0 0 auto;
+    z-index: 4;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    height: 1.875rem;
+    padding: 0 0.9rem;
+    border-bottom: 1px solid rgb(255 255 255 / 0.08);
+    background: rgb(7 7 10 / 0.55);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    color: rgb(243 239 230 / 0.82);
+    font-family: var(--font-geist-mono), ui-monospace, monospace;
+    font-size: var(--text-2xs);
+    letter-spacing: 0.04em;
+    user-select: none;
+  }
+
+  .os-menubar-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--screen-ink);
+    font-weight: 600;
+  }
+
+  .os-menubar-item {
+    display: none;
+  }
+
+  .os-menubar-spacer {
+    flex: 1;
+  }
+
+  .os-menubar-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+  }
+
+  .os-menubar-status .status-dot {
+    width: 0.375rem;
+    height: 0.375rem;
+    background: var(--r4);
+    box-shadow: 0 0 8px var(--r4);
+  }
+
+  .os-menubar-clock {
+    min-width: 2.75rem;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .os-shortcuts {
+    position: absolute;
+    top: 2.75rem;
+    left: 0.75rem;
+    z-index: 3;
+    display: grid;
+    gap: 0.4rem;
+  }
+
+  .os-shortcut {
+    display: grid;
+    justify-items: center;
+    gap: 0.35rem;
+    width: 5.25rem;
+    padding: 0.55rem 0.25rem 0.45rem;
+    border-radius: 0.375rem;
+    color: var(--screen-ink);
+    text-align: center;
+    transition: background-color 200ms ease;
+  }
+
+  .os-shortcut:hover {
+    background: rgb(255 255 255 / 0.08);
+  }
+
+  .os-shortcut-icon {
+    width: 2.375rem;
+    height: 2.375rem;
+    filter: drop-shadow(0 3px 0 rgb(0 0 0 / 0.45));
+    transition: transform 300ms var(--ease-out-expo);
+  }
+
+  .os-shortcut:hover .os-shortcut-icon {
+    transform: translateY(-3px);
+  }
+
+  .os-shortcut-label {
+    padding: 0.1rem 0.35rem;
+    border-radius: 0.2rem;
+    background: rgb(0 0 0 / 0.35);
+    font-family: var(--font-geist-mono), ui-monospace, monospace;
+    font-size: var(--text-2xs);
+    line-height: 1.3;
+  }
+
+  .os-shortcut:focus-visible .os-shortcut-label,
+  .os-shortcut:hover .os-shortcut-label {
+    background: #ff4fd8;
+    color: #0b0b0d;
+  }
+
+  .os-desktop {
+    position: absolute;
+    inset: 1.875rem 0 0;
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  .os-desktop .os-window {
+    position: absolute;
+    top: var(--win-y);
+    left: var(--win-x);
+    pointer-events: auto;
+    translate: var(--drag-x, 0px) var(--drag-y, 0px);
+    transition: box-shadow 300ms ease;
+    will-change: translate;
+  }
+
+  .os-desktop .os-window.is-dragging {
+    box-shadow:
+      0 50px 100px -30px rgb(0 0 0 / 0.95),
+      0 0 0 1px rgb(255 79 216 / 0.5);
+  }
+
+  [data-os-window-handle] {
+    cursor: grab;
+    touch-action: none;
+  }
+
+  .is-dragging [data-os-window-handle] {
+    cursor: grabbing;
+  }
+
+  .os-window-portrait {
+    width: clamp(8.5rem, 40%, 18.5rem);
+  }
+
+  .os-portrait {
+    position: relative;
+    aspect-ratio: 4 / 5;
+    background: #16161a;
+  }
+
+  .hero-portrait {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(1) contrast(1.12) brightness(0.96);
+  }
+
+  .os-portrait::after {
+    position: absolute;
+    inset: 0;
+    background:
+      repeating-linear-gradient(to bottom, transparent 0 2px, rgb(0 0 0 / 0.22) 2px 3px),
+      linear-gradient(160deg, rgb(255 79 216 / 0.16), transparent 55%);
+    pointer-events: none;
+    content: "";
+  }
+
+  .os-window-terminal {
+    width: clamp(15rem, 74%, 27rem);
+  }
+
+  .os-terminal {
+    min-height: 9.25rem;
+    padding: 0.85rem 1rem 1rem;
+    background: rgb(9 9 12 / 0.94);
+    color: #e9e4d8;
+    font-family: var(--font-geist-mono), ui-monospace, monospace;
+    font-size: 0.75rem;
+    line-height: 1.6;
+  }
+
+  .os-terminal-line {
+    margin: 0;
+    line-height: 1.6;
+  }
+
+  /* Mientras el movimiento decide, la terminal espera vacía para no reescribirse a la vista. */
+  [data-motion-status="loading"] .os-terminal-line {
+    visibility: hidden;
+  }
+
+  .os-terminal-prompt {
+    color: var(--r4);
+  }
+
+  .os-terminal-out {
+    display: block;
+    margin-bottom: 0.3rem;
+    color: rgb(243 239 230 / 0.62);
+  }
+
+  .os-terminal-line:last-of-type .os-terminal-out {
+    color: #ff4fd8;
+  }
+
+  .os-terminal-caret {
+    display: inline-block;
+    width: 0.55em;
+    height: 1.05em;
+    margin-top: 0.1rem;
+    background: var(--r4);
+    vertical-align: -0.2em;
+  }
+
+  .os-note {
+    position: absolute;
+    right: 7%;
+    bottom: 12%;
+    display: none;
+    width: 10.5rem;
+    margin: 0;
+    padding: 1rem 0.95rem 1.1rem;
+    background: var(--sticky);
+    color: #2a2208;
+    font-family: var(--font-instrument), Georgia, serif;
+    font-size: 1.2rem;
+    font-style: italic;
+    line-height: 1.12;
+    rotate: 4deg;
+    box-shadow: 0 16px 30px -14px rgb(0 0 0 / 0.75);
+    pointer-events: auto;
+  }
+
+  .os-note::before {
+    position: absolute;
+    top: -0.65rem;
+    left: 50%;
+    width: 3.75rem;
+    height: 1.2rem;
+    background: rgb(255 255 255 / 0.38);
+    translate: -50% 0;
+    rotate: -4deg;
+    content: "";
+  }
+
+  /* El reflejo del vidrio sigue al puntero (hero.ts escribe --hero-glow-x/y). */
+  .os-crt {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    border-radius: inherit;
+    background:
+      radial-gradient(
+        38% 32% at calc(var(--hero-glow-x, 30) * 1%) calc(var(--hero-glow-y, 20) * 1%),
+        rgb(255 255 255 / 0.07),
+        transparent 70%
+      ),
+      repeating-linear-gradient(to bottom, transparent 0 2px, rgb(0 0 0 / 0.1) 2px 3px),
+      radial-gradient(ellipse at center, transparent 58%, rgb(0 0 0 / 0.42) 100%);
+    box-shadow: inset 0 0 100px rgb(0 0 0 / 0.55);
+    pointer-events: none;
+  }
+
+  @media (min-width: 640px) {
+    .os-screen {
+      aspect-ratio: 4 / 3;
     }
-    to {
-      opacity: 1;
-      transform: translateY(0);
+
+    .os-window-portrait {
+      width: clamp(10rem, 30%, 18.5rem);
+    }
+
+    .os-window-terminal {
+      width: clamp(16rem, 46%, 27rem);
+    }
+
+    .os-note {
+      display: block;
     }
   }
 
-  @keyframes hero-reveal-lede {
-    from {
-      transform: translateY(1rem);
+  @media (min-width: 768px) {
+    .hero-gradient {
+      min-height: 100svh;
     }
-    to {
-      transform: translateY(0);
+
+    .os-menubar-item {
+      display: inline;
     }
   }
 
-  @keyframes hero-orbit {
-    from {
-      transform: rotate(-28deg) rotate(0deg);
+  @media (min-width: 1024px) {
+    .hero-layout {
+      grid-template-columns: minmax(0, 1.55fr) minmax(19rem, 1fr);
+      gap: 3rem;
     }
-    to {
-      transform: rotate(-28deg) rotate(360deg);
+
+    .os-screen {
+      aspect-ratio: 16 / 9;
     }
+
+    .os-window-portrait {
+      width: clamp(12rem, 21%, 18.5rem);
+    }
+
+    .os-window-terminal {
+      width: clamp(18rem, 33%, 27rem);
+    }
+  }
+
+  /* En móvil la pantalla se vuelve vertical: accesos a la izquierda, retrato a la derecha y terminal abajo. */
+  @media (max-width: 639px) {
+    .os-screen {
+      aspect-ratio: 3 / 4;
+    }
+
+    .os-shortcuts {
+      top: 2.4rem;
+      left: 0.35rem;
+      gap: 0.15rem;
+    }
+
+    .os-shortcut {
+      width: 4.5rem;
+      padding-block: 0.4rem 0.35rem;
+    }
+
+    .os-shortcut-icon {
+      width: 2rem;
+      height: 2rem;
+    }
+
+    .os-window-portrait {
+      --win-x: 38% !important;
+      --win-y: 4% !important;
+      width: 54%;
+    }
+
+    .os-window-terminal {
+      --win-x: 5% !important;
+      --win-y: 55% !important;
+      width: 90%;
+    }
+
+    .story-note {
+      --win-x: 6% !important;
+      --win-y: 5% !important;
+      width: 60%;
+    }
+
+    .story-editor {
+      --win-x: 4% !important;
+      --win-y: 36% !important;
+      width: 92%;
+    }
+
+    .story-browser {
+      --win-x: 4% !important;
+      --win-y: 6% !important;
+      width: 92%;
+    }
+
+    .os-terminal {
+      min-height: 0;
+      padding: 0.7rem 0.8rem 0.8rem;
+      font-size: 0.6875rem;
+    }
+  }
+
+  @keyframes hero-chromatic-glitch {
+    0%,
+    92%,
+    96%,
+    100% {
+      transform: none;
+      opacity: 0.55;
+    }
+    93% {
+      transform: translateX(0.04em);
+      opacity: 0.25;
+    }
+    94% {
+      transform: translate(-0.05em, 0.02em);
+      opacity: 0.75;
+    }
+    95% {
+      transform: translateY(-0.03em);
+      opacity: 0.35;
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .os-terminal-caret {
+      animation: caret-blink 1.05s steps(1) infinite;
+    }
+
+    .os-wallpaper-stars circle {
+      animation: star-twinkle 3.6s ease-in-out infinite;
+      animation-delay: var(--twinkle);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-title-accent::before,
+    .hero-title-accent::after {
+      animation: none;
+      transform: none;
+    }
+
+    .hero-webgl {
+      display: none;
+    }
+  }
+}
+
+@keyframes crt-on {
+  0% {
+    transform: scale(0.6, 0.004);
+    filter: brightness(4);
+  }
+  55% {
+    transform: scale(1, 0.004);
+    filter: brightness(3);
+  }
+  100% {
+    transform: none;
+    filter: none;
+  }
+}
+
+@keyframes crt-off {
+  0% {
+    transform: none;
+    filter: none;
+    opacity: 1;
+  }
+  45% {
+    transform: scale(1, 0.004);
+    filter: brightness(4);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0, 0.004);
+    filter: brightness(6);
+    opacity: 0;
+  }
+}
+
+@keyframes boot-rise {
+  from {
+    opacity: 0;
+    transform: translateY(1.25rem);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes boot-fade {
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes boot-segment {
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes boot-blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+@keyframes boot-failsafe {
+  to {
+    visibility: hidden;
+    opacity: 0;
+  }
+}
+
+@keyframes caret-blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+@keyframes star-twinkle {
+  50% {
+    opacity: 0.25;
+  }
+}
+
+/* La pista alta solo existe donde el navegador puede atar la historia al scroll y nadie pidió menos movimiento. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .hero-story {
+      height: 360svh;
+      view-timeline: --story block;
+      view-timeline-inset: var(--header-h) 0px;
+    }
+
+    .hero-story-stage {
+      position: sticky;
+      top: var(--header-h);
+      height: calc(100svh - var(--header-h));
+    }
+
+    /* Solo propiedades largas: el minificador funde "animation" + "animation-timeline" en un shorthand
+       inválido y el navegador descarta la regla entera. */
+    .hero-story .hero-art-frame,
+    .hero-story .os-desktop,
+    .hero-story-act,
+    .hero-story-progress span::after,
+    .story-window,
+    .story-code-line,
+    .story-toast,
+    .hero-story .os-window-portrait,
+    .hero-story .os-window-terminal,
+    .hero-story .os-note {
+      animation-duration: auto;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-timeline: --story;
+    }
+
+    .hero-story .hero-art-frame {
+      animation-name: story-screen;
+      animation-range: entry 0% contain 6%;
+    }
+
+    .hero-story .os-desktop {
+      animation-name: story-parallax;
+      animation-range: contain 0% contain 100%;
+    }
+
+    .hero-story-acts {
+      grid-template-columns: none;
+    }
+
+    .hero-story-act {
+      grid-area: 1 / 1;
+      animation-name: story-caption;
+    }
+
+    .hero-story-act:nth-child(1) {
+      animation-range: contain 10% contain 40%;
+    }
+
+    .hero-story-act:nth-child(2) {
+      animation-range: contain 40% contain 68%;
+    }
+
+    .hero-story-act:nth-child(3) {
+      animation-name: story-caption-last;
+      animation-range: contain 68% contain 84%;
+    }
+
+    .hero-story-progress {
+      display: flex;
+      gap: 0.4rem;
+      max-width: 18rem;
+    }
+
+    .hero-story-progress span {
+      position: relative;
+      flex: 1;
+      height: 2px;
+      overflow: hidden;
+      background: hsl(var(--border));
+    }
+
+    .hero-story-progress span::after {
+      position: absolute;
+      inset: 0;
+      background: hsl(var(--signal));
+      content: "";
+      transform-origin: left;
+      animation-name: story-progress;
+    }
+
+    .hero-story-progress span:nth-child(1)::after {
+      animation-range: contain 10% contain 40%;
+    }
+
+    .hero-story-progress span:nth-child(2)::after {
+      animation-range: contain 40% contain 68%;
+    }
+
+    .hero-story-progress span:nth-child(3)::after {
+      animation-range: contain 68% contain 92%;
+    }
+
+    .story-window {
+      display: block;
+    }
+
+    .story-note {
+      animation-name: story-note;
+      animation-range: contain 12% contain 48%;
+    }
+
+    .story-editor {
+      animation-name: story-editor;
+      animation-range: contain 40% contain 76%;
+    }
+
+    .story-browser {
+      animation-name: story-browser;
+      animation-range: contain 66% contain 80%;
+    }
+
+    /* El código se escribe al ritmo del scroll: cada línea es un tramo de la pista. */
+    .story-code-line {
+      animation-name: story-type;
+      animation-timing-function: steps(24, end);
+      animation-range: contain calc(45% + var(--l) * 3.4%) contain calc(48.5% + var(--l) * 3.4%);
+    }
+
+    .story-toast {
+      animation-name: story-toast;
+      animation-range: contain 80% contain 86%;
+    }
+
+    .hero-story .os-window-portrait,
+    .hero-story .os-window-terminal,
+    .hero-story .os-note {
+      animation-name: story-dim;
+      animation-range: contain 10% contain 18%;
+    }
+  }
+}
+
+@keyframes story-screen {
+  from {
+    scale: 0.9;
+  }
+  to {
+    scale: 1;
+  }
+}
+
+@keyframes story-parallax {
+  from {
+    translate: 0 1.5%;
+  }
+  to {
+    translate: 0 -2.5%;
+  }
+}
+
+@keyframes story-caption {
+  0% {
+    opacity: 0;
+    translate: 0 0.5em;
+    clip-path: inset(0 0 100% 0);
+  }
+  18%,
+  82% {
+    opacity: 1;
+    translate: 0 0;
+    clip-path: inset(0);
+  }
+  100% {
+    opacity: 0;
+    translate: 0 -0.5em;
+    clip-path: inset(100% 0 0 0);
+  }
+}
+
+@keyframes story-caption-last {
+  0% {
+    opacity: 0;
+    translate: 0 0.5em;
+    clip-path: inset(0 0 100% 0);
+  }
+  100% {
+    opacity: 1;
+    translate: 0 0;
+    clip-path: inset(0);
+  }
+}
+
+@keyframes story-progress {
+  from {
+    scale: 0 1;
+  }
+  to {
+    scale: 1 1;
+  }
+}
+
+@keyframes story-note {
+  0% {
+    opacity: 0;
+    translate: 0 18%;
+    scale: 0.96;
+  }
+  22%,
+  78% {
+    opacity: 1;
+    translate: 0 0;
+    scale: 1;
+  }
+  100% {
+    opacity: 0.3;
+    translate: 0 -6%;
+    scale: 0.98;
+  }
+}
+
+@keyframes story-editor {
+  0% {
+    opacity: 0;
+    translate: 0 14%;
+  }
+  22%,
+  80% {
+    opacity: 1;
+    translate: 0 0;
+  }
+  100% {
+    opacity: 0.3;
+    translate: 0 -5%;
+  }
+}
+
+@keyframes story-browser {
+  from {
+    opacity: 0;
+    scale: 0.94;
+    clip-path: inset(46% 46% round 10px);
+  }
+  to {
+    opacity: 1;
+    scale: 1;
+    clip-path: inset(0 round 10px);
+  }
+}
+
+@keyframes story-type {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0);
+  }
+}
+
+@keyframes story-toast {
+  from {
+    opacity: 0;
+    translate: 0 40%;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+@keyframes story-dim {
+  to {
+    opacity: 0.24;
   }
 }

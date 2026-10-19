@@ -1,0 +1,108 @@
+---
+// Televisor de plástico beige: tres canales que se cambian con radios nativos (sin JS).
+import { readFile } from "node:fs/promises"
+import { resolve } from "node:path"
+import sharp from "sharp"
+import { Image } from "astro:assets"
+import profileImage from "@/assets/perfil.jpeg"
+import { asciiToSvg, pixelsToAscii, svgDataUri } from "@/lib/ascii-art"
+import { getTranslations, type Locale } from "@/lib/i18n"
+import BrandMark from "./BrandMark.astro"
+
+interface Props {
+  locale?: Locale
+}
+
+const { locale = "es" } = Astro.props
+const t = getTranslations(locale)
+const COLUMNS = 64
+const ROWS = 24
+// Dos pasadas: primero se recorta a 4:3 y luego se muestrea a celdas de proporción 1:2.
+const source = await readFile(resolve(process.cwd(), "src/assets/perfil.jpeg"))
+const framed = await sharp(source).resize(320, 240, { fit: "cover", position: "north" }).toBuffer()
+const { data } = await sharp(framed)
+  .resize(COLUMNS, ROWS, { fit: "fill" })
+  .grayscale()
+  .normalise()
+  .raw()
+  .toBuffer({ resolveWithObject: true })
+const ascii = pixelsToAscii(data, COLUMNS, ROWS)
+// Se entrega como imagen: es un retrato, no texto que alguien deba leer.
+const asciiSrc = svgDataUri(asciiToSvg(ascii, { color: "#7dffa0", glow: true }))
+const channels = t.about.channels
+const bars = ["#c8c8c8", "#d6c93a", "#3fc5c9", "#3fbf4a", "#c93fb8", "#cf3a35", "#3a45c9"]
+---
+
+<div class="tv" role="group" aria-label={t.about.tvLabel}>
+  <div class="tv-body">
+    <div class="tv-bezel">
+      <div class="tv-screen" aria-hidden="true">
+        <div class="tv-channel" data-channel="0">
+          <Image
+            src={profileImage}
+            alt=""
+            width={420}
+            height={525}
+            sizes="(max-width: 767px) 80vw, 420px"
+            format="webp"
+            quality={82}
+            loading="lazy"
+            decoding="async"
+            class="tv-portrait"
+          />
+          <span class="tv-static"></span>
+          <span class="tv-osd pixel-text">CH 01 · {channels[0]}</span>
+        </div>
+        <div class="tv-channel" data-channel="1">
+          <img
+            src={asciiSrc}
+            alt=""
+            width={COLUMNS * 6}
+            height={ROWS * 12}
+            loading="lazy"
+            decoding="async"
+            class="tv-ascii"
+          />
+          <span class="tv-static"></span>
+          <span class="tv-osd pixel-text">CH 02 · {channels[1]}</span>
+        </div>
+        <div class="tv-channel" data-channel="2">
+          <div class="tv-bars">{bars.map((color) => <span style={`background:${color}`} />)}</div>
+          <span class="tv-nosignal pixel-text">{t.about.noSignal}</span>
+          <span class="tv-static"></span>
+          <span class="tv-osd pixel-text">CH 03 · {channels[2]}</span>
+        </div>
+        <span class="tv-glass"></span>
+      </div>
+    </div>
+
+    <div class="tv-controls">
+      <span class="tv-plate"><BrandMark class="h-3 w-auto" />SB-2600</span>
+      <fieldset class="tv-knobs">
+        <legend class="sr-only">{t.about.channel}</legend>
+        {
+          channels.map((label, index) => (
+            <>
+              <input
+                type="radio"
+                class="tv-radio sr-only"
+                name={`tv-channel-${locale}`}
+                id={`tv-${locale}-${index}`}
+                value={String(index)}
+                checked={index === 0}
+              />
+              <label for={`tv-${locale}-${index}`} class="tv-knob">
+                <span class="sr-only">
+                  {t.about.channel} {index + 1}: {label}
+                </span>
+                <span aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
+              </label>
+            </>
+          ))
+        }
+      </fieldset>
+      <span class="tv-speaker" aria-hidden="true"></span>
+    </div>
+  </div>
+  <slot />
+</div>

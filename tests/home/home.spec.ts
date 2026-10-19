@@ -44,15 +44,15 @@ test.describe("Home Page", () => {
     }
   })
 
-  for (const { locale, route, cardLabel, projectEvidence, technologies, workEvidence, mailSubject, responseTime, linkedin, github, cvHelper } of [
+  for (const { locale, route, projectEvidence, technologies, workEvidence, mailSubject, responseTime, linkedin, github, cvHelper } of [
     {
-      locale: "Spanish", route: "/", cardLabel: "PROYECTO", projectEvidence: "Evidencia del proyecto",
+      locale: "Spanish", route: "/", projectEvidence: "Evidencia del proyecto",
       technologies: "Tecnologías", workEvidence: "Evidencia del trabajo", mailSubject: "Contacto desde tu portfolio",
       responseTime: "Te respondo en menos de 24h", linkedin: "Conectemos profesionalmente",
       github: "Mirá mi código abierto", cvHelper: "CV disponible para revisar mi experiencia completa.",
     },
     {
-      locale: "English", route: "/en/", cardLabel: "PROJECT", projectEvidence: "Project evidence",
+      locale: "English", route: "/en/", projectEvidence: "Project evidence",
       technologies: "Technologies", workEvidence: "Work evidence", mailSubject: "Contact from your portfolio",
       responseTime: "I'll reply within 24h", linkedin: "Let's connect professionally",
       github: "Check my open source code", cvHelper: "Download the CV for the full experience overview.",
@@ -61,7 +61,6 @@ test.describe("Home Page", () => {
     test(`${locale} home renders localized project, work, and contact UI labels`, async ({ page }) => {
       await page.goto(route)
       const regularProject = page.locator(".project-card:not(.project-card-featured)").first()
-      await expect(regularProject.locator(".project-media-kicker")).toHaveText(cardLabel)
       const metrics = page.locator(".project-metrics")
       expect(await metrics.count()).toBeGreaterThan(0)
       await expect(metrics.first()).toHaveAttribute("aria-label", projectEvidence)
@@ -99,8 +98,9 @@ test.describe("Home Page", () => {
         ".site-nav .header-cta[href*='#']",
         "[data-dropdown-menu] a[href*='#']",
         "main a[href*='#']",
-        "footer nav a[href*='#']",
       ]
+      // El pie es un cierre, no un mapa del sitio: no repite los anclajes del nav.
+      await expect(page.locator("footer nav a[href*='#']")).toHaveCount(0)
       for (const group of groups) {
         const links = page.locator(group)
         expect(await links.count(), `${group} should include an in-page link`).toBeGreaterThan(0)
@@ -348,27 +348,30 @@ test.describe("Home Page", () => {
       const colors = await page.evaluate(() => {
         const hero = document.querySelector(".hero-gradient")
         const nav = document.querySelector(".site-nav")
+        const bar = document.querySelector(".site-header")
         const status = document.querySelector(".hero-meta-status")
 
-        if (!hero || !nav || !status) return null
+        if (!hero || !nav || !bar || !status) return null
 
         return {
           htmlClass: document.documentElement.className,
           heroColor: getComputedStyle(hero).color,
-          heroBackground: getComputedStyle(hero).backgroundImage,
+          heroBackground: getComputedStyle(hero).backgroundColor,
+          heroBackgroundImage: getComputedStyle(hero).backgroundImage,
           navColor: getComputedStyle(nav).color,
-          navBackground: getComputedStyle(nav).backgroundColor,
+          navBackground: getComputedStyle(bar).backgroundColor,
           statusColor: getComputedStyle(status).color,
         }
       })
 
       expect(colors).not.toBeNull()
       expect(colors?.htmlClass).not.toMatch(/\bdark\b/)
-      expect(colors?.heroColor).toBe("rgb(23, 19, 41)")
-      expect(colors?.heroBackground).not.toContain("rgb(16, 20, 58)")
-      expect(colors?.navColor).toBe("rgb(41, 40, 39)")
-      expect(colors?.navBackground).toContain("255")
-      expect(colors?.statusColor).toBe("rgb(76, 82, 123)")
+      expect(colors?.heroColor).toBe("rgb(23, 20, 15)")
+      expect(colors?.heroBackground).toBe("rgb(242, 236, 224)")
+      expect(colors?.heroBackgroundImage).toBe("none")
+      expect(colors?.navColor).toBe("rgb(23, 20, 15)")
+      expect(colors?.navBackground).toBe("rgba(242, 236, 224, 0.84)")
+      expect(colors?.statusColor).toBe("rgb(23, 20, 15)")
     },
   )
 
@@ -376,29 +379,39 @@ test.describe("Home Page", () => {
     "reduced motion keeps content visible and stops loops",
     { tag: ["@critical", "@e2e", "@a11y", "@HOME-E2E-003"] },
     async ({ page }) => {
+      // Bucles reales del documento, no una lista de selectores que puede quedar obsoleta.
+      const runningLoops = () =>
+        page.evaluate(() =>
+          document
+            .getAnimations()
+            .filter((animation) => animation.playState === "running" && animation.effect?.getComputedTiming().iterations === Infinity)
+            .map((animation) => (animation as CSSAnimation).animationName ?? "script"),
+        )
+
+      // Control positivo: sin preferencia la marquesina es un bucle, así que la consulta sí puede fallar.
+      await page.emulateMedia({ reducedMotion: "no-preference" })
+      await page.goto("/")
+      expect(await runningLoops()).toContain("signal-marquee")
+
       await page.emulateMedia({ reducedMotion: "reduce" })
       await page.goto("/")
       await page.waitForTimeout(900)
 
-      const state = await page.evaluate(() => {
-        const animatedSelectors = [".hero-orbit", ".hero-orbit-dot", ".hero-ambient", ".signal-marquee"]
-        const hiddenElements = Array.from(document.querySelectorAll("[data-animate], .hero-reveal"))
-          .filter((element) => Number.parseFloat(getComputedStyle(element).opacity) < 0.99)
-        const activeLoops = animatedSelectors.flatMap((selector) =>
-          Array.from(document.querySelectorAll(selector)).filter((element) => getComputedStyle(element).animationName !== "none"),
-        )
+      const hiddenCount = await page.evaluate(
+        () =>
+          Array.from(document.querySelectorAll("[data-animate], .hero-reveal")).filter(
+            (element) => Number.parseFloat(getComputedStyle(element).opacity) < 0.99,
+          ).length,
+      )
 
-        return { hiddenCount: hiddenElements.length, activeLoopCount: activeLoops.length }
-      })
-
-      expect(state.hiddenCount).toBe(0)
-      expect(state.activeLoopCount).toBe(0)
+      expect(hiddenCount).toBe(0)
+      expect(await runningLoops()).toEqual([])
       await expect(page.locator("[data-hero-webgl]")).toHaveAttribute("data-webgl-status", "reduced")
     },
   )
 
   test(
-    "progressive motion layer falls back safely and follows project scroll",
+    "progressive motion layer falls back safely and reveals projects on scroll",
     { tag: ["@e2e", "@home", "@HOME-E2E-004"] },
     async ({ page }) => {
       await page.setViewportSize({ width: 1280, height: 720 })
@@ -409,27 +422,21 @@ test.describe("Home Page", () => {
         /^(active|fallback)$/,
         { timeout: 10000 },
       )
-      const motionStatus = await page.locator("[data-portfolio-motion]").getAttribute("data-motion-status")
       await expect(page.locator("[data-hero-webgl]")).toHaveAttribute(
         "data-webgl-status",
         /^(ready|fallback)$/,
         { timeout: 10000 },
       )
 
-      // ScrollTrigger is an optional enhancement. A bounded fallback is a
-      // valid terminal state, so its decorative meter is not expected to move.
-      if (motionStatus !== "active") return
+      const cards = page.locator("[data-project-card][data-animate]")
+      await expect(cards).toHaveCount(4)
+      for (const card of await cards.all()) {
+        await card.scrollIntoViewIfNeeded()
+        await expect(card).toBeVisible()
+        await expect(card).toHaveCSS("opacity", "1")
+        await expect(card.locator("h3")).toBeVisible()
+      }
 
-      await page.locator("#proyectos").scrollIntoViewIfNeeded()
-      await expect
-        .poll(
-          () => page.locator("[data-project-scroll-meter] span").evaluate((element) => {
-            const match = element.getAttribute("style")?.match(/scaleX\(([^)]+)\)/)
-            return Number(match?.[1] ?? 0)
-          }),
-          { timeout: 5000 },
-        )
-        .toBeGreaterThan(0)
     },
   )
 

@@ -1,0 +1,140 @@
+---
+// Caso de estudio como ventana del sistema sobre un escenario con su franja de color.
+import ArrowUpRight from "@/components/icons/ArrowUpRight.astro"
+import { Picture } from "astro:assets"
+import type { Project } from "@/lib/data"
+import { getProjectScreenshot } from "@/lib/portfolio-images"
+import { getTranslations, type Locale } from "@/lib/i18n"
+import { articleTitleTransitionName } from "@/scripts/transitions"
+
+interface Props {
+  project: Project
+  index: number
+  locale: Locale
+}
+
+const { project, index, locale } = Astro.props
+const { slug, title, tagline, tags, liveUrl, githubUrl, featured, status, metrics, blogSlug, stage, publishDate } =
+  project
+const t = getTranslations(locale)
+const statusLabels: Record<Project["status"], string> = {
+  production: t.projects.statusProduction,
+  development: t.projects.statusDevelopment,
+  demo: t.projects.statusDemo,
+}
+const publicStatusLabel = !liveUrl && githubUrl ? t.projects.statusCodeAvailable : statusLabels[status]
+const screenshot = getProjectScreenshot(slug)
+const resolvedBlogSlug = blogSlug || slug
+const projectUrl = locale === "en" ? `/en/blog/${resolvedBlogSlug}` : `/blog/${resolvedBlogSlug}`
+const host = (liveUrl ?? githubUrl ?? "sebita.dev").replace(/^https?:\/\//, "")
+const visibleTags = tags.slice(0, 4)
+const visualStats = metrics?.slice(0, 2) ?? []
+const actionClass = "project-action focus-ring"
+---
+
+<article
+  data-animate
+  data-animate-delay={String((index % 2) + 1)}
+  class:list={["project-card group", { "project-card-featured": featured }]}
+  data-project-card
+  data-project={slug}
+  data-project-tags={tags.join(",")}
+  style={`--stage: var(--${stage})`}
+>
+  <div class="project-media">
+    <div class="project-window os-window">
+      <div class="os-window-bar" aria-hidden="true">
+        <span class="os-window-lights"><span></span><span></span><span></span></span>
+        <span class="os-window-title">{host}</span>
+      </div>
+      <div class="project-shot">
+        <span class="project-media-name" aria-hidden="true">{title}</span>
+        {
+          screenshot && (
+            <Picture
+              src={screenshot}
+              formats={["avif"]}
+              fallbackFormat="webp"
+              widths={[800, 1600]}
+              quality={90}
+              width={800}
+              height={500}
+              sizes={featured ? "(max-width: 767px) 100vw, 1200px" : "(max-width: 767px) 100vw, 600px"}
+              alt={t.projects.screenshotAlt.replace("{title}", title)}
+              class="project-image"
+              loading="lazy"
+              decoding="async"
+              data-img-fallback
+            />
+          )
+        }
+      </div>
+    </div>
+
+    {
+      visualStats.length > 0 && (
+        <div class="project-metrics" aria-label={t.projects.evidenceLabel}>
+          {visualStats.map((metric) => (
+            <div class="project-metric">
+              <span>{metric.label}</span>
+              <strong>{metric.value}</strong>
+            </div>
+          ))}
+        </div>
+      )
+    }
+    <a href={projectUrl} class="project-media-link focus-ring" aria-label={`${title} — ${t.projects.readMore}`}></a>
+  </div>
+
+  <div class="project-body">
+    <p class="project-meta meta-label">
+      <span class="project-status"><span class="project-status-dot" aria-hidden="true"></span>{publicStatusLabel}</span>
+      <span class="project-year">{publishDate.getUTCFullYear()}</span>
+    </p>
+    <h3 transition:name={articleTitleTransitionName(resolvedBlogSlug)} class="project-title">{title}</h3>
+    <p class="project-tagline">{tagline}</p>
+    <div class="project-tags" aria-label={t.projects.technologiesLabel}>
+      {visibleTags.map((tag) => <span class="chip">{tag}</span>)}
+    </div>
+    <footer class="project-actions">
+      <a
+        href={projectUrl}
+        data-track-project={slug}
+        data-track-action="casestudy"
+        class={`${actionClass} project-action-primary`}
+      >
+        {t.projects.readMore}<span class="sr-only">: {title}</span><ArrowUpRight class="size-3.5 shrink-0" />
+      </a>
+      {
+        githubUrl && (
+          <a
+            href={githubUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            data-track-project={slug}
+            data-track-action="code"
+            class={actionClass}
+          >
+            {t.projects.viewCode}
+            <ArrowUpRight class="size-3.5 shrink-0" />
+          </a>
+        )
+      }
+      {
+        liveUrl && (
+          <a
+            href={liveUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            data-track-project={slug}
+            data-track-action="live"
+            class={actionClass}
+          >
+            {t.projects.viewProject}
+            <ArrowUpRight class="size-3.5 shrink-0" />
+          </a>
+        )
+      }
+    </footer>
+  </div>
+</article>

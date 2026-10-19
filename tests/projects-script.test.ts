@@ -41,28 +41,26 @@ describe("project interaction lifecycle", () => {
     vi.unstubAllGlobals()
   })
 
-  it("updates the cached spotlight coordinates on pointer movement", () => {
+  it("leaves cards untouched on pointer movement: no CSS consumes pointer variables", () => {
     setupProjects()
     const card = document.querySelector<HTMLElement>("[data-project-card]")!
 
     card.dispatchEvent(pointerEvent("pointerenter", 160, 70))
     card.dispatchEvent(pointerEvent("pointermove", 160, 70))
 
-    expect(card.style.getPropertyValue("--spotlight-x")).toBe("150px")
-    expect(card.style.getPropertyValue("--spotlight-y")).toBe("50px")
+    expect(card.getAttribute("style")).toBeNull()
   })
 
   it("hides broken screenshots and tears down listeners", () => {
     setupProjects()
-    const card = document.querySelector<HTMLElement>("[data-project-card]")!
     const image = document.querySelector<HTMLImageElement>("[data-img-fallback]")!
 
     image.dispatchEvent(new Event("error"))
     expect(image.classList.contains("hidden")).toBe(true)
 
     teardownProjects()
-    card.style.removeProperty("--spotlight-x")
-    card.dispatchEvent(pointerEvent("pointermove", 160, 70))
-    expect(card.style.getPropertyValue("--spotlight-x")).toBe("")
+    image.classList.remove("hidden")
+    image.dispatchEvent(new Event("error"))
+    expect(image.classList.contains("hidden")).toBe(false)
   })
 })

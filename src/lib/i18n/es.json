@@ -16,7 +16,15 @@
     "linkedin": "LinkedIn",
     "cta": "Hablemos"
   },
+  "boot": {
+    "version": "Portfolio de desarrollo · Versión 2.6",
+    "loading": "Cargando módulos",
+    "modules": "react · typescript · fastapi · ml · docker",
+    "copyright": "Copyright (c) Sebastian Bravo, 2026. Todos los derechos reservados.",
+    "skip": "Presioná cualquier tecla para continuar"
+  },
   "hero": {
+    "role": "Desarrollador Full-Stack",
     "greeting": "Hola, soy",
     "roleLocation": "Chile / Remoto",
     "specialization": "Web en producción · ML aplicado",
@@ -26,27 +34,70 @@
     "intro": "Convierto ideas en plataformas web en producción y aplico Machine Learning a problemas reales, del concepto al despliegue.",
     "contact": "Contactar",
     "available": "Disponible para trabajar",
-    "downloadCv": "Descargar CV"
+    "downloadCv": "Descargar CV",
+    "timezone": "Chile"
+  },
+  "story": {
+    "label": "Del concepto al despliegue",
+    "acts": [
+      "Empieza con un problema real.",
+      "Se vuelve código que se puede mantener.",
+      "Y termina funcionando en producción."
+    ]
+  },
+  "os": {
+    "shortcuts": "Accesos directos del escritorio",
+    "menu": ["Archivo", "Editar", "Ver", "Ayuda"],
+    "online": "En línea",
+    "dragHint": "psst… las ventanas se arrastran",
+    "folderProjects": "Proyectos",
+    "fileCv": "CV.pdf",
+    "appContact": "Contacto",
+    "terminalTitle": "terminal — zsh",
+    "portraitTitle": "sebastian.jpg",
+    "terminal": [
+      {
+        "cmd": "whoami",
+        "out": "sebastian bravo — desarrollador full-stack"
+      },
+      {
+        "cmd": "cat stack.txt",
+        "out": "typescript · react · next.js · python · fastapi"
+      },
+      {
+        "cmd": "./status --now",
+        "out": "● disponible para trabajar"
+      }
+    ]
   },
   "projects": {
     "title": "Proyectos",
-    "outcomesLabel": "Resultados",
     "outcomesTitle": "Evidencia antes que promesas",
-    "outcomes": [
-      "94.1% F1-Score en ManttoAI para detección de fallas",
-      "Vulcania: mapa comunitario, alertas y notificaciones en tiempo real",
-      "4 proyectos full-stack publicados: 2 demos públicas y 2 repositorios disponibles"
+    "stats": [
+      {
+        "value": "94.1%",
+        "label": "F1-Score detectando fallas en ManttoAI"
+      },
+      {
+        "value": "4",
+        "label": "Plataformas full-stack publicadas"
+      },
+      {
+        "value": "2",
+        "label": "Demos públicas en vivo"
+      }
     ],
     "viewProject": "Demo",
     "viewCode": "Código",
-    "readMore": "Leer más",
+    "readMore": "Leer el caso",
     "contactPrompt": "¿Te interesa cómo lo construí?",
     "contactCta": "Hablemos",
     "viewMoreGithub": "Ver más proyectos en GitHub",
-    "featured": "Destacado",
-    "cardLabel": "PROYECTO",
+    "archiveTitle": "¿Querés ver más?",
+    "archiveText": "Experimentos, apuntes y código abierto.",
     "evidenceLabel": "Evidencia del proyecto",
     "technologiesLabel": "Tecnologías",
+    "screenshotAlt": "Captura de {title}",
     "statusProduction": "En producción",
     "statusCodeAvailable": "Código disponible",
     "statusDevelopment": "En desarrollo",
@@ -61,17 +112,25 @@
     "title": "Experiencia",
     "currently": "Actualmente...",
     "viewMore": "Ver más →",
-    "viewCaseStudy": "Ver case study",
+    "viewCaseStudy": "Ver caso de estudio",
     "evidenceLabel": "Evidencia del trabajo",
+    "period": "Periodo",
+    "role": "Rol",
+    "company": "Empresa",
+    "mode": "Modalidad",
     "timeline": "Entre contratos: 2023–2026 · Ingeniería Informática en INACAP y proyectos personales en producción.",
     "noExperience": "Experiencia laboral próximamente..."
   },
   "contact": {
+    "headline": "¿Suficiente lectura?",
+    "headlineAccent": "Hagamos algo juntos.",
     "mailSubject": "Contacto desde tu portfolio",
     "responseTime": "Te respondo en menos de 24h",
     "linkedinDescription": "Conectemos profesionalmente",
     "githubDescription": "Mirá mi código abierto",
-    "cvHelper": "CV disponible para revisar mi experiencia completa."
+    "cvHelper": "CV disponible para revisar mi experiencia completa.",
+    "copy": "Copiar email",
+    "copied": "Email copiado"
   },
   "education": {
     "title": "Educación",
@@ -80,6 +139,7 @@
   },
   "certifications": {
     "title": "Certificaciones",
+    "viewCertificate": "Ver certificado",
     "carouselLabel": "Carrusel de certificaciones",
     "professional": "Profesional",
     "academic": "Académico",
@@ -89,7 +149,12 @@
   "about": {
     "title": "Sobre mí",
     "focusTitle": "Dónde aporto mejor",
-    "contactCta": "Hablemos"
+    "contactCta": "Hablemos",
+    "tvLabel": "Televisor retro con tres canales",
+    "channel": "Canal",
+    "channels": ["Retrato", "ASCII", "Sin señal"],
+    "noSignal": "Sin señal",
+    "facts": ["Ing. Informática · INACAP", "Inglés C1", "Chile / Remoto"]
   },
   "theme": {
     "toggle": "Cambiar tema",
@@ -101,7 +166,9 @@
     "professionalProfiles": "Perfiles profesionales",
     "links": "Enlaces del pie",
     "madeWith": "Hecho con",
-    "privacy": "Privacidad"
+    "privacy": "Privacidad",
+    "tagline": "Desarrollo full-stack de alta tecnología",
+    "rights": "Todos los derechos reservados."
   },
   "language": {
     "toggleLabel": "Cambiar idioma (actual: {code})"
@@ -120,6 +187,7 @@
     "empty": "Todavía no hay artículos publicados.",
     "fallbackNotice": "Este artículo todavía está disponible en español. La ruta en inglés existe para que los case studies no terminen en un 404.",
     "fallbackCardLabel": "Disponible en español",
-    "back": "Volver al blog"
+    "back": "Volver al blog",
+    "readingTime": "min de lectura"
   }
 }

@@ -1,4 +1,6 @@
 ---
+import type { ImageMetadata } from "astro"
+import { Image } from "astro:assets"
 import type { Locale } from "@/lib/i18n"
 import { formatDate } from "@/lib/utils"
 import { articleTitleTransitionName } from "@/scripts/transitions"
@@ -12,49 +14,172 @@ interface Props {
   locale: Locale
   contentLocale: Locale
   fallbackLabel?: string
+  image?: ImageMetadata
+  animateDelay?: number
 }
 
-const { id, title, description, publishDate, tags, locale, contentLocale, fallbackLabel } = Astro.props
+const {
+  id,
+  title,
+  description,
+  publishDate,
+  tags,
+  locale,
+  contentLocale,
+  fallbackLabel,
+  image,
+  animateDelay = 1,
+} = Astro.props
 const prefix = locale === "es" ? "" : "/en"
 const headingId = `post-title-${id}`
 ---
 
 <article
   lang={contentLocale}
-  class="group overflow-hidden rounded-2xl border border-parchment bg-card transition-all duration-300 hover:-translate-y-[2px] hover:shadow-card-hover"
+  class="blog-card group min-w-0"
   aria-labelledby={headingId}
+  data-animate
+  data-animate-delay={String(animateDelay)}
 >
-  <a href={`${prefix}/blog/${id}`} class="block p-6 sm:p-8">
-    <div class="mb-3 flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
-      <div class="flex flex-wrap gap-2">
+  <a href={`${prefix}/blog/${id}`} class="blog-card-link focus-ring">
+    <span class="blog-card-window os-window" aria-hidden="true">
+      <span class="os-window-bar">
+        <span class="os-window-lights"><span></span><span></span><span></span></span>
+        <span class="os-window-title">{id}.mdx</span>
+      </span>
+      <span class="blog-card-media">
         {
-          tags
-            .slice(0, 3)
-            .map((tag) => (
-              <span class="rounded-md border border-parchment bg-muted px-2 py-0.5 font-mono text-xs text-muted-foreground dark:text-foreground/60">
-                {tag}
-              </span>
-            ))
+          image ? (
+            <Image
+              src={image}
+              alt=""
+              widths={[480, 800, 1200]}
+              sizes="(min-width: 1100px) 420px, (min-width: 768px) calc((100vw - 96px) / 2), calc(100vw - 32px)"
+              width={800}
+              height={450}
+              class="blog-card-image"
+              loading="lazy"
+              decoding="async"
+            />
+          ) : (
+            <span class="blog-card-placeholder">{title.slice(0, 1)}</span>
+          )
         }
-      </div>
-      <time lang={locale} datetime={publishDate.toISOString()} class="shrink-0 font-mono text-xs text-muted-foreground">
+      </span>
+    </span>
+    <span class="blog-card-meta">
+      <span class="meta-label">{tags.slice(0, 2).join(" · ")}</span>
+      <time lang={locale} datetime={publishDate.toISOString()} class="meta-label shrink-0 text-muted-foreground">
         {formatDate(publishDate, locale)}
       </time>
-    </div>
-    <h2
-      id={headingId}
-      transition:name={articleTitleTransitionName(id)}
-      class="mb-2 text-xl font-bold tracking-tight transition-colors group-hover:text-primary sm:text-2xl"
-    >
+    </span>
+    <h2 id={headingId} transition:name={articleTitleTransitionName(id)} class="blog-card-title">
       {title}
     </h2>
     {
       fallbackLabel && (
-        <p lang={locale} class="mb-2 text-xs font-medium text-primary">
+        <span lang={locale} class="blog-card-fallback meta-label">
           {fallbackLabel}
-        </p>
+        </span>
       )
     }
-    <p class="text-sm leading-relaxed text-muted-foreground sm:text-base dark:text-foreground/65">{description}</p>
+    <p class="blog-card-description">{description}</p>
   </a>
 </article>
+
+<style>
+  .blog-card-link {
+    display: grid;
+    gap: 0.85rem;
+    border-radius: 0.75rem;
+  }
+
+  .blog-card-window {
+    display: block;
+    margin-bottom: 0.5rem;
+    transition: transform 700ms var(--ease-out-expo);
+  }
+
+  .blog-card-link:hover .blog-card-window {
+    transform: translateY(-6px) rotate(-0.6deg);
+  }
+
+  .blog-card-media {
+    position: relative;
+    display: block;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background: radial-gradient(60% 70% at 50% 120%, rgb(255 79 216 / 0.35), transparent 70%), #101014;
+  }
+
+  .blog-card-media::after {
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(to bottom, transparent 0 2px, rgb(0 0 0 / 0.14) 2px 3px);
+    pointer-events: none;
+    content: "";
+  }
+
+  .blog-card-image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top;
+    filter: grayscale(1) contrast(1.05);
+    transition:
+      filter 600ms ease,
+      transform 1.2s var(--ease-out-expo);
+  }
+
+  .blog-card-link:hover .blog-card-image,
+  .blog-card-link:focus-visible .blog-card-image {
+    filter: none;
+    transform: scale(1.03);
+  }
+
+  .blog-card-placeholder {
+    display: grid;
+    height: 100%;
+    place-items: center;
+    color: rgb(243 239 230 / 0.85);
+    font-family: var(--font-instrument), Georgia, serif;
+    font-size: 5rem;
+    font-style: italic;
+  }
+
+  .blog-card-meta {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.35rem 1rem;
+  }
+
+  .blog-card-title {
+    margin: 0;
+    font-size: clamp(1.625rem, 2.2vw, 2rem);
+    line-height: 1.02;
+    letter-spacing: -0.02em;
+    transition: color 300ms ease;
+  }
+
+  .blog-card-link:hover .blog-card-title,
+  .blog-card-link:focus-visible .blog-card-title {
+    color: hsl(var(--signal));
+  }
+
+  .blog-card-fallback {
+    color: hsl(var(--signal));
+  }
+
+  .blog-card-description {
+    display: -webkit-box;
+    margin: 0;
+    overflow: hidden;
+    color: hsl(var(--muted-foreground));
+    font-size: var(--text-sm);
+    line-height: 1.55;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+  }
+</style>

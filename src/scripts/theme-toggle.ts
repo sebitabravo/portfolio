@@ -27,7 +27,7 @@ export function initThemeToggle() {
       return value
     }
 
-    return "system"
+    return "dark"
   }
 
   function setThemePreference(theme: ThemePreference) {

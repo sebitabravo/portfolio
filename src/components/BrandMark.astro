@@ -1,0 +1,59 @@
+---
+// Marca SB-OS: seis franjas arcoíris inclinadas, la firma de "pantalla en movimiento".
+interface Props {
+  class?: string
+}
+
+const { class: className } = Astro.props
+const stripes = ["var(--r1)", "var(--r2)", "var(--r3)", "var(--r4)", "var(--r5)", "var(--r6)"]
+---
+
+<svg
+  class:list={["brand-stripes", className]}
+  viewBox="0 0 40 26"
+  width="40"
+  height="26"
+  aria-hidden="true"
+  focusable="false"
+>
+  <g transform="skewX(-16)">
+    {
+      stripes.map((color, index) => (
+        <rect
+          class="brand-stripe"
+          x={8 + index * 0.6}
+          y={index * 4.4}
+          width={30 - index * 1.2}
+          height="3.1"
+          rx="1.55"
+          fill={color}
+          style={`--stripe-index:${index}`}
+        />
+      ))
+    }
+  </g>
+</svg>
+
+<style>
+  .brand-stripes {
+    display: block;
+    flex-shrink: 0;
+    overflow: visible;
+  }
+
+  .brand-stripe {
+    transition: transform 420ms cubic-bezier(0.16, 1, 0.3, 1);
+    transition-delay: calc(var(--stripe-index) * 35ms);
+  }
+
+  :global(a:hover) > .brand-stripes .brand-stripe,
+  :global(a:focus-visible) > .brand-stripes .brand-stripe {
+    transform: translateX(calc(4px - var(--stripe-index) * 1.2px));
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .brand-stripe {
+      transition: none;
+    }
+  }
+</style>

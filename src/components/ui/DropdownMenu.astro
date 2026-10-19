@@ -13,7 +13,7 @@ const { id, triggerLabel, class: className } = Astro.props
 <div class={cn("relative inline-flex", className)} data-dropdown-root={id}>
   <button
     type="button"
-    class="inline-flex h-11 min-w-11 items-center justify-center rounded-md border border-parchment bg-transparent px-3 text-sm font-medium text-foreground transition-colors hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+    class="inline-flex h-11 min-w-11 items-center justify-center rounded-md bg-transparent px-3 text-xs font-medium text-foreground transition-colors hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
     data-dropdown-trigger={id}
     aria-expanded="false"
     aria-controls={`${id}-menu`}

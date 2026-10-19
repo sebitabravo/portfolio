@@ -379,23 +379,33 @@ test.describe("Home Page", () => {
     "reduced motion keeps content visible and stops loops",
     { tag: ["@critical", "@e2e", "@a11y", "@HOME-E2E-003"] },
     async ({ page }) => {
+      // Bucles reales del documento, no una lista de selectores que puede quedar obsoleta.
+      const runningLoops = () =>
+        page.evaluate(() =>
+          document
+            .getAnimations()
+            .filter((animation) => animation.playState === "running" && animation.effect?.getComputedTiming().iterations === Infinity)
+            .map((animation) => (animation as CSSAnimation).animationName ?? "script"),
+        )
+
+      // Control positivo: sin preferencia la marquesina es un bucle, así que la consulta sí puede fallar.
+      await page.emulateMedia({ reducedMotion: "no-preference" })
+      await page.goto("/")
+      expect(await runningLoops()).toContain("signal-marquee")
+
       await page.emulateMedia({ reducedMotion: "reduce" })
       await page.goto("/")
       await page.waitForTimeout(900)
 
-      const state = await page.evaluate(() => {
-        const animatedSelectors = [".hero-orbit", ".hero-orbit-dot", ".hero-ambient", ".signal-strip", ".signal-technologies", ".signal-tech"]
-        const hiddenElements = Array.from(document.querySelectorAll("[data-animate], .hero-reveal"))
-          .filter((element) => Number.parseFloat(getComputedStyle(element).opacity) < 0.99)
-        const activeLoops = animatedSelectors.flatMap((selector) =>
-          Array.from(document.querySelectorAll(selector)).filter((element) => getComputedStyle(element).animationName !== "none"),
-        )
+      const hiddenCount = await page.evaluate(
+        () =>
+          Array.from(document.querySelectorAll("[data-animate], .hero-reveal")).filter(
+            (element) => Number.parseFloat(getComputedStyle(element).opacity) < 0.99,
+          ).length,
+      )
 
-        return { hiddenCount: hiddenElements.length, activeLoopCount: activeLoops.length }
-      })
-
-      expect(state.hiddenCount).toBe(0)
-      expect(state.activeLoopCount).toBe(0)
+      expect(hiddenCount).toBe(0)
+      expect(await runningLoops()).toEqual([])
       await expect(page.locator("[data-hero-webgl]")).toHaveAttribute("data-webgl-status", "reduced")
     },
   )

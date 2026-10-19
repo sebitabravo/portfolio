@@ -16,27 +16,34 @@ const certifications = [...getCertifications(locale)].sort((a, b) => a.order - b
 
 <ul class="cert-grid">
   {
-    certifications.map((cert, index) => (
-      <li class="cert-item" style={`--seal-tone: var(--r${(index % 6) + 1})`}>
-        <a href={cert.pdfUrl} target="_blank" rel="noopener noreferrer" class="cert-link focus-ring">
-          <span class="cert-seal">
-            <RoundSeal
-              text={`${cert.organization} · ${t.certifications[cert.category]} · `}
-              center={cert.monogram}
-              size={128}
-              locale={locale}
-            />
-          </span>
-          <h3 class="cert-name">{cert.name}</h3>
-          <span class="cert-org">
-            {cert.organization} · <span class="cert-category meta-label">{t.certifications[cert.category]}</span>
-          </span>
-          <span class="cert-view meta-label">
-            {t.certifications.viewCertificate}
-            <ArrowUpRight class="size-3.5 shrink-0" />
-          </span>
-        </a>
-      </li>
-    ))
+    certifications.map((cert, index) => {
+      // Sin PDF no hay destino: la credencial se muestra como ficha, nunca como enlace vacío.
+      const Card = cert.pdfUrl ? "a" : "div"
+      const link = cert.pdfUrl ? { href: cert.pdfUrl, target: "_blank", rel: "noopener noreferrer" } : {}
+      return (
+        <li class="cert-item" style={`--seal-tone: var(--r${(index % 6) + 1})`}>
+          <Card {...link} class:list={["cert-link", { "focus-ring": cert.pdfUrl }]}>
+            <span class="cert-seal">
+              <RoundSeal
+                text={`${cert.organization} · ${t.certifications[cert.category]} · `}
+                center={cert.monogram}
+                size={128}
+                locale={locale}
+              />
+            </span>
+            <h3 class="cert-name">{cert.name}</h3>
+            <span class="cert-org">
+              {cert.organization} · <span class="cert-category meta-label">{t.certifications[cert.category]}</span>
+            </span>
+            {cert.pdfUrl && (
+              <span class="cert-view meta-label">
+                {t.certifications.viewCertificate}
+                <ArrowUpRight class="size-3.5 shrink-0" />
+              </span>
+            )}
+          </Card>
+        </li>
+      )
+    })
   }
 </ul>

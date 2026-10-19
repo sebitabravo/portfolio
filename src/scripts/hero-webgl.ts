@@ -1,13 +1,10 @@
 import {
   BackSide,
-  BufferGeometry,
   Color,
-  Float32BufferAttribute,
   LinearFilter,
   Mesh,
   OrthographicCamera,
   PerspectiveCamera,
-  PlaneGeometry,
   Scene,
   ShaderMaterial,
   SphereGeometry,
@@ -18,6 +15,7 @@ import {
 } from "three"
 import WebGL from "three/addons/capabilities/WebGL.js"
 import { BASE_FOV, approach, computeHeroCamera, heroScrollProgress, storyProgress } from "./hero-camera"
+import { createFullscreenTriangle, createTerrainGeometry } from "./hero-geometry"
 import { CRT_FRAGMENT, CRT_VERTEX, SKY_FRAGMENT, SKY_VERTEX, TERRAIN_FRAGMENT, TERRAIN_VERTEX } from "./hero-shaders"
 
 type MotionRoot = HTMLElement & {
@@ -31,13 +29,6 @@ type Cleanup = () => void
 const FRAME_INTERVAL = 32
 // Distancia que recorre el terreno a lo largo de la historia: el scroll avanza y retrocede el vuelo.
 const STORY_TRAVEL = 46
-
-function createFullscreenTriangle(): BufferGeometry {
-  const geometry = new BufferGeometry()
-  geometry.setAttribute("position", new Float32BufferAttribute([-1, -1, 0, 3, -1, 0, -1, 3, 0], 3))
-  geometry.setAttribute("uv", new Float32BufferAttribute([0, 0, 2, 0, 0, 2], 2))
-  return geometry
-}
 
 export function createHeroScene(canvas: HTMLCanvasElement, root: MotionRoot): Cleanup | null {
   if (!WebGL.isWebGL2Available()) {
@@ -55,7 +46,7 @@ export function createHeroScene(canvas: HTMLCanvasElement, root: MotionRoot): Cl
   renderer.setClearColor(0x07060d, 1)
 
   const compactQuery = window.matchMedia("(max-width: 1023px)")
-  const compact = compactQuery.matches
+  let compact = compactQuery.matches
   const scene = new Scene()
   const camera = new PerspectiveCamera(BASE_FOV, 1, 0.1, 140)
 
@@ -70,9 +61,6 @@ export function createHeroScene(canvas: HTMLCanvasElement, root: MotionRoot): Cl
   sky.renderOrder = -1
   scene.add(sky)
 
-  const terrainGeometry = new PlaneGeometry(46, 66, compact ? 110 : 184, compact ? 160 : 264)
-  terrainGeometry.rotateX(-Math.PI / 2)
-  terrainGeometry.translate(0, 0, -27)
   const terrainMaterial = new ShaderMaterial({
     vertexShader: TERRAIN_VERTEX,
     fragmentShader: TERRAIN_FRAGMENT,
@@ -84,7 +72,8 @@ export function createHeroScene(canvas: HTMLCanvasElement, root: MotionRoot): Cl
       uFogFar: { value: 58 },
     },
   })
-  scene.add(new Mesh(terrainGeometry, terrainMaterial))
+  const terrain = new Mesh(createTerrainGeometry(compact), terrainMaterial)
+  scene.add(terrain)
 
   const target = new WebGLRenderTarget(1, 1, { minFilter: LinearFilter, magFilter: LinearFilter })
   const postScene = new Scene()
@@ -109,7 +98,8 @@ export function createHeroScene(canvas: HTMLCanvasElement, root: MotionRoot): Cl
   const pointerTarget = { x: 0, y: 0 }
   const state = { scroll: 0, scrollTarget: 0, turbo: 0, turboTarget: 0, offset: 0, x: 0, y: 2.15, lookY: 1.05, roll: 0 }
   const size = new Vector2()
-  let bounds = root.getBoundingClientRect()
+  // El puntero se mide contra la pantalla visible, no contra la pista de la historia (varios altos de viewport).
+  let bounds = screen.getBoundingClientRect()
   const track = root.querySelector<HTMLElement>("[data-hero-story]")
   let headerHeight = 0
   let animationFrame = 0
@@ -118,14 +108,15 @@ export function createHeroScene(canvas: HTMLCanvasElement, root: MotionRoot): Cl
   let isVisible = true
   let isRunning = false
   let painted = false
+  let contextLost = false
 
   const resize = () => {
     if (disposed) return
-    const rect = canvas.getBoundingClientRect()
-    bounds = root.getBoundingClientRect()
+    bounds = screen.getBoundingClientRect()
     headerHeight = document.querySelector<HTMLElement>(".site-header")?.offsetHeight ?? 0
-    const width = Math.max(1, Math.round(rect.width))
-    const height = Math.max(1, Math.round(rect.height))
+    // Caja de layout: el rect transformado incluye la escala del escenario, que ResizeObserver no informa.
+    const width = Math.max(1, canvas.clientWidth)
+    const height = Math.max(1, canvas.clientHeight)
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, compact ? 1 : 1.5))
     renderer.setSize(width, height, false)
     renderer.getDrawingBufferSize(size)
@@ -180,7 +171,7 @@ export function createHeroScene(canvas: HTMLCanvasElement, root: MotionRoot): Cl
   }
 
   const start = () => {
-    if (disposed || isRunning || !isVisible) return
+    if (disposed || isRunning || !isVisible || contextLost) return
     isRunning = true
     animationFrame = requestAnimationFrame(render)
   }
@@ -220,12 +211,27 @@ export function createHeroScene(canvas: HTMLCanvasElement, root: MotionRoot): Cl
     const trackRect = track?.getBoundingClientRect()
     const story = trackRect ? storyProgress(0, trackRect, window.innerHeight, headerHeight) : null
     state.scrollTarget = story ?? heroScrollProgress(window.scrollY || 0, root.offsetHeight)
-    bounds = root.getBoundingClientRect()
+    bounds = screen.getBoundingClientRect()
   }
   const onContextLost = (event: Event) => {
     event.preventDefault()
+    contextLost = true
     stop()
     canvas.dataset.webglStatus = "fallback"
+  }
+  // three.js reconstruye su estado GL al restaurarse el contexto: basta volver a medir y reanudar.
+  const onContextRestored = () => {
+    contextLost = false
+    painted = false
+    resize()
+    start()
+  }
+  // La densidad y el tope de DPR siguen al breakpoint en vivo: al cruzarlo se reconstruye la malla.
+  const onCompactChange = (event: MediaQueryListEvent) => {
+    compact = event.matches
+    terrain.geometry.dispose()
+    terrain.geometry = createTerrainGeometry(compact)
+    resize()
   }
 
   const resizeObserver = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(resize)
@@ -245,6 +251,8 @@ export function createHeroScene(canvas: HTMLCanvasElement, root: MotionRoot): Cl
   document.addEventListener("visibilitychange", onVisibilityChange)
   window.addEventListener("scroll", onScroll, { passive: true })
   canvas.addEventListener("webglcontextlost", onContextLost)
+  canvas.addEventListener("webglcontextrestored", onContextRestored)
+  compactQuery.addEventListener?.("change", onCompactChange)
   resize()
   onScroll()
   root.dataset.motionStatus = "active"
@@ -264,8 +272,10 @@ export function createHeroScene(canvas: HTMLCanvasElement, root: MotionRoot): Cl
     document.removeEventListener("visibilitychange", onVisibilityChange)
     window.removeEventListener("scroll", onScroll)
     canvas.removeEventListener("webglcontextlost", onContextLost)
+    canvas.removeEventListener("webglcontextrestored", onContextRestored)
+    compactQuery.removeEventListener?.("change", onCompactChange)
     for (const disposable of [
-      terrainGeometry,
+      terrain.geometry,
       terrainMaterial,
       sky.geometry,
       skyMaterial,

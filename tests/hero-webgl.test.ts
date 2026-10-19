@@ -76,6 +76,16 @@ function renderScreen() {
   return { root, screen, windowElement, canvas }
 }
 
+// happy-dom no hace layout: la caja de layout del canvas se fija a mano.
+function setLayoutSize(element: HTMLElement, width: number, height: number): void {
+  Object.defineProperty(element, "clientWidth", { configurable: true, value: width })
+  Object.defineProperty(element, "clientHeight", { configurable: true, value: height })
+}
+
+function rect(width: number, height: number): DOMRect {
+  return { x: 0, y: 0, top: 0, left: 0, right: width, bottom: height, width, height, toJSON: () => ({}) } as DOMRect
+}
+
 const bounds = {
   x: 0,
   y: 0,
@@ -174,6 +184,7 @@ describe("hero WebGL landscape", () => {
     })
 
     const { root, screen, windowElement, canvas } = renderScreen()
+    setLayoutSize(canvas, 320, 180)
     const cleanup = createHeroScene(canvas, root)
 
     expect(cleanup).toEqual(expect.any(Function))
@@ -234,6 +245,100 @@ describe("hero WebGL landscape", () => {
     expect(canvas.dataset.webglStatus).toBe("fallback")
     expect(frames.cancel).toHaveBeenCalled()
     cleanup?.()
+  })
+
+  it("sizes the drawing buffer from the layout box, not the stage-scaled rect", () => {
+    vi.mocked(WebGL.isWebGL2Available).mockReturnValue(true)
+    stubFrames()
+    vi.stubGlobal("ResizeObserver", undefined)
+    vi.stubGlobal("IntersectionObserver", undefined)
+    const { root, canvas } = renderScreen()
+    // El escenario escala la pantalla a 0.9: el rect visual es menor que la caja de layout.
+    vi.spyOn(canvas, "getBoundingClientRect").mockReturnValue(rect(288, 162))
+    setLayoutSize(canvas, 320, 180)
+
+    const cleanup = createHeroScene(canvas, root)
+
+    expect(heroHarness.renderer.setSize).toHaveBeenLastCalledWith(320, 180, false)
+    cleanup?.()
+  })
+
+  it("steers from the visible screen, not from the tall story track", () => {
+    vi.mocked(WebGL.isWebGL2Available).mockReturnValue(true)
+    const frames = stubFrames()
+    vi.stubGlobal("ResizeObserver", undefined)
+    vi.stubGlobal("IntersectionObserver", undefined)
+    const { root, screen, canvas } = renderScreen()
+    // La pista mide varias pantallas; la pantalla visible es solo su primer tramo.
+    vi.spyOn(root, "getBoundingClientRect").mockReturnValue(rect(400, 2400))
+    vi.spyOn(screen, "getBoundingClientRect").mockReturnValue(rect(400, 600))
+    const cleanup = createHeroScene(canvas, root)
+
+    root.dispatchEvent(new PointerEvent("pointermove", { clientX: 200, clientY: 300 }))
+    runLatestFrame(frames.queue, 64)
+
+    // Al centro de la pantalla el puntero es neutro y la cámara conserva su altura de reposo.
+    const camera = heroHarness.renderer.render.mock.calls[0]?.[1] as { position: { y: number } }
+    expect(camera.position.y).toBe(2.15)
+    cleanup?.()
+  })
+
+  it("resumes rendering when the WebGL context is restored", () => {
+    vi.mocked(WebGL.isWebGL2Available).mockReturnValue(true)
+    const frames = stubFrames()
+    vi.stubGlobal("ResizeObserver", undefined)
+    vi.stubGlobal("IntersectionObserver", undefined)
+    const { root, canvas } = renderScreen()
+    const cleanup = createHeroScene(canvas, root)
+    runLatestFrame(frames.queue, 64)
+    expect(canvas.dataset.webglStatus).toBe("ready")
+
+    canvas.dispatchEvent(new Event("webglcontextlost", { cancelable: true }))
+    expect(canvas.dataset.webglStatus).toBe("fallback")
+    expect(frames.queue.size).toBe(0)
+
+    canvas.dispatchEvent(new Event("webglcontextrestored"))
+    const renders = heroHarness.renderer.render.mock.calls.length
+    runLatestFrame(frames.queue, 128)
+
+    expect(heroHarness.renderer.render.mock.calls.length).toBe(renders + 2)
+    expect(canvas.dataset.webglStatus).toBe("ready")
+    cleanup?.()
+  })
+
+  it("follows the compact breakpoint live: terrain density and pixel-ratio cap", () => {
+    vi.mocked(WebGL.isWebGL2Available).mockReturnValue(true)
+    const frames = stubFrames()
+    vi.stubGlobal("ResizeObserver", undefined)
+    vi.stubGlobal("IntersectionObserver", undefined)
+    let onChange: ((event: MediaQueryListEvent) => void) | undefined
+    const compactQuery = {
+      matches: false,
+      addEventListener: vi.fn((_type: string, listener: (event: MediaQueryListEvent) => void) => {
+        onChange = listener
+      }),
+      removeEventListener: vi.fn(),
+    }
+    vi.stubGlobal("matchMedia", vi.fn(() => compactQuery))
+    const { root, canvas } = renderScreen()
+    const cleanup = createHeroScene(canvas, root)
+    runLatestFrame(frames.queue, 64)
+
+    type TerrainMesh = { geometry: { type: string; parameters?: { widthSegments: number }; dispose: () => void } }
+    const scene = heroHarness.renderer.render.mock.calls[0]?.[0] as { children: TerrainMesh[] }
+    const terrain = scene.children.find((child) => child.geometry.type === "PlaneGeometry")!
+    const desktopGeometry = terrain.geometry
+    const dispose = vi.spyOn(desktopGeometry, "dispose")
+    expect(desktopGeometry.parameters?.widthSegments).toBe(184)
+    expect(heroHarness.renderer.setPixelRatio).toHaveBeenLastCalledWith(1.5)
+
+    onChange?.({ matches: true } as MediaQueryListEvent)
+
+    expect(dispose).toHaveBeenCalled()
+    expect(terrain.geometry.parameters?.widthSegments).toBe(110)
+    expect(heroHarness.renderer.setPixelRatio).toHaveBeenLastCalledWith(1)
+    cleanup?.()
+    expect(compactQuery.removeEventListener).toHaveBeenCalledWith("change", onChange)
   })
 
   it("ignores queued callbacks after cleanup without ResizeObserver", () => {

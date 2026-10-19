@@ -201,7 +201,8 @@ export const CRT_FRAGMENT = /* glsl */ `
 
     float band = smoothstep(0.0, 0.08, 0.04 - abs(fract(uv.y * 0.35 - uTime * 0.045) - 0.5) + 0.04);
     color *= 1.0 + band * 0.06;
-    color *= smoothstep(0.98, 0.32, length(direction) * 1.08);
+    // GLSL ES deja indefinido smoothstep con edge0 >= edge1: se invierte con bordes ordenados.
+    color *= 1.0 - smoothstep(0.32, 0.98, length(direction) * 1.08);
     color += (grain(uv * uResolution + uTime * 61.0) - 0.5) * 0.04;
     gl_FragColor = vec4(color, 1.0);
   }

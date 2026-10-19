@@ -1,5 +1,4 @@
 export {
-  createCardSpotlight,
   createCardTilt,
   createMagneticTarget,
   createPointerMotion,

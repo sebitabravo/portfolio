@@ -479,7 +479,6 @@ describe("portfolio motion gates", () => {
         <canvas data-hero-webgl></canvas>
       </section>
       <section id="projects">
-        <div data-project-scroll-meter><span></span></div>
         <div data-projects-list>
           <article data-project-card></article>
         </div>
@@ -496,10 +495,6 @@ describe("portfolio motion gates", () => {
     setupPortfolioMotion();
     const canvas =
       document.querySelector<HTMLCanvasElement>("[data-hero-webgl]")!;
-    const grid = document.querySelector<HTMLElement>("[data-projects-list]")!;
-    const meter = document.querySelector<HTMLElement>(
-      "[data-project-scroll-meter] span",
-    )!;
     expect(root.dataset.motionStatus).toBe("loading");
     expect(canvas.dataset.webglStatus).toBe("pending");
 
@@ -520,13 +515,8 @@ describe("portfolio motion gates", () => {
       expect.objectContaining({ "--motion-scale": 1 }),
     );
 
-    const scrollOptions = motionHarness.ScrollTrigger.create.mock
-      .calls[0]?.[0] as {
-      onUpdate: (instance: { progress: number }) => void;
-    };
-    scrollOptions.onUpdate({ progress: 0.625 });
-    expect(grid.style.getPropertyValue("--project-progress")).toBe("0.625");
-    expect(meter.style.transform).toBe("scaleX(0.625)");
+    // Sin consumidores de progreso en la página, las tarjetas no registran triggers de scroll propios.
+    expect(motionHarness.ScrollTrigger.create).not.toHaveBeenCalled();
 
     teardownPortfolioMotion();
 
@@ -535,12 +525,9 @@ describe("portfolio motion gates", () => {
     expect(motionHarness.media.revert).toHaveBeenCalled();
     expect(motionHarness.timeline.scrollTrigger.kill).toHaveBeenCalled();
     expect(motionHarness.timeline.kill).toHaveBeenCalled();
-    expect(motionHarness.sectionTrigger.kill).toHaveBeenCalled();
     expect(motionHarness.sceneCleanup).toHaveBeenCalled();
     expect(motionHarness.pointerCleanup).toHaveBeenCalled();
     expect(motionHarness.cardCleanup).toHaveBeenCalled();
-    expect(grid.style.getPropertyValue("--project-progress")).toBe("");
-    expect(meter.style.transform).toBe("scaleX(0)");
   });
 
   it("ignores a stale GSAP media callback after teardown", async () => {
@@ -674,7 +661,6 @@ describe("portfolio motion gates", () => {
     expect(motionHarness.media.revert).toHaveBeenCalledTimes(1);
     expect(motionHarness.sceneCleanup).toHaveBeenCalledTimes(1);
     expect(motionHarness.timeline.kill).toHaveBeenCalledTimes(1);
-    expect(motionHarness.sectionTrigger.kill).toHaveBeenCalledTimes(1);
     root.dispatchEvent(new Event("pointerenter"));
     expect(motionHarness.createHeroScene).toHaveBeenCalledTimes(1);
 

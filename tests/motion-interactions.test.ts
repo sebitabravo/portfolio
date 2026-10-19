@@ -43,7 +43,7 @@ describe("GSAP pointer interaction helpers", () => {
     vi.unstubAllGlobals()
   })
 
-  it("applies hero tilt/glow values and resets them on pointer leave", () => {
+  it("moves only the hero glow with the pointer and resets it on pointer leave", () => {
     const root = document.createElement("div")
     const frame = document.createElement("div")
     frame.className = "hero-art-frame"
@@ -55,13 +55,12 @@ describe("GSAP pointer interaction helpers", () => {
     frame.dispatchEvent(pointerEvent("pointerenter", 160, 70))
     frame.dispatchEvent(pointerEvent("pointermove", 160, 70))
 
-    expect(frame.style.getPropertyValue("--hero-tilt-x")).toBe("1.125")
-    expect(frame.style.getPropertyValue("--hero-tilt-y")).toBe("0")
+    expect(frame.style.getPropertyValue("--hero-tilt-x")).toBe("")
+    expect(frame.style.getPropertyValue("--hero-tilt-y")).toBe("")
     expect(frame.style.getPropertyValue("--hero-glow-x")).toBe("75")
     expect(frame.style.getPropertyValue("--hero-glow-y")).toBe("50")
 
     frame.dispatchEvent(pointerEvent("pointerleave", 160, 70))
-    expect(frame.style.getPropertyValue("--hero-tilt-x")).toBe("0")
     expect(frame.style.getPropertyValue("--hero-glow-x")).toBe("50")
     cleanup()
     expect(gsap.killTweensOf).toHaveBeenCalledWith(frame)

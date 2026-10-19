@@ -20,7 +20,6 @@ interface CardLayer {
   readonly observer: ResizeObserver | null
   readonly reset: () => void
   readonly destroy: () => void
-  spotlightCount: number
   tiltCount: number
   gsap: MotionGsap | null
   rotateX: NumericTween | null
@@ -28,7 +27,6 @@ interface CardLayer {
   refs: number
 }
 
-const HERO_TILT = 4.5
 const CARD_TILT = 2.5
 const MAGNET_MAX_OFFSET = 7
 const cardLayers = new WeakMap<HTMLElement, CardLayer>()
@@ -47,8 +45,7 @@ export function createPointerMotion(gsap: MotionGsap, root: MotionRoot, signal?:
   if (signal?.aborted) return () => undefined
   const frame = root.querySelector<HTMLElement>(".hero-art-frame")
   if (!frame) return () => undefined
-  const rotateX = gsap.quickTo(frame, "--hero-tilt-x", { duration: 0.55, ease: "power3.out" })
-  const rotateY = gsap.quickTo(frame, "--hero-tilt-y", { duration: 0.55, ease: "power3.out" })
+  // Solo el reflejo del vidrio sigue al puntero: el marco ya no se inclina en el rediseño.
   const glowX = gsap.quickTo(frame, "--hero-glow-x", { duration: 0.8, ease: "power3.out" })
   const glowY = gsap.quickTo(frame, "--hero-glow-y", { duration: 0.8, ease: "power3.out" })
   let bounds = frame.getBoundingClientRect()
@@ -65,8 +62,6 @@ export function createPointerMotion(gsap: MotionGsap, root: MotionRoot, signal?:
     const x = (latestPointer.clientX - bounds.left) / bounds.width - 0.5
     const y = (latestPointer.clientY - bounds.top) / bounds.height - 0.5
 
-    rotateX(x * HERO_TILT)
-    rotateY(y * -HERO_TILT)
     glowX((x + 0.5) * 100)
     glowY((y + 0.5) * 100)
   }
@@ -78,8 +73,6 @@ export function createPointerMotion(gsap: MotionGsap, root: MotionRoot, signal?:
     latestPointer = null
     if (pointerFrame) cancelAnimationFrame(pointerFrame)
     pointerFrame = 0
-    rotateX(0)
-    rotateY(0)
     glowX(50)
     glowY(50)
   }
@@ -184,10 +177,6 @@ function createCardLayer(card: HTMLElement): CardLayer {
     const x = (latestPointer.clientX - bounds.left) / bounds.width - 0.5
     const y = (latestPointer.clientY - bounds.top) / bounds.height - 0.5
 
-    if (layer.spotlightCount > 0) {
-      card.style.setProperty("--spotlight-x", `${latestPointer.clientX - bounds.left}px`)
-      card.style.setProperty("--spotlight-y", `${latestPointer.clientY - bounds.top}px`)
-    }
     layer.rotateX?.(y * -CARD_TILT)
     layer.rotateY?.(x * CARD_TILT)
   }
@@ -210,7 +199,6 @@ function createCardLayer(card: HTMLElement): CardLayer {
     observer,
     reset,
     destroy,
-    spotlightCount: 0,
     tiltCount: 0,
     gsap: null,
     rotateX: null,
@@ -273,24 +261,6 @@ export function createCardTilt(gsap: MotionGsap, card: HTMLElement, signal?: Abo
       layer.rotateX = null
       layer.rotateY = null
     }
-    unbindSignal()
-    release()
-  }
-  const unbindSignal = bindSignal(signal, cleanup)
-
-  return cleanup
-}
-
-export function createCardSpotlight(card: HTMLElement, signal?: AbortSignal): Cleanup {
-  if (signal?.aborted) return () => undefined
-  const { layer, release } = acquireCardLayer(card)
-  layer.spotlightCount += 1
-
-  let cleaned = false
-  const cleanup = () => {
-    if (cleaned) return
-    cleaned = true
-    layer.spotlightCount -= 1
     unbindSignal()
     release()
   }

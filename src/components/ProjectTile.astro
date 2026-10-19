@@ -60,7 +60,7 @@ const actionClass = "project-action focus-ring"
               width={800}
               height={500}
               sizes={featured ? "(max-width: 767px) 100vw, 1200px" : "(max-width: 767px) 100vw, 600px"}
-              alt={`${title} screenshot`}
+              alt={t.projects.screenshotAlt.replace("{title}", title)}
               class="project-image"
               loading="lazy"
               decoding="async"
@@ -89,7 +89,7 @@ const actionClass = "project-action focus-ring"
   <div class="project-body">
     <p class="project-meta meta-label">
       <span class="project-status"><span class="project-status-dot" aria-hidden="true"></span>{publicStatusLabel}</span>
-      <span class="project-year">{publishDate.getFullYear()}</span>
+      <span class="project-year">{publishDate.getUTCFullYear()}</span>
     </p>
     <h3 transition:name={articleTitleTransitionName(resolvedBlogSlug)} class="project-title">{title}</h3>
     <p class="project-tagline">{tagline}</p>

@@ -18,7 +18,7 @@ const education = getEducation(locale)
     education.map(({ institution, degree, description, startDate, endDate, current, location, grade, skills }, i) => (
       <article data-animate data-animate-delay={String(i + 1)} class="education-row">
         <p class="education-meta meta-label">
-          <time>{formatPeriod(startDate, endDate, current, locale)}</time>
+          <time>{formatPeriod(startDate, endDate, current, t.education.present, locale)}</time>
         </p>
         <h3 class="education-degree">{degree}</h3>
         <p class="education-institution meta-label">

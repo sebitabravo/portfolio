@@ -19,13 +19,14 @@ export function formatMonthYear(date: Date, locale: Locale = "es"): string {
     .replace(".", "")
 }
 
+// El rótulo del período abierto llega del diccionario del llamador: aquí solo se arma el rango.
 export function formatPeriod(
   start: Date,
   end: Date | null | undefined,
   current: boolean,
+  present: string,
   locale: Locale = "es",
 ): string {
-  const present = locale === "es" ? "Hoy" : "Now"
   const finish = current || !end ? present : formatMonthYear(end, locale)
   return `${formatMonthYear(start, locale)} — ${finish}`
 }

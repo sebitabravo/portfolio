@@ -68,7 +68,6 @@
   },
   "projects": {
     "title": "Projects",
-    "outcomesLabel": "Outcomes",
     "outcomesTitle": "Evidence over promises",
     "stats": [
       {
@@ -92,10 +91,9 @@
     "viewMoreGithub": "More projects on GitHub",
     "archiveTitle": "Want to see more?",
     "archiveText": "Experiments, notes and open source.",
-    "featured": "Featured",
-    "cardLabel": "PROJECT",
     "evidenceLabel": "Project evidence",
     "technologiesLabel": "Technologies",
+    "screenshotAlt": "{title} screenshot",
     "statusProduction": "In production",
     "statusCodeAvailable": "Code available",
     "statusDevelopment": "In development",

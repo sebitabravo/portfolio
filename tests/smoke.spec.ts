@@ -66,7 +66,7 @@ test.describe("Projects — screenshots con fallback", () => {
         await expect(fallback).toHaveAttribute("data-img-fallback", /^(|true)$/)
         await expect(fallback).toHaveAttribute("loading", "lazy")
         await expect(fallback).toHaveAttribute("decoding", "async")
-        await expect(fallback).toHaveAttribute("alt", /screenshot$/)
+        await expect(fallback).toHaveAttribute("alt", route === "/" ? /^Captura de \S/ : /\S screenshot$/)
       }
     }
   })
@@ -87,7 +87,8 @@ test.describe("Projects — screenshots con fallback", () => {
     const img = wenukeCard.locator("img").first()
     await expect(img).toHaveAttribute("src", /\/_astro\/[^/]+\.webp$/)
     await expect(img).toHaveAttribute("srcset", /800w.*1600w/)
-    await expect(img).toHaveAttribute("alt", /screenshot$/)
+    const title = (await wenukeCard.locator("h3").textContent())?.trim()
+    await expect(img).toHaveAttribute("alt", `Captura de ${title}`)
     await expect(img).toHaveAttribute("loading", "lazy")
     await expect(img).toHaveAttribute("decoding", "async")
     await expect.poll(() => img.evaluate((image) => (image as HTMLImageElement).naturalWidth)).toBeGreaterThan(0)
@@ -103,7 +104,8 @@ test.describe("Projects — screenshots con fallback", () => {
         await expect(image).toHaveAttribute("srcset", /800w.*1600w/)
         const featured = await image.locator("xpath=ancestor::article").evaluate((card) => card.classList.contains("project-card-featured"))
         await expect(image).toHaveAttribute("sizes", featured ? "(max-width: 767px) 100vw, 1200px" : "(max-width: 767px) 100vw, 600px")
-        await expect(image).toHaveAttribute("alt", /screenshot$/)
+        const title = (await image.locator("xpath=ancestor::article").locator("h3").textContent())?.trim()
+        await expect(image).toHaveAttribute("alt", route === "/" ? `Captura de ${title}` : `${title} screenshot`)
         await expect(image).toHaveAttribute("loading", "lazy")
         await image.scrollIntoViewIfNeeded()
         await expect.poll(() => image.evaluate((img) => (img as HTMLImageElement).naturalWidth)).toBeGreaterThan(0)

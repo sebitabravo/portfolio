@@ -31,13 +31,13 @@ describe("compact periods", () => {
   })
 
   it("closes finished periods with their end month", () => {
-    expect(formatPeriod(new Date("2026-02-01"), new Date("2026-04-30"), false, "es")).toBe("feb 2026 — abr 2026")
-    expect(formatPeriod(new Date("2022-12-01"), new Date("2023-02-28"), false, "en")).toBe("Dec 2022 — Feb 2023")
+    expect(formatPeriod(new Date("2026-02-01"), new Date("2026-04-30"), false, "Presente", "es")).toBe("feb 2026 — abr 2026")
+    expect(formatPeriod(new Date("2022-12-01"), new Date("2023-02-28"), false, "Present", "en")).toBe("Dec 2022 — Feb 2023")
   })
 
-  it("marks current or open-ended periods as ongoing in each locale", () => {
-    expect(formatPeriod(new Date("2023-03-01"), new Date("2027-12-31"), true, "es")).toBe("mar 2023 — Hoy")
-    expect(formatPeriod(new Date("2023-03-01"), null, false, "en")).toBe("Mar 2023 — Now")
+  it("closes current or open-ended periods with the caller's localized label", () => {
+    expect(formatPeriod(new Date("2023-03-01"), new Date("2027-12-31"), true, "Presente", "es")).toBe("mar 2023 — Presente")
+    expect(formatPeriod(new Date("2023-03-01"), null, false, "Present", "en")).toBe("Mar 2023 — Present")
   })
 
   it("merges conflicting utility classes", () => {

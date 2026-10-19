@@ -41,7 +41,8 @@ const {
 } = Astro.props
 const t = getTranslations(locale)
 const externalUrl = url?.startsWith("http")
-const period = current ? t.work.currently : formatPeriod(startDate, endDate, current, locale)
+// Un fin abierto usa el mismo término que Formación: una sola palabra por idioma para "en curso".
+const period = current ? t.work.currently : formatPeriod(startDate, endDate, current, t.education.present, locale)
 ---
 
 <details

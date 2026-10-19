@@ -61,7 +61,6 @@ test.describe("Home Page", () => {
     test(`${locale} home renders localized project, work, and contact UI labels`, async ({ page }) => {
       await page.goto(route)
       const regularProject = page.locator(".project-card:not(.project-card-featured)").first()
-      await expect(regularProject.locator(".project-media-kicker")).toHaveCount(0)
       const metrics = page.locator(".project-metrics")
       expect(await metrics.count()).toBeGreaterThan(0)
       await expect(metrics.first()).toHaveAttribute("aria-label", projectEvidence)

@@ -54,6 +54,19 @@ test.describe("Regression contracts", () => {
       await expect.poll(() => track.evaluate((element) => element.getAnimations()[0]?.playState)).toBe("paused")
       await signal.getByRole("button", { name: resume, exact: true }).click()
       await expect(signal).toHaveAttribute("data-paused", "false")
+      // Reanudar mueve la banda aunque el botón conserve el foco y el puntero siga encima.
+      const toggleButton = signal.locator("[data-marquee-toggle]")
+      await toggleButton.focus()
+      await toggleButton.hover()
+      await expect.poll(() => track.evaluate((element) => element.getAnimations()[0]?.playState)).toBe("running")
+
+      // Desde el teclado el foco en el botón tampoco congela la marquesina.
+      await page.mouse.move(0, 0)
+      await page.keyboard.press("Enter")
+      await expect(signal).toHaveAttribute("data-paused", "true")
+      await page.keyboard.press("Enter")
+      await expect(signal).toHaveAttribute("data-paused", "false")
+      await expect.poll(() => track.evaluate((element) => element.getAnimations()[0]?.playState)).toBe("running")
     })
 
     test(`stack wraps without movement or controls at ${route} with reduced motion`, async ({ page }) => {

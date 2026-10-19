@@ -150,8 +150,8 @@ const label = t.signal.label
       animation: signal-marquee 48s linear infinite;
     }
 
-    .signal-strip:hover .signal-track,
-    .signal-strip:focus-within .signal-track,
+    /* Leer el texto lo detiene; el botón queda fuera para que su hover o foco nunca anule "reanudar". */
+    .signal-viewport:hover .signal-track,
     .signal-strip[data-paused="true"] .signal-track {
       animation-play-state: paused;
     }

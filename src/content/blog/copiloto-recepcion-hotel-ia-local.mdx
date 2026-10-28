@@ -1,0 +1,86 @@
+---
+title: "Copiloto de Recepción: un agente hotelero que no inventa datos ni confirma reservas"
+description: "Asistente de WhatsApp para pymes de alojamiento: FastAPI, Chatwoot, PMS simulado y modelo local. Doce conversaciones de prueba, 194 tests y Lighthouse en 100."
+publishDate: 2026-10-28
+tags: ["FastAPI", "Python", "LLM local", "Chatwoot", "Docker", "Agentes IA"]
+image: "copiloto"
+translationKey: "copiloto"
+---
+
+Un hotel boutique de Villarrica pierde ventas en la ventana de minutos posterior a la primera consulta. El gerente lo dice sin rodeos: si no responden en tres minutos, la venta se pierde. La huésped, en cambio, tolera hasta un día.
+
+Esa brecha es el negocio. La consulta llega por WhatsApp, la cierra una persona, y en temporada alta el teléfono se come el 80% del tiempo de recepción. Las consultas de noche simplemente no se responden.
+
+Construí un copiloto que atiende esa conversación, consulta el inventario y deja la reserva preparada. La confirma una persona.
+
+## Qué hace
+
+El huésped escribe como en cualquier WhatsApp. El copiloto responde con datos verificados del hotel, muestra la ubicación antes de pedir fechas, consulta la disponibilidad en el PMS y arma una pre-reserva que vence en quince minutos. Si la consulta necesita criterio humano, deriva con el contexto ya reunido.
+
+Del otro lado, recepción ve la conversación en Chatwoot etiquetada como `comercial` o `nocturna`, asignada a su equipo, con una nota privada que incluye la hora exacta de la lectura del PMS y un cronómetro de tres minutos corriendo.
+
+## Stack y arquitectura
+
+| Capa | Tecnología |
+|------|------------|
+| Agente | FastAPI + bucle de herramientas propio sobre API compatible con OpenAI |
+| Modelo | llama.cpp con Qwen 2.5, corriendo en el host (sin costo por consulta) |
+| Canal | Chatwoot autohospedado, webhooks firmados y bandeja unificada |
+| Estado | SQLite con eventos idempotentes; PostgreSQL y Redis para Chatwoot |
+| PMS | FastAPI propio con adaptador intercambiable |
+| Infra | Docker Compose, nginx con gzip, pruebas en pytest |
+
+El modelo corre fuera de Docker y el contenedor lo alcanza por `host.docker.internal`. Así el límite de memoria del stack no incluye la inferencia.
+
+## Tres decisiones que explican el resto
+
+**El bot no confirma: la persona sí.** El agente reúne fechas, personas, habitación y nombre, y deja una pre-reserva. La confirmación ocurre en el PMS con una persona mirando el inventario. Es la diferencia entre automatizar la conversación y automatizar la decisión.
+
+**Los datos del hotel salen de una herramienta, no de la memoria del modelo.** Ubicación, servicios, políticas y precios viven en un archivo de datos que el agente consulta antes de responder. Un modelo puede redactar; no puede ser la fuente de un precio.
+
+**El motor es local.** Sin costo por consulta y sin datos de huéspedes viajando a un tercero, que es hacia donde empuja la ley chilena de datos personales.
+
+## Lo que falló
+
+Esta es la parte que normalmente no se publica.
+
+Armé una batería de doce conversaciones reproducibles para medir al agente. En la tercera corrida apareció un fallo que todavía me incomoda: **el copiloto creó una reserva con un nombre que inventó**. El modelo declaraba `guest_confirmed: true` en el argumento de la herramienta y el código le creía.
+
+La corrección fue dejar de confiar en el argumento. El consentimiento se comprueba sobre las palabras del huésped: una pregunta o un «no» no cuentan, y el nombre tiene que aparecer en un mensaje suyo.
+
+El segundo defecto apareció en operación. Pregunté dónde estaba el hotel y respondió **«calle Santa Fe 1234, pleno centro de Santiago»**. Una dirección completa, inventada. De ahí salieron dos reglas: el agente consulta el hotel antes de responder, y una respuesta que afirma datos sin herramienta se reemplaza por un texto seguro.
+
+El tercero fue mío. El guardrail que agregué empezó a bloquear respuestas correctas que reutilizaban una lectura anterior del PMS. Lo detectó la misma batería.
+
+## Resultados
+
+```
+Batería de conversaciones   12/12, sin fallos bloqueantes
+Pruebas automáticas         157 del copiloto · 25 del PMS · 12 del puente Beds24
+Prueba end-to-end           4 escenarios sobre el stack real
+Lighthouse                  100 · 100 · 100 · 100 (móvil y escritorio)
+Peso de la landing          103 KB
+```
+
+La prueba end-to-end comprueba lo que ve cada lado: respuesta al huésped en menos de un segundo en el flujo guiado, ubicación antes de pedir datos, pre-reserva pendiente de confirmación, etiquetas y nota privada fechada, y que con el PMS caído el copiloto no prometa disponibilidad.
+
+## Desafíos y límites
+
+El canal está simulado. La conversación de WhatsApp de la demo es una maqueta fiel; el canal real conectado es la bandeja de Chatwoot. Conectar WhatsApp oficial requiere un proveedor.
+
+El PMS de la demo es simulado. Para Beds24 ya existe un puente que traduce su API al contrato del copiloto: está construido y probado, pero falta validarlo contra una cuenta real. Cualquier otro PMS necesita su propio adaptador.
+
+La latencia con IA local ronda los 18 segundos. El flujo guiado por reglas responde en 0,3 segundos y es el que opera cuando el modelo no está disponible.
+
+Y falta la validación con usuarios: el testeo es técnico. La sesión con recepción y con huéspedes es lo siguiente.
+
+## Código
+
+El repositorio incluye el stack completo, la batería de evaluación y el registro de iteraciones con los números de cada corrida.
+
+```bash
+make up     # levanta Chatwoot, el copiloto, el PMS y la landing
+make demo   # verifica todo y precalienta el modelo
+```
+
+[github.com/sebitabravo/copiloto-recepcion](https://github.com/sebitabravo/copiloto-recepcion)

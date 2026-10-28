@@ -30,22 +30,24 @@ describe("projects data", () => {
 
     expect(english.map(sharedFacts)).toEqual(spanish.map(sharedFacts))
     expect(spanish.map((project) => [project.slug, project.blogSlug])).toEqual([
+      ["copiloto", "copiloto-recepcion-hotel-ia-local"],
       ["manttoai", "manttoai-ml-iot-random-forest"],
       ["vulcania", "vulcania-monitoreo-volcanico-comunitario"],
       ["rapido-sur", "rapido-sur-erp-mantenimiento-flotas"],
       ["wenuke", "wenuke-asistente-climatico-whatsapp"],
     ])
     expect(english.map((project) => [project.slug, project.blogSlug])).toEqual([
+      ["copiloto", "copiloto-recepcion-hotel-ia-local-en"],
       ["manttoai", "manttoai-ml-iot-random-forest-en"],
       ["vulcania", "vulcania-monitoreo-volcanico-comunitario-en"],
       ["rapido-sur", "rapido-sur-erp-mantenimiento-flotas"],
       ["wenuke", "wenuke-asistente-climatico-whatsapp"],
     ])
     expect(spanish.map((project) => project.slug).sort()).toEqual([
-      "manttoai", "rapido-sur", "vulcania", "wenuke",
+      "copiloto", "manttoai", "rapido-sur", "vulcania", "wenuke",
     ])
     expect(spanish.slice().sort((a, b) => a.order - b.order).map((project) => project.slug)).toEqual([
-      "vulcania", "wenuke", "manttoai", "rapido-sur",
+      "copiloto", "vulcania", "wenuke", "manttoai", "rapido-sur",
     ])
   })
 

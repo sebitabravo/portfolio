@@ -42,6 +42,9 @@ export const techBadges: Record<string, TechBadge> = {
   "Groq LLM": { color: "#F97316", icon: Groq },
   "WhatsApp API": { color: "#25D366", icon: WhatsApp },
   Turso: { color: "#4FF8D2", icon: Turso },
+  Chatwoot: { color: "#1F93FF" },
+  "LLM local": { color: "#8B5CF6" },
+  SQLite: { color: "#003B57", dark: "#7FC8E8", darkText: "#A8DCF2" },
 }
 
 const FALLBACK_CLASS =

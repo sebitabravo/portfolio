@@ -1,8 +1,10 @@
 import type { ImageMetadata } from "astro"
+import copilotoCard from "../assets/screenshots/copiloto-1600.webp"
 import manttoaiCard from "../assets/screenshots/manttoai-1600.webp"
 import rapidoSurCard from "../assets/screenshots/rapido-sur-1600.webp"
 import vulcaniaCard from "../assets/screenshots/vulcania-1600.webp"
 import wenukeCard from "../assets/screenshots/wenuke-1600.webp"
+import copilotoSocial from "../assets/screenshots/copiloto.webp"
 import manttoaiSocial from "../assets/screenshots/manttoai.webp"
 import rapidoSurSocial from "../assets/screenshots/rapido-sur.webp"
 import vulcaniaSocial from "../assets/screenshots/vulcania.webp"
@@ -10,6 +12,7 @@ import wenukeSocial from "../assets/screenshots/wenuke.webp"
 
 // Explicit imports keep the project key lookup safe and visible to Astro's image pipeline.
 const cardImages: Record<string, ImageMetadata> = {
+  copiloto: copilotoCard,
   manttoai: manttoaiCard,
   "rapido-sur": rapidoSurCard,
   vulcania: vulcaniaCard,
@@ -17,6 +20,7 @@ const cardImages: Record<string, ImageMetadata> = {
 }
 
 const socialImages: Record<string, ImageMetadata> = {
+  copiloto: copilotoSocial,
   manttoai: manttoaiSocial,
   "rapido-sur": rapidoSurSocial,
   vulcania: vulcaniaSocial,

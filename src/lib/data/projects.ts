@@ -10,6 +10,39 @@ type ProjectEntry = SharedProject & Record<Locale, LocalizedProject>
 
 const projectEntries: ProjectEntry[] = [
   {
+    slug: "copiloto",
+    stage: PROJECT_STAGES.ORANGE,
+    tags: ["FastAPI", "Python", "Docker", "Chatwoot", "LLM local", "SQLite"],
+    featured: false,
+    status: "development",
+    publishDate: new Date("2026-10-28"),
+    githubUrl: "https://github.com/sebitabravo/copiloto-recepcion",
+    liveUrl: undefined,
+    order: 0,
+    es: {
+      title: "Copiloto de Recepción",
+      tagline: "Recepción hotelera con IA que no inventa y no confirma sola",
+      description:
+        "Asistente de WhatsApp para pymes de alojamiento: responde con datos verificados del hotel, consulta la disponibilidad en el PMS y deja la reserva lista para que la confirme una persona. Modelo local, métricas y panel con cronómetro de tres minutos.",
+      metrics: [
+        { label: "Pruebas", value: "194 en verde" },
+        { label: "Lighthouse", value: "100 / 100 / 100 / 100" },
+      ],
+      blogSlug: "copiloto-recepcion-hotel-ia-local",
+    },
+    en: {
+      title: "Reception Copilot",
+      tagline: "Hotel reception AI that does not invent and does not confirm alone",
+      description:
+        "WhatsApp assistant for small lodging businesses: answers with verified hotel data, checks PMS availability and leaves the booking ready for a person to confirm. Local model, metrics and a panel with a three-minute timer.",
+      metrics: [
+        { label: "Tests", value: "194 green" },
+        { label: "Lighthouse", value: "100 / 100 / 100 / 100" },
+      ],
+      blogSlug: "copiloto-recepcion-hotel-ia-local-en",
+    },
+  },
+  {
     slug: "manttoai",
     stage: PROJECT_STAGES.BLUE,
     tags: ["FastAPI", "React", "Machine Learning", "Docker", "IoT"],

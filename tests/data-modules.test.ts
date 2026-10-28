@@ -72,12 +72,12 @@ describe("portfolio data modules", () => {
   it("keeps localized project inventories aligned and ordered", () => {
     const spanish = getProjects("es")
     const english = getProjects("en")
-    expect(spanish).toHaveLength(4)
-    expect(english).toHaveLength(4)
+    expect(spanish).toHaveLength(5)
+    expect(english).toHaveLength(5)
     expect(english.map((project) => project.slug).sort()).toEqual(
       spanish.map((project) => project.slug).sort(),
     )
-    expect(spanish.map((project) => project.order)).toEqual([3, 1, 4, 2])
+    expect(spanish.map((project) => project.order)).toEqual([0, 3, 1, 4, 2])
     expect(spanish.filter((project) => project.featured)).toHaveLength(1)
     expect(english.filter((project) => project.featured)).toHaveLength(1)
     expect(spanish.every((project) => project.publishDate instanceof Date)).toBe(true)

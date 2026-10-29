@@ -1,0 +1,87 @@
+---
+title: "Reception Copilot: a hotel agent that does not invent data and does not confirm bookings"
+description: "WhatsApp assistant for small lodging businesses: FastAPI, Chatwoot, a simulated PMS and a local model. Twelve test conversations, 194 tests and a perfect Lighthouse score."
+publishDate: 2026-10-28
+tags: ["FastAPI", "Python", "Local LLM", "Chatwoot", "Docker", "AI Agents"]
+image: "copiloto"
+locale: "en"
+translationKey: "copiloto"
+---
+
+A boutique hotel in Villarrica loses sales in the minutes right after the first enquiry. The manager puts it plainly: if nobody answers within three minutes, the sale is gone. The guest, meanwhile, is willing to wait a day.
+
+That gap is the business. Enquiries arrive on WhatsApp, a person closes them, and during high season the phone eats 80% of the front desk's time. Night-time enquiries simply go unanswered.
+
+I built a copilot that handles that conversation, checks inventory and leaves the booking ready. A person confirms it.
+
+## What it does
+
+The guest writes as they would on WhatsApp. The copilot answers with verified hotel data, shows the location before asking for dates, checks availability in the PMS and creates a pre-booking that expires in fifteen minutes. When a request needs human judgement, it hands off with the context already gathered.
+
+On the other side, reception sees the conversation in Chatwoot tagged `commercial` or `night`, assigned to their team, with a private note carrying the exact time of the PMS reading and a three-minute timer running.
+
+## Stack and architecture
+
+| Layer | Technology |
+|------|------------|
+| Agent | FastAPI plus a custom tool loop over an OpenAI-compatible API |
+| Model | llama.cpp running Qwen 2.5 on the host, with no per-query cost |
+| Channel | Self-hosted Chatwoot with signed webhooks and a unified inbox |
+| State | SQLite with idempotent events; PostgreSQL and Redis for Chatwoot |
+| PMS | Own FastAPI service behind a swappable adapter |
+| Infra | Docker Compose, nginx with gzip, pytest for the test suites |
+
+The model runs outside Docker and the container reaches it through `host.docker.internal`, so the stack's memory budget does not include inference.
+
+## Three decisions that explain the rest
+
+**The bot does not confirm: the person does.** The agent gathers dates, guests, room type and name, then leaves a pre-booking. Confirmation happens in the PMS with a human looking at inventory. That is the difference between automating the conversation and automating the decision.
+
+**Hotel data comes from a tool, not from model memory.** Location, services, policies and prices live in a data file the agent queries before answering. A model can write; it cannot be the source of a price.
+
+**The engine is local.** No per-query cost and no guest data travelling to a third party, which is where Chilean personal data law is heading.
+
+## What broke
+
+This is the part people usually leave out.
+
+I built a battery of twelve reproducible conversations to measure the agent. On the third run something appeared that still bothers me: **the copilot created a booking with a name it made up**. The model was setting `guest_confirmed: true` in the tool argument and the code believed it.
+
+The fix was to stop trusting the argument. Consent is now checked against the guest's own words: a question or a "no" does not count, and the name must appear in one of their messages.
+
+The second defect showed up in operation. I asked where the hotel was and it answered **"calle Santa Fe 1234, right in downtown Santiago"**. A complete, invented address. That produced two rules: the agent queries the hotel before answering, and a reply that claims data without a tool is replaced by a safe message.
+
+The third one was mine. The guardrail I added started blocking correct replies that reused an earlier PMS reading. The same battery caught it.
+
+## Results
+
+```
+Conversation battery        12/12, no blocking failures
+Automated tests             157 for the copilot · 25 for the PMS · 12 for the Beds24 bridge
+End-to-end test             4 scenarios against the real stack
+Lighthouse                  100 · 100 · 100 · 100 (mobile and desktop)
+Landing page weight         103 KB
+```
+
+The end-to-end test checks what each side sees: a guest reply in under a second on the rule-based path, location shown before dates, a pre-booking awaiting confirmation, tags and a dated private note, and no availability promised when the PMS is down.
+
+## Challenges and limits
+
+The channel is simulated. The WhatsApp conversation in the demo is a faithful mock-up; the real connected channel is the Chatwoot inbox. Wiring official WhatsApp needs a provider.
+
+The demo PMS is simulated. A Beds24 bridge already translates that API into the copilot contract: it is built and tested, but still needs validation against a real account. Any other PMS needs its own adapter.
+
+Local inference costs about 18 seconds per reply. The rule-based flow answers in 0.3 seconds and is what runs when the model is unavailable.
+
+And user validation is still missing: testing so far is technical. A session with reception staff and guests is next.
+
+## Code
+
+The repository ships the whole stack, the evaluation battery and the iteration log with the numbers from every run.
+
+```bash
+make up     # starts Chatwoot, the copilot, the PMS and the landing page
+make demo   # verifies everything and warms the model
+```
+
+[github.com/sebitabravo/copiloto-recepcion](https://github.com/sebitabravo/copiloto-recepcion)

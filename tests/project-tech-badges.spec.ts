@@ -5,7 +5,7 @@ for (const theme of ["light", "dark"]) {
     await page.addInitScript((value) => localStorage.setItem("theme", value), theme)
     await page.goto("/")
     const cards = page.locator("[data-project-card]")
-    await expect(cards).toHaveCount(4)
+    await expect(cards).toHaveCount(5)
     for (const card of await cards.all()) {
       await card.scrollIntoViewIfNeeded()
       const tags = card.getByLabel("Tecnologías", { exact: true })

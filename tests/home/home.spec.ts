@@ -429,7 +429,7 @@ test.describe("Home Page", () => {
       )
 
       const cards = page.locator("[data-project-card][data-animate]")
-      await expect(cards).toHaveCount(4)
+      await expect(cards).toHaveCount(5)
       for (const card of await cards.all()) {
         await card.scrollIntoViewIfNeeded()
         await expect(card).toBeVisible()

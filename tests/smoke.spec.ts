@@ -148,13 +148,13 @@ test.describe("Projects — screenshots con fallback", () => {
   test("4 project cards renderizados", async ({ page }) => {
     await page.goto("/")
     const cards = page.locator("[data-project-card]")
-    await expect(cards).toHaveCount(4)
+    await expect(cards).toHaveCount(5)
   })
 
   test("each case sits on a tinted stage inside a window, without card chrome", async ({ page }) => {
     await page.goto("/")
     const cards = page.locator("[data-project-card]")
-    await expect(cards).toHaveCount(4)
+    await expect(cards).toHaveCount(5)
     for (const card of await cards.all()) {
       await card.scrollIntoViewIfNeeded()
       await expect(card.locator(".project-media")).toBeVisible()

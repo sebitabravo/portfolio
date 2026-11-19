@@ -32,27 +32,21 @@ const period = current
   : `<time datetime="${datetime(startDate)}">${monthYear(startDate)}</time> – <time datetime="${datetime(endDate ?? startDate)}">${monthYear(endDate ?? startDate)}</time>`
 
 // La convención del data layer: el último highlight es el caso publicado y `url` su destino.
-const caseHighlight = highlights.find(
-  (highlight) => /caso|case/i.test(highlight.label),
-) ?? highlights.at(-1)
+const caseHighlight = highlights.find((highlight) => /caso|case/i.test(highlight.label)) ?? highlights.at(-1)
 const evidence = caseHighlight ? highlights.filter((highlight) => highlight !== caseHighlight) : highlights
 const externalUrl = url?.startsWith("http")
 ---
 
 <div class="row">
   <div class="label">
-    {
-      current && <span class="mark" aria-hidden="true" />
-    }
+    {current && <span class="mark" aria-hidden="true" />}
     <Fragment set:html={period} />
   </div>
   <div class="main">
     <p class="who">{company}</p>
     <p>{position}</p>
     <p class="desc">{description}</p>
-    {
-      skills.length > 0 && <p class="stack">{skills.join(", ")}</p>
-    }
+    {skills.length > 0 && <p class="stack">{skills.join(", ")}</p>}
     {
       evidence.length > 0 && (
         <p class="stack" aria-label={t.work.evidenceLabel}>
@@ -68,8 +62,13 @@ const externalUrl = url?.startsWith("http")
     {
       url && (
         <p class="links small">
-          <a href={url} target={externalUrl ? "_blank" : undefined} rel={externalUrl ? "noopener noreferrer" : undefined}>
-            {t.work.viewCaseStudy}{caseHighlight && `: ${caseHighlight.value}`}
+          <a
+            href={url}
+            target={externalUrl ? "_blank" : undefined}
+            rel={externalUrl ? "noopener noreferrer" : undefined}
+          >
+            {t.work.viewCaseStudy}
+            {caseHighlight && `: ${caseHighlight.value}`}
           </a>
         </p>
       )

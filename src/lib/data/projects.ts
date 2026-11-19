@@ -3,7 +3,17 @@ import { PROJECT_STAGES, type Project } from "./types"
 
 type SharedProject = Pick<
   Project,
-  "slug" | "tags" | "featured" | "homeStage" | "stageOrder" | "status" | "publishDate" | "githubUrl" | "liveUrl" | "order" | "stage"
+  | "slug"
+  | "tags"
+  | "featured"
+  | "homeStage"
+  | "stageOrder"
+  | "status"
+  | "publishDate"
+  | "githubUrl"
+  | "liveUrl"
+  | "order"
+  | "stage"
 >
 type LocalizedProject = Pick<Project, "title" | "tagline" | "description" | "metrics" | "blogSlug"> & {
   // decision/trade-off del escenario (§2 momento 2). Trade-off ausente = la columna no se pinta, nunca queda vacía.
@@ -49,8 +59,7 @@ const projectEntries: ProjectEntry[] = [
         { label: "Tests", value: "194 green" },
         { label: "Lighthouse", value: "100 / 100 / 100 / 100" },
       ],
-      decision:
-        "Local LLM (llama.cpp + Qwen 2.5) serving hotel data through a tool instead of the model's memory.",
+      decision: "Local LLM (llama.cpp + Qwen 2.5) serving hotel data through a tool instead of the model's memory.",
       tradeoff:
         "Inference takes about 18 s, so a rules path answering in 0.3 s takes over the fallback whenever the model is unavailable.",
       blogSlug: "copiloto-recepcion-hotel-ia-local-en",
@@ -205,8 +214,7 @@ const projectEntries: ProjectEntry[] = [
         { label: "Model", value: "Llama 3.1 70B" },
       ],
       decision: "Turso + aiosqlite instead of PostgreSQL for the serverless deployment at the edge.",
-      tradeoff:
-        "Writes at the edge are slower than in traditional PostgreSQL, so it only serves read-dominated load.",
+      tradeoff: "Writes at the edge are slower than in traditional PostgreSQL, so it only serves read-dominated load.",
       blogSlug: "wenuke-asistente-climatico-whatsapp",
     },
   },

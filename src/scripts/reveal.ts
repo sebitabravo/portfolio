@@ -16,9 +16,7 @@ export function setupReveal(): void {
 
   teardownReveal()
 
-  const sections = Array.from(
-    document.querySelectorAll<HTMLElement>("main > section:not(.hero)"),
-  )
+  const sections = Array.from(document.querySelectorAll<HTMLElement>("main > section:not(.hero)"))
   if (sections.length === 0) return
 
   observer = new IntersectionObserver(

@@ -36,7 +36,6 @@ export function setupDotField(): void {
   let moveHandler: ((e: PointerEvent) => void) | null = null
   let leaveHandler: (() => void) | null = null
 
-
   const colors = (): void => {
     const cs = getComputedStyle(field)
     base = cs.color

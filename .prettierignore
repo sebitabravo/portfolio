@@ -4,22 +4,18 @@ playwright-report
 test-results
 .astro
 public
-pnpm-lock.yaml
-# Long-form prose and MDX content are edited by hand; reflowing them churns diffs.
+bun.lock
+# The design prototypes are frozen artifacts, not maintained code.
+design
+# Long-form prose is edited by hand; reflowing it only churns diffs.
 *.md
 *.mdx
-# Existing tests are edit-protected; format them together with their contracts.
+odd
+# Tests assert source text, so they are formatted together with their contracts.
 tests
 **/*.spec.ts
 **/*.test.ts
-# Pinned by source-text assertions in protected tests; format when those tests assert behavior instead.
-src/components/ui/Button.astro
-src/components/LanguageToggle.astro
-src/scripts/cert-carousel.ts
-src/scripts/language-toggle.ts
-pnpm-workspace.yaml
-# Would exceed the source line limits once formatted; split them first.
+# Formatting these would exceed the source line limit or rewrite CSP-pinned inline scripts.
 src/components/Projects.astro
-# Inline scripts are CSP hash-pinned in vercel.json and the Astro plugin cannot skip embedded code.
 src/layouts/Layout.astro
 src/components/Hero.astro

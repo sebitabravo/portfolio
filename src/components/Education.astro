@@ -21,7 +21,8 @@ const year = (date: Date): string => String(date.getUTCFullYear())
       <div class:list={["row", { current: entry.current }]}>
         <div class="label">
           {entry.current && <span class="mark" aria-hidden="true" />}
-          <time datetime={year(entry.startDate)}>{year(entry.startDate)}</time> – <time datetime={year(entry.endDate ?? entry.startDate)}>{year(entry.endDate ?? entry.startDate)}</time>
+          <time datetime={year(entry.startDate)}>{year(entry.startDate)}</time> –{" "}
+          <time datetime={year(entry.endDate ?? entry.startDate)}>{year(entry.endDate ?? entry.startDate)}</time>
         </div>
         <div class="main">
           <p class="who">{entry.institution}</p>

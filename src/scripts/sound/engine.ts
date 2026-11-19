@@ -39,14 +39,7 @@ function createSound() {
     return g
   }
 
-  const oscillator = (
-    type: OscillatorType,
-    f0: number,
-    f1: number,
-    duration: number,
-    gain: number,
-    at = 0,
-  ): void => {
+  const oscillator = (type: OscillatorType, f0: number, f1: number, duration: number, gain: number, at = 0): void => {
     const context = ctx as AudioContext
     const time = context.currentTime + at
     const osc = context.createOscillator()
@@ -83,8 +76,7 @@ function createSound() {
   const unlock = (): boolean => {
     if (!ctx) {
       const AudioContextCtor: typeof AudioContext | undefined =
-        window.AudioContext ??
-        (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext
+        window.AudioContext ?? (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext
       if (!AudioContextCtor) return false
       ctx = new AudioContextCtor()
       root.dataset.audio = "ready"

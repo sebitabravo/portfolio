@@ -147,8 +147,7 @@ export function setupStage(): void {
       const delta = e.key === "ArrowDown" ? 1 : e.key === "ArrowUp" ? -1 : 0
       if (delta === 0 && e.key !== "Home" && e.key !== "End") return
       e.preventDefault()
-      const next =
-        e.key === "Home" ? 0 : e.key === "End" ? tabs.length - 1 : (i + delta + tabs.length) % tabs.length
+      const next = e.key === "Home" ? 0 : e.key === "End" ? tabs.length - 1 : (i + delta + tabs.length) % tabs.length
       tabs[next].focus()
     })
   })

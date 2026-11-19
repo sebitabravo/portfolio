@@ -1,17 +1,21 @@
+// Resolución — endpoint OG dinámico: emite la tarjeta del diseño (nombre en Geist Pixel sobre
+// el campo de puntos, 1200×630, design/resolucion/og.html §12). Variante home por locale;
+// las variantes links/blog viven en src/pages/og/[locale]/[card].svg.ts. El prerender produce
+// los archivos en el build; los PNG crawler-safe de public/og/ siguen siendo el og:image que
+// apunta Layout (regenerarlos requiere scripts/generate-og-images.ts, fuera de esta unidad).
 import type { APIRoute, GetStaticPaths } from "astro"
 
-import { buildOgSvg, resolveOgLocale, resolveOgTitle } from "@/lib/og-image"
+import { buildResolucionOgSvg, OG_DESIGN_LOCALES, type OgDesignLocale } from "./_resolucion"
 
 export const prerender = true
 
 export const getStaticPaths: GetStaticPaths = () => {
-  return [{ params: { locale: "es" } }, { params: { locale: "en" } }]
+  return OG_DESIGN_LOCALES.map((locale) => ({ params: { locale } }))
 }
 
-export const GET: APIRoute = ({ params, url }) => {
-  const locale = resolveOgLocale(params.locale)
-  const title = resolveOgTitle(url.searchParams.get("title"), locale)
-  const svg = buildOgSvg(locale, title)
+export const GET: APIRoute = ({ params }) => {
+  const locale = (params.locale === "en" ? "en" : "es") as OgDesignLocale
+  const svg = buildResolucionOgSvg(locale, "home")
 
   return new Response(svg, {
     headers: {

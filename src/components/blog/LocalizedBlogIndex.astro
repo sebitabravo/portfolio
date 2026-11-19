@@ -1,27 +1,42 @@
 ---
+// Resolución — índice del blog como filas CV (design/resolucion/blog.html §12): fecha en la
+// columna label con <time datetime>, título-enlace .who, descripción .desc, línea .stack con
+// tags y tiempo de lectura, filtros con aria-pressed y contador role="status". Todas las
+// filas salen de la colección de contenido — nada hardcodeado. El post de Rápido Sur queda
+// fuera del índice por decisión del owner (§10 del diseño) hasta que exista captura real.
 import { getCollection } from "astro:content"
 import Layout from "@/layouts/Layout.astro"
-import BlogCard from "@/components/BlogCard.astro"
 import { personalInfo } from "@/lib/data"
-import { getProjectScreenshot } from "@/lib/portfolio-images"
 import { createStaticAlternates, getTranslations, type Locale } from "@/lib/i18n"
+import { formatMonthYear } from "@/lib/utils"
+import { articleTitleTransitionName } from "@/scripts/transitions"
 
 interface Props {
   locale: Locale
 }
 
+const HIDDEN_POST_SLUG = "rapido-sur-erp-mantenimiento-flotas"
+const READING_WORDS_PER_MINUTE = 220
+
 const { locale } = Astro.props
 const t = getTranslations(locale)
-const isEnglish = locale === "en"
+const isEnglish = locale === "es" ? false : true
+const prefix = isEnglish ? "/en" : ""
 const posts = (await getCollection("blog"))
   .filter((p) => (isEnglish ? ["en", "es"].includes(p.data.locale ?? "es") : (p.data.locale ?? "es") === "es"))
+  .filter((p) => p.id !== HIDDEN_POST_SLUG)
   .sort((a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime())
-const hasFallbackPosts = isEnglish && posts.some((post) => (post.data.locale ?? "es") !== "en")
+
+const kindOf = (tags: string[]): "caso" | "educacional" => (tags.includes("Educacional") ? "educacional" : "caso")
+const readingMinutes = (body: string | undefined): number =>
+  Math.max(1, Math.round((body ?? "").split(/\s+/).filter(Boolean).length / READING_WORDS_PER_MINUTE))
+
+const caseCount = posts.filter((p) => kindOf(p.data.tags) === "caso").length
+const educationalCount = posts.length - caseCount
 const spanishUrl = "https://sebita.dev/blog"
 const englishUrl = "https://sebita.dev/en/blog"
 const canonicalUrl = isEnglish ? englishUrl : spanishUrl
 const alternates = createStaticAlternates(locale, spanishUrl, englishUrl)
-const postCount = String(posts.length).padStart(2, "0")
 ---
 
 <Layout
@@ -31,107 +46,88 @@ const postCount = String(posts.length).padStart(2, "0")
   canonicalUrl={canonicalUrl}
   alternates={alternates}
 >
-  <main id="main-content" class="blog-index frame">
-    <nav class="blog-breadcrumb" aria-label={t.nav.breadcrumb}>
-      <ol class="meta-label flex flex-wrap items-center gap-2 text-muted-foreground">
-        <li><a href={isEnglish ? "/en" : "/"} class="transition-colors hover:text-foreground">{t.nav.home}</a></li>
-        <li aria-hidden="true">/</li>
-        <li class="text-foreground" aria-current="page">{t.blog.title}</li>
-      </ol>
-    </nav>
-    <header class="blog-index-hero" data-animate>
-      <h1>{t.blog.title}</h1>
-      <p class="blog-index-intro">{t.blog.intro}</p>
-      <div class="blog-index-meta meta-label">{postCount}</div>
-    </header>
-
-    {
-      hasFallbackPosts && (
-        <aside class="blog-index-note meta-label" role="note">
-          {t.blog.fallbackNotice}
-        </aside>
-      )
-    }
-
-    {
-      posts.length === 0 ? (
-        <p class="text-base text-muted-foreground">{t.blog.empty}</p>
-      ) : (
-        <div class="blog-grid">
-          {posts.map((post, index) => (
-            <BlogCard
-              id={post.id}
-              title={post.data.title}
-              description={post.data.description}
-              publishDate={post.data.publishDate}
-              tags={post.data.tags}
-              image={post.data.image ? getProjectScreenshot(post.data.image) : undefined}
-              animateDelay={(index % 3) + 1}
-              locale={locale}
-              contentLocale={post.data.locale === "en" ? "en" : "es"}
-              fallbackLabel={isEnglish && (post.data.locale ?? "es") !== "en" ? t.blog.fallbackCardLabel : undefined}
-            />
-          ))}
+  <main id="main-content">
+    <section class="page-top">
+      <div class="wrap">
+        <nav aria-label={t.nav.breadcrumb}>
+          <ol class="crumb">
+            <li><a href={prefix || "/"}>{t.nav.home}</a></li>
+            <li aria-hidden="true">/</li>
+            <li aria-current="page">{t.blog.title}</li>
+          </ol>
+        </nav>
+        <h1 id="h-blog" class="page-title" data-load-resolve>{t.blog.title}</h1>
+        <p class="lead">
+          {t.blog.intro}
+        </p>
+        <div class="filters" role="group" aria-label={t.blog.filtersLabel}>
+          <button class="chip" type="button" data-f="all" aria-pressed="true">{t.blog.filters.all} {posts.length}</button>
+          <button class="chip" type="button" data-f="caso" aria-pressed="false">{t.blog.filters.case} {caseCount}</button>
+          <button class="chip" type="button" data-f="educacional" aria-pressed="false">
+            {t.blog.filters.educational} {educationalCount}
+          </button>
         </div>
-      )
-    }
+      </div>
+    </section>
+    <section aria-label={t.blog.postsLabel}>
+      <div class="wrap">
+        {
+          posts.length === 0 ? (
+            <p class="lead">{t.blog.empty}</p>
+          ) : (
+            <div class="posts" id="posts">
+              {posts.map((post) => {
+                const contentLocale = post.data.locale === "en" ? "en" : "es"
+                const isFallback = isEnglish && contentLocale === "es"
+                return (
+                  <article class="row" data-kind={kindOf(post.data.tags)} lang={contentLocale}>
+                    <div class="label">
+                      <time lang={locale} datetime={post.data.publishDate.toISOString().slice(0, 10)}>
+                        {formatMonthYear(post.data.publishDate, locale)}
+                      </time>
+                    </div>
+                    <div class="main">
+                      <p class="who">
+                        <a href={`${prefix}/blog/${post.id}`} transition:name={articleTitleTransitionName(post.id)}>
+                          {post.data.title}
+                        </a>
+                      </p>
+                      <p class="desc">{post.data.description}</p>
+                      <p class="stack">
+                        {post.data.tags.join(", ")}
+                        <br />
+                        {readingMinutes(post.body)} {t.blog.readingTime}
+                        {isFallback && (
+                          <>
+                            <br />
+                            <span lang={locale}>{t.blog.fallbackCardLabel}</span>
+                          </>
+                        )}
+                      </p>
+                    </div>
+                  </article>
+                )
+              })}
+            </div>
+          )
+        }
+        <p class="count small" id="count" role="status" aria-live="polite" data-label={t.blog.countLabel}>
+          {posts.length} {t.blog.countLabel}
+        </p>
+      </div>
+    </section>
   </main>
 </Layout>
 
-<style>
-  .blog-index {
-    padding: 6.5rem clamp(1rem, 4vw, 3.5rem) clamp(4rem, 8vw, 7rem);
-  }
+<script>
+  import { setupBlogFilters } from "@/scripts/blog-filters"
 
-  .blog-breadcrumb {
-    margin-bottom: clamp(2.5rem, 6vw, 4.5rem);
-  }
+  setupBlogFilters()
+  document.addEventListener("astro:page-load", setupBlogFilters)
+</script>
+<script>
+  import { setupPageResolve } from "@/scripts/page-resolve"
 
-  .blog-index-hero {
-    margin-bottom: clamp(3rem, 6vw, 5rem);
-  }
-
-  .blog-index-meta {
-    margin-top: 1rem;
-  }
-
-  .blog-index-hero h1 {
-    margin: 0 0 1.5rem;
-    font-size: clamp(4.5rem, 14vw, 12rem);
-    line-height: 0.82;
-    letter-spacing: -0.035em;
-  }
-
-  .blog-index-intro {
-    max-width: 46ch;
-    margin: 0;
-    color: hsl(var(--muted-foreground));
-    font-size: clamp(1.0625rem, 1.4vw, 1.25rem);
-    line-height: 1.5;
-  }
-
-  .blog-index-note {
-    max-width: 70ch;
-    margin: -1.5rem 0 3rem;
-    line-height: 1.6;
-    text-transform: none;
-    letter-spacing: 0.02em;
-  }
-
-  .blog-grid {
-    display: grid;
-    gap: clamp(2.5rem, 4vw, 3.5rem) clamp(1.25rem, 2.4vw, 2rem);
-  }
-
-  @media (min-width: 768px) {
-    .blog-grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-  }
-
-  @media (min-width: 1100px) {
-    .blog-grid {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-  }
-</style>
+  setupPageResolve()
+  document.addEventListener("astro:page-load", setupPageResolve)
+</script>

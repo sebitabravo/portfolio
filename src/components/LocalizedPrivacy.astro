@@ -1,7 +1,11 @@
 ---
+// Resolución — política de privacidad como filas CV (design/resolucion/privacidad.html §12):
+// ocho secciones, una por fila, con la copy legal intacta (S7). El h1 usa post-title: un
+// título de 22 caracteres en page-title a 9rem desborda (§12 fija post-title para títulos
+// largos). Etiquetas de sección en la columna label, contenido en .main.
 import Layout from "@/layouts/Layout.astro"
 import { personalInfo } from "@/lib/data"
-import { createStaticAlternates, type Locale } from "@/lib/i18n"
+import { createStaticAlternates, getTranslations, type Locale } from "@/lib/i18n"
 
 interface Props {
   locale: Locale
@@ -83,7 +87,7 @@ const PRIVACY_COPY: Record<Locale, PrivacyLocaleCopy> = {
     description:
       "Política de privacidad de sebita.dev. Sebastian Bravo no recolecta datos personales. Sitio estático sin analítica ni seguimiento. Información sobre derechos ARCO y GDPR.",
     heading: "Política de Privacidad",
-    updatedLabel: "Última actualización:",
+    updatedLabel: "última actualización:",
     controllerHeading: "1. Responsable del Tratamiento",
     controllerCountry: "Chile",
     emailLead: "Correo electrónico:",
@@ -365,6 +369,8 @@ const PRIVACY_COPY: Record<Locale, PrivacyLocaleCopy> = {
 const { locale } = Astro.props
 const isEnglish = locale === "en"
 const c = PRIVACY_COPY[locale]
+const t = getTranslations(locale)
+const homePath = isEnglish ? "/en" : "/"
 const spanishUrl = "https://sebita.dev/privacy/"
 const englishUrl = "https://sebita.dev/en/privacy/"
 const canonicalUrl = isEnglish ? englishUrl : spanishUrl
@@ -373,99 +379,76 @@ const alternates = createStaticAlternates(locale, spanishUrl, englishUrl)
 
 <Layout title={c.title} description={c.description} locale={locale} canonicalUrl={canonicalUrl} alternates={alternates}>
   <main id="main-content">
-    <div class="px-4 md:px-6">
-      <div class="legal-doc mx-auto max-w-[720px] pt-24 pb-16 md:pt-28 md:pb-24">
-        <h1 class="legal-title">
-          {c.heading}
-        </h1>
-        <p class="mt-2 text-xs text-caption-color">
-          {`${c.updatedLabel} ${c.lastUpdate}`}
+    <div class="page-top">
+      <div class="wrap">
+        <nav aria-label={t.nav.breadcrumb}>
+          <ol class="crumb">
+            <li><a href={homePath}>{t.nav.home}</a></li>
+            <li aria-hidden="true">/</li>
+            <li aria-current="page">{t.footer.privacy}</li>
+          </ol>
+        </nav>
+        <h1 class="post-title">{c.heading}</h1>
+        <p class="meta-line">
+          <span>{c.updatedLabel} <time datetime="2026-09-25">{c.lastUpdate}</time></span>
         </p>
-
-        <div class="mt-10 space-y-10 text-muted-foreground">
-          <section>
-            <h2 class="legal-heading text-foreground">
-              {c.controllerHeading}
-            </h2>
-            <div class="mt-3 space-y-2 leading-relaxed">
+      </div>
+    </div>
+    <div class="legal">
+      <div class="wrap">
+        <div class="posts">
+          <section class="row">
+            <div class="label">{c.controllerHeading}</div>
+            <div class="main">
+              <p><strong>{personalInfo.name}</strong> <span>{c.controllerCountry}</span></p>
               <p>
-                <strong class="text-foreground">Sebastian Bravo</strong>
-                <br />
-                {c.controllerCountry}
+                {c.emailLead} <a href={`mailto:${personalInfo.email}`}>{personalInfo.email}</a>
               </p>
               <p>
-                {c.emailLead}{" "}
-                <a
-                  href={`mailto:${personalInfo.email}`}
-                  class="text-primary underline decoration-primary/30 underline-offset-[3px] hover:decoration-primary"
-                >
-                  {personalInfo.email}
-                </a>
-              </p>
-              <p>
-                {c.siteLead}<a
-                  href="https://sebita.dev"
-                  class="text-primary underline decoration-primary/30 underline-offset-[3px] hover:decoration-primary"
-                  >sebita.dev</a
-                >{c.siteRest}
+                {c.siteLead}<a href="https://sebita.dev">sebita.dev</a>{c.siteRest}
               </p>
             </div>
           </section>
 
-          <section>
-            <h2 class="legal-heading text-foreground">
-              {c.noCollectHeading}
-            </h2>
-            <div class="mt-3 space-y-2 leading-relaxed">
-              <p>
-                {c.noCollectLeadA}<strong class="text-foreground">{c.noCollectLeadStrong}</strong>{c.noCollectLeadB}
-              </p>
+          <section class="row">
+            <div class="label">{c.noCollectHeading}</div>
+            <div class="main">
+              <p>{c.noCollectLeadA}<strong>{c.noCollectLeadStrong}</strong>{c.noCollectLeadB}</p>
               <p>{c.noCollectListLead}</p>
-              <ul class="list-disc space-y-1 pl-6">
+              <ul>
                 {c.noCollectBullets.map((bullet) => <li>{bullet}</li>)}
               </ul>
             </div>
           </section>
 
-          <section>
-            <h2 class="legal-heading text-foreground">
-              {c.analyticsHeading}
-            </h2>
-            <div class="mt-3 space-y-2 leading-relaxed">
+          <section class="row">
+            <div class="label">{c.analyticsHeading}</div>
+            <div class="main">
               <p>{c.analyticsIntro}</p>
               <p>{c.analyticsListLead}</p>
-              <ul class="list-disc space-y-1 pl-6">
+              <ul>
                 {
                   c.analyticsBullets.map((bullet) => (
                     <li>
-                      <strong class="text-foreground">{bullet.term}:</strong> {bullet.detail}
+                      <strong>{bullet.term}</strong> <span>{bullet.detail}</span>
                     </li>
                   ))
                 }
               </ul>
-              <p class="text-base">{c.analyticsNote}</p>
+              <p>{c.analyticsNote}</p>
             </div>
           </section>
 
-          <section>
-            <h2 class="legal-heading text-foreground">
-              {c.linksHeading}
-            </h2>
-            <div class="mt-3 space-y-2 leading-relaxed">
+          <section class="row">
+            <div class="label">{c.linksHeading}</div>
+            <div class="main">
               <p>{c.linksLead}</p>
-              <ul class="list-disc space-y-1 pl-6">
+              <ul>
                 {
                   c.links.map((link) => (
                     <li>
-                      <a
-                        href={link.href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="text-primary underline decoration-primary/30 underline-offset-[3px] hover:decoration-primary"
-                      >
-                        {link.label}
-                      </a>{" "}
-                      {link.note}
+                      <strong><a href={link.href} target="_blank" rel="noopener noreferrer">{link.label}</a></strong>
+                      <span>{link.note}</span>
                     </li>
                   ))
                 }
@@ -477,43 +460,40 @@ const alternates = createStaticAlternates(locale, spanishUrl, englishUrl)
           {
             isEnglish ? (
               <>
-                <section>
-                  <h2 class="legal-heading text-foreground">{c.gdpr.heading}</h2>
-                  <div class="mt-3 space-y-2 leading-relaxed">
+                <section class="row">
+                  <div class="label">{c.gdpr.heading}</div>
+                  <div class="main">
                     <p>
                       {c.gdpr.introLead}
-                      <strong class="text-foreground">{c.gdpr.introStrong}</strong>
+                      <strong>{c.gdpr.introStrong}</strong>
                       {c.gdpr.introRest}
                     </p>
-                    <ul class="list-disc space-y-1 pl-6">
+                    <ul>
                       {c.gdpr.bullets.map((bullet) => (
                         <li>
-                          <strong class="text-foreground">{bullet.term}:</strong> {bullet.detail}
+                          <strong>{bullet.term}</strong> <span>{bullet.detail}</span>
                         </li>
                       ))}
                     </ul>
-                    <p>
-                      <strong class="text-foreground">{c.gdpr.basisLead}</strong>
-                      {c.gdpr.basisRest}
-                    </p>
+                    <p><strong>{c.gdpr.basisLead}</strong>{c.gdpr.basisRest}</p>
                   </div>
                 </section>
 
-                <section>
-                  <h2 class="legal-heading text-foreground">{c.arco.heading}</h2>
-                  <div class="mt-3 space-y-2 leading-relaxed">
+                <section class="row">
+                  <div class="label">{c.arco.heading}</div>
+                  <div class="main">
                     <p>
                       {c.arco.introLead}
-                      <strong class="text-foreground">{c.arco.law1}</strong>
+                      <strong>{c.arco.law1}</strong>
                       {c.arco.law1Note}
                       {c.arco.mid}
-                      <strong class="text-foreground">{c.arco.law2}</strong>
+                      <strong>{c.arco.law2}</strong>
                       {c.arco.law2Note}
                     </p>
-                    <ul class="list-disc space-y-1 pl-6">
+                    <ul>
                       {c.arco.bullets.map((bullet) => (
                         <li>
-                          <strong class="text-foreground">{bullet.term}:</strong> {bullet.detail}
+                          <strong>{bullet.term}</strong> <span>{bullet.detail}</span>
                         </li>
                       ))}
                     </ul>
@@ -523,21 +503,21 @@ const alternates = createStaticAlternates(locale, spanishUrl, englishUrl)
               </>
             ) : (
               <>
-                <section>
-                  <h2 class="legal-heading text-foreground">{c.arco.heading}</h2>
-                  <div class="mt-3 space-y-2 leading-relaxed">
+                <section class="row">
+                  <div class="label">{c.arco.heading}</div>
+                  <div class="main">
                     <p>
                       {c.arco.introLead}
-                      <strong class="text-foreground">{c.arco.law1}</strong>
+                      <strong>{c.arco.law1}</strong>
                       {c.arco.law1Note}
                       {c.arco.mid}
-                      <strong class="text-foreground">{c.arco.law2}</strong>
+                      <strong>{c.arco.law2}</strong>
                       {c.arco.law2Note}
                     </p>
-                    <ul class="list-disc space-y-1 pl-6">
+                    <ul>
                       {c.arco.bullets.map((bullet) => (
                         <li>
-                          <strong class="text-foreground">{bullet.term}:</strong> {bullet.detail}
+                          <strong>{bullet.term}</strong> <span>{bullet.detail}</span>
                         </li>
                       ))}
                     </ul>
@@ -545,56 +525,44 @@ const alternates = createStaticAlternates(locale, spanishUrl, englishUrl)
                   </div>
                 </section>
 
-                <section>
-                  <h2 class="legal-heading text-foreground">{c.gdpr.heading}</h2>
-                  <div class="mt-3 space-y-2 leading-relaxed">
+                <section class="row">
+                  <div class="label">{c.gdpr.heading}</div>
+                  <div class="main">
                     <p>
                       {c.gdpr.introLead}
-                      <strong class="text-foreground">{c.gdpr.introStrong}</strong>
+                      <strong>{c.gdpr.introStrong}</strong>
                       {c.gdpr.introRest}
                     </p>
-                    <ul class="list-disc space-y-1 pl-6">
+                    <ul>
                       {c.gdpr.bullets.map((bullet) => (
                         <li>
-                          <strong class="text-foreground">{bullet.term}:</strong> {bullet.detail}
+                          <strong>{bullet.term}</strong> <span>{bullet.detail}</span>
                         </li>
                       ))}
                     </ul>
-                    <p>
-                      <strong class="text-foreground">{c.gdpr.basisLead}</strong>
-                      {c.gdpr.basisRest}
-                    </p>
+                    <p><strong>{c.gdpr.basisLead}</strong>{c.gdpr.basisRest}</p>
                   </div>
                 </section>
               </>
             )
           }
 
-          <section>
-            <h2 class="legal-heading text-foreground">
-              {c.changesHeading}
-            </h2>
-            <div class="mt-3 space-y-2 leading-relaxed">
+          <section class="row">
+            <div class="label">{c.changesHeading}</div>
+            <div class="main">
               <p>{c.changesP1}</p>
               <p>{c.changesP2}</p>
             </div>
           </section>
 
-          <section>
-            <h2 class="legal-heading text-foreground">
-              {c.contactHeading}
-            </h2>
-            <div class="mt-3 space-y-2 leading-relaxed">
+          <section class="row">
+            <div class="label">{c.contactHeading}</div>
+            <div class="main">
               <p>{c.contactP1}</p>
               <p>
-                <a
-                  href={`mailto:${personalInfo.email}`}
-                  class="font-medium text-primary underline decoration-primary/30 underline-offset-[3px] hover:decoration-primary"
-                >
-                  {personalInfo.email}
-                </a>
+                <a href={`mailto:${personalInfo.email}`}>{personalInfo.email}</a>
               </p>
-              <p class="text-base">{c.contactNote}</p>
+              <p>{c.contactNote}</p>
             </div>
           </section>
         </div>

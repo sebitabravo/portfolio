@@ -30,11 +30,3 @@ export function formatPeriod(
   const finish = current || !end ? present : formatMonthYear(end, locale)
   return `${formatMonthYear(start, locale)} — ${finish}`
 }
-
-// Class-merge helper following the shadcn/ui cn() convention (clsx + tailwind-merge).
-import { type ClassValue, clsx } from "clsx"
-import { twMerge } from "tailwind-merge"
-
-export function cn(...inputs: ClassValue[]): string {
-  return twMerge(clsx(inputs))
-}

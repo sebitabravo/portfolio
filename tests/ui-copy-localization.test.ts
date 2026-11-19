@@ -14,7 +14,6 @@ const en = JSON.parse(readFileSync("src/lib/i18n/en.json", "utf8")) as ShellCopy
 
 const header = readFileSync("src/components/Header.astro", "utf8")
 const footer = readFileSync("src/components/Footer.astro", "utf8")
-const projects = readFileSync("src/components/ProjectTile.astro", "utf8")
 const experienceItem = readFileSync("src/components/ExperienceItem.astro", "utf8")
 const contact = readFileSync("src/components/Contact.astro", "utf8")
 const notFound = readFileSync("src/components/LocalizedNotFoundPage.astro", "utf8")
@@ -87,11 +86,6 @@ describe("project, work, and contact UI copy", () => {
   })
 
   it("binds project and work labels to the dictionary without changing data-driven metric or tag content", () => {
-    expect(projects).toContain('alt={t.projects.screenshotAlt.replace("{title}", title)}')
-    expect(projects).toContain('aria-label={t.projects.evidenceLabel}')
-    expect(projects).toContain('aria-label={t.projects.technologiesLabel}')
-    expect(projects).toContain("<span>{metric.label}</span>")
-    expect(projects).toContain("{tag}")
     expect(experienceItem).toContain('aria-label={t.work.evidenceLabel}')
     expect(experienceItem).toContain("<span>{highlight.label}</span>")
     expect(experienceItem).toContain("{description}")

@@ -24,7 +24,7 @@ export function setupHub(): void {
     mail.addEventListener("click", async () => {
       const ok = await copyText(email)
       sound.play("chirp")
-      if (mailStatus) mailStatus.textContent = ok ? mail.dataset.ok ?? "" : mail.dataset.error ?? ""
+      if (mailStatus) mailStatus.textContent = ok ? (mail.dataset.ok ?? "") : (mail.dataset.error ?? "")
       mailDisplay.textContent = ok ? copied : failed
       setTimeout(() => {
         mailDisplay.textContent = original
@@ -43,7 +43,7 @@ export function setupHub(): void {
       const ok = await copyText(block.textContent ?? "")
       sound.play("chirp")
       if (status) status.textContent = button.dataset.ok ?? ""
-      button.textContent = ok ? button.dataset.copied ?? was : button.dataset.retry ?? was
+      button.textContent = ok ? (button.dataset.copied ?? was) : (button.dataset.retry ?? was)
       setTimeout(() => {
         button.textContent = was
       }, CONFIRM_HOLD_MS)

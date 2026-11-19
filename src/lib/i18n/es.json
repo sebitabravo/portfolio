@@ -41,7 +41,11 @@
   },
   "story": {
     "label": "Del concepto al despliegue",
-    "acts": ["Empieza con un problema real.", "Se vuelve código que se puede mantener.", "Y termina funcionando en producción."]
+    "acts": [
+      "Empieza con un problema real.",
+      "Se vuelve código que se puede mantener.",
+      "Y termina funcionando en producción."
+    ]
   },
   "os": {
     "shortcuts": "Accesos directos del escritorio",

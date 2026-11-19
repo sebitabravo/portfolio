@@ -58,7 +58,10 @@ const homePath = isEnglish ? "/en" : "/"
 const blogPath = isEnglish ? "/en/blog" : "/blog"
 const prefix = isEnglish ? "/en" : ""
 const toc = headings.filter((heading) => heading.depth === 2)
-const readingMinutes = Math.max(1, Math.round((post.body ?? "").split(/\s+/).filter(Boolean).length / READING_WORDS_PER_MINUTE))
+const readingMinutes = Math.max(
+  1,
+  Math.round((post.body ?? "").split(/\s+/).filter(Boolean).length / READING_WORDS_PER_MINUTE),
+)
 const visiblePosts = (await getCollection("blog"))
   .filter((p) => (isEnglish ? ["en", "es"].includes(p.data.locale ?? "es") : (p.data.locale ?? "es") === "es"))
   .filter((p) => p.id !== HIDDEN_POST_SLUG)

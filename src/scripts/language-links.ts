@@ -58,9 +58,7 @@ function targetFor(link: HTMLAnchorElement): string {
   const params = window.location.search
   const hash = window.location.hash
   const isActive = link.getAttribute("aria-current") === "true"
-  const alternate = document.querySelector<HTMLLinkElement>(
-    `link[rel="alternate"][hreflang="${language}"]`,
-  )
+  const alternate = document.querySelector<HTMLLinkElement>(`link[rel="alternate"][hreflang="${language}"]`)
 
   if (isActive) return normalizePath(window.location.pathname) + params + hash
 
@@ -77,7 +75,7 @@ function targetFor(link: HTMLAnchorElement): string {
     const slug = normalizePath(window.location.pathname).split("/").filter(Boolean).pop()
     const prefix = language === "en" ? "/en" : ""
     const candidate = slug !== undefined ? `${prefix}/blog/${slug}` : BLOG_INDEX[language]
-    return (language === "en" ? candidate : BLOG_INDEX[language] ?? candidate) + params + hash
+    return (language === "en" ? candidate : (BLOG_INDEX[language] ?? candidate)) + params + hash
   }
 
   return normalizePath(window.location.pathname) + params + hash

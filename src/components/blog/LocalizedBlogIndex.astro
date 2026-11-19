@@ -61,10 +61,15 @@ const alternates = createStaticAlternates(locale, spanishUrl, englishUrl)
           {t.blog.intro}
         </p>
         <div class="filters" role="group" aria-label={t.blog.filtersLabel}>
-          <button class="chip" type="button" data-f="all" aria-pressed="true">{t.blog.filters.all} {posts.length}</button>
-          <button class="chip" type="button" data-f="caso" aria-pressed="false">{t.blog.filters.case} {caseCount}</button>
+          <button class="chip" type="button" data-f="all" aria-pressed="true"
+            >{t.blog.filters.all} {posts.length}</button
+          >
+          <button class="chip" type="button" data-f="caso" aria-pressed="false"
+            >{t.blog.filters.case} {caseCount}</button
+          >
           <button class="chip" type="button" data-f="educacional" aria-pressed="false">
-            {t.blog.filters.educational} {educationalCount}
+            {t.blog.filters.educational}
+            {educationalCount}
           </button>
         </div>
       </div>
@@ -112,7 +117,8 @@ const alternates = createStaticAlternates(locale, spanishUrl, englishUrl)
           )
         }
         <p class="count small" id="count" role="status" aria-live="polite" data-label={t.blog.countLabel}>
-          {posts.length} {t.blog.countLabel}
+          {posts.length}
+          {t.blog.countLabel}
         </p>
       </div>
     </section>

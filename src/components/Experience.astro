@@ -14,8 +14,6 @@ const entries = getWorkExperience(locale)
 ---
 
 <div class="reveal">
-  {
-    entries.length === 0 && <p>{t.work.noExperience}</p>
-  }
+  {entries.length === 0 && <p>{t.work.noExperience}</p>}
   {entries.map((entry) => <ExperienceItem {...entry} locale={locale} />)}
 </div>

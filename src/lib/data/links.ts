@@ -57,7 +57,12 @@ export const hubContent: Record<Locale, HubCopy> = {
       { title: "blog", href: `${BASE}/blog`, display: "sebita.dev/blog", external: true },
       { title: "cv", href: CV, display: "descargar pdf", download: true },
       { title: "github", href: "https://github.com/sebitabravo", display: "github.com/sebitabravo", external: true },
-      { title: "linkedin", href: "https://linkedin.com/in/sebitabravo", display: "linkedin.com/in/sebitabravo", external: true },
+      {
+        title: "linkedin",
+        href: "https://linkedin.com/in/sebitabravo",
+        display: "linkedin.com/in/sebitabravo",
+        external: true,
+      },
       { title: "agenda", href: CAL, display: "cal.com/sebitabravo/15min", external: true },
       { title: "youtube", href: YOUTUBE, display: "youtube.com/@sebitabravo", external: true },
     ],
@@ -101,7 +106,8 @@ export const hubContent: Record<Locale, HubCopy> = {
   },
   en: {
     metaTitle: "Links — Sebastián Bravo",
-    metaDescription: "Portfolio, projects, blog, GitHub, LinkedIn and booking for Sebastián Bravo, full-stack developer.",
+    metaDescription:
+      "Portfolio, projects, blog, GitHub, LinkedIn and booking for Sebastián Bravo, full-stack developer.",
     role: "Full-Stack Developer",
     lead: "Complete web platforms, from front-end to deployment, with AI where it solves a real problem.",
     links: [
@@ -110,7 +116,12 @@ export const hubContent: Record<Locale, HubCopy> = {
       { title: "blog", href: `${BASE}/blog`, display: "sebita.dev/blog", external: true },
       { title: "cv", href: CV, display: "download pdf", download: true },
       { title: "github", href: "https://github.com/sebitabravo", display: "github.com/sebitabravo", external: true },
-      { title: "linkedin", href: "https://linkedin.com/in/sebitabravo", display: "linkedin.com/in/sebitabravo", external: true },
+      {
+        title: "linkedin",
+        href: "https://linkedin.com/in/sebitabravo",
+        display: "linkedin.com/in/sebitabravo",
+        external: true,
+      },
       { title: "book a call", href: CAL, display: "cal.com/sebitabravo/15min", external: true },
       { title: "youtube", href: YOUTUBE, display: "youtube.com/@sebitabravo", external: true },
     ],

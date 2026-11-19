@@ -41,9 +41,7 @@ export function fontsReady(): Promise<boolean> {
     document.fonts.load(`1em "${family}"`, "Sebastián Bravo trabajo"),
   )
   return Promise.race([Promise.all(loads), new Promise((r) => setTimeout(r, 1200))]).then(
-    () =>
-      document.fonts.check('1em "GP Line"') &&
-      document.fonts.check('1em "GP Circle"'),
+    () => document.fonts.check('1em "GP Line"') && document.fonts.check('1em "GP Circle"'),
   )
 }
 

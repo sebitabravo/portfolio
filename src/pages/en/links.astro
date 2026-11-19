@@ -12,7 +12,13 @@ const canonicalUrl = "https://sebita.dev/en/links"
 const alternates = createStaticAlternates("en", "https://sebita.dev/links", "https://sebita.dev/en/links")
 ---
 
-<Layout title={c.metaTitle} description={c.metaDescription} locale="en" canonicalUrl={canonicalUrl} alternates={alternates}>
+<Layout
+  title={c.metaTitle}
+  description={c.metaDescription}
+  locale="en"
+  canonicalUrl={canonicalUrl}
+  alternates={alternates}
+>
   <main id="main-content">
     <section class="page-top" aria-labelledby="h-links">
       <div class="wrap hub">
@@ -64,7 +70,9 @@ const alternates = createStaticAlternates("en", "https://sebita.dev/links", "htt
           c.blocks.map((block) => (
             <>
               <h3>{block.label}</h3>
-              <pre class="copyblock" id={block.id} tabindex="0">{block.content}</pre>
+              <pre class="copyblock" id={block.id} tabindex="0">
+                {block.content}
+              </pre>
               <button
                 class={`btn ${block.variant}`}
                 type="button"

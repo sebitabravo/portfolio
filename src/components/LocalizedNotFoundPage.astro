@@ -1,10 +1,8 @@
 ---
-// Resolución — 404 (design/resolucion/404.html §12): nf-code en Pixel que se resuelve al
-// cargar, rampa de las cuatro formas, título nf-title, CTAs y nf-links. noindex; las barras
-// SMPTE desaparecen (la UI es monocroma).
 import Layout from "@/layouts/Layout.astro"
 import { personalInfo } from "@/lib/data"
 import { getTranslations, type Locale } from "@/lib/i18n"
+import { homeSectionFragment } from "@/lib/home-sections"
 
 interface Props {
   locale: Locale
@@ -24,39 +22,22 @@ const blogUrl = `${homeUrl}blog`
   noindex
 >
   <main id="main-content">
-    <div class="page-top">
-      <div class="wrap">
-        <nav aria-label={t.nav.breadcrumb}>
-          <ol class="crumb">
-            <li><a href={homeUrl}>{t.nav.home}</a></li>
-            <li aria-hidden="true">/</li>
-            <li aria-current="page">{t.error404.crumb}</li>
-          </ol>
-        </nav>
-        <p class="nf-code" aria-hidden="true" data-load-resolve>404</p>
-        <div class="nf-ramp" aria-hidden="true">
-          <span class="s0">404</span><span class="s1">404</span><span class="s2">404</span><span class="s3">404</span
-          ><span>404</span>
-        </div>
-        <h1 class="nf-title">{t.error404.heading}</h1>
-        <p class="lead">{t.error404.message}</p>
-        <div class="cta">
-          <a class="btn primary" href={homeUrl}>{t.error404.backHome}</a>
-          <a class="btn ghost" href={blogUrl}>{t.error404.viewBlog}</a>
-        </div>
-        <div class="nf-links small">
-          <a href={`${homeUrl}#trabajo`}>{t.nav.projects}</a>
-          <a href={`${homeUrl}#contacto`}>{t.nav.contact}</a>
-          <a href={`${homeUrl}links`}>{t.nav.links}</a>
-        </div>
-      </div>
-    </div>
+    <nav aria-label={t.nav.breadcrumb}>
+      <ol>
+        <li><a href={homeUrl}>{t.nav.home}</a></li>
+        <li aria-current="page">{t.error404.crumb}</li>
+      </ol>
+    </nav>
+    <h1>{t.error404.heading}</h1>
+    <p>{t.error404.message}</p>
+    <p>
+      <a href={homeUrl}>{t.error404.backHome}</a>
+      <a href={blogUrl}>{t.error404.viewBlog}</a>
+    </p>
+    <ul>
+      <li><a href={`${homeUrl}${homeSectionFragment(locale, "work")}`}>{t.nav.projects}</a></li>
+      <li><a href={`${homeUrl}${homeSectionFragment(locale, "contact")}`}>{t.nav.contact}</a></li>
+      <li><a href={`${homeUrl}links`}>{t.nav.links}</a></li>
+    </ul>
   </main>
 </Layout>
-
-<script>
-  import { setupPageResolve } from "@/scripts/page-resolve"
-
-  setupPageResolve()
-  document.addEventListener("astro:page-load", setupPageResolve)
-</script>

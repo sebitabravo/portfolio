@@ -7,17 +7,6 @@ export interface SiteConfig {
   description: string
 }
 
-// THEMES lives here instead of scripts/theme-toggle.ts on purpose: that
-// module ships inside a CSP-hashed inline <script>, so its runtime bytes must
-// stay identical. The toggle imports only the type (erased at build).
-export const THEMES = {
-  LIGHT: "light",
-  DARK: "dark",
-  SYSTEM: "system",
-} as const
-
-export type ThemePreference = (typeof THEMES)[keyof typeof THEMES]
-
 export interface CarouselCertificationData {
   name: string
   organization: string

@@ -39,7 +39,6 @@ const routes = [
   },
 ] as const;
 
-const themes = ["light", "dark"] as const;
 const blogSurfaceSelector = "main#main-content";
 const blogOrigin = "https://sebita.dev";
 
@@ -60,7 +59,7 @@ test.describe("Blog accessibility", () => {
       await page.goto(indexPath);
       await expect(page.locator("main#main-content h1")).toHaveText(t.blog.title);
       await expect(page.locator('head meta[name="description"]')).toHaveAttribute("content", t.blog.description);
-      await expect(page.locator("main#main-content .page-top").getByRole("paragraph")).toHaveText(t.blog.intro);
+      await expect(page.locator("main#main-content h1 + p")).toHaveText(t.blog.intro);
       const breadcrumb = page.getByRole("navigation", { name: t.nav.breadcrumb });
       await expect(breadcrumb.getByRole("link", { name: t.nav.home })).toHaveAttribute("href", homePath);
       await expect(breadcrumb.locator('[aria-current="page"]')).toHaveText(t.blog.title);
@@ -136,13 +135,13 @@ test.describe("Blog accessibility", () => {
     const english = page.locator('main#main-content article:has(a[href="/en/blog/manttoai-ml-iot-random-forest-en"])');
     await expect(fallback).toHaveCount(1);
     await expect(english).toHaveCount(1);
-    await expect(fallback.locator(".who a")).toHaveText(/^Un bot de Discord/);
-    await expect(english.locator(".who a")).toHaveText(/^ManttoAI: building/);
-    await expect(fallback.locator(".desc")).toContainText("Bot de Discord profesional");
-    await expect(english.locator(".desc")).toContainText("FastAPI, React 18");
+    await expect(fallback.locator("h2 a")).toHaveText(/^Un bot de Discord/);
+    await expect(english.locator("h2 a")).toHaveText(/^ManttoAI: building/);
+    await expect(fallback).toContainText("Bot de Discord profesional");
+    await expect(english).toContainText("FastAPI, React 18");
 
     for (const [card, language] of [[fallback, "es"], [english, "en"]] as const) {
-      for (const content of [card.locator(".who a"), card.locator(".desc")]) {
+      for (const content of [card.locator("h2 a"), card.locator("h2 + p + p")]) {
         expect(await content.evaluate((element) => element.closest("[lang]")?.getAttribute("lang"))).toBe(language);
       }
     }
@@ -175,42 +174,28 @@ test.describe("Blog accessibility", () => {
     }
   });
 
-  for (const theme of themes) {
-    for (const route of routes) {
-      test(`${route.name} has no full-main Axe violations in ${theme} theme`, async ({
-        page,
-      }) => {
-        await page.addInitScript((selectedTheme) => {
-          localStorage.setItem("sb-theme", selectedTheme);
-        }, theme);
-        await page.goto(route.path);
-        await page.waitForLoadState("networkidle");
-        await page.evaluate(async () => {
-          await document.fonts.ready;
-        });
-
-        const html = page.locator("html");
-        if (theme === "dark") {
-          await expect(html).toHaveAttribute("data-theme", "dark");
-        } else {
-          await expect(html).not.toHaveAttribute("data-theme", "dark");
-        }
-
-        await expect(page.locator("main#main-content h1")).toHaveText(
-          route.heading,
-        );
-        const dates = page.locator(route.dateSelector);
-        if (route.dateCount === "exactly-one") {
-          await expect(dates).toHaveCount(1);
-        } else {
-          expect(await dates.count()).toBeGreaterThan(0);
-        }
-
-        const results = await new AxeBuilder({ page })
-          .include(blogSurfaceSelector)
-          .analyze();
-        expect(results.violations).toEqual([]);
+  for (const route of routes) {
+    test(`${route.name} has no full-main Axe violations`, async ({ page }) => {
+      await page.goto(route.path);
+      await page.waitForLoadState("networkidle");
+      await page.evaluate(async () => {
+        await document.fonts.ready;
       });
-    }
+
+      await expect(page.locator("main#main-content h1")).toHaveText(
+        route.heading,
+      );
+      const dates = page.locator(route.dateSelector);
+      if (route.dateCount === "exactly-one") {
+        await expect(dates).toHaveCount(1);
+      } else {
+        expect(await dates.count()).toBeGreaterThan(0);
+      }
+
+      const results = await new AxeBuilder({ page })
+        .include(blogSurfaceSelector)
+        .analyze();
+      expect(results.violations).toEqual([]);
+    });
   }
 });

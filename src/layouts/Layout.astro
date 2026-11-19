@@ -1,8 +1,5 @@
 ---
-import { ClientRouter } from "astro:transitions"
 import { SEO } from "astro-seo"
-
-import "@/styles/resolucion.css"
 
 import Footer from "@/components/Footer.astro"
 import Header from "@/components/Header.astro"
@@ -66,12 +63,10 @@ const jsonLdString = buildLayoutJsonLd({
 ---
 
 <!doctype html>
-<html lang={locale} data-theme="dark">
+<html lang={locale}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="color-scheme" content="dark light" />
-    <ClientRouter />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
     {alternates.map(({ hreflang, href }) => (
@@ -134,32 +129,10 @@ const jsonLdString = buildLayoutJsonLd({
       }}
     />
 
-    <!-- LCP: el h1 va en Geist Pixel Square y el cuerpo en Geist Mono; solo
-      esas dos fuentes van al camino crítico (§8 de DESIGN.md). -->
-    <link rel="preload" href="/fonts/GeistPixel-Square.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href="/fonts/GeistMono-Regular.woff2" as="font" type="font/woff2" crossorigin />
-
     <script is:inline type="application/ld+json" set:html={jsonLdString}></script>
-
-    <!-- Theme bootstrap stays inline by design: it must run synchronously in
-      <head> before first paint to avoid a flash of the wrong theme. An
-      external or bundled (deferred) script runs after parsing, too late.
-      Puerto verbatim de design/resolucion/boot.js: data-theme desde
-      localStorage ("sb-theme") y las clases motion/ambient gated por
-      prefers-reduced-motion, Save-Data y puntero fino. -->
-    <script is:inline>
-      (function () {
-        var d = document.documentElement
-        try { var t = localStorage.getItem("sb-theme"); if (t === "light" || t === "dark") d.dataset.theme = t } catch (e) {}
-        var reduce = matchMedia("(prefers-reduced-motion: reduce)").matches
-        var saveData = navigator.connection && navigator.connection.saveData
-        if (!reduce) d.classList.add("motion")
-        if (!reduce && !saveData && matchMedia("(hover: hover) and (pointer: fine)").matches) d.classList.add("ambient")
-      })()
-    </script>
   </head>
   <body>
-    <a class="skip" href="#main-content">
+    <a href="#main-content">
       {locale === 'es' ? 'Saltar al contenido' : 'Skip to content'}
     </a>
     <Header locale={locale} />

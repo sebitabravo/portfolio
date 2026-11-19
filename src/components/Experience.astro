@@ -1,5 +1,4 @@
 ---
-// Resolución — sección de experiencia: filas CV dentro de un único .reveal por sección (§2).
 import { getWorkExperience } from "@/lib/data"
 import { getTranslations, type Locale } from "@/lib/i18n"
 import ExperienceItem from "@/components/ExperienceItem.astro"
@@ -13,7 +12,13 @@ const t = getTranslations(locale)
 const entries = getWorkExperience(locale)
 ---
 
-<div class="reveal">
-  {entries.length === 0 && <p>{t.work.noExperience}</p>}
-  {entries.map((entry) => <ExperienceItem {...entry} locale={locale} />)}
-</div>
+{entries.length === 0 && <p>{t.work.noExperience}</p>}
+<ul>
+  {
+    entries.map((entry) => (
+      <li>
+        <ExperienceItem {...entry} locale={locale} />
+      </li>
+    ))
+  }
+</ul>

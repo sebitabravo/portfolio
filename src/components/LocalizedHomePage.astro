@@ -1,7 +1,4 @@
 ---
-// Resolución — home: seis secciones en el orden del diseño (§3): hero, trabajo, experiencia,
-// sobre mí, formación, contacto. Cada sección lleva su h2 con data-resolve (reveal.ts lo
-// resuelve al entrar en viewport) y data-nav para el indicador de sección activa del header.
 import Layout from "@/layouts/Layout.astro"
 import { personalInfo } from "@/lib/data"
 import { createStaticAlternates, getTranslations, type Locale } from "@/lib/i18n"
@@ -34,51 +31,30 @@ const ids = homeSectionIds[locale]
   <main id="main-content">
     <Hero locale={locale} />
 
-    <section id={ids.work} data-nav={ids.work} aria-labelledby={`h-${ids.work}`}>
-      <div class="wrap">
-        <div class="sec-head"><h2 id={`h-${ids.work}`} data-resolve>{t.nav.projects}</h2></div>
-        <Projects locale={locale} />
-      </div>
+    <section id={ids.work} aria-labelledby={`h-${ids.work}`}>
+      <h2 id={`h-${ids.work}`}>{t.nav.projects}</h2>
+      <Projects locale={locale} />
     </section>
 
-    <section id={ids.experience} data-nav={ids.experience} aria-labelledby={`h-${ids.experience}`}>
-      <div class="wrap">
-        <div class="sec-head"><h2 id={`h-${ids.experience}`} data-resolve>{t.work.title}</h2></div>
-        <Experience locale={locale} />
-      </div>
+    <section id={ids.experience} aria-labelledby={`h-${ids.experience}`}>
+      <h2 id={`h-${ids.experience}`}>{t.work.title}</h2>
+      <Experience locale={locale} />
     </section>
 
-    <section id={ids.about} data-nav={ids.experience} aria-labelledby={`h-${ids.about}`}>
-      <div class="wrap">
-        <div class="sec-head"><h2 id={`h-${ids.about}`} data-resolve>{t.about.title}</h2></div>
-        <AboutMe locale={locale} />
-      </div>
+    <section id={ids.about} aria-labelledby={`h-${ids.about}`}>
+      <h2 id={`h-${ids.about}`}>{t.about.title}</h2>
+      <AboutMe locale={locale} />
     </section>
 
-    <section id={ids.formation} data-nav={ids.experience} aria-labelledby={`h-${ids.formation}`}>
-      <div class="wrap">
-        <div class="sec-head"><h2 id={`h-${ids.formation}`} data-resolve>{t.nav.formation}</h2></div>
-        <Education locale={locale} />
-        <Certifications locale={locale} />
-      </div>
+    <section id={ids.formation} aria-labelledby={`h-${ids.formation}`}>
+      <h2 id={`h-${ids.formation}`}>{t.nav.formation}</h2>
+      <Education locale={locale} />
+      <Certifications locale={locale} />
     </section>
 
-    <section id={ids.contact} data-nav={ids.contact} aria-labelledby={`h-${ids.contact}`}>
-      <div class="wrap">
-        <div class="sec-head"><h2 id={`h-${ids.contact}`} data-resolve>{t.nav.contact}</h2></div>
-        <div class="reveal">
-          <Contact locale={locale} />
-        </div>
-      </div>
+    <section id={ids.contact} aria-labelledby={`h-${ids.contact}`}>
+      <h2 id={`h-${ids.contact}`}>{t.nav.contact}</h2>
+      <Contact locale={locale} />
     </section>
   </main>
 </Layout>
-
-<script>
-  // Una revelación por sección (§2): el h2 con data-resolve y el bloque .reveal.
-  import { setupReveal, teardownReveal } from "@/scripts/reveal"
-
-  setupReveal()
-  document.addEventListener("astro:page-load", setupReveal)
-  document.addEventListener("astro:before-swap", teardownReveal)
-</script>

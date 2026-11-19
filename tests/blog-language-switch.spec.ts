@@ -2,14 +2,14 @@ import { expect, test, type Page } from "@playwright/test"
 import type { Locale } from "../src/lib/i18n"
 
 async function switchLanguage(page: Page, language: Locale) {
-  await page.locator(".controls .lang a[href]").filter({ hasText: language }).first().click()
+  await page.locator("header a[hreflang][href]").filter({ hasText: language }).first().click()
 }
 
 async function expectArticle(page: Page, path: string, heading: string, body: string) {
   await expect(page).toHaveURL(new RegExp(`${path.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}/?$`))
   const article = page.locator("main#main-content article")
   await expect(article.locator("header h1")).toHaveText(heading)
-  await expect(article.locator(".prose")).toContainText(body)
+  await expect(article.locator("> section")).toContainText(body)
 }
 
 test("blog index alternates keep locale-first order and the Spanish default target", async ({ page }) => {

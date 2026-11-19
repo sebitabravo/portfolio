@@ -1,6 +1,4 @@
 ---
-// Resolución — sobre mí (§3): perfil, stack como texto plano (kv) y busco. El retrato ASCII fue
-// cortado por el diseño (§10); el stack sale del data layer, no de strings sueltas.
 import { getAboutMe, skills } from "@/lib/data"
 import { getTranslations, type Locale } from "@/lib/i18n"
 
@@ -20,33 +18,21 @@ const stackRows: Array<{ label: string; items: string[] }> = [
 ]
 ---
 
-<div class="reveal">
-  <div class="row">
-    <div class="label">{t.about.profileLabel}</div>
-    <div class="main">
-      <p>{about.intro}</p>
-      <p class="desc">{about.personal}</p>
-    </div>
-  </div>
-  <div class="row">
-    <div class="label">{t.about.stackLabel}</div>
-    <div class="main">
-      <dl class="kv">
-        {
-          stackRows.map(({ label, items }) => (
-            <>
-              <dt>{label}</dt>
-              <dd>{items.join(", ")}</dd>
-            </>
-          ))
-        }
-      </dl>
-    </div>
-  </div>
-  <div class="row">
-    <div class="label">{t.about.seekingLabel}</div>
-    <div class="main">
-      <p>{about.lookingFor}</p>
-    </div>
-  </div>
-</div>
+<h3>{t.about.profileLabel}</h3>
+<p>{about.intro}</p>
+<p>{about.personal}</p>
+
+<h3>{t.about.stackLabel}</h3>
+<dl>
+  {
+    stackRows.map(({ label, items }) => (
+      <>
+        <dt>{label}</dt>
+        <dd>{items.join(", ")}</dd>
+      </>
+    ))
+  }
+</dl>
+
+<h3>{t.about.seekingLabel}</h3>
+<p>{about.lookingFor}</p>

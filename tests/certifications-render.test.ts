@@ -18,11 +18,11 @@ describe("certifications render", () => {
     const container = await AstroContainer.create()
     const html = await container.renderToString(Certifications, { props: { locale: "es" } })
 
-    const cards = html.match(/<li class="cert-item"/g) ?? []
-    const links = html.match(/<a [^>]*class="cert-link focus-ring"/g) ?? []
+    const cards = html.match(/<li>/g) ?? []
+    const links = html.match(/<a [^>]*href=/g) ?? []
     expect(cards.length).toBeGreaterThan(1)
     expect(links).toHaveLength(cards.length - 1)
-    expect(html).not.toMatch(/<a (?![^>]*href=)[^>]*class="cert-link/)
+    expect(html).not.toMatch(/<a (?![^>]*href=)/)
     expect(html.match(/Ver certificado/g)).toHaveLength(cards.length - 1)
   })
 })

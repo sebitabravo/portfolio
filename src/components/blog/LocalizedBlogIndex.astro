@@ -1,15 +1,10 @@
 ---
-// Resolución — índice del blog como filas CV (design/resolucion/blog.html §12): fecha en la
-// columna label con <time datetime>, título-enlace .who, descripción .desc, línea .stack con
-// tags y tiempo de lectura, filtros con aria-pressed y contador role="status". Todas las
-// filas salen de la colección de contenido — nada hardcodeado. El post de Rápido Sur queda
-// fuera del índice por decisión del owner (§10 del diseño) hasta que exista captura real.
+// El post de Rápido Sur queda fuera del índice por decisión del owner hasta que exista captura real.
 import { getCollection } from "astro:content"
 import Layout from "@/layouts/Layout.astro"
 import { personalInfo } from "@/lib/data"
 import { createStaticAlternates, getTranslations, type Locale } from "@/lib/i18n"
 import { formatMonthYear } from "@/lib/utils"
-import { articleTitleTransitionName } from "@/scripts/transitions"
 
 interface Props {
   locale: Locale
@@ -27,12 +22,9 @@ const posts = (await getCollection("blog"))
   .filter((p) => p.id !== HIDDEN_POST_SLUG)
   .sort((a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime())
 
-const kindOf = (tags: string[]): "caso" | "educacional" => (tags.includes("Educacional") ? "educacional" : "caso")
 const readingMinutes = (body: string | undefined): number =>
   Math.max(1, Math.round((body ?? "").split(/\s+/).filter(Boolean).length / READING_WORDS_PER_MINUTE))
 
-const caseCount = posts.filter((p) => kindOf(p.data.tags) === "caso").length
-const educationalCount = posts.length - caseCount
 const spanishUrl = "https://sebita.dev/blog"
 const englishUrl = "https://sebita.dev/en/blog"
 const canonicalUrl = isEnglish ? englishUrl : spanishUrl
@@ -47,93 +39,47 @@ const alternates = createStaticAlternates(locale, spanishUrl, englishUrl)
   alternates={alternates}
 >
   <main id="main-content">
-    <section class="page-top">
-      <div class="wrap">
-        <nav aria-label={t.nav.breadcrumb}>
-          <ol class="crumb">
-            <li><a href={prefix || "/"}>{t.nav.home}</a></li>
-            <li aria-hidden="true">/</li>
-            <li aria-current="page">{t.blog.title}</li>
-          </ol>
-        </nav>
-        <h1 id="h-blog" class="page-title" data-load-resolve>{t.blog.title}</h1>
-        <p class="lead">
-          {t.blog.intro}
-        </p>
-        <div class="filters" role="group" aria-label={t.blog.filtersLabel}>
-          <button class="chip" type="button" data-f="all" aria-pressed="true"
-            >{t.blog.filters.all} {posts.length}</button
-          >
-          <button class="chip" type="button" data-f="caso" aria-pressed="false"
-            >{t.blog.filters.case} {caseCount}</button
-          >
-          <button class="chip" type="button" data-f="educacional" aria-pressed="false">
-            {t.blog.filters.educational}
-            {educationalCount}
-          </button>
-        </div>
-      </div>
-    </section>
+    <nav aria-label={t.nav.breadcrumb}>
+      <ol>
+        <li><a href={prefix || "/"}>{t.nav.home}</a></li>
+        <li aria-current="page">{t.blog.title}</li>
+      </ol>
+    </nav>
+    <h1 id="h-blog">{t.blog.title}</h1>
+    <p>{t.blog.intro}</p>
     <section aria-label={t.blog.postsLabel}>
-      <div class="wrap">
-        {
-          posts.length === 0 ? (
-            <p class="lead">{t.blog.empty}</p>
-          ) : (
-            <div class="posts" id="posts">
-              {posts.map((post) => {
-                const contentLocale = post.data.locale === "en" ? "en" : "es"
-                const isFallback = isEnglish && contentLocale === "es"
-                return (
-                  <article class="row" data-kind={kindOf(post.data.tags)} lang={contentLocale}>
-                    <div class="label">
+      {
+        posts.length === 0 ? (
+          <p>{t.blog.empty}</p>
+        ) : (
+          <ul id="posts">
+            {posts.map((post) => {
+              const contentLocale = post.data.locale === "en" ? "en" : "es"
+              const isFallback = isEnglish && contentLocale === "es"
+              return (
+                <li>
+                  <article lang={contentLocale}>
+                    <h2>
+                      <a href={`${prefix}/blog/${post.id}`}>{post.data.title}</a>
+                    </h2>
+                    <p>
                       <time lang={locale} datetime={post.data.publishDate.toISOString().slice(0, 10)}>
                         {formatMonthYear(post.data.publishDate, locale)}
                       </time>
-                    </div>
-                    <div class="main">
-                      <p class="who">
-                        <a href={`${prefix}/blog/${post.id}`} transition:name={articleTitleTransitionName(post.id)}>
-                          {post.data.title}
-                        </a>
-                      </p>
-                      <p class="desc">{post.data.description}</p>
-                      <p class="stack">
-                        {post.data.tags.join(", ")}
-                        <br />
-                        {readingMinutes(post.body)} {t.blog.readingTime}
-                        {isFallback && (
-                          <>
-                            <br />
-                            <span lang={locale}>{t.blog.fallbackCardLabel}</span>
-                          </>
-                        )}
-                      </p>
-                    </div>
+                    </p>
+                    <p>{post.data.description}</p>
+                    <p>
+                      {post.data.tags.join(", ")} · {readingMinutes(post.body)} {t.blog.readingTime}
+                    </p>
+                    {isFallback && <p lang={locale}>{t.blog.fallbackCardLabel}</p>}
                   </article>
-                )
-              })}
-            </div>
-          )
-        }
-        <p class="count small" id="count" role="status" aria-live="polite" data-label={t.blog.countLabel}>
-          {posts.length}
-          {t.blog.countLabel}
-        </p>
-      </div>
+                </li>
+              )
+            })}
+          </ul>
+        )
+      }
+      <p id="count" role="status">{posts.length} {t.blog.countLabel}</p>
     </section>
   </main>
 </Layout>
-
-<script>
-  import { setupBlogFilters } from "@/scripts/blog-filters"
-
-  setupBlogFilters()
-  document.addEventListener("astro:page-load", setupBlogFilters)
-</script>
-<script>
-  import { setupPageResolve } from "@/scripts/page-resolve"
-
-  setupPageResolve()
-  document.addEventListener("astro:page-load", setupPageResolve)
-</script>

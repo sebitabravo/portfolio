@@ -1,12 +1,6 @@
 ---
-// Resolución — barra plana del encabezado: marca, cuatro enlaces con el
-// indicador de sección activa y controles (sonido, idioma, tema).
-// Puerto del header de design/resolucion/index.html (§3 de DESIGN.md); usa
-// exactamente las clases que el CSS define: site-header, brand, nav-main,
-// controls, lang, dot, theme-btn.
 import { getTranslations, type Locale } from "@/lib/i18n"
 import { homeSectionFragment } from "@/lib/home-sections"
-import ThemeToggle from "./ThemeToggle.astro"
 import LanguageToggle from "./LanguageToggle.astro"
 
 interface Props {
@@ -32,43 +26,16 @@ const isCurrentRoute = (url: string): boolean => {
 }
 ---
 
-<header class="site-header">
-  <div class="wrap">
-    <a class="brand" href={homeUrl} aria-label={t.nav.brandHome}>sebastián bravo</a>
-    <nav class="nav-main" aria-label={t.nav.mainNavigation}>
-      {
-        navItems.map((item) => (
-          <a href={item.url} aria-current={item.route && isCurrentRoute(item.url) ? "page" : undefined}>
-            {item.label}
-          </a>
-        ))
-      }
-    </nav>
-    <div class="controls">
-      <button id="sound" type="button" role="switch" aria-checked="false">
-        <span class="dot" aria-hidden="true"></span><span id="sound-label">{t.sound.off}</span>
-      </button>
-      <LanguageToggle locale={locale} />
-      <ThemeToggle locale={locale} />
-    </div>
-  </div>
+<header>
+  <a href={homeUrl} aria-label={t.nav.brandHome}>sebastián bravo</a>
+  <nav aria-label={t.nav.mainNavigation}>
+    {
+      navItems.map((item) => (
+        <a href={item.url} aria-current={item.route && isCurrentRoute(item.url) ? "page" : undefined}>
+          {item.label}
+        </a>
+      ))
+    }
+  </nav>
+  <LanguageToggle locale={locale} />
 </header>
-
-<script>
-  import { initSoundToggle } from "@/scripts/sound/toggle"
-  import { initThemeToggle } from "@/scripts/theme-toggle"
-  import { setupHeaderNav, teardownHeaderNav } from "@/scripts/header-nav"
-
-  const startControls = () => {
-    initSoundToggle()
-    initThemeToggle()
-    setupHeaderNav()
-  }
-  const stopControls = () => {
-    teardownHeaderNav()
-  }
-
-  startControls()
-  document.addEventListener("astro:page-load", startControls)
-  document.addEventListener("astro:before-swap", stopControls)
-</script>

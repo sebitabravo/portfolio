@@ -12,7 +12,7 @@ export default defineConfig({
     trace: "on-first-retry",
   },
   webServer: {
-    command: "pnpm preview --host 127.0.0.1 --port 4321",
+    command: "bun scripts/serve-dist.mjs",
     url: "http://127.0.0.1:4321",
     timeout: 120_000,
     reuseExistingServer: !process.env.CI,

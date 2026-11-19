@@ -7,6 +7,7 @@ class FakeIntersectionObserver {
   callback: IntersectionObserverCallback
   options: IntersectionObserverInit | undefined
   observe = vi.fn()
+  unobserve = vi.fn()
   disconnect = vi.fn()
 
   constructor(callback: IntersectionObserverCallback, options?: IntersectionObserverInit) {
@@ -18,30 +19,67 @@ class FakeIntersectionObserver {
 
 let intersectionInstances: FakeIntersectionObserver[]
 
-function renderHeader(home: boolean) {
+// Espejo del DOM que produce Header.astro (es, home): la marca, cuatro enlaces
+// (tres anclas + la ruta de blog) y las secciones del home bajo <main> con su
+// data-nav (src/lib/home-sections.ts).
+function renderHome() {
   document.body.innerHTML = `
-    <header class="site-header" data-home="${home ? "true" : "false"}">
-      <nav class="site-nav">
-        <a class="nav-link" data-section="home" href="/">Home</a>
-        <a class="nav-link" data-section="projects" href="/#projects">Projects</a>
+    <header class="site-header">
+      <nav class="nav-main">
+        <a href="#trabajo">Trabajo</a>
+        <a href="#experiencia">Experiencia</a>
+        <a href="/blog">Blog</a>
+        <a href="#contacto">Contacto</a>
       </nav>
     </header>
-    <section id="home"></section>
-    <section id="projects"></section>
+    <main>
+      <section id="trabajo" data-nav="trabajo"></section>
+      <section id="experiencia" data-nav="experiencia"></section>
+      <section id="contacto" data-nav="contacto"></section>
+    </main>
   `
 }
 
-function setPath(path: string) {
-  window.history.pushState({}, "", path)
+// Espejo del DOM en una página de ruta (p. ej. /blog): los enlaces del nav
+// apuntan a rutas, ninguno a un fragmento, y el enlace de ruta activo ya
+// viene con aria-current="page" renderizado en el servidor.
+function renderRoutePage() {
+  document.body.innerHTML = `
+    <header class="site-header">
+      <nav class="nav-main">
+        <a href="/#trabajo">Trabajo</a>
+        <a href="/#experiencia">Experiencia</a>
+        <a href="/blog" aria-current="page">Blog</a>
+        <a href="/#contacto">Contacto</a>
+      </nav>
+    </header>
+    <main><article></article></main>
+  `
 }
 
-describe("header nav lifecycle", () => {
+function emit(
+  observer: FakeIntersectionObserver,
+  entries: Array<{ target: Element; isIntersecting: boolean }>,
+) {
+  observer.callback(
+    entries.map(({ target, isIntersecting }) => ({ isIntersecting, target })) as unknown as IntersectionObserverEntry[],
+    observer as unknown as IntersectionObserver,
+  )
+}
+
+function dispatchPageEvent(type: "pagehide" | "pageshow", persisted?: boolean) {
+  const event = new Event(type)
+  if (persisted !== undefined) Object.defineProperty(event, "persisted", { value: persisted })
+  window.dispatchEvent(event)
+}
+
+const anchorLink = (fragment: string) => document.querySelector(`a[href="#${fragment}"]`)!
+
+describe("header nav section observer", () => {
   beforeEach(() => {
     teardownHeaderNav()
     intersectionInstances = []
     vi.stubGlobal("IntersectionObserver", FakeIntersectionObserver)
-    Object.defineProperty(document, "visibilityState", { configurable: true, value: "visible" })
-    setPath("/")
   })
 
   afterEach(() => {
@@ -50,107 +88,118 @@ describe("header nav lifecycle", () => {
     vi.unstubAllGlobals()
   })
 
-  it("activates the link whose section has the highest intersection ratio, only on the home page", () => {
-    renderHeader(true)
+  it("observes every home section once, in document order, through a single observer in the design band", () => {
+    renderHome()
+    setupHeaderNav()
+
+    expect(intersectionInstances).toHaveLength(1)
+    const [observer] = intersectionInstances
+    expect(observer.options?.rootMargin).toBe("-40% 0px -55% 0px")
+    expect(observer.observe).toHaveBeenCalledTimes(3)
+    expect(observer.observe).toHaveBeenCalledWith(document.getElementById("trabajo"))
+    expect(observer.observe).toHaveBeenCalledWith(document.getElementById("experiencia"))
+    expect(observer.observe).toHaveBeenCalledWith(document.getElementById("contacto"))
+  })
+
+  it("marks the last section sitting in the band with aria-current=location and clears the other anchors", () => {
+    renderHome()
     setupHeaderNav()
     const [observer] = intersectionInstances
 
-    observer.callback(
-      [
-        {
-          isIntersecting: true,
-          intersectionRatio: 0.2,
-          target: document.getElementById("home"),
-        } as unknown as IntersectionObserverEntry,
-        {
-          isIntersecting: true,
-          intersectionRatio: 0.8,
-          target: document.getElementById("projects"),
-        } as unknown as IntersectionObserverEntry,
-      ],
-      observer as unknown as IntersectionObserver,
-    )
+    emit(observer, [
+      { target: document.getElementById("trabajo")!, isIntersecting: true },
+      { target: document.getElementById("experiencia")!, isIntersecting: true },
+    ])
 
-    const projectsLink = document.querySelector('[data-section="projects"]')!
-    const homeLink = document.querySelector('[data-section="home"]')!
-    expect(projectsLink.classList.contains("nav-active")).toBe(true)
-    expect(projectsLink.getAttribute("aria-current")).toBe("page")
-    expect(homeLink.classList.contains("nav-active")).toBe(false)
-    expect(homeLink.hasAttribute("aria-current")).toBe(false)
+    expect(anchorLink("experiencia").getAttribute("aria-current")).toBe("location")
+    expect(anchorLink("trabajo").hasAttribute("aria-current")).toBe(false)
+    expect(anchorLink("contacto").hasAttribute("aria-current")).toBe(false)
+    // El enlace de ruta (blog) no es ancla: el observer no lo toca.
+    expect(document.querySelector('a[href="/blog"]')!.hasAttribute("aria-current")).toBe(false)
   })
 
-  it("never observes sections when the header is not on the home page", () => {
-    renderHeader(false)
+  it("clears the indicator when the active section leaves the band", () => {
+    renderHome()
     setupHeaderNav()
-
-    expect(intersectionInstances[0].observe).not.toHaveBeenCalled()
-  })
-
-  it("activates the link matching the current path off the home page", () => {
-    renderHeader(false)
-    setPath("/blog")
-    document.querySelector('[data-section="projects"]')!.setAttribute("href", "/blog")
-
-    setupHeaderNav()
-
-    const projectsLink = document.querySelector('[data-section="projects"]')!
-    expect(projectsLink.classList.contains("nav-active")).toBe(true)
-    expect(projectsLink.getAttribute("aria-current")).toBe("page")
-  })
-
-  it("toggles the scrolled class once the page passes the 36px threshold", () => {
-    renderHeader(true)
-    setupHeaderNav()
-    const nav = document.querySelector(".site-nav")!
-
-    Object.defineProperty(window, "scrollY", { configurable: true, value: 40 })
-    window.dispatchEvent(new Event("scroll"))
-    expect(nav.classList.contains("scrolled")).toBe(true)
-
-    Object.defineProperty(window, "scrollY", { configurable: true, value: 10 })
-    window.dispatchEvent(new Event("scroll"))
-    expect(nav.classList.contains("scrolled")).toBe(false)
-  })
-
-  it("teardown aborts the scroll listener and disconnects the observer", () => {
-    renderHeader(true)
-    setupHeaderNav()
-    const nav = document.querySelector(".site-nav")!
     const [observer] = intersectionInstances
+
+    emit(observer, [{ target: document.getElementById("experiencia")!, isIntersecting: true }])
+    expect(anchorLink("experiencia").getAttribute("aria-current")).toBe("location")
+
+    emit(observer, [{ target: document.getElementById("experiencia")!, isIntersecting: false }])
+    expect(anchorLink("experiencia").hasAttribute("aria-current")).toBe(false)
+  })
+
+  it("keeps the server-rendered route indicator and creates no observer when no anchor links exist", () => {
+    renderRoutePage()
+    setupHeaderNav()
+
+    expect(intersectionInstances).toHaveLength(0)
+    expect(document.querySelector('a[href="/blog"]')!.getAttribute("aria-current")).toBe("page")
+    // pagehide sin observador ni listeners registrados no debe lanzar.
+    dispatchPageEvent("pagehide")
+    expect(intersectionInstances).toHaveLength(0)
+  })
+
+  it("disconnects the observer on pagehide and re-creates it from scratch on a persisted pageshow", () => {
+    renderHome()
+    setupHeaderNav()
+    const [first] = intersectionInstances
+
+    dispatchPageEvent("pagehide")
+    expect(first.disconnect).toHaveBeenCalledTimes(1)
+
+    dispatchPageEvent("pageshow", true)
+    expect(intersectionInstances).toHaveLength(2)
+    const second = intersectionInstances[1]!
+    expect(second).not.toBe(first)
+    expect(second.observe).toHaveBeenCalledTimes(3)
+    // El primer observer queda desconectado para siempre: una vez por pagehide
+    // y otra por el teardown interno del re-setup.
+    expect(first.disconnect).toHaveBeenCalledTimes(2)
+  })
+
+  it("ignores pageshow without bfcache persistence", () => {
+    renderHome()
+    setupHeaderNav()
+
+    dispatchPageEvent("pageshow", false)
+
+    expect(intersectionInstances).toHaveLength(1)
+  })
+
+  it("teardown disconnects and detaches the page lifecycle listeners", () => {
+    renderHome()
+    setupHeaderNav()
+    const [observer] = intersectionInstances
+    const removeSpy = vi.spyOn(window, "removeEventListener")
 
     teardownHeaderNav()
+
+    expect(observer.disconnect).toHaveBeenCalledTimes(1)
+    expect(removeSpy.mock.calls.filter(([type]) => type === "pagehide")).toHaveLength(1)
+    expect(removeSpy.mock.calls.filter(([type]) => type === "pageshow")).toHaveLength(1)
+
+    dispatchPageEvent("pagehide")
     expect(observer.disconnect).toHaveBeenCalledTimes(1)
 
-    Object.defineProperty(window, "scrollY", { configurable: true, value: 100 })
-    window.dispatchEvent(new Event("scroll"))
-    expect(nav.classList.contains("scrolled")).toBe(false)
+    removeSpy.mockRestore()
   })
 
-  it("re-running setup does not stack scroll listeners", () => {
-    renderHeader(true)
+  it("re-running setup does not stack pagehide listeners", () => {
+    renderHome()
     setupHeaderNav()
+    const addSpy = vi.spyOn(window, "addEventListener")
+    const removeSpy = vi.spyOn(window, "removeEventListener")
+
     setupHeaderNav()
-    const nav = document.querySelector(".site-nav")!
-    const toggleSpy = vi.spyOn(nav.classList, "toggle")
 
-    Object.defineProperty(window, "scrollY", { configurable: true, value: 40 })
-    window.dispatchEvent(new Event("scroll"))
+    // El segundo setup desmonta los listeners del primero antes de registrar
+    // los suyos: una alta y una baja por página oculta.
+    expect(addSpy.mock.calls.filter(([type]) => type === "pagehide")).toHaveLength(1)
+    expect(removeSpy.mock.calls.filter(([type]) => type === "pagehide")).toHaveLength(1)
 
-    expect(toggleSpy).toHaveBeenCalledTimes(1)
-  })
-
-  it("disconnects the observer when hidden and re-observes sections once visible again", () => {
-    renderHeader(true)
-    setupHeaderNav()
-    const [observer] = intersectionInstances
-    observer.observe.mockClear()
-
-    Object.defineProperty(document, "visibilityState", { configurable: true, value: "hidden" })
-    document.dispatchEvent(new Event("visibilitychange"))
-    expect(observer.disconnect).toHaveBeenCalledTimes(1)
-
-    Object.defineProperty(document, "visibilityState", { configurable: true, value: "visible" })
-    document.dispatchEvent(new Event("visibilitychange"))
-    expect(observer.observe).toHaveBeenCalledTimes(2)
+    addSpy.mockRestore()
+    removeSpy.mockRestore()
   })
 })

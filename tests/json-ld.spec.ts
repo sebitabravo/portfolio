@@ -42,7 +42,7 @@ for (const [route, locale] of [
     const nodes = documents.flatMap((document) => document["@graph"] ?? [document])
     const article = nodes.find((node) => node["@type"] === "Article")
     const canonical = await page.locator('link[rel="canonical"]').getAttribute("href")
-    const published = await page.locator("article time[datetime]").getAttribute("datetime")
+    const published = await page.locator("article header time[datetime]").getAttribute("datetime")
 
     expect(nodes.map((node) => node["@type"]).sort()).toEqual(["Article", "Person", "WebPage", "WebSite"])
     expect(nodes.find((node) => node["@type"] === "WebPage")).toMatchObject({

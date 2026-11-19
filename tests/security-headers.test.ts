@@ -1,3 +1,4 @@
+import { existsSync, readdirSync, readFileSync } from "node:fs"
 import { readFile } from "node:fs/promises";
 import { describe, expect, it } from "vitest";
 
@@ -38,6 +39,16 @@ function validConfig() {
   };
 }
 
+function collectHtmlFiles(directory: string): string[] {
+  return readdirSync(directory, { withFileTypes: true }).flatMap((entry) =>
+    entry.isDirectory()
+      ? collectHtmlFiles(`${directory}/${entry.name}`)
+      : entry.name.endsWith(".html")
+        ? [`${directory}/${entry.name}`]
+        : [],
+  );
+}
+
 describe("Vercel security-header contract", () => {
   it("accepts the checked-in global rule and its fixed policy tokens", async () => {
     const config = JSON.parse(await readFile("vercel.json", "utf8")) as unknown;
@@ -52,8 +63,30 @@ describe("Vercel security-header contract", () => {
       "https://va.vercel-scripts.com",
     );
     expect(result.policy?.directives.get("connect-src")).toEqual(["'self'"]);
-    expect([...result.policy!.scriptHashes]).toHaveLength(11);
   });
+
+  // CI corre la suite unitaria antes de bun run build:ci; la mitad contra el
+  // HTML construido solo puede correr cuando existe dist/. El parity exacto
+  // contra dist/ queda además re-verificado en cada build por
+  // scripts/verify-csp-hashes.ts (bun run verify:csp).
+  it.runIf(existsSync("dist"))(
+    "authorizes exactly the executable inline scripts that dist/ ships",
+    () => {
+      const config = JSON.parse(readFileSync("vercel.json", "utf8")) as unknown;
+      const result = validateVercelConfig(config);
+      expect(result.errors).toEqual([]);
+
+      const htmlFiles = collectHtmlFiles("dist");
+      expect(htmlFiles.length).toBeGreaterThan(0);
+
+      const parity = compareCspHashParity(
+        result.policy!.scriptHashes,
+        htmlFiles.map((file) => readFileSync(file, "utf8")),
+      );
+      expect(parity.missing).toEqual([]);
+      expect(parity.unused).toEqual([]);
+    },
+  );
 
   it.each([
     [

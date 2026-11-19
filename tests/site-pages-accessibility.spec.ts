@@ -14,7 +14,7 @@ for (const theme of ["light", "dark"] as const) {
   for (const route of routes) {
     test(`${route.path} has localized main content and no Axe violations in ${theme} theme`, async ({ page }) => {
       await page.addInitScript((selectedTheme) => {
-        localStorage.setItem("theme", selectedTheme);
+        localStorage.setItem("sb-theme", selectedTheme);
       }, theme);
       await page.goto(route.path);
       await page.waitForLoadState("networkidle");
@@ -24,11 +24,7 @@ for (const theme of ["light", "dark"] as const) {
 
       const html = page.locator("html");
       await expect(html).toHaveAttribute("lang", route.locale);
-      if (theme === "dark") {
-        await expect(html).toHaveClass(/\bdark\b/);
-      } else {
-        await expect(html).not.toHaveClass(/\bdark\b/);
-      }
+      await expect(html).toHaveAttribute("data-theme", theme);
 
       const main = page.getByRole("main");
       await expect(main).toHaveCount(1);

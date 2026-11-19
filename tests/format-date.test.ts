@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest"
-import { cn, formatDate, formatMonthYear, formatPeriod } from "../src/lib/utils"
+import { formatDate, formatMonthYear, formatPeriod } from "../src/lib/utils"
 
 // Content dates are calendar dates stored as UTC midnight; a UTC-3 build must not show the previous day.
 const publishDate = new Date("2026-09-25T00:00:00.000Z")
@@ -38,9 +38,5 @@ describe("compact periods", () => {
   it("closes current or open-ended periods with the caller's localized label", () => {
     expect(formatPeriod(new Date("2023-03-01"), new Date("2027-12-31"), true, "Presente", "es")).toBe("mar 2023 — Presente")
     expect(formatPeriod(new Date("2023-03-01"), null, false, "Present", "en")).toBe("Mar 2023 — Present")
-  })
-
-  it("merges conflicting utility classes", () => {
-    expect(cn("px-2", false && "hidden", "px-4")).toBe("px-4")
   })
 })

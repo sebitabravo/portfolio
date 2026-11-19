@@ -88,7 +88,7 @@ async function main(): Promise<void> {
   }
 
   if (htmlFiles.length === 0) {
-    console.error("CSP update found no HTML files in dist/. Run pnpm build:static first.")
+    console.error("CSP update found no HTML files in dist/. Run bun run build:static first.")
     process.exitCode = 1
     return
   }
@@ -138,7 +138,7 @@ async function main(): Promise<void> {
   }
 
   await writeFile("vercel.json", `${JSON.stringify(updated.config, null, 2)}\n`)
-  console.log("Updated vercel.json. Run pnpm build to verify exact parity.")
+  console.log("Updated vercel.json. Run bun run build to verify exact parity.")
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) void main()

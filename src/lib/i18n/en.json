@@ -14,7 +14,8 @@
     "blog": "Blog",
     "formation": "Education",
     "linkedin": "LinkedIn",
-    "cta": "Let's talk"
+    "cta": "Let's talk",
+    "links": "links"
   },
   "boot": {
     "version": "Developer portfolio · Version 2.6",
@@ -35,7 +36,8 @@
     "contact": "Contact",
     "available": "Available for work",
     "downloadCv": "Download CV",
-    "timezone": "Chile"
+    "timezone": "Chile",
+    "viewProjects": "view projects"
   },
   "story": {
     "label": "From concept to deployment",
@@ -126,7 +128,9 @@
     "githubDescription": "Check my open source code",
     "cvHelper": "Download the CV for the full experience overview.",
     "copy": "Copy email",
-    "copied": "Email copied"
+    "copied": "Email copied",
+    "mailHint": "click to copy. I reply within 24 h.",
+    "copyError": "Could not copy"
   },
   "education": {
     "title": "Education",
@@ -150,13 +154,24 @@
     "channel": "Channel",
     "channels": ["Portrait", "ASCII", "No signal"],
     "noSignal": "No signal",
-    "facts": ["Computer Engineering · INACAP", "English C1", "Chile / Remote"]
+    "facts": ["Computer Engineering · INACAP", "English C1", "Chile / Remote"],
+    "profileLabel": "profile",
+    "stackLabel": "stack",
+    "seekingLabel": "looking for",
+    "stackFrontend": "frontend",
+    "stackBackend": "backend",
+    "stackData": "data",
+    "stackTools": "tools"
   },
   "theme": {
     "toggle": "Toggle theme",
     "light": "Light",
     "dark": "Dark",
     "system": "System"
+  },
+  "sound": {
+    "off": "sound: off",
+    "on": "sound: on"
   },
   "footer": {
     "professionalProfiles": "Professional profiles",
@@ -167,16 +182,21 @@
     "rights": "All rights reserved."
   },
   "language": {
-    "toggleLabel": "Toggle language (current: {code})"
+    "toggleLabel": "Toggle language (current: {code})",
+    "groupLabel": "Language"
   },
   "error404": {
     "description": "The page you requested does not exist.",
     "heading": "This page got lost in deployment",
     "message": "We could not find what you asked for. Jump back home and keep exploring.",
-    "backHome": "Back to home"
+    "backHome": "Back to home",
+    "crumb": "error 404",
+    "viewBlog": "view the blog"
   },
   "blog": {
     "postNavigation": "Post navigation",
+    "postsLabel": "Blog posts",
+    "articleBodyLabel": "Article content",
     "title": "Blog",
     "description": "Articles on full-stack development, IoT, Machine Learning, and lessons from building software in production.",
     "intro": "I write about what I learn while building. Full-stack, IoT, Machine Learning, and production code lessons.",
@@ -184,6 +204,20 @@
     "fallbackNotice": "This article is currently available in Spanish. The English route exists so case-study links never end in a 404.",
     "fallbackCardLabel": "Available in Spanish",
     "back": "Back to blog",
-    "readingTime": "min read"
+    "readingTime": "min read",
+    "filtersLabel": "Filter articles",
+    "filters": { "all": "all", "case": "case studies", "educational": "educational" },
+    "countLabel": "articles",
+    "tocTitle": "on this page",
+    "newer": "newer",
+    "older": "older",
+    "copyLink": "copy link",
+    "copied": "copied",
+    "retry": "retry",
+    "linkCopied": "Link copied"
+  },
+  "stage": {
+    "decision": "decision",
+    "tradeoff": "trade-off"
   }
 }

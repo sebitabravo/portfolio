@@ -1,10 +1,14 @@
 ---
-import ArrowUpRight from "@/components/icons/ArrowUpRight.astro"
-import GitHubIcon from "@/components/icons/GitHub.astro"
-import ProjectTile from "@/components/ProjectTile.astro"
-import { getProjects } from "@/lib/data"
+// Resolución — momento 2 (§2): los productos enfocan. #trabajo es un escenario: índice pegajoso
+// de pestañas (roving tabindex) + panel del proyecto seleccionado con screenshot, tagline, stack,
+// decisión/trade-off, métricas y enlaces. Los cuatro paneles llegan renderizados del servidor;
+// stage.ts solo alterna, enfoca el screenshot y cuenta las métricas.
+// Lista para impresión (§6.1): misma data, URLs completas visibles.
+import { Picture } from "astro:assets"
+import { getStageProjects } from "@/lib/data/projects"
+import { getProjectScreenshot } from "@/lib/portfolio-images"
 import { getTranslations, type Locale } from "@/lib/i18n"
-import { homeSectionFragment } from "@/lib/home-sections"
+import { articleTitleTransitionName } from "@/scripts/transitions"
 
 interface Props {
   locale?: Locale
@@ -12,58 +16,170 @@ interface Props {
 
 const { locale = "es" } = Astro.props
 const t = getTranslations(locale)
-const contactUrl = homeSectionFragment(locale, "contact")
-const projects = getProjects(locale)
-  .slice()
-  .sort((projectA, projectB) => projectA.order - projectB.order)
+
+const projects = getStageProjects(locale)
+
+const tabName = (blogSlug: string): string => articleTitleTransitionName(blogSlug)
+
+const blogUrl = (blogSlug: string): string =>
+  locale === "en" ? `/en/blog/${blogSlug}` : `/blog/${blogSlug}`
+
+const statusLabel = (status: string, liveUrl?: string, githubUrl?: string): string => {
+  if (status === "development") return t.projects.statusDevelopment
+  if (status === "demo") return t.projects.statusDemo
+  return !liveUrl && githubUrl ? t.projects.statusCodeAvailable : t.projects.statusProduction
+}
+
+// `code` entre backticks del trade-off se marca como <code> (§2: mismo tratamiento que la prosa).
+// split con grupo de captura: los índices impares son código.
+const codeSegments = (text: string): Array<{ code: boolean; text: string }> =>
+  text
+    .split(/`([^`]+)`/g)
+    .map((segment, i) => ({ code: i % 2 === 1, text: segment }))
+    .filter((segment) => segment.text !== "")
+
+const ORIGIN = "https://sebita.dev"
+const absolute = (href: string): string => (href.startsWith("/") ? ORIGIN + href : href)
 ---
 
-<div class="projects-shell">
-  <div class="project-outcomes" data-project-outcomes aria-labelledby={`project-outcomes-title-${locale}`}>
-    <h3 id={`project-outcomes-title-${locale}`} class="project-outcomes-title meta-label">{t.projects.outcomesTitle}</h3>
-    <ul class="project-outcomes-list">
-      {
-        t.projects.stats.map((stat) => (
-          <li class="project-stat">
-            <strong class="project-stat-value">
-              <span aria-hidden="true" data-count-to={stat.value}>{stat.value}</span>
-              <span class="sr-only">{stat.value}</span>
-            </strong>
-            <span class="project-stat-label">{stat.label}</span>
+<div class="stage">
+  <ul class="index" role="tablist" aria-orientation="vertical" aria-label={t.projects.title}>
+    {
+      projects.map((project, i) => {
+        const { title, status, liveUrl, githubUrl, blogSlug, slug } = project
+        return (
+          <li role="presentation">
+            <button
+              type="button"
+              role="tab"
+              id={`tab-${slug}`}
+              data-slug={slug}
+              aria-selected={i === 0 ? "true" : "false"}
+              aria-controls={`panel-${slug}`}
+              tabindex={i === 0 ? 0 : -1}
+            >
+              <span class="t" transition:name={tabName(blogSlug ?? slug)}>
+                {title}
+              </span>
+              <span class="st">{statusLabel(status, liveUrl, githubUrl)}</span>
+            </button>
           </li>
-        ))
-      }
-    </ul>
-  </div>
+        )
+      })
+    }
+  </ul>
 
-  <div class="project-grid" data-projects-list>
-    {projects.map((project, index) => <ProjectTile project={project} index={index} locale={locale} />)}
-
-    <a
-      href="https://github.com/sebitabravo?tab=repositories"
-      target="_blank"
-      rel="noopener noreferrer"
-      class="project-archive projects-github-link focus-ring"
-    >
-      <span class="project-archive-icon" aria-hidden="true"><GitHubIcon class="size-10" /></span>
-      <span class="project-archive-title">{t.projects.archiveTitle}</span>
-      <span class="project-archive-text">{t.projects.archiveText}</span>
-      <span class="project-archive-cta">{t.projects.viewMoreGithub}<ArrowUpRight class="size-4 shrink-0" /></span>
-    </a>
-  </div>
-
-  <div class="projects-contact-cta">
-    <p>{t.projects.contactPrompt}</p>
-    <a href={contactUrl} class="projects-contact-link focus-ring">
-      <span>{t.projects.contactCta}</span><ArrowUpRight class="size-4 shrink-0" />
-    </a>
-  </div>
+  {
+    projects.map((project, i) => {
+      const { title, tagline, tags, decision, tradeoff, metrics, blogSlug, githubUrl, liveUrl, slug } = project
+      const screenshot = getProjectScreenshot(slug)
+      return (
+        <div
+          id={`panel-${slug}`}
+          role="tabpanel"
+          data-panel={slug}
+          aria-labelledby={`tab-${slug}`}
+          tabindex="0"
+          hidden={i !== 0}
+        >
+          <div class="shot">
+            {screenshot && (
+              <Picture
+                src={screenshot}
+                formats={["avif"]}
+                fallbackFormat="webp"
+                widths={[800, 1600]}
+                quality={90}
+                width={1600}
+                height={1000}
+                sizes="(min-width: 960px) 60vw, 100vw"
+                alt={t.projects.screenshotAlt.replace("{title}", title)}
+                decoding="async"
+              />
+            )}
+            <canvas hidden aria-hidden="true" />
+          </div>
+          <div class="panel-head">
+            <h3>{title}</h3>
+          </div>
+          <p class="tagline">{tagline}</p>
+          <div class="panel-stack" aria-label={t.projects.technologiesLabel}>
+            {tags.map((tag, tagIndex) => (
+              <>
+                {tagIndex > 0 && ", "}
+                {tag}
+              </>
+            ))}
+          </div>
+          {(decision || tradeoff) && (
+            <div class:list={["dt", { two: Boolean(decision && tradeoff) }]}>
+              {decision && (
+                <div>
+                  <h4>{t.stage.decision}</h4>
+                  <p>{decision}</p>
+                </div>
+              )}
+              {tradeoff && (
+                <div>
+                  <h4>{t.stage.tradeoff}</h4>
+                  <p>{codeSegments(tradeoff).map((segment) => (segment.code ? <code>{segment.text}</code> : segment.text))}</p>
+                </div>
+              )}
+            </div>
+          )}
+          <div class="metrics" aria-label={t.projects.evidenceLabel}>
+            {(metrics ?? []).map((metric) => (
+              <div>
+                <h4><span>{metric.label}</span></h4>
+                <div class="v" data-value={metric.value}>{metric.value}</div>
+              </div>
+            ))}
+          </div>
+          <div class="panel-links">
+            {blogSlug && (
+              <a class="btn primary" href={blogUrl(blogSlug)}>
+                {t.projects.readMore}
+              </a>
+            )}
+            {githubUrl && (
+              <a class="btn sm" href={githubUrl} target="_blank" rel="noopener noreferrer">
+                {t.projects.viewCode}
+              </a>
+            )}
+            {liveUrl && (
+              <a class="btn sm" href={liveUrl} target="_blank" rel="noopener noreferrer">
+                {t.projects.viewProject}
+              </a>
+            )}
+          </div>
+        </div>
+      )
+    })
+  }
 </div>
 
-<script>
-  import { setupProjects, teardownProjects } from "@/scripts/projects"
+<ul class="print-list" aria-hidden="true">
+  {
+    projects.map((project) => {
+      const { title, tagline, tags, blogSlug, githubUrl, liveUrl } = project
+      return (
+        <li>
+          <h3>{title}</h3>
+          <p>{tagline}</p>
+          <p class="faint small">{tags.join(", ")}</p>
+          {blogSlug && <span class="u">{t.projects.readMore}: {absolute(blogUrl(blogSlug))}</span>}
+          {githubUrl && <span class="u">{t.projects.viewCode}: {absolute(githubUrl)}</span>}
+          {liveUrl && <span class="u">{t.projects.viewProject}: {absolute(liveUrl)}</span>}
+        </li>
+      )
+    })
+  }
+</ul>
 
-  setupProjects()
-  document.addEventListener("astro:page-load", setupProjects)
-  document.addEventListener("astro:before-swap", teardownProjects)
+<script>
+  import { setupStage, teardownStage } from "@/scripts/stage"
+
+  setupStage()
+  document.addEventListener("astro:page-load", setupStage)
+  document.addEventListener("astro:before-swap", teardownStage)
 </script>

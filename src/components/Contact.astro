@@ -1,6 +1,7 @@
 ---
-import ArrowUpRight from "@/components/icons/ArrowUpRight.astro"
-// Los enlaces directos evitan recopilar datos mediante un formulario.
+// Resolución — momento 3 (§2): el email es el CTA. La dirección partida en @ son dos líneas de
+// Geist Pixel dentro de un <button> con aria-label completo; click copia y re-resuelve.
+// Clases del contrato: mail, mail-hint, contact-links; el status vive en .sr con role="status".
 import { personalInfo, social } from "@/lib/data"
 import { getTranslations, type Locale } from "@/lib/i18n"
 
@@ -12,96 +13,63 @@ const { locale = "es" } = Astro.props
 const t = getTranslations(locale)
 const cvHref = "/cv/Sebastian_Bravo_CV.pdf"
 
+const [user, domain] = personalInfo.email.split("@")
+const mailtoHref = `mailto:${personalInfo.email}?subject=${encodeURIComponent(t.contact.mailSubject)}`
+
+// Enlaces de texto con su descripción accesible; los enlaces directos evitan recopilar datos.
 const contactLinks = [
   {
-    href: `mailto:${personalInfo.email}?subject=${encodeURIComponent(t.contact.mailSubject)}`,
+    href: mailtoHref,
     label: personalInfo.email,
-    icon: "mail",
     description: t.contact.responseTime,
   },
   {
-    href: social.linkedin,
-    label: "LinkedIn",
-    icon: "linkedin",
-    description: t.contact.linkedinDescription,
+    href: social.github,
+    label: "github",
+    description: t.contact.githubDescription,
   },
   {
-    href: social.github,
-    label: "GitHub",
-    icon: "github",
-    description: t.contact.githubDescription,
+    href: social.linkedin,
+    label: "linkedin",
+    description: t.contact.linkedinDescription,
   },
 ]
 ---
 
-<div class="contact-chapter">
-  <div class="contact-grid">
-    <div class="contact-hero">
-      <h3 class="contact-headline" data-animate>
-        {t.contact.headline}
-        <em>{t.contact.headlineAccent}</em>
-      </h3>
-    </div>
-
-    <div class="contact-links">
-      {
-        contactLinks.map(({ href, label, icon, description }, i) => (
-          <div class:list={["contact-row", `contact-row-${icon}`]} data-animate data-animate-delay={String(i + 1)}>
-            <a
-              href={href}
-              target={icon !== "mail" ? "_blank" : undefined}
-              rel={icon !== "mail" ? "noopener noreferrer" : undefined}
-              class="contact-link group focus-ring"
-            >
-              <span class="contact-link-label">{label}</span>
-              <ArrowUpRight class="contact-link-arrow" />
-              <span class="contact-link-description">{description}</span>
-            </a>
-            {icon === "mail" && (
-              <button
-                type="button"
-                class="contact-copy chip focus-ring"
-                data-copy-email={personalInfo.email}
-                data-label-copied={t.contact.copied}
-                hidden
-              >
-                {t.contact.copy}
-              </button>
-            )}
-          </div>
-        ))
-      }
-      <p class="contact-copy-status sr-only" data-copy-status aria-live="polite"></p>
-    </div>
-  </div>
-
-  <div class="contact-resume-row">
-    <a
-      href={cvHref}
-      target="_blank"
-      rel="noopener noreferrer"
-      data-track-cv={locale}
-      class="contact-resume-action btn btn-solid focus-ring"
-    >
-      <span>{t.hero.downloadCv}</span>
-      <ArrowUpRight class="btn-arrow size-4 shrink-0" />
-    </a>
-    <p>{t.contact.cvHelper}</p>
-  </div>
-
-  <div class="contact-bezel" aria-hidden="true">
-    <span class="contact-bezel-knob"></span>
-    <span class="contact-bezel-slots"><span></span><span></span><span></span></span>
-    <span class="contact-bezel-plate">SB-2600</span>
-    <span class="contact-bezel-slots"><span></span><span></span><span></span></span>
-    <span class="contact-bezel-knob"></span>
-  </div>
+<button
+  id="mail"
+  class="mail"
+  type="button"
+  aria-label={`${t.contact.copy} ${personalInfo.email}`}
+  data-email={personalInfo.email}
+  data-copied={t.contact.copied}
+  data-error={t.contact.copyError}
+>
+  <span class="l">{user}</span><span class="l">@{domain}</span>
+</button>
+<p class="mail-hint small">{t.contact.mailHint}</p>
+<p>{t.contact.cvHelper}</p>
+<p class="sr" id="mail-status" role="status" aria-live="polite"></p>
+<div class="contact-links">
+  {
+    contactLinks.map(({ href, label, description }) => (
+      <a
+        href={href}
+        target={href.startsWith("http") ? "_blank" : undefined}
+        rel={href.startsWith("http") ? "me noopener noreferrer" : undefined}
+        aria-label={description}
+      >
+        {label}
+      </a>
+    ))
+  }
+  <a href={cvHref} download aria-label={t.hero.downloadCv}>{t.hero.downloadCv}</a>
 </div>
 
 <script>
-  import { setupCopyEmail, teardownCopyEmail } from "@/scripts/copy-email"
+  import { setupMail, teardownMail } from "@/scripts/mail"
 
-  setupCopyEmail()
-  document.addEventListener("astro:page-load", () => setupCopyEmail())
-  document.addEventListener("astro:before-swap", teardownCopyEmail)
+  setupMail()
+  document.addEventListener("astro:page-load", setupMail)
+  document.addEventListener("astro:before-swap", teardownMail)
 </script>

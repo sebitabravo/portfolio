@@ -1,44 +1,34 @@
 ---
-// Formación: una ficha por etapa, sin párrafos largos.
+// Resolución — fila CV de formación (§6): años en la columna label, cuadro .mark en la fila
+// vigente, institución, título y descripción. La fila INACAP (en curso) lleva el marcador (§1).
 import { getEducation } from "@/lib/data"
-import { getTranslations, type Locale } from "@/lib/i18n"
-import { formatPeriod } from "@/lib/utils"
+import type { Locale } from "@/lib/i18n"
+import type { Education } from "@/lib/data"
 
 interface Props {
   locale?: Locale
 }
 
 const { locale = "es" } = Astro.props
-const t = getTranslations(locale)
-const education = getEducation(locale)
+const entries: Education[] = getEducation(locale)
+
+const year = (date: Date): string => String(date.getUTCFullYear())
 ---
 
-<div class="education-grid">
+<div class="reveal">
   {
-    education.map(({ institution, degree, description, startDate, endDate, current, location, grade, skills }, i) => (
-      <article data-animate data-animate-delay={String(i + 1)} class="education-row">
-        <p class="education-meta meta-label">
-          <time>{formatPeriod(startDate, endDate, current, t.education.present, locale)}</time>
-        </p>
-        <h3 class="education-degree">{degree}</h3>
-        <p class="education-institution meta-label">
-          <span>{institution}</span>
-          {location && <span>· {location}</span>}
-          {grade && (
-            <span>
-              · {t.education.grade}: {grade}
-            </span>
-          )}
-        </p>
-        {description && <p class="education-copy">{description}</p>}
-        {skills && skills.length > 0 && (
-          <p class="education-skills">
-            {skills.map((skill) => (
-              <span class="chip">{skill}</span>
-            ))}
-          </p>
-        )}
-      </article>
+    entries.map((entry) => (
+      <div class:list={["row", { current: entry.current }]}>
+        <div class="label">
+          {entry.current && <span class="mark" aria-hidden="true" />}
+          <time datetime={year(entry.startDate)}>{year(entry.startDate)}</time> – <time datetime={year(entry.endDate ?? entry.startDate)}>{year(entry.endDate ?? entry.startDate)}</time>
+        </div>
+        <div class="main">
+          <p class="who">{entry.institution}</p>
+          <p>{entry.degree}</p>
+          <p class="desc">{entry.description}</p>
+        </div>
+      </div>
     ))
   }
 </div>

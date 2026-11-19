@@ -7,12 +7,6 @@ import {
   type ProjectStatus,
 } from "../src/lib/data/types"
 import { LOCALES, defaultLocale, locales, type Locale } from "../src/lib/i18n"
-import {
-  THEMES,
-  type CarouselCertification,
-  type CarouselCertificationData,
-  type ThemePreference,
-} from "../src/types"
 
 describe("shared const-objects with derived types", () => {
   it("derives Locale from LOCALES with Spanish as default", () => {
@@ -43,25 +37,6 @@ describe("shared const-objects with derived types", () => {
     })
     const category: CertificationCategory = CERTIFICATION_CATEGORIES.PROFESSIONAL
     expect(category).toBe("professional")
-  })
-
-  it("derives ThemePreference from THEMES", () => {
-    expect(THEMES).toEqual({ LIGHT: "light", DARK: "dark", SYSTEM: "system" })
-    const preference: ThemePreference = THEMES.SYSTEM
-    expect(preference).toBe("system")
-  })
-})
-
-describe("carousel certification shape", () => {
-  it("keeps the carousel payload flat behind a dedicated data interface", () => {
-    const data: CarouselCertificationData = {
-      name: "Full Stack Developer",
-      organization: "INACAP",
-      category: CERTIFICATION_CATEGORIES.ACADEMIC,
-    }
-    const cert: CarouselCertification = { data }
-    expect(Object.keys(cert)).toEqual(["data"])
-    expect(cert.data.name).toBe("Full Stack Developer")
   })
 })
 

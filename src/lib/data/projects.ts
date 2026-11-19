@@ -3,9 +3,13 @@ import { PROJECT_STAGES, type Project } from "./types"
 
 type SharedProject = Pick<
   Project,
-  "slug" | "tags" | "featured" | "status" | "publishDate" | "githubUrl" | "liveUrl" | "order" | "stage"
+  "slug" | "tags" | "featured" | "homeStage" | "stageOrder" | "status" | "publishDate" | "githubUrl" | "liveUrl" | "order" | "stage"
 >
-type LocalizedProject = Pick<Project, "title" | "tagline" | "description" | "metrics" | "blogSlug">
+type LocalizedProject = Pick<Project, "title" | "tagline" | "description" | "metrics" | "blogSlug"> & {
+  // decision/trade-off del escenario (§2 momento 2). Trade-off ausente = la columna no se pinta, nunca queda vacía.
+  decision?: string
+  tradeoff?: string
+}
 type ProjectEntry = SharedProject & Record<Locale, LocalizedProject>
 
 const projectEntries: ProjectEntry[] = [
@@ -14,6 +18,8 @@ const projectEntries: ProjectEntry[] = [
     stage: PROJECT_STAGES.ORANGE,
     tags: ["FastAPI", "Python", "Docker", "Chatwoot", "LLM local", "SQLite"],
     featured: false,
+    homeStage: true,
+    stageOrder: 0,
     status: "development",
     publishDate: new Date("2026-10-28"),
     githubUrl: "https://github.com/sebitabravo/copiloto-recepcion",
@@ -28,6 +34,10 @@ const projectEntries: ProjectEntry[] = [
         { label: "Pruebas", value: "194 en verde" },
         { label: "Lighthouse", value: "100 / 100 / 100 / 100" },
       ],
+      decision:
+        "LLM local (llama.cpp + Qwen 2.5) con los datos del hotel servidos por una herramienta en vez de la memoria del modelo.",
+      tradeoff:
+        "La inferencia cuesta unos 18 s, así que un camino de reglas que responde en 0,3 s se hace cargo del fallback cuando el modelo no está disponible.",
       blogSlug: "copiloto-recepcion-hotel-ia-local",
     },
     en: {
@@ -39,6 +49,10 @@ const projectEntries: ProjectEntry[] = [
         { label: "Tests", value: "194 green" },
         { label: "Lighthouse", value: "100 / 100 / 100 / 100" },
       ],
+      decision:
+        "Local LLM (llama.cpp + Qwen 2.5) serving hotel data through a tool instead of the model's memory.",
+      tradeoff:
+        "Inference takes about 18 s, so a rules path answering in 0.3 s takes over the fallback whenever the model is unavailable.",
       blogSlug: "copiloto-recepcion-hotel-ia-local-en",
     },
   },
@@ -47,6 +61,8 @@ const projectEntries: ProjectEntry[] = [
     stage: PROJECT_STAGES.BLUE,
     tags: ["FastAPI", "React", "Machine Learning", "Docker", "IoT"],
     featured: false,
+    homeStage: true,
+    stageOrder: 3,
     status: "production",
     publishDate: new Date("2026-04-29"),
     githubUrl: "https://github.com/sebitabravo/ManttoAI",
@@ -61,6 +77,7 @@ const projectEntries: ProjectEntry[] = [
         { label: "Resultado", value: "94.1% F1-Score" },
         { label: "Código", value: "Disponible" },
       ],
+      decision: "Random Forest explicable con 5 features en vez de deep learning, sin GPU.",
       blogSlug: "manttoai-ml-iot-random-forest",
     },
     en: {
@@ -72,6 +89,7 @@ const projectEntries: ProjectEntry[] = [
         { label: "Outcome", value: "94.1% F1-Score" },
         { label: "Code", value: "Available" },
       ],
+      decision: "Explainable Random Forest with 5 features instead of deep learning, no GPU.",
       blogSlug: "manttoai-ml-iot-random-forest-en",
     },
   },
@@ -80,6 +98,8 @@ const projectEntries: ProjectEntry[] = [
     stage: PROJECT_STAGES.RED,
     tags: ["Next.js", "TypeScript", "Supabase", "shadcn/ui"],
     featured: true,
+    homeStage: true,
+    stageOrder: 2,
     status: "production",
     publishDate: new Date("2026-03-02"),
     githubUrl: "https://github.com/sebitabravo/vulcania-web",
@@ -94,6 +114,8 @@ const projectEntries: ProjectEntry[] = [
         { label: "Mapa", value: "Tiempo real" },
         { label: "Entrega", value: "En producción" },
       ],
+      decision: "Leaflet + OpenStreetMap en vez de Mapbox o Google Maps.",
+      tradeoff: "El import dinámico con `ssr: false` cuesta trabajo de integración extra.",
       blogSlug: "vulcania-monitoreo-volcanico-comunitario",
     },
     en: {
@@ -105,6 +127,8 @@ const projectEntries: ProjectEntry[] = [
         { label: "Map", value: "Real time" },
         { label: "Delivery", value: "In production" },
       ],
+      decision: "Leaflet + OpenStreetMap instead of Mapbox or Google Maps.",
+      tradeoff: "The dynamic import with `ssr: false` costs extra integration work.",
       blogSlug: "vulcania-monitoreo-volcanico-comunitario-en",
     },
   },
@@ -113,6 +137,10 @@ const projectEntries: ProjectEntry[] = [
     stage: PROJECT_STAGES.YELLOW,
     tags: ["NestJS", "Next.js", "TypeScript", "PostgreSQL", "Docker"],
     featured: false,
+    // §10 (decisión del owner): fuera del escenario del home hasta que exista una captura real
+    // de su interfaz. El post asociado se filtra en su propia unidad.
+    homeStage: false,
+    stageOrder: 4,
     status: "production",
     publishDate: new Date("2026-03-02"),
     githubUrl: "https://github.com/sebitabravo/rapido-sur",
@@ -146,6 +174,8 @@ const projectEntries: ProjectEntry[] = [
     stage: PROJECT_STAGES.GREEN,
     tags: ["FastAPI", "Python", "Groq LLM", "WhatsApp API", "Turso"],
     featured: false,
+    homeStage: true,
+    stageOrder: 1,
     status: "production",
     publishDate: new Date("2026-05-03"),
     githubUrl: "https://github.com/sebitabravo/Wenuke",
@@ -160,6 +190,9 @@ const projectEntries: ProjectEntry[] = [
         { label: "Canal", value: "WhatsApp" },
         { label: "Modelo", value: "Llama 3.1 70B" },
       ],
+      decision: "Turso + aiosqlite en vez de PostgreSQL para el despliegue serverless en el edge.",
+      tradeoff:
+        "Las escrituras en el edge son más lentas que en PostgreSQL tradicional, así que sirve solo para carga con dominio de lecturas.",
       blogSlug: "wenuke-asistente-climatico-whatsapp",
     },
     en: {
@@ -171,6 +204,9 @@ const projectEntries: ProjectEntry[] = [
         { label: "Channel", value: "WhatsApp" },
         { label: "Model", value: "Llama 3.1 70B" },
       ],
+      decision: "Turso + aiosqlite instead of PostgreSQL for the serverless deployment at the edge.",
+      tradeoff:
+        "Writes at the edge are slower than in traditional PostgreSQL, so it only serves read-dominated load.",
       blogSlug: "wenuke-asistente-climatico-whatsapp",
     },
   },
@@ -194,4 +230,12 @@ const projectsData: Record<Locale, Project[]> = {
 
 export function getProjects(locale: Locale = "es") {
   return projectsData[locale]
+}
+
+/** Proyectos del escenario del home (§10): solo homeStage, en el orden del diseño (stageOrder). */
+export function getStageProjects(locale: Locale = "es") {
+  return projectsData[locale]
+    .filter((project) => project.homeStage)
+    .slice()
+    .sort((a, b) => a.stageOrder - b.stageOrder)
 }

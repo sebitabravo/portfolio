@@ -1,9 +1,8 @@
 ---
-import { Font } from "astro:assets"
 import { ClientRouter } from "astro:transitions"
 import { SEO } from "astro-seo"
 
-import "@/styles/global.css"
+import "@/styles/resolucion.css"
 
 import Footer from "@/components/Footer.astro"
 import Header from "@/components/Header.astro"
@@ -35,13 +34,11 @@ const {
 
 const description = pageDescription ?? (locale === 'en' ? personalInfo.descriptionEn : personalInfo.description)
 
-const isHome = Astro.url.pathname === "/" || Astro.url.pathname === "/en" || Astro.url.pathname === "/en/"
-
 const profileUrl = locale === "es" ? "https://sebita.dev/" : "https://sebita.dev/en/"
 const canonical = canonicalUrl ?? profileUrl
 // Static PNG fallback: social crawlers (X/Facebook/LinkedIn/WhatsApp) do
 // not render SVG og:images, so the default card is the checked-in
-// public/og/<locale>.png (1200x630, regenerated with pnpm generate:og).
+// public/og/<locale>.png (1200x630, regenerated with bun run generate:og).
 // Pages with their own photography (blog posts) keep passing `image`.
 const staticOgImage = new URL(
   `/og/${locale}.png`,
@@ -69,16 +66,13 @@ const jsonLdString = buildLayoutJsonLd({
 ---
 
 <!doctype html>
-<html lang={locale} class="scroll-smooth">
+<html lang={locale} data-theme="dark">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="dark light" />
     <ClientRouter />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <Font cssVariable="--font-instrument" />
-    <Font cssVariable="--font-geist" />
-    <Font cssVariable="--font-geist-mono" />
-    <Font cssVariable="--font-vt323" />
 
     {alternates.map(({ hreflang, href }) => (
       <link rel="alternate" hreflang={hreflang} href={href} />
@@ -140,89 +134,39 @@ const jsonLdString = buildLayoutJsonLd({
       }}
     />
 
+    <!-- LCP: el h1 va en Geist Pixel Square y el cuerpo en Geist Mono; solo
+      esas dos fuentes van al camino crítico (§8 de DESIGN.md). -->
+    <link rel="preload" href="/fonts/GeistPixel-Square.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/GeistMono-Regular.woff2" as="font" type="font/woff2" crossorigin />
+
     <script is:inline type="application/ld+json" set:html={jsonLdString}></script>
 
     <!-- Theme bootstrap stays inline by design: it must run synchronously in
       <head> before first paint to avoid a flash of the wrong theme. An
-      external or bundled (deferred) script runs after parsing, too late. -->
+      external or bundled (deferred) script runs after parsing, too late.
+      Puerto verbatim de design/resolucion/boot.js: data-theme desde
+      localStorage ("sb-theme") y las clases motion/ambient gated por
+      prefers-reduced-motion, Save-Data y puntero fino. -->
     <script is:inline>
-      (function() {
-        function getThemePreference() {
-          if (typeof localStorage !== 'undefined') {
-            const stored = localStorage.getItem('theme');
-            if (stored === 'dark' || stored === 'light' || stored === 'system') {
-              return stored;
-            }
-          }
-          return 'dark';
-        }
-        function applyTheme(theme) {
-          const effectiveTheme = theme === 'system'
-            ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
-            : theme;
-          if (effectiveTheme === 'dark') {
-            document.documentElement.classList.add('dark');
-          } else {
-            document.documentElement.classList.remove('dark');
-          }
-        }
-        const theme = getThemePreference();
-        applyTheme(theme);
-      })();
+      (function () {
+        var d = document.documentElement
+        try { var t = localStorage.getItem("sb-theme"); if (t === "light" || t === "dark") d.dataset.theme = t } catch (e) {}
+        var reduce = matchMedia("(prefers-reduced-motion: reduce)").matches
+        var saveData = navigator.connection && navigator.connection.saveData
+        if (!reduce) d.classList.add("motion")
+        if (!reduce && !saveData && matchMedia("(hover: hover) and (pointer: fine)").matches) d.classList.add("ambient")
+      })()
     </script>
-
-    {/* The boot intro must be armed before first paint; automation, touch,
-      reduced motion and repeat visits in the same session skip it. */}
-    {isHome && (
-      <script is:inline>
-        (function () {
-          try {
-            var forced = new URLSearchParams(location.search).has('boot');
-            if (!forced) {
-              if (navigator.webdriver) return;
-              if (sessionStorage.getItem('sb-os-booted') === '1') return;
-              if (!matchMedia('(min-width: 1024px) and (hover: hover) and (pointer: fine)').matches) return;
-              if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-            }
-            document.documentElement.classList.add('boot-armed');
-          } catch (error) {}
-        })();
-      </script>
-    )}
-
   </head>
-  <body class="grain bg-background text-foreground" data-page={isHome ? 'home' : 'inner'}>
-    <a
-      href="#main-content"
-      class="absolute -top-full left-4 z-[100] px-4 py-2 rounded-lg bg-primary text-primary-foreground font-semibold text-sm transition-[top] duration-200 ease-[ease] focus:top-2 focus:outline-2 focus:outline-primary focus:outline-offset-2"
-    >
+  <body>
+    <a class="skip" href="#main-content">
       {locale === 'es' ? 'Saltar al contenido' : 'Skip to content'}
     </a>
-    <div class="reading-progress" aria-hidden="true">
-      <span data-reading-progress></span>
-    </div>
-    <Header locale={locale} home={isHome} />
+    <Header locale={locale} />
     <slot />
     <Footer locale={locale} />
     <script>
-      import { initScrollReveal } from "@/scripts/scroll-reveal"
-
-      if (document.readyState === "loading") {
-        document.addEventListener("DOMContentLoaded", initScrollReveal, { once: true })
-      } else {
-        initScrollReveal()
-      }
-      document.addEventListener("astro:after-swap", initScrollReveal)
-    </script>
-    <script>
-      import { initReadingProgress } from "@/scripts/reading-progress"
-
-      if (document.readyState === "loading") {
-        document.addEventListener("DOMContentLoaded", initReadingProgress, { once: true })
-      } else {
-        initReadingProgress()
-      }
-      document.addEventListener("astro:after-swap", initReadingProgress)
+      import "@/scripts/language-links"
     </script>
   </body>
 </html>

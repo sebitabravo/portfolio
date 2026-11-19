@@ -60,7 +60,7 @@ test.describe("Blog accessibility", () => {
       await page.goto(indexPath);
       await expect(page.locator("main#main-content h1")).toHaveText(t.blog.title);
       await expect(page.locator('head meta[name="description"]')).toHaveAttribute("content", t.blog.description);
-      await expect(page.locator("main#main-content header").getByRole("paragraph")).toHaveText(t.blog.intro);
+      await expect(page.locator("main#main-content .page-top").getByRole("paragraph")).toHaveText(t.blog.intro);
       const breadcrumb = page.getByRole("navigation", { name: t.nav.breadcrumb });
       await expect(breadcrumb.getByRole("link", { name: t.nav.home })).toHaveAttribute("href", homePath);
       await expect(breadcrumb.locator('[aria-current="page"]')).toHaveText(t.blog.title);
@@ -132,26 +132,26 @@ test.describe("Blog accessibility", () => {
     await expect(page.locator("html")).toHaveAttribute("lang", "en");
     await expect(page.getByRole("navigation", { name: "Breadcrumb" }).getByRole("link", { name: "Home" })).toHaveAttribute("href", "/en");
 
-    const fallback = page.locator('main#main-content article:has(> a[href="/en/blog/bot-discord-moderacion-musica"])');
-    const english = page.locator('main#main-content article:has(> a[href="/en/blog/manttoai-ml-iot-random-forest-en"])');
+    const fallback = page.locator('main#main-content article:has(a[href="/en/blog/bot-discord-moderacion-musica"])');
+    const english = page.locator('main#main-content article:has(a[href="/en/blog/manttoai-ml-iot-random-forest-en"])');
     await expect(fallback).toHaveCount(1);
     await expect(english).toHaveCount(1);
-    await expect(fallback.locator("h2")).toHaveText(/^Un bot de Discord/);
-    await expect(english.locator("h2")).toHaveText(/^ManttoAI: building/);
-    await expect(fallback.locator("a > p").last()).toContainText("Bot de Discord profesional");
-    await expect(english.locator("a > p").last()).toContainText("FastAPI, React 18");
+    await expect(fallback.locator(".who a")).toHaveText(/^Un bot de Discord/);
+    await expect(english.locator(".who a")).toHaveText(/^ManttoAI: building/);
+    await expect(fallback.locator(".desc")).toContainText("Bot de Discord profesional");
+    await expect(english.locator(".desc")).toContainText("FastAPI, React 18");
 
     for (const [card, language] of [[fallback, "es"], [english, "en"]] as const) {
-      for (const content of [card.locator("h2"), card.locator("a > p").last()]) {
+      for (const content of [card.locator(".who a"), card.locator(".desc")]) {
         expect(await content.evaluate((element) => element.closest("[lang]")?.getAttribute("lang"))).toBe(language);
       }
     }
 
-    const fallbackLabel = fallback.getByText("Available in Spanish", { exact: true });
+    const fallbackLabel = fallback.getByText("Available in Spanish");
     await expect(fallbackLabel).toBeVisible();
     expect(await fallbackLabel.evaluate((element) => element.closest("[lang]")?.getAttribute("lang"))).toBe("en");
-    await expect(english.getByText("Available in Spanish", { exact: true })).toHaveCount(0);
-    await expect(fallback.locator("time")).toContainText("November");
+    await expect(english.getByText("Available in Spanish")).toHaveCount(0);
+    await expect(fallback.locator("time")).toContainText("Nov");
     await expect(english.locator("time")).toContainText("May");
     for (const card of [fallback, english]) {
       expect(await card.locator("time").evaluate((element) => element.closest("[lang]")?.getAttribute("lang"))).toBe("en");
@@ -170,7 +170,7 @@ test.describe("Blog accessibility", () => {
       await expect(date).toHaveAttribute("lang", "en");
       if (language === "es") {
         await expect(page.locator("main#main-content article aside")).toHaveAttribute("lang", "en");
-        await expect(date).toContainText("November");
+        await expect(date).toContainText("Nov");
       }
     }
   });
@@ -181,7 +181,7 @@ test.describe("Blog accessibility", () => {
         page,
       }) => {
         await page.addInitScript((selectedTheme) => {
-          localStorage.setItem("theme", selectedTheme);
+          localStorage.setItem("sb-theme", selectedTheme);
         }, theme);
         await page.goto(route.path);
         await page.waitForLoadState("networkidle");
@@ -191,9 +191,9 @@ test.describe("Blog accessibility", () => {
 
         const html = page.locator("html");
         if (theme === "dark") {
-          await expect(html).toHaveClass(/\bdark\b/);
+          await expect(html).toHaveAttribute("data-theme", "dark");
         } else {
-          await expect(html).not.toHaveClass(/\bdark\b/);
+          await expect(html).not.toHaveAttribute("data-theme", "dark");
         }
 
         await expect(page.locator("main#main-content h1")).toHaveText(

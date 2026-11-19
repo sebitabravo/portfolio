@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test"
-import { getProjects } from "../src/lib/data/projects"
+import { homeSectionFragment } from "../src/lib/home-sections"
 
 for (const { locale, dataLocale, home, blogPrefix } of [
   { locale: "español", dataLocale: "es", home: "/", blogPrefix: "/blog/" },
@@ -10,24 +10,17 @@ for (const { locale, dataLocale, home, blogPrefix } of [
     const homeUrl = new URL(page.url())
     expect(["127.0.0.1", "localhost", "[::1]"]).toContain(homeUrl.hostname)
 
-    const cards = page.locator("[data-project-card]")
-    const count = await cards.count()
-    expect(count, `No hay tarjetas de proyectos en ${home}`).toBeGreaterThan(0)
+    const links = page.locator(`${homeSectionFragment(dataLocale, "work")} a[href^="${blogPrefix}"]`)
+    const count = await links.count()
+    expect(count, `No hay enlaces a casos en ${home}`).toBeGreaterThan(0)
 
     const destinations: { slug: string; href: string }[] = []
     for (let index = 0; index < count; index++) {
-      const card = cards.nth(index)
-      const slug = await card.getAttribute("data-project")
-      expect(slug, `Tarjeta sin slug en ${home}`).toBeTruthy()
-      const link = card.locator('a[data-track-action="casestudy"]')
-      await expect(link, `Proyecto ${slug} sin enlace al artículo en ${home}`).toHaveCount(1)
-      const href = await link.getAttribute("href")
-      expect(href, `Proyecto ${slug} sin URL en ${home}`).toBeTruthy()
-      destinations.push({ slug: slug!, href: href! })
+      const href = await links.nth(index).getAttribute("href")
+      expect(href, `Enlace sin URL en ${home}`).toBeTruthy()
+      const slug = href!.split("/").filter(Boolean).pop()!
+      destinations.push({ slug, href: href! })
     }
-    expect(destinations.map(({ slug }) => slug).sort(), `Tarjetas en ${home}`).toEqual(
-      getProjects(dataLocale).map((project) => project.slug).sort(),
-    )
 
     for (const { slug, href } of destinations) {
       await test.step(`Proyecto ${slug}: ${href}`, async () => {
@@ -42,7 +35,7 @@ for (const { locale, dataLocale, home, blogPrefix } of [
         const article = page.locator("main#main-content article")
         await expect(article, context).toHaveCount(1)
         await expect(article.locator("header h1"), context).toHaveText(/\S/)
-        await expect(article.locator(".prose-custom"), context).toContainText(/\S/)
+        await expect(article.locator(".prose"), context).toContainText(/\S/)
 
         if (dataLocale === "en") {
           const articleLanguage = await article.getAttribute("lang")

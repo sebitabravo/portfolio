@@ -9,12 +9,14 @@ const steps = workflow.split(/^      - name: /m).slice(1);
 const step = (name: string) => steps.find((entry) => entry.startsWith(`${name}\n`));
 
 describe("Lighthouse checks the checked-out static build", () => {
-  it("serves locale, blog, and privacy routes from dist three times and keeps error-level assertions", () => {
+  it("serves both locales, both blog indexes, links, and privacy from dist three times and keeps error-level assertions", () => {
     expect(config.ci.collect.staticDistDir).toBe("./dist");
     expect(config.ci.collect.url).toEqual([
       "http://localhost/",
       "http://localhost/en/",
       "http://localhost/blog/",
+      "http://localhost/en/blog/",
+      "http://localhost/links/",
       "http://localhost/privacy/",
     ]);
     expect(config.ci.collect.numberOfRuns).toBe(3);
@@ -33,17 +35,19 @@ describe("Lighthouse checks the checked-out static build", () => {
     expect(workflow).toMatch(/^permissions:\n  contents: read$/m);
     expect(steps.map((entry) => entry.split("\n", 1)[0])).toEqual([
       "Checkout repository",
-      "Set up pnpm",
+      "Set up Bun",
+      "Cache Bun packages",
       "Set up Node",
       "Install dependencies",
       "Build site",
       "Run Lighthouse CI",
     ]);
     expect(step("Checkout repository")).toContain("uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1");
-    expect(step("Set up pnpm")).toMatch(/uses: pnpm\/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6\.1\.0\n        with:\n          version: 10\.30\.1/);
-    expect(step("Set up Node")).toMatch(/uses: actions\/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7\.1\.0\n        with:\n          node-version: 22.23.3\n          cache: pnpm/);
-    expect(step("Install dependencies")).toContain("run: pnpm install --frozen-lockfile");
-    expect(step("Build site")).toContain("run: pnpm build");
+    expect(step("Set up Bun")).toMatch(/uses: oven-sh\/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2\.2\.0\n        with:\n          bun-version: 1\.4\.4/);
+    expect(step("Cache Bun packages")).toMatch(/uses: actions\/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4\.3\.0\n        with:\n          path: ~\/\.bun\/install\/cache\n          key: \$\{\{ runner\.os \}\}-bun-\$\{\{ hashFiles\('\*\*\/bun\.lock'\) \}\}/);
+    expect(step("Set up Node")).toMatch(/uses: actions\/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7\.1\.0\n        with:\n          node-version: 24\.22\.3/);
+    expect(step("Install dependencies")).toContain("run: bun ci");
+    expect(step("Build site")).toContain("run: bun run build");
     expect(step("Run Lighthouse CI")).toMatch(/continue-on-error: false\n        uses: treosh\/lighthouse-ci-action@3e7e23fb74242897f95c0ba9cabad3d0227b9b18 # 12\.6\.2/);
     expect(step("Run Lighthouse CI")).toContain("configPath: ./lighthouserc.json");
     expect(step("Run Lighthouse CI")).toContain("uploadArtifacts: true");

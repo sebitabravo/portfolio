@@ -4,51 +4,54 @@ import { homeSectionIds } from "../src/lib/home-sections"
 
 const spanishPage = readFileSync("src/pages/index.astro", "utf8")
 const englishPage = readFileSync("src/pages/en/index.astro", "utf8")
-const homePage = readFileSync("src/components/LocalizedHomePage.astro", "utf8")
+const localizedHome = readFileSync("src/components/LocalizedHomePage.astro", "utf8")
+const header = readFileSync("src/components/Header.astro", "utf8")
 const spanishNotFound = readFileSync("src/pages/404.astro", "utf8")
 const englishNotFound = readFileSync("src/pages/en/404.astro", "utf8")
-const header = readFileSync("src/components/Header.astro", "utf8")
-const footer = readFileSync("src/components/Footer.astro", "utf8")
 const blogIndex = readFileSync("src/components/blog/LocalizedBlogIndex.astro", "utf8")
 const blogPost = readFileSync("src/components/blog/LocalizedBlogPost.astro", "utf8")
-const design = readFileSync("DESIGN.md", "utf8")
-const sections = [
-  ["projects", "Projects", "proyectos", "projects"],
-  ["experience", "Experience", "experiencia", "experience"],
-  ["education", "Education", "educacion", "education"],
-  ["certifications", "Certifications", "certificaciones", "certifications"],
-  ["about", "AboutMe", "sobre-mi", "about"],
-  ["contact", "Contact", "contacto", "contact"],
-] as const
+
+// src/lib/home-sections.ts es la única fuente de verdad de los ids de sección
+// del home; estos tests cruzan el módulo con el markup real en vez de repetir
+// una segunda lista que puede quedarse vieja.
+const declaredKeys = Object.keys(homeSectionIds.es)
+
+const idKeys = (source: string, attribute: "id" | "data-nav") =>
+  Array.from(source.matchAll(new RegExp(`${attribute}="?\\{ids\\.(\\w+)\\}`, "g")), (match) => match[1]!)
 
 describe("home pages smoke", () => {
   it("renders every core section in Spanish", () => {
     expect(spanishPage).toContain('<LocalizedHomePage locale="es" />')
-    for (const [key, , spanishId] of sections) {
-      expect(homeSectionIds.es[key]).toBe(spanishId)
+    expect(new Set(idKeys(localizedHome, "id"))).toEqual(new Set(declaredKeys))
+    for (const key of idKeys(localizedHome, "data-nav")) {
+      expect(declaredKeys).toContain(key)
     }
   })
 
-  it("renders every core section in English", () => {
+  it("renders every core section in English, with English ids of its own", () => {
     expect(englishPage).toContain('<LocalizedHomePage locale="en" />')
-    for (const [key, , , englishId] of sections) {
-      expect(homeSectionIds.en[key]).toBe(englishId)
-    }
+    // Los ids se traducen por locale para que las anclas viajen en el cambio de
+    // idioma (#proyectos <-> #projects); el contrato que lo fija vive en
+    // tests/blog-language-switch.spec.ts.
+    expect(Object.keys(homeSectionIds.en)).toEqual(declaredKeys)
+    expect(Object.values(homeSectionIds.en)).toEqual([
+      "projects",
+      "experience",
+      "about",
+      "education",
+      "contact",
+    ])
   })
 
-  it("uses the shared IDs for every full-bleed band and one canonical stack marquee", () => {
-    expect(homePage).toContain('import { homeSectionIds } from "@/lib/home-sections"')
-    expect(homePage).toContain("const ids = homeSectionIds[locale]")
-    expect(homePage.match(/<SectionBand\b/g)).toHaveLength(sections.length)
-    for (const [key, component] of sections) {
-      const matchingBands = homePage.split(`<SectionBand id={ids.${key}}`)
-      expect(matchingBands).toHaveLength(2)
-      const band = matchingBands[1]?.split("</SectionBand>")[0]
-      expect(band).toContain(`<${component} locale={locale} />`)
+  it("builds its nav anchors from the declared sections instead of hardcoding them", () => {
+    // Un ancla literal en el header queda muerta en silencio cuando una sección
+    // se renombra: pasó con #trabajo al pasar a #proyectos. El nav sale de
+    // homeSectionFragment, así que no puede desincronizarse del mapa.
+    expect(header).not.toContain("#trabajo")
+    expect(header).toContain("homeSectionFragment")
+    for (const section of ["work", "experience", "contact"]) {
+      expect(header).toContain(`homeSectionFragment(locale, "${section}")`)
     }
-    expect(homePage.match(/<SignalStrip locale=\{locale\} \/>/g)).toHaveLength(1)
-    expect(homePage).toContain('tone="tinted"')
-    expect(homePage).not.toContain('<hr class="section-divider')
   })
 })
 
@@ -81,17 +84,5 @@ describe("remaining localized pages", () => {
     expect(route).toContain(`<LocalizedNotFoundPage locale="${locale}" />`)
     expect(route.match(/<LocalizedNotFoundPage\b/g)).toHaveLength(1)
     expect(route).not.toMatch(/<(?:main|h1)\b/)
-  })
-
-  it("keeps the Header and footer inside the 1440px blueprint frame with a full-width footer band", () => {
-    expect(design).toContain("blueprint frame max `1440px`")
-    const headerWrapper = header.match(/<header\b[^>]*>\s*<div class="([^"]+)"/)?.[1]
-    const footerWrapper = footer.match(/<footer\b[^>]*class="([^"]+)"/)?.[1]
-    const footerFrame = footer.match(/<div class="([^"]*\bframe\b[^"]*)"/)?.[1]
-    expect(footerWrapper).toMatch(/(?:^|\s)w-full(?:\s|$)/)
-    expect(footerWrapper).not.toMatch(/(?:^|\s)max-w-/)
-    for (const wrapper of [headerWrapper, footerFrame]) {
-      expect(wrapper).toMatch(/(?:^|\s)frame(?:\s|$)/)
-    }
   })
 })

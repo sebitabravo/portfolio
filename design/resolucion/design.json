@@ -1,0 +1,192 @@
+{
+  "title": "Resolución — negro, Geist Pixel y movimiento cuantizado",
+  "brief": "Propuesta con el brief nuevo del autor: fondo negro, tema claro blanco puro secundario, Geist Pixel para display y Geist Mono para todo lo demás, UI 100% monocroma (el color vive solo en los screenshots de los productos), motion en pasos (steps) y sonido sintetizado apagado por defecto. Tres momentos firmados: el nombre que se resuelve, los productos que enfocan y el email que se copia.",
+  "feature": "design/resolucion/DESIGN.md",
+  "artboards": [
+    {
+      "file": "index.html",
+      "title": "Resolución — home completa",
+      "tradeoff": "La audacia se gasta en tres momentos y el resto es silencio monocromo. Riesgo: depende de cinco fuentes Pixel (≈103 KB diferidas) y de que el motion en pasos se lea como intención y no como lag; con reduced motion o sin las fuentes, el nombre queda estático y final.",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "file": "index.html",
+      "title": "Resolución — móvil",
+      "tradeoff": "El nombre se ajusta al ancho (≈67 px) y el índice de proyectos se apila sobre el screenshot; el header pasa a dos filas y deja de ser sticky para no gastar 96 px de pantalla.",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "file": "blog.html",
+      "title": "Resolución — blog",
+      "tradeoff": "Mismo sistema (tokens, header, filas) en una vista interior; sin nuevos colores ni curvas.",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "file": "post.html",
+      "title": "Resolución — artículo",
+      "tradeoff": "Mismo sistema (tokens, header, filas) en una vista interior; sin nuevos colores ni curvas.",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "file": "privacidad.html",
+      "title": "Resolución — privacidad",
+      "tradeoff": "Mismo sistema (tokens, header, filas) en una vista interior; sin nuevos colores ni curvas.",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "file": "404.html",
+      "title": "Resolución — 404",
+      "tradeoff": "Mismo sistema (tokens, header, filas) en una vista interior; sin nuevos colores ni curvas.",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "file": "links.html",
+      "title": "Resolución — links (hub para YouTube y bio)",
+      "tradeoff": "Mismo sistema (tokens, header, filas) en una vista interior; sin nuevos colores ni curvas.",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "file": "og.html",
+      "title": "Resolución — tarjeta social 1200x630",
+      "tradeoff": "Mismo sistema (tokens, header, filas) en una vista interior; sin nuevos colores ni curvas.",
+      "width": 1200,
+      "height": 630
+    },
+    {
+      "file": "08-post-prosa.html",
+      "title": "Prosa del artículo — comparación A/B/C",
+      "tradeoff": "Un board con conmutador en lugar de tres archivos: el mismo párrafo al mismo scroll, flip instantáneo, para que la comparación tipográfica no dependa de la memoria. Compara mono 15/24 (lo actual), mono 17/30 y sans 17/28; código, cifras y tablas siguen en mono en las tres. El conmutador existe solo en el prototipo y no se imprime; la variante elegida se borra al pasar a Astro.",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "file": "09-estados.html",
+      "title": "Estados de componentes",
+      "tradeoff": "Especificación, no composición: 20 especímenes por tema con reposo, hover, press, foco, seleccionado y deshabilitado. Los estados son reales cuando el HTML puede declararlos (aria-selected, aria-current, aria-pressed) y forzados por clase cuando no. Acá se especificaron por primera vez el press (2px con el steps(4) de 80ms, nunca un cambio de color) y el deshabilitado (--fg-faint + --line, nunca opacidad intermedia).",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "file": "en/index.html",
+      "title": "Home en inglés",
+      "tradeoff": "Espejo del sistema, no una segunda dirección. Los strings vienen de en.json cuando existen; el resto se tradujo. Prueba que el nombre pixelado, la fórmula del hero y el toggle de idioma aguantan el inglés.",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "file": "en/blog.html",
+      "title": "Blog en inglés",
+      "tradeoff": "Los 40 títulos y descripciones pasan por el esquema de fila: más cortos que el español, sin romper la columna de fechas.",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "file": "en/post.html",
+      "title": "Artículo en inglés",
+      "tradeoff": "La prosa a 17px/30px sobre 44rem da ~69 caracteres en los dos idiomas; el inglés es más corto, así que el TOC y el corte de líneas no cambian.",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "file": "en/privacidad.html",
+      "title": "Privacidad en inglés",
+      "tradeoff": "Las ocho secciones como filas de CV; la sección GDPR tiene ocho bullets en vez de cuatro porque ese es el copy real de producción.",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "file": "en/404.html",
+      "title": "404 en inglés",
+      "tradeoff": "El 404 resolviendo y su rampa de formas: el código no se traduce, el mensaje sí.",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "file": "en/links.html",
+      "title": "Links en inglés",
+      "tradeoff": "El hub bilingüe: las filas son las mismas, los snippets de YouTube cambian de idioma.",
+      "width": 1440,
+      "height": 900
+    }
+  ],
+  "screens": [
+    "screens/desktop-dark-404-full.png",
+    "screens/desktop-dark-404.png",
+    "screens/desktop-dark-blog-full.png",
+    "screens/desktop-dark-blog.png",
+    "screens/desktop-dark-en-hero.png",
+    "screens/desktop-dark-full.png",
+    "screens/desktop-dark-hero.png",
+    "screens/desktop-dark-links-full.png",
+    "screens/desktop-dark-links.png",
+    "screens/desktop-dark-post-full.png",
+    "screens/desktop-dark-post.png",
+    "screens/desktop-dark-privacidad-full.png",
+    "screens/desktop-dark-privacidad.png",
+    "screens/desktop-dark-reduced-motion-hero.png",
+    "screens/desktop-dark-trabajo.png",
+    "screens/desktop-light-404.png",
+    "screens/desktop-light-blog.png",
+    "screens/desktop-light-full.png",
+    "screens/desktop-light-hero.png",
+    "screens/desktop-light-links.png",
+    "screens/desktop-light-post.png",
+    "screens/desktop-light-privacidad.png",
+    "screens/desktop-light-trabajo.png",
+    "screens/desktop-print.pdf",
+    "screens/mobile-dark-404-full.png",
+    "screens/mobile-dark-404.png",
+    "screens/mobile-dark-blog-full.png",
+    "screens/mobile-dark-blog.png",
+    "screens/mobile-dark-en-hero.png",
+    "screens/mobile-dark-full.png",
+    "screens/mobile-dark-hero.png",
+    "screens/mobile-dark-links-full.png",
+    "screens/mobile-dark-links.png",
+    "screens/mobile-dark-post-full.png",
+    "screens/mobile-dark-post.png",
+    "screens/mobile-dark-privacidad-full.png",
+    "screens/mobile-dark-privacidad.png",
+    "screens/mobile-dark-trabajo.png",
+    "screens/mobile-light-404.png",
+    "screens/mobile-light-blog.png",
+    "screens/mobile-light-full.png",
+    "screens/mobile-light-hero.png",
+    "screens/mobile-light-links.png",
+    "screens/mobile-light-post.png",
+    "screens/mobile-light-privacidad.png",
+    "screens/mobile-light-trabajo.png"
+  ],
+  "print": {
+    "page": "A4",
+    "margin": "14mm",
+    "scheme": "light forced",
+    "hidden": [
+      "controls",
+      "nav",
+      "field",
+      "shots",
+      "cta",
+      "clock"
+    ],
+    "urls": "full href printed"
+  },
+  "og": [
+    "og/home.png",
+    "og/links.png",
+    "og/blog.png"
+  ],
+  "shared": [
+    "resolucion.css",
+    "views.css",
+    "boot.js",
+    "common.js"
+  ]
+}

@@ -1,11 +1,9 @@
 ---
-// El título permanece estático para proteger la pintura del LCP.
-import ArrowUpRight from "@/components/icons/ArrowUpRight.astro"
+// Resolución — momento 1 (§2): el nombre se resuelve. Hero del diseño: rol, h1 en Geist Pixel
+// a dos líneas, intro, meta (disponibilidad + reloj de Chile), enlaces de texto y CTAs.
+// Clases exactas del contrato: hero, hero-role, hero-intro, hero-meta, hero-links, cta.
+import { personalInfo, social } from "@/lib/data"
 import { getTranslations, type Locale } from "@/lib/i18n"
-import { homeSectionFragment } from "@/lib/home-sections"
-import { personalInfo } from "@/lib/data"
-import HeroStory from "./HeroStory.astro"
-import MailIcon from "./icons/Mail.astro"
 
 interface Props {
   locale?: Locale
@@ -13,102 +11,55 @@ interface Props {
 
 const { locale = "es" } = Astro.props
 const t = getTranslations(locale)
-const contactUrl = homeSectionFragment(locale, "contact")
-const heroTitleId = `hero-title-${locale}`
+
+// El h1 es texto real y visible sin JS; la animación de resolución es aditiva (hero.ts).
+const [firstName, lastName] = personalInfo.displayName.split(" ")
+const cvHref = "/cv/Sebastian_Bravo_CV.pdf"
 ---
 
-<section class="hero-gradient group relative isolate w-full text-hero-ink" aria-labelledby={heroTitleId} data-portfolio-motion>
-  <div class="frame hero-frame">
-    <div class="hero-layout">
-      <h1 id={heroTitleId} class="hero-title" aria-label="Sebastian Bravo">
-        <span class="hero-title-name block">Sebastian</span>
-        <span class="hero-title-name hero-title-accent block" data-text="Bravo">Bravo</span>
-      </h1>
-
-      <div class="hero-aside">
-        <p class="hero-role hero-title-role">
-          {t.hero.role}<span aria-hidden="true"> · </span>{t.hero.roleLocation}
-        </p>
-        <p class="hero-lede">{t.hero.intro}</p>
-        <div class="hero-actions">
-          <a href={contactUrl} class="hero-btn-primary btn btn-solid focus-ring" aria-label={t.hero.contact}>
-            <MailIcon class="size-4" />
-            <span>{t.hero.contact}</span>
-            <ArrowUpRight class="hero-btn-arrow btn-arrow size-4 shrink-0" />
-          </a>
-          <a
-            href="/cv/Sebastian_Bravo_CV.pdf"
-            target="_blank"
-            rel="noopener noreferrer"
-            data-track-cv={locale}
-            class="hero-cv-link btn btn-ghost focus-ring"
-          >{t.hero.downloadCv}<ArrowUpRight class="btn-arrow size-4 shrink-0" /></a>
-        </div>
-        <ul class="hero-meta" aria-label={t.hero.metaLabel}>
-          {personalInfo.available && (
-            <li class="hero-meta-status">
-              <span class="status-dot" aria-hidden="true"></span>
-              {t.hero.available}
-            </li>
-          )}
-          <li class="hero-meta-item">{t.hero.language}</li>
-        </ul>
-      </div>
+<section class="hero" aria-labelledby="name">
+  <canvas id="field" aria-hidden="true"></canvas>
+  <div class="wrap">
+    <p class="hero-role small">{t.hero.role.toLowerCase()}</p>
+    <h1 id="name"><span class="line">{firstName}</span><span class="line">{lastName}</span></h1>
+    <p class="hero-intro">{t.hero.intro}</p>
+    <div class="hero-meta small">
+      {
+        personalInfo.available && (
+          <span>
+            <span class="dot" aria-hidden="true" />
+            {t.hero.available}
+          </span>
+        )
+      }
+      <span>
+        {t.hero.timezone.toLowerCase()} <time id="clock">--:--</time>
+      </span>
+    </div>
+    <div class="hero-links small">
+      <a href={`mailto:${personalInfo.email}`}>{personalInfo.email}</a>
+      <a href={social.github} target="_blank" rel="me noopener noreferrer">github</a>
+      <a href={social.linkedin} target="_blank" rel="me noopener noreferrer">linkedin</a>
+    </div>
+    <div class="cta">
+      <a class="btn primary" href="#trabajo">{t.hero.viewProjects}</a>
+      <a class="btn ghost" href={cvHref} download>{t.hero.downloadCv}</a>
     </div>
   </div>
-
-  <HeroStory locale={locale} />
 </section>
 
-<script is:inline>
-  // Bound startup even if the motion module claims the hero but never activates.
-  // Keep this independent of dynamic imports and optional browser APIs.
-  ;(() => {
-    const root = document.querySelector("[data-portfolio-motion]")
-    const canvas = root?.querySelector("[data-hero-webgl]")
-    if (!root) return
-    if (!root.dataset.motionStatus) root.dataset.motionStatus = "loading"
-    if (canvas && !canvas.dataset.webglStatus) canvas.dataset.webglStatus = "pending"
-    const timer = window.setTimeout(() => {
-      if (root.dataset.motionStatus === "loading") root.dataset.motionStatus = "fallback"
-      if (canvas?.dataset.webglStatus === "pending") canvas.dataset.webglStatus = "fallback"
-    }, 3000)
-    root.addEventListener("portfolio-motion:started", () => {
-      window.clearTimeout(timer)
-    }, { once: true })
-  })()
-</script>
-
 <script>
-  import { setupPortfolioMotion } from "@/scripts/portfolio-motion"
+  import { setupHero, teardownHero } from "@/scripts/hero"
+  import { setupDotField, teardownDotField } from "@/scripts/dot-field"
 
-  const STARTUP_BOUND_MS = 3000
-
-  // The claim resets status to loading, possibly after the inline bound already fired; bound it again.
-  const claimMotion = () => {
-    setupPortfolioMotion()
-    const root = document.querySelector<HTMLElement>("[data-portfolio-motion]")
-    if (root?.dataset.motionStatus !== "loading") return
-    const canvas = root.querySelector<HTMLElement>("[data-hero-webgl]")
-    const timer = setTimeout(() => {
-      if (root.dataset.motionStatus === "loading") root.dataset.motionStatus = "fallback"
-      if (canvas?.dataset.webglStatus === "pending") canvas.dataset.webglStatus = "fallback"
-    }, STARTUP_BOUND_MS)
-    root.addEventListener("portfolio-motion:started", () => clearTimeout(timer), { once: true })
-  }
-
-  // Motion is an enhancement: requesting its chunks before first paint competes with the LCP heading.
-  const startWhenIdle = () => {
-    // Two frames guarantee a paint has happened; the load event alone can precede the LCP paint.
-    requestAnimationFrame(() =>
-      requestAnimationFrame(() => {
-        if (typeof requestIdleCallback === "function") requestIdleCallback(claimMotion, { timeout: 1500 })
-        else setTimeout(claimMotion, 200)
-      }),
-    )
-  }
-  // With reduced motion nothing is fetched, so waiting for load protects no LCP: claim now and settle "reduced".
-  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) claimMotion()
-  else if (document.readyState === "complete") startWhenIdle()
-  else window.addEventListener("load", startWhenIdle, { once: true })
+  setupHero()
+  setupDotField()
+  document.addEventListener("astro:page-load", () => {
+    setupHero()
+    setupDotField()
+  })
+  document.addEventListener("astro:before-swap", () => {
+    teardownHero()
+    teardownDotField()
+  })
 </script>

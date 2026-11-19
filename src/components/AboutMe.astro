@@ -1,60 +1,52 @@
 ---
-import ArrowUpRight from "@/components/icons/ArrowUpRight.astro"
-import RetroTv from "@/components/RetroTv.astro"
-import { getAboutMe } from "@/lib/data"
+// Resolución — sobre mí (§3): perfil, stack como texto plano (kv) y busco. El retrato ASCII fue
+// cortado por el diseño (§10); el stack sale del data layer, no de strings sueltas.
+import { getAboutMe, skills } from "@/lib/data"
 import { getTranslations, type Locale } from "@/lib/i18n"
-import { homeSectionFragment } from "@/lib/home-sections"
 
 interface Props {
   locale?: Locale
 }
 
 const { locale = "es" } = Astro.props
-const aboutMe = getAboutMe(locale)
 const t = getTranslations(locale)
-const contactId = homeSectionFragment(locale, "contact")
-// Cada palabra recibe su índice para que el scroll la encienda en orden, sin JS.
-const words = aboutMe.intro.split(/\s+/).filter(Boolean)
+const about = getAboutMe(locale)
+
+const stackRows: Array<{ label: string; items: string[] }> = [
+  { label: t.about.stackFrontend, items: skills.frontend },
+  { label: t.about.stackBackend, items: skills.backend },
+  { label: t.about.stackData, items: skills.databases },
+  { label: t.about.stackTools, items: skills.tools },
+]
 ---
 
-<div class="about-layout">
-  <div class="about-media" data-animate data-animate-delay="1">
-    <RetroTv locale={locale}>
-      <p class="about-signature sticky-note">{aboutMe.signature}</p>
-    </RetroTv>
-  </div>
-
-  <div class="about-copy">
-    <p class="about-lede" data-reveal-words>
-      {
-        words.map((word, index) => (
-          <span class="reveal-word" style={`--w:${index}`}>
-            {word}{" "}
-          </span>
-        ))
-      }
-    </p>
-
-    <ul class="about-facts">
-      {t.about.facts.map((fact) => <li class="chip">{fact}</li>)}
-    </ul>
-
-    <div class="about-interests" data-animate>
-      <h3 class="about-interests-title meta-label">{aboutMe.interestsTitle}</h3>
-      <ul class="about-interest-list">
-        {aboutMe.interests.map((interest) => <li>{interest}</li>)}
-      </ul>
+<div class="reveal">
+  <div class="row">
+    <div class="label">{t.about.profileLabel}</div>
+    <div class="main">
+      <p>{about.intro}</p>
+      <p class="desc">{about.personal}</p>
     </div>
-
-    <div class="about-focus" data-animate>
-      <h3 class="about-focus-title meta-label">
-        <span class="status-dot" aria-hidden="true"></span>{t.about.focusTitle}
-      </h3>
-      <p>{aboutMe.lookingFor}</p>
-      <a href={contactId} class="about-cta focus-ring">
-        <span>{t.about.contactCta}</span>
-        <ArrowUpRight class="btn-arrow size-4 shrink-0" />
-      </a>
+  </div>
+  <div class="row">
+    <div class="label">{t.about.stackLabel}</div>
+    <div class="main">
+      <dl class="kv">
+        {
+          stackRows.map(({ label, items }) => (
+            <>
+              <dt>{label}</dt>
+              <dd>{items.join(", ")}</dd>
+            </>
+          ))
+        }
+      </dl>
+    </div>
+  </div>
+  <div class="row">
+    <div class="label">{t.about.seekingLabel}</div>
+    <div class="main">
+      <p>{about.lookingFor}</p>
     </div>
   </div>
 </div>

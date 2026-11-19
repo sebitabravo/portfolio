@@ -14,7 +14,8 @@
     "blog": "Blog",
     "formation": "Formación",
     "linkedin": "LinkedIn",
-    "cta": "Hablemos"
+    "cta": "Hablemos",
+    "links": "links"
   },
   "boot": {
     "version": "Portfolio de desarrollo · Versión 2.6",
@@ -35,15 +36,12 @@
     "contact": "Contactar",
     "available": "Disponible para trabajar",
     "downloadCv": "Descargar CV",
-    "timezone": "Chile"
+    "timezone": "Chile",
+    "viewProjects": "ver proyectos"
   },
   "story": {
     "label": "Del concepto al despliegue",
-    "acts": [
-      "Empieza con un problema real.",
-      "Se vuelve código que se puede mantener.",
-      "Y termina funcionando en producción."
-    ]
+    "acts": ["Empieza con un problema real.", "Se vuelve código que se puede mantener.", "Y termina funcionando en producción."]
   },
   "os": {
     "shortcuts": "Accesos directos del escritorio",
@@ -130,7 +128,9 @@
     "githubDescription": "Mirá mi código abierto",
     "cvHelper": "CV disponible para revisar mi experiencia completa.",
     "copy": "Copiar email",
-    "copied": "Email copiado"
+    "copied": "Email copiado",
+    "mailHint": "click para copiar. te respondo en menos de 24 h.",
+    "copyError": "No se pudo copiar"
   },
   "education": {
     "title": "Educación",
@@ -154,13 +154,24 @@
     "channel": "Canal",
     "channels": ["Retrato", "ASCII", "Sin señal"],
     "noSignal": "Sin señal",
-    "facts": ["Ing. Informática · INACAP", "Inglés C1", "Chile / Remoto"]
+    "facts": ["Ing. Informática · INACAP", "Inglés C1", "Chile / Remoto"],
+    "profileLabel": "perfil",
+    "stackLabel": "stack",
+    "seekingLabel": "busco",
+    "stackFrontend": "frontend",
+    "stackBackend": "backend",
+    "stackData": "datos",
+    "stackTools": "herramientas"
   },
   "theme": {
     "toggle": "Cambiar tema",
     "light": "Claro",
     "dark": "Oscuro",
     "system": "Sistema"
+  },
+  "sound": {
+    "off": "sonido: off",
+    "on": "sonido: on"
   },
   "footer": {
     "professionalProfiles": "Perfiles profesionales",
@@ -171,16 +182,21 @@
     "rights": "Todos los derechos reservados."
   },
   "language": {
-    "toggleLabel": "Cambiar idioma (actual: {code})"
+    "toggleLabel": "Cambiar idioma (actual: {code})",
+    "groupLabel": "Idioma"
   },
   "error404": {
     "description": "La página que buscás no existe.",
     "heading": "Esta página se perdió en el deploy",
     "message": "No encontramos lo que buscabas. Volvé al inicio y seguimos desde ahí.",
-    "backHome": "Volver al inicio"
+    "backHome": "Volver al inicio",
+    "crumb": "error 404",
+    "viewBlog": "ver el blog"
   },
   "blog": {
     "postNavigation": "Navegación del artículo",
+    "postsLabel": "Artículos del blog",
+    "articleBodyLabel": "Contenido del artículo",
     "title": "Blog",
     "description": "Artículos sobre desarrollo full-stack, IoT, Machine Learning y lecciones de código en producción.",
     "intro": "Escribo sobre lo que aprendo construyendo. Full-stack, IoT, Machine Learning y lecciones de código en producción.",
@@ -188,6 +204,20 @@
     "fallbackNotice": "Este artículo todavía está disponible en español. La ruta en inglés existe para que los case studies no terminen en un 404.",
     "fallbackCardLabel": "Disponible en español",
     "back": "Volver al blog",
-    "readingTime": "min de lectura"
+    "readingTime": "min de lectura",
+    "filtersLabel": "Filtrar artículos",
+    "filters": { "all": "todos", "case": "casos", "educational": "educacional" },
+    "countLabel": "artículos",
+    "tocTitle": "en esta página",
+    "newer": "más nuevo",
+    "older": "más antiguo",
+    "copyLink": "copiar enlace",
+    "copied": "copiado",
+    "retry": "reintentar",
+    "linkCopied": "Enlace copiado"
+  },
+  "stage": {
+    "decision": "decisión",
+    "tradeoff": "trade-off"
   }
 }

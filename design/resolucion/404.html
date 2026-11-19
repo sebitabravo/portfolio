@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>404 — Sebastián Bravo</title>
+<meta name="description" content="La página que buscás no existe.">
+<link rel="icon" href="data:,">
+<meta name="color-scheme" content="dark light">
+<meta name="robots" content="noindex">
+<link rel="canonical" href="https://sebita.dev/404">
+<link rel="alternate" hreflang="es" href="https://sebita.dev/404">
+<link rel="alternate" hreflang="en" href="https://sebita.dev/en/404">
+<link rel="alternate" hreflang="x-default" href="https://sebita.dev/404">
+<meta property="og:type" content="website">
+<meta property="og:title" content="404 — Sebastián Bravo">
+<meta property="og:description" content="La página que buscás no existe.">
+<meta property="og:url" content="https://sebita.dev/404">
+<meta property="og:image" content="https://sebita.dev/og/home.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preload" href="fonts/GeistPixel-Square.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/GeistMono-Regular.woff2" as="font" type="font/woff2" crossorigin>
+<script src="boot.js"></script>
+<link rel="stylesheet" href="resolucion.css">
+<link rel="stylesheet" href="views.css">
+</head>
+<body>
+<a class="skip" href="#main">saltar al contenido</a>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="index.html" aria-label="Inicio, Sebastián Bravo">sebastián bravo</a>
+    <nav class="nav-main" aria-label="Navegación principal">
+      <a href="index.html#trabajo">trabajo</a>
+      <a href="index.html#experiencia">experiencia</a>
+      <a href="blog.html">blog</a>
+      <a href="index.html#contacto">contacto</a>
+    </nav>
+    <div class="controls">
+      <button id="sound" type="button" role="switch" aria-checked="false"><span class="dot" aria-hidden="true"></span><span id="sound-label">sonido: off</span></button>
+      <span class="lang" role="group" aria-label="Idioma"><span aria-current="true">es</span><span aria-hidden="true">/</span><a class="faint" style="text-decoration:none" href="en/404.html">en</a></span>
+      <button id="theme" class="theme-btn" type="button" aria-label="Cambiar tema">
+        <svg viewBox="0 0 16 16" aria-hidden="true"><rect x="1.5" y="1.5" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1"/><path d="M8 1.5h6.5v13H8z" fill="currentColor"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+  <section class="page-top" aria-labelledby="h-404">
+    <div class="wrap">
+      <nav class="crumb" aria-label="Ruta"><a href="index.html">inicio</a><span aria-hidden="true">/</span><span aria-current="page">error 404</span></nav>
+      <p class="nf-code" aria-hidden="true" id="code">404</p>
+      <div class="nf-ramp" aria-hidden="true"><span class="s0">404</span><span class="s1">404</span><span class="s2">404</span><span class="s3">404</span><span>404</span></div>
+      <h1 id="h-404" class="nf-title"><span class="sr">Error 404. </span>Esta página se perdió en el deploy</h1>
+      <p class="lead">No encontramos lo que buscabas. Volvé al inicio y seguimos desde ahí.</p>
+      <div class="cta" style="margin-top:32px">
+        <a class="btn primary" href="index.html">volver al inicio</a>
+        <a class="btn ghost" href="blog.html">ver el blog</a>
+      </div>
+      <div class="nf-links small"><a href="index.html#trabajo">trabajo</a><a href="index.html#contacto">contacto</a><a href="links.html">links</a></div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap"><span>© 2026 sebastián bravo</span><a href="privacidad.html">privacidad</a><a href="links.html">links</a></div>
+</footer>
+
+<script src="common.js"></script>
+<script>
+(() => {
+  const code = R.$("#code")
+  R.ready.then((ok) => { if (ok && R.motion()) R.resolve([{ el: code, from: "404", to: "404" }], { stagger: 2 }) })
+})()
+</script>
+</body>
+</html>

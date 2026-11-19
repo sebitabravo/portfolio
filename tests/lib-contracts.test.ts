@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest"
 
 import { siteConfig } from "../src/lib/config"
-import { cn, formatDate } from "../src/lib/utils"
+import { formatDate } from "../src/lib/utils"
 
 describe("shared library contracts", () => {
   it("keeps the public site configuration complete", () => {
@@ -12,10 +12,9 @@ describe("shared library contracts", () => {
     expect(siteConfig.description.length).toBeGreaterThan(40)
   })
 
-  it("formats dates and merges utility classes", () => {
+  it("formats dates for both locales", () => {
     const date = new Date("2024-01-15T00:00:00.000Z")
     expect(formatDate(date, "es")).toContain("2024")
     expect(formatDate(date, "en")).toContain("2024")
-    expect(cn("px-2", false && "py-1", "px-4")).toBe("px-4")
   })
 })

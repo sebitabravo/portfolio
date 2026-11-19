@@ -1,0 +1,101 @@
+/* Resolución — tokens: fuentes, color, familias, grilla, movimiento y escala tipográfica.
+   Puerto verbatim de design/resolucion/resolucion.css (§3 de DESIGN.md); el diseño cerrado es la
+   especificación: ningún valor se "mejora". Oscuro es el default independiente del SO. */
+
+@font-face {
+  font-family: "Geist Pixel";
+  src: url(/fonts/GeistPixel-Square.woff2) format("woff2");
+  font-display: swap;
+}
+@font-face {
+  font-family: "GP Line";
+  src: url(/fonts/GeistPixel-Line.woff2) format("woff2");
+  font-display: block;
+}
+@font-face {
+  font-family: "GP Triangle";
+  src: url(/fonts/GeistPixel-Triangle.woff2) format("woff2");
+  font-display: block;
+}
+@font-face {
+  font-family: "GP Grid";
+  src: url(/fonts/GeistPixel-Grid.woff2) format("woff2");
+  font-display: block;
+}
+@font-face {
+  font-family: "GP Circle";
+  src: url(/fonts/GeistPixel-Circle.woff2) format("woff2");
+  font-display: block;
+}
+@font-face {
+  font-family: "Geist Mono";
+  font-weight: 400;
+  src: url(/fonts/GeistMono-Regular.woff2) format("woff2");
+  font-display: swap;
+}
+@font-face {
+  font-family: "Geist Mono";
+  font-weight: 500;
+  src: url(/fonts/GeistMono-Medium.woff2) format("woff2");
+  font-display: swap;
+}
+/* Fallback con métricas igualadas a Geist Mono (avance 0,6em; ascent 1,005; descent 0,295) para que el swap no mueva el layout.
+   Valores medidos con fontTools sobre fonts/GeistMono-Regular.woff2 y la fuente local:
+   Menlo (avance 0,60205; ascent 0,92822; descent 0,23583) y Courier New (avance 0,60010; ascent 0,83252; descent 0,30030). */
+@font-face {
+  font-family: "Geist Mono Fallback";
+  src: local("Menlo"), local("Menlo-Regular");
+  size-adjust: 99.66%;
+  ascent-override: 100.84%;
+  descent-override: 29.6%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: "Geist Mono Fallback CN";
+  src: local("Courier New"), local("CourierNewPSMT");
+  size-adjust: 99.98%;
+  ascent-override: 100.52%;
+  descent-override: 29.5%;
+  line-gap-override: 0%;
+}
+
+:root {
+  color-scheme: dark;
+  --bg: light-dark(#ffffff, #000000);
+  --fg: light-dark(#000000, #ffffff);
+  --fg-muted: light-dark(#5c5c5c, #a1a1a1);
+  --fg-faint: light-dark(#6b6b6b, #8a8a8a);
+  --line: light-dark(#e5e5e5, #262626);
+  --fill: light-dark(#f2f2f2, #141414);
+
+  --mono: "Geist Mono", "Geist Mono Fallback", "Geist Mono Fallback CN", ui-monospace, "SF Mono", Menlo, monospace;
+  --pixel: "Geist Pixel", ui-monospace, "SF Mono", Menlo, monospace;
+
+  --u: 8px;
+  --gutter: 16px;
+  --page: 90rem;
+  --header: 64px;
+
+  --t-feedback: 80ms steps(4, end);
+  --t-transition: 240ms steps(6, end);
+  --t-enter: 480ms steps(8, end);
+  --dist: 8px;
+
+  --fs-body: 15px;
+  --fs-small: 13px;
+  --fs-h2: clamp(2.5rem, 6vw, 5rem);
+}
+:root[data-theme="light"] {
+  color-scheme: light;
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+/* El gutter pasa de 16px a 32px en desktop (en el diseño vive dentro del bloque @media del header;
+   aquí se separa porque es un token, no un estilo de componente). */
+@media (min-width: 720px) {
+  :root {
+    --gutter: 32px;
+  }
+}

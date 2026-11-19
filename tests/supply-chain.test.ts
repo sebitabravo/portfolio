@@ -1,25 +1,25 @@
 import { readFile } from "node:fs/promises";
 import { describe, expect, it } from "vitest";
 
-// P9 supply-chain hardening (npm-security skill: cooldown, lockfile
-// integrity, deterministic installs). Rationale for the pnpm settings lives
-// here next to the contract:
-// - minimumReleaseAge 20160 (14d) delays brand-new releases (LiteLLM/Telnyx
-//   <3h window) without touching frozen pins.
-// - blockExoticSubdeps rejects git:/tarball: subdeps that bypass the
-//   registry and security scanning.
-// - trustPolicy no-downgrade flags a package that drops OIDC/provenance
-//   publishing (takeover signal). Kept because `pnpm install
-//   --frozen-lockfile` still resolves cleanly (verified in P9 evidence).
+// Supply-chain hardening (cooldown, lockfile integrity, deterministic
+// installs), now enforced through Bun instead of pnpm:
+// - The 14-day release cooldown lives in bunfig.toml as
+//   minimumReleaseAge = 1209600 (seconds) with the same three excludes.
+// - blockExoticSubdeps has no Bun equivalent: the registry-only resolution
+//   contract on bun.lock (tests/bun-config.test.ts) is the replacement.
+// - trustPolicy no-downgrade has no Bun equivalent either: dependabot's
+//   7-day npm cooldown below plus the CI `bun audit --prod` step are the
+//   remaining mitigations for a provenance/publishing downgrade signal.
 // - No lockfile-lint dependency: the integrity contract below is the
 //   zero-dependency equivalent (registry-only https resolutions, every pin
-//   carrying an integrity hash), enforced with the frozen-lockfile installs
+//   carrying an integrity hash), enforced with `bun ci` (frozen lockfile)
 //   already used in CI.
 
-const EXACT_NODE = "22.23.3";
+const NODE_PIN = "24.22.3";
+const NODE_FLOOR = ">=22.23.4";
 
 describe("exact Node pin alignment", () => {
-  it("pins .nvmrc, engines, and both workflows to the same exact Node version", async () => {
+  it("pins .nvmrc and both workflows to the same exact Node version and keeps the Astro floor in engines", async () => {
     const [nvmrc, packageJson, ci, lighthouse] = await Promise.all([
       readFile(".nvmrc", "utf8"),
       readFile("package.json", "utf8"),
@@ -27,13 +27,15 @@ describe("exact Node pin alignment", () => {
       readFile(".github/workflows/lighthouse.yml", "utf8"),
     ]);
 
-    expect(nvmrc.trim()).toBe(EXACT_NODE);
+    expect(nvmrc.trim()).toBe(NODE_PIN);
     expect(
       (JSON.parse(packageJson) as { engines: { node: string } }).engines.node,
-    ).toBe(EXACT_NODE);
+    ).toBe(NODE_FLOOR);
     for (const workflow of [ci, lighthouse]) {
-      expect(workflow).toContain(`node-version: ${EXACT_NODE}`);
+      expect(workflow).toContain(`node-version: ${NODE_PIN}`);
       expect(workflow).not.toMatch(/node-version: 22\n/);
+      // The package manager switched to Bun; pnpm must not reappear.
+      expect(workflow).not.toContain("pnpm");
     }
   });
 });
@@ -52,16 +54,24 @@ describe("dependabot supply-chain coverage", () => {
   });
 });
 
-describe("pnpm workspace hardening", () => {
-  it("keeps the approved build allowlist and enforces release-age, exotic, and trust policy", async () => {
-    const workspace = await readFile("pnpm-workspace.yaml", "utf8");
+describe("bun install hardening", () => {
+  it("keeps the release cooldown, its excludes, and the approved build allowlist", async () => {
+    const [bunfig, packageJson] = await Promise.all([
+      readFile("bunfig.toml", "utf8"),
+      readFile("package.json", "utf8"),
+    ]);
+    const manifest = JSON.parse(packageJson) as { trustedDependencies: string[] };
 
-    expect(workspace).toContain("'@tailwindcss/oxide': true");
-    expect(workspace).toContain("esbuild: true");
-    expect(workspace).toContain("sharp: true");
-    expect(workspace).toMatch(/^minimumReleaseAge:\s*20160$/m);
-    expect(workspace).toMatch(/^blockExoticSubdeps:\s*true$/m);
-    expect(workspace).toMatch(/^trustPolicy:\s*no-downgrade$/m);
+    expect(bunfig).toMatch(/^minimumReleaseAge = 1209600$/m);
+    expect(bunfig).toContain("http-cache-semantics@4.3.0");
+    expect(bunfig).toContain("undici@8.12.2");
+    expect(bunfig).toContain("fast-uri@4.2.3");
+    // Defining trustedDependencies replaces Bun's default list; all three
+    // build packages must stay or their postinstalls stop running.
+    expect(manifest.trustedDependencies).toEqual(
+      expect.arrayContaining(["@tailwindcss/oxide", "esbuild", "sharp"]),
+    );
+    expect(manifest.trustedDependencies).toHaveLength(3);
   });
 });
 
@@ -83,16 +93,15 @@ describe("lockfile integrity without new dependencies", () => {
   });
 
   it("resolves every locked package from the registry with an integrity hash", async () => {
-    const lockfile = await readFile("pnpm-lock.yaml", "utf8");
-    const inlineResolutions = [...lockfile.matchAll(/^ +resolution: (\{.*\})$/gm)].map(
+    const lockfile = await readFile("bun.lock", "utf8");
+    const inlineResolutions = [...lockfile.matchAll(/"(sha512-[A-Za-z0-9+/=]+)"/g)].map(
       (match) => match[1],
     );
 
     expect(inlineResolutions.length).toBeGreaterThan(500);
-    for (const body of inlineResolutions) {
-      expect(body).toContain("integrity:");
-      expect(body).not.toContain("tarball:");
+    for (const hash of inlineResolutions) {
+      expect(hash).toMatch(/^sha512-[A-Za-z0-9+/=]+$/);
     }
-    expect(lockfile).not.toMatch(/resolution:[^\n]*git\+/);
+    expect(lockfile).not.toMatch(/"(git\+|github:|file:|link:|workspace:)[^"]*"/);
   });
 });

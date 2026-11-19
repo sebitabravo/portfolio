@@ -1,5 +1,6 @@
 ---
-// Cierre del sitio: el nombre vuelve a todo el ancho y una sola fila reúne perfiles y legal.
+// Resolución — pie (§3): © año nombre + enlaces. Se conservan los dos nav con rótulo del
+// diccionario (perfiles y enlaces del pie) que la capa i18n fija para todo el sitio.
 import { personalInfo, social } from "@/lib/data"
 import { getTranslations, type Locale } from "@/lib/i18n"
 
@@ -10,63 +11,19 @@ interface Props {
 const { locale = "es" } = Astro.props
 const t = getTranslations(locale)
 const currentYear = new Date().getFullYear()
-const homeUrl = locale === "es" ? "/" : "/en/"
-const blogUrl = locale === "es" ? "/blog" : "/en/blog"
-const privacyUrl = locale === "es" ? "/privacy" : "/en/privacy"
-const linkClass = "footer-link inline-flex min-h-11 items-center focus-ring"
+const prefix = locale === "es" ? "" : "/en"
 ---
 
-<footer class="site-footer w-full">
-  <span class="rainbow-band rainbow-band-thin" aria-hidden="true"></span>
-  <div class="frame site-footer-frame">
-    <p class="footer-tagline">{t.footer.tagline}</p>
-    <a href={homeUrl} class="footer-brand focus-ring" aria-label={t.nav.brandHome}>
-      <span class="footer-wordmark">Sebastian <em>Bravo</em></span>
-    </a>
-
-    <div class="footer-legal">
-      <p class="footer-rights">&copy; {currentYear} {personalInfo.name} · Chile. {t.footer.rights}</p>
-
-      <nav aria-label={t.footer.professionalProfiles}>
-        <ul class="footer-socials flex flex-wrap items-center gap-x-5">
-          <li>
-            <a
-              href={social.linkedin}
-              target="_blank"
-              rel="me noopener noreferrer"
-              data-track-social="linkedin"
-              class={linkClass}
-            >
-              LinkedIn
-            </a>
-          </li>
-          <li>
-            <a
-              href={social.github}
-              target="_blank"
-              rel="me noopener noreferrer"
-              data-track-social="github"
-              class={linkClass}
-            >
-              GitHub
-            </a>
-          </li>
-        </ul>
-      </nav>
-
-      <nav aria-label={t.footer.links}>
-        <ul class="flex flex-wrap items-center gap-x-5">
-          <li><a href={blogUrl} class={linkClass}>{t.nav.blog}</a></li>
-          <li><a href={privacyUrl} class={linkClass}>{t.footer.privacy}</a></li>
-        </ul>
-      </nav>
-
-      <p class="footer-made">
-        {t.footer.madeWith}{" "}
-        <a href="https://astro.build" target="_blank" rel="noopener noreferrer" class="focus-ring">Astro</a>
-        {" + "}
-        <a href="https://threejs.org" target="_blank" rel="noopener noreferrer" class="focus-ring">Three.js</a>
-      </p>
-    </div>
+<footer>
+  <div class="wrap">
+    <span>© {currentYear} {personalInfo.displayName.toLowerCase()}</span>
+    <nav aria-label={t.footer.professionalProfiles}>
+      <a href={social.github} target="_blank" rel="me noopener noreferrer">github</a>
+      <a href={social.linkedin} target="_blank" rel="me noopener noreferrer">linkedin</a>
+    </nav>
+    <nav aria-label={t.footer.links}>
+      <a href={`${prefix}/blog`}>{t.nav.blog}</a>
+      <a href={`${prefix}/privacy`}>{t.footer.privacy}</a>
+    </nav>
   </div>
 </footer>

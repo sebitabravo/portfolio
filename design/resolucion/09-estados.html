@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Estados de componentes — Resolución</title>
+<meta name="description" content="Especificación de estados por componente en tema oscuro y claro: reposo, hover, foco, press, seleccionado y deshabilitado.">
+<link rel="icon" href="data:,">
+<meta name="color-scheme" content="dark light">
+<meta name="robots" content="noindex">
+<link rel="preload" href="fonts/GeistPixel-Square.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/GeistMono-Regular.woff2" as="font" type="font/woff2" crossorigin>
+<script src="boot.js"></script>
+<link rel="stylesheet" href="resolucion.css">
+<link rel="stylesheet" href="views.css">
+<style>
+  .board { padding-block: 40px 72px; }
+  .board-head { padding-inline: var(--gutter); max-width: var(--page); margin-inline: auto; }
+  .board-head h1 { font-size: clamp(2rem, 5vw, 3rem); line-height: 1.1; margin: 0 0 8px; }
+  .board-head p { max-width: 68ch; color: var(--fg-muted); }
+  .board-head .new { margin-top: 16px; color: var(--fg-faint); font-size: var(--fs-small); line-height: 20px; max-width: 68ch; }
+
+  .board-grid { display: grid; grid-template-columns: minmax(0, 1fr); border-top: 1px solid var(--line); margin-top: 32px; }
+  @media (min-width: 1024px) { .board-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+  [data-scheme="light"] { color-scheme: light; }
+  [data-scheme="dark"] { color-scheme: dark; }
+  .theme-scope { background: var(--bg); color: var(--fg); padding: 24px var(--gutter) 48px; border-bottom: 1px solid var(--line); }
+  @media (min-width: 1024px) { .theme-scope { padding: 32px 40px 56px; } .theme-scope + .theme-scope { border-left: 1px solid var(--line); } }
+  .scope-tag { display: inline-block; padding: 2px 8px; border: 1px solid var(--line); color: var(--fg-faint); font-size: var(--fs-small); line-height: 20px; margin-bottom: 24px; }
+
+  .spec { border-top: 1px solid var(--line); padding-block: 16px; }
+  .spec:first-of-type { border-top: 0; }
+  .spec h2 { font-size: 1.5rem; line-height: 32px; white-space: normal; margin-bottom: 4px; }
+  .st { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin-top: 12px; }
+  .st-label { flex: none; width: 92px; color: var(--fg-faint); font-size: var(--fs-small); line-height: 20px; }
+
+  /* Estados forzados: el reposo, el seleccionado y el current son atributos reales y no necesitan truco.
+     Hover, press, disabled y foco sí, o no se pueden ver quietos en un board.
+     Cada clase forzada de acá espeja una regla real del CSS compartido:
+     a.s-hover → a:hover (resolucion.css); .crumb/.toc a.s-hover → su :hover (views.css);
+     .s-hover.controls > button → .controls > *:hover; .s-hover.lk → .lk:hover y .lk:hover::before;
+     .s-hover.mail → .mail:hover; .s-press → :active { translateY(2px) } compartido (resolucion.css). */
+  .s-hover.btn.primary { background: var(--bg); color: var(--fg); }
+  .s-hover.btn.ghost { background: var(--fg); color: var(--bg); }
+  .s-hover.btn.sm { border-color: var(--fg); background: var(--fill); }
+  .s-hover.chip { border-color: var(--fg); background: var(--fill); }
+  .s-hover.nav-main a { background: var(--fill); color: var(--fg); }
+  .s-hover.controls > button { background: var(--fill); color: var(--fg); }
+  .s-hover.lk { background: var(--fill); }
+  .s-hover.lk::before { opacity: 1; }
+  .s-hover.mail { background: var(--fill); }
+  a.s-hover { text-decoration-color: var(--fg); }
+  .crumb a.s-hover, .toc a.s-hover { color: var(--fg); }
+  .index .s-hover[role="tab"] { background: var(--fill); }
+  .index .s-hover[role="tab"]::before { opacity: .4; }
+  .s-press.btn, .s-press.chip, .index .s-press[role="tab"], .s-press.controls > button, .s-press.lk, .s-press.mail { transform: translateY(2px); }
+  .s-focus { outline: 2px solid var(--fg); outline-offset: 2px; }
+  .st-note { flex-basis: 100%; margin-top: 4px; color: var(--fg-faint); font-size: var(--fs-small); line-height: 20px; max-width: 68ch; }
+
+  .media-notes { border-top: 1px solid var(--line); padding-block: 32px 64px; }
+  .media-notes .wrap { max-width: var(--page); }
+  .media-notes h2 { font-size: 1.5rem; line-height: 32px; white-space: normal; margin-bottom: 8px; }
+  .media-notes p { max-width: 68ch; color: var(--fg-muted); margin-top: 8px; }
+  .media-notes .k { color: var(--fg); font-weight: 500; }
+
+  .index.compact { max-width: 24rem; }
+  .swatches { display: grid; grid-template-columns: repeat(auto-fit, minmax(96px, 1fr)); gap: 8px; margin-top: 12px; }
+  .swatch { border: 1px solid var(--line); }
+  .swatch .box { height: 40px; }
+  .swatch .k { padding: 4px 8px; font-size: var(--fs-small); line-height: 20px; display: flex; justify-content: space-between; gap: 8px; color: var(--fg-faint); border-top: 1px solid var(--line); }
+</style>
+</head>
+<body>
+
+<div class="board">
+  <div class="board-head">
+    <h1>estados</h1>
+    <p>Todos los componentes interactivos del sistema, en reposo y en cada estado, en los dos temas. Cubiertos: botones (los botones copiar/compartir de post y links son <code>.btn.primary</code> y <code>.btn.sm</code> — mismos estados), fichas de filtro del blog, nav, pestañas del índice, enlaces de texto, filas del hub, email y controles del encabezado. El reposo, el seleccionado y el <code>aria-current</code> son estados reales en el HTML; el hover, el press, el deshabilitado y el foco están forzados para poder mirarlos quietos.</p>
+    <p class="new">Especificado acá por primera vez: <strong>press</strong> (todo control con caja baja 2px con el mismo <code>steps(4)</code> de 80ms del resto del sistema, en vez de oscurecerse — incluye nav, controles del encabezado, filas del hub y el email) y <strong>deshabilitado</strong> (pasa a <code>--fg-faint</code> + <code>--line</code>, nunca a opacidad intermedia: la paleta no tiene grises fuera de escala). Los enlaces de texto (prosa, toc, ruta) no tienen press: su feedback es subrayado/color. Todo vive en <code>resolucion.css</code> y <code>views.css</code>.</p>
+  </div>
+
+  <div class="board-grid">
+
+    <!-- ============ OSCURO ============ -->
+    <section class="theme-scope" data-scheme="dark" aria-label="Estados en tema oscuro">
+      <span class="scope-tag">tema oscuro · por defecto</span>
+
+      <div class="spec">
+        <h2>botones</h2>
+        <div class="st"><span class="st-label">reposo</span><button class="btn primary" type="button">ver proyectos</button><button class="btn ghost" type="button">descargar cv</button><button class="btn sm" type="button">volver al blog</button></div>
+        <div class="st"><span class="st-label">hover</span><button class="btn primary s-hover" type="button">ver proyectos</button><button class="btn ghost s-hover" type="button">descargar cv</button><button class="btn sm s-hover" type="button">volver al blog</button></div>
+        <div class="st"><span class="st-label">press</span><button class="btn primary s-press" type="button">ver proyectos</button><button class="btn ghost s-press" type="button">descargar cv</button><button class="btn sm s-press" type="button">volver al blog</button></div>
+        <div class="st"><span class="st-label">foco</span><button class="btn primary s-focus" type="button">ver proyectos</button><button class="btn ghost s-focus" type="button">descargar cv</button><button class="btn sm s-focus" type="button">volver al blog</button></div>
+        <div class="st"><span class="st-label">deshabilitado</span><button class="btn primary" type="button" disabled>ver proyectos</button><button class="btn ghost" type="button" disabled>descargar cv</button><button class="btn sm" type="button" disabled>volver al blog</button></div>
+      </div>
+
+      <div class="spec">
+        <h2>fichas</h2>
+        <div class="st"><span class="st-label">reposo</span><button class="chip" type="button" aria-pressed="false">todos</button><button class="chip" type="button" aria-pressed="false">casos</button></div>
+        <div class="st"><span class="st-label">hover</span><button class="chip s-hover" type="button" aria-pressed="false">todos</button><button class="chip s-hover" type="button" aria-pressed="false">casos</button></div>
+        <div class="st"><span class="st-label">press</span><button class="chip s-press" type="button" aria-pressed="false">todos</button><button class="chip s-press" type="button" aria-pressed="false">casos</button></div>
+        <div class="st"><span class="st-label">seleccionada</span><button class="chip" type="button" aria-pressed="true">todos</button><button class="chip" type="button" aria-pressed="false">casos</button></div>
+        <div class="st"><span class="st-label">deshabilitada</span><button class="chip" type="button" disabled>todos</button></div>
+      </div>
+
+      <div class="spec">
+        <h2>nav</h2>
+        <div class="st"><span class="st-label">reposo</span><nav class="nav-main" aria-label="Navegación, reposo"><a href="#trabajo">trabajo</a><a href="#experiencia">experiencia</a></nav></div>
+        <div class="st"><span class="st-label">hover</span><nav class="nav-main" aria-label="Navegación, hover"><a href="#trabajo" class="s-hover">trabajo</a><a href="#experiencia">experiencia</a></nav></div>
+        <div class="st"><span class="st-label">activo</span><nav class="nav-main" aria-label="Navegación, activo"><a href="#trabajo" aria-current="location">trabajo</a><a href="#experiencia">experiencia</a></nav></div>
+        <div class="st"><span class="st-label">foco</span><nav class="nav-main" aria-label="Navegación, foco"><a href="#trabajo" class="s-focus">trabajo</a><a href="#experiencia">experiencia</a></nav></div>
+      </div>
+
+      <div class="spec">
+        <h2>índice de proyectos</h2>
+        <ul class="index compact" aria-label="Índice, reposo">
+          <li><button role="tab" aria-selected="false" type="button"><span class="t">Copiloto de Recepción</span><span class="st">en desarrollo</span></button></li>
+        </ul>
+        <ul class="index compact" aria-label="Índice, hover">
+          <li><button role="tab" aria-selected="false" type="button" class="s-hover"><span class="t">Copiloto de Recepción</span><span class="st">en desarrollo</span></button></li>
+        </ul>
+        <ul class="index compact" aria-label="Índice, seleccionado">
+          <li><button role="tab" aria-selected="true" type="button"><span class="t">Copiloto de Recepción</span><span class="st">en desarrollo</span></button></li>
+        </ul>
+        <ul class="index compact" aria-label="Índice, press">
+          <li><button role="tab" aria-selected="false" type="button" class="s-press"><span class="t">Copiloto de Recepción</span><span class="st">en desarrollo</span></button></li>
+        </ul>
+        <ul class="index compact" aria-label="Índice, foco">
+          <li><button role="tab" aria-selected="false" type="button" class="s-focus"><span class="t">Copiloto de Recepción</span><span class="st">en desarrollo</span></button></li>
+        </ul>
+      </div>
+
+      <div class="spec">
+        <h2>fila cv y enlaces</h2>
+        <div class="st"><span class="st-label">con marca</span><div class="row" style="border-top:0;padding-block:0"><div class="label"><span class="mark" aria-hidden="true"></span>2026 — en curso</div><div class="main"><p class="who">INACAP</p><p class="stack">Ingeniería en Informática</p></div></div></div>
+        <div class="st"><span class="st-label">sin marca</span><div class="row" style="border-top:0;padding-block:0"><div class="label">2024 — 2026</div><div class="main"><p class="who">MIMASOFT</p><p class="stack">Desarrollador full-stack</p></div></div></div>
+        <div class="st"><span class="st-label">enlace</span><a href="#nada">reposo</a><a href="#nada" class="s-hover">hover</a><a href="#nada" class="s-focus">foco</a></div>
+        <div class="st"><span class="st-label">marcadores</span><span class="dot" aria-hidden="true"></span><span class="dot" style="background:var(--fg);border-color:var(--fg)" aria-hidden="true"></span><span class="mark" aria-hidden="true"></span><span class="faint small">dot vacío · dot lleno · mark</span></div>
+      </div>
+
+      <div class="spec">
+        <h2>enlaces de texto</h2>
+        <div class="st"><span class="st-label">en línea</span><a href="#nada">reposo</a><a href="#nada" class="s-hover">hover</a><a href="#nada" class="s-focus">foco</a></div>
+        <div class="st"><span class="st-label">toc</span><nav class="toc" style="border-top:0;border-bottom:0;padding-block:0" aria-label="Índice del artículo, demo"><a href="#nada">reposo</a><a href="#nada" class="s-hover">hover</a><a href="#nada" class="s-focus">foco</a></nav></div>
+        <div class="st"><span class="st-label">ruta</span><nav class="crumb" aria-label="Ruta, demo"><a href="#nada">inicio</a><span aria-hidden="true">/</span><a href="#nada" class="s-hover">blog</a><span aria-hidden="true">/</span><span aria-current="page">actual</span></nav></div>
+        <p class="st-note">Sin press: la bajada de 2px es para controles con caja; en texto corrido el feedback es subrayado/color (<code>a:hover</code>, <code>.toc a:hover</code>, <code>.crumb a:hover</code>).</p>
+      </div>
+
+      <div class="spec">
+        <h2>filas del hub (links)</h2>
+        <div class="st"><span class="st-label">reposo</span><a class="lk" style="max-width:24rem" href="#nada"><span class="t">portafolio</span><span class="u">sebita.dev</span></a></div>
+        <div class="st"><span class="st-label">hover</span><a class="lk s-hover" style="max-width:24rem" href="#nada"><span class="t">portafolio</span><span class="u">sebita.dev</span></a></div>
+        <div class="st"><span class="st-label">press</span><a class="lk s-press" style="max-width:24rem" href="#nada"><span class="t">portafolio</span><span class="u">sebita.dev</span></a></div>
+        <div class="st"><span class="st-label">deshabilitada</span><a class="lk" style="max-width:24rem" href="#nada" aria-disabled="true"><span class="t">agenda</span><span class="u">sin destino</span></a></div>
+        <div class="st"><span class="st-label">foco</span><a class="lk s-focus" style="max-width:24rem" href="#nada"><span class="t">portafolio</span><span class="u">sebita.dev</span></a></div>
+        <p class="st-note">El email de la vista links es el mismo <code>.lk</code> como botón: estados idénticos, más el copiado con <code>chirp</code>.</p>
+      </div>
+
+      <div class="spec">
+        <h2>email de contacto (.mail)</h2>
+        <div class="st"><span class="st-label">reposo</span><button class="mail" type="button" style="font-size:1.5rem;padding:8px 16px"><span class="l">sebitabravocontacto</span><span class="l">@gmail.com</span></button></div>
+        <div class="st"><span class="st-label">hover</span><button class="mail s-hover" type="button" style="font-size:1.5rem;padding:8px 16px"><span class="l">sebitabravocontacto</span><span class="l">@gmail.com</span></button></div>
+        <div class="st"><span class="st-label">press</span><button class="mail s-press" type="button" style="font-size:1.5rem;padding:8px 16px"><span class="l">sebitabravocontacto</span><span class="l">@gmail.com</span></button></div>
+        <div class="st"><span class="st-label">foco</span><button class="mail s-focus" type="button" style="font-size:1.5rem;padding:8px 16px"><span class="l">sebitabravocontacto</span><span class="l">@gmail.com</span></button></div>
+        <p class="st-note">Escala reducida para el board; en la vista real usa <code>min(8rem, …)</code>. Sin deshabilitado: es la CTA principal.</p>
+      </div>
+
+      <div class="spec">
+        <h2>controles del encabezado</h2>
+        <div class="st"><span class="st-label">sonido off</span><div class="controls"><button type="button" role="switch" aria-checked="false"><span class="dot" aria-hidden="true"></span><span>sonido: off</span></button></div></div>
+        <div class="st"><span class="st-label">sonido on</span><div class="controls"><button type="button" role="switch" aria-checked="false"><span class="dot" style="background:currentColor" aria-hidden="true"></span><span>sonido: on</span></button></div></div>
+        <div class="st"><span class="st-label">hover</span><div class="controls"><button class="s-hover" type="button" role="switch" aria-checked="false"><span class="dot" aria-hidden="true"></span><span>sonido: off</span></button></div></div>
+        <div class="st"><span class="st-label">press</span><div class="controls"><button class="s-press" type="button" role="switch" aria-checked="false"><span class="dot" aria-hidden="true"></span><span>sonido: off</span></button></div></div>
+        <div class="st"><span class="st-label">foco</span><div class="controls"><button class="s-focus" type="button" role="switch" aria-checked="false"><span class="dot" aria-hidden="true"></span><span>sonido: off</span></button></div></div>
+        <div class="st"><span class="st-label">tema</span><div class="controls"><button class="theme-btn" type="button" aria-label="Cambiar tema"><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="1.5" y="1.5" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1"/><path d="M8 1.5h6.5v13H8z" fill="currentColor"/></svg></button></div></div>
+        <div class="st"><span class="st-label">idioma</span><span class="lang" role="group" aria-label="Idioma"><span aria-current="true">es</span><span aria-hidden="true">/</span><span class="faint">en</span></span></div>
+        <p class="st-note">Sonido on: el dot lleno real es <code>#sound[aria-checked="true"]</code> (resolucion.css); acá se espeja en línea porque el selector es por id. El idioma es inerte en el prototipo (sus estados reales llegan con el toggle funcional): solo tiene <code>.lang [aria-current="true"]</code>. El botón de tema no tiene estado propio: el canvas cambia y listo.</p>
+      </div>
+
+      <div class="spec">
+        <h2>superficies</h2>
+        <div class="swatches">
+          <div class="swatch"><div class="box" style="background:#000000"></div><div class="k"><span>bg</span><span>#000</span></div></div>
+          <div class="swatch"><div class="box" style="background:#ffffff"></div><div class="k"><span>fg</span><span>#fff</span></div></div>
+          <div class="swatch"><div class="box" style="background:#a1a1a1"></div><div class="k"><span>muted</span><span>8.13:1</span></div></div>
+          <div class="swatch"><div class="box" style="background:#8a8a8a"></div><div class="k"><span>faint</span><span>6.08:1</span></div></div>
+          <div class="swatch"><div class="box" style="background:#141414"></div><div class="k"><span>fill</span><span>#141414</span></div></div>
+          <div class="swatch"><div class="box" style="background:#262626"></div><div class="k"><span>line</span><span>deco</span></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ CLARO ============ -->
+    <section class="theme-scope" data-scheme="light" aria-label="Estados en tema claro">
+      <span class="scope-tag">tema claro · secundario</span>
+
+      <div class="spec">
+        <h2>botones</h2>
+        <div class="st"><span class="st-label">reposo</span><button class="btn primary" type="button">ver proyectos</button><button class="btn ghost" type="button">descargar cv</button><button class="btn sm" type="button">volver al blog</button></div>
+        <div class="st"><span class="st-label">hover</span><button class="btn primary s-hover" type="button">ver proyectos</button><button class="btn ghost s-hover" type="button">descargar cv</button><button class="btn sm s-hover" type="button">volver al blog</button></div>
+        <div class="st"><span class="st-label">press</span><button class="btn primary s-press" type="button">ver proyectos</button><button class="btn ghost s-press" type="button">descargar cv</button><button class="btn sm s-press" type="button">volver al blog</button></div>
+        <div class="st"><span class="st-label">foco</span><button class="btn primary s-focus" type="button">ver proyectos</button><button class="btn ghost s-focus" type="button">descargar cv</button><button class="btn sm s-focus" type="button">volver al blog</button></div>
+        <div class="st"><span class="st-label">deshabilitado</span><button class="btn primary" type="button" disabled>ver proyectos</button><button class="btn ghost" type="button" disabled>descargar cv</button><button class="btn sm" type="button" disabled>volver al blog</button></div>
+      </div>
+
+      <div class="spec">
+        <h2>fichas</h2>
+        <div class="st"><span class="st-label">reposo</span><button class="chip" type="button" aria-pressed="false">todos</button><button class="chip" type="button" aria-pressed="false">casos</button></div>
+        <div class="st"><span class="st-label">hover</span><button class="chip s-hover" type="button" aria-pressed="false">todos</button><button class="chip s-hover" type="button" aria-pressed="false">casos</button></div>
+        <div class="st"><span class="st-label">press</span><button class="chip s-press" type="button" aria-pressed="false">todos</button><button class="chip s-press" type="button" aria-pressed="false">casos</button></div>
+        <div class="st"><span class="st-label">seleccionada</span><button class="chip" type="button" aria-pressed="true">todos</button><button class="chip" type="button" aria-pressed="false">casos</button></div>
+        <div class="st"><span class="st-label">deshabilitada</span><button class="chip" type="button" disabled>todos</button></div>
+      </div>
+
+      <div class="spec">
+        <h2>nav</h2>
+        <div class="st"><span class="st-label">reposo</span><nav class="nav-main" aria-label="Navegación, reposo"><a href="#trabajo">trabajo</a><a href="#experiencia">experiencia</a></nav></div>
+        <div class="st"><span class="st-label">hover</span><nav class="nav-main" aria-label="Navegación, hover"><a href="#trabajo" class="s-hover">trabajo</a><a href="#experiencia">experiencia</a></nav></div>
+        <div class="st"><span class="st-label">activo</span><nav class="nav-main" aria-label="Navegación, activo"><a href="#trabajo" aria-current="location">trabajo</a><a href="#experiencia">experiencia</a></nav></div>
+        <div class="st"><span class="st-label">foco</span><nav class="nav-main" aria-label="Navegación, foco"><a href="#trabajo" class="s-focus">trabajo</a><a href="#experiencia">experiencia</a></nav></div>
+      </div>
+
+      <div class="spec">
+        <h2>índice de proyectos</h2>
+        <ul class="index compact" aria-label="Índice, reposo">
+          <li><button role="tab" aria-selected="false" type="button"><span class="t">Copiloto de Recepción</span><span class="st">en desarrollo</span></button></li>
+        </ul>
+        <ul class="index compact" aria-label="Índice, hover">
+          <li><button role="tab" aria-selected="false" type="button" class="s-hover"><span class="t">Copiloto de Recepción</span><span class="st">en desarrollo</span></button></li>
+        </ul>
+        <ul class="index compact" aria-label="Índice, seleccionado">
+          <li><button role="tab" aria-selected="true" type="button"><span class="t">Copiloto de Recepción</span><span class="st">en desarrollo</span></button></li>
+        </ul>
+        <ul class="index compact" aria-label="Índice, press">
+          <li><button role="tab" aria-selected="false" type="button" class="s-press"><span class="t">Copiloto de Recepción</span><span class="st">en desarrollo</span></button></li>
+        </ul>
+        <ul class="index compact" aria-label="Índice, foco">
+          <li><button role="tab" aria-selected="false" type="button" class="s-focus"><span class="t">Copiloto de Recepción</span><span class="st">en desarrollo</span></button></li>
+        </ul>
+      </div>
+
+      <div class="spec">
+        <h2>fila cv y enlaces</h2>
+        <div class="st"><span class="st-label">con marca</span><div class="row" style="border-top:0;padding-block:0"><div class="label"><span class="mark" aria-hidden="true"></span>2026 — en curso</div><div class="main"><p class="who">INACAP</p><p class="stack">Ingeniería en Informática</p></div></div></div>
+        <div class="st"><span class="st-label">sin marca</span><div class="row" style="border-top:0;padding-block:0"><div class="label">2024 — 2026</div><div class="main"><p class="who">MIMASOFT</p><p class="stack">Desarrollador full-stack</p></div></div></div>
+        <div class="st"><span class="st-label">enlace</span><a href="#nada">reposo</a><a href="#nada" class="s-hover">hover</a><a href="#nada" class="s-focus">foco</a></div>
+        <div class="st"><span class="st-label">marcadores</span><span class="dot" aria-hidden="true"></span><span class="dot" style="background:var(--fg);border-color:var(--fg)" aria-hidden="true"></span><span class="mark" aria-hidden="true"></span><span class="faint small">dot vacío · dot lleno · mark</span></div>
+      </div>
+
+      <div class="spec">
+        <h2>enlaces de texto</h2>
+        <div class="st"><span class="st-label">en línea</span><a href="#nada">reposo</a><a href="#nada" class="s-hover">hover</a><a href="#nada" class="s-focus">foco</a></div>
+        <div class="st"><span class="st-label">toc</span><nav class="toc" style="border-top:0;border-bottom:0;padding-block:0" aria-label="Índice del artículo, demo"><a href="#nada">reposo</a><a href="#nada" class="s-hover">hover</a><a href="#nada" class="s-focus">foco</a></nav></div>
+        <div class="st"><span class="st-label">ruta</span><nav class="crumb" aria-label="Ruta, demo"><a href="#nada">inicio</a><span aria-hidden="true">/</span><a href="#nada" class="s-hover">blog</a><span aria-hidden="true">/</span><span aria-current="page">actual</span></nav></div>
+        <p class="st-note">Sin press: la bajada de 2px es para controles con caja; en texto corrido el feedback es subrayado/color (<code>a:hover</code>, <code>.toc a:hover</code>, <code>.crumb a:hover</code>).</p>
+      </div>
+
+      <div class="spec">
+        <h2>filas del hub (links)</h2>
+        <div class="st"><span class="st-label">reposo</span><a class="lk" style="max-width:24rem" href="#nada"><span class="t">portafolio</span><span class="u">sebita.dev</span></a></div>
+        <div class="st"><span class="st-label">hover</span><a class="lk s-hover" style="max-width:24rem" href="#nada"><span class="t">portafolio</span><span class="u">sebita.dev</span></a></div>
+        <div class="st"><span class="st-label">press</span><a class="lk s-press" style="max-width:24rem" href="#nada"><span class="t">portafolio</span><span class="u">sebita.dev</span></a></div>
+        <div class="st"><span class="st-label">deshabilitada</span><a class="lk" style="max-width:24rem" href="#nada" aria-disabled="true"><span class="t">agenda</span><span class="u">sin destino</span></a></div>
+        <div class="st"><span class="st-label">foco</span><a class="lk s-focus" style="max-width:24rem" href="#nada"><span class="t">portafolio</span><span class="u">sebita.dev</span></a></div>
+        <p class="st-note">El email de la vista links es el mismo <code>.lk</code> como botón: estados idénticos, más el copiado con <code>chirp</code>.</p>
+      </div>
+
+      <div class="spec">
+        <h2>email de contacto (.mail)</h2>
+        <div class="st"><span class="st-label">reposo</span><button class="mail" type="button" style="font-size:1.5rem;padding:8px 16px"><span class="l">sebitabravocontacto</span><span class="l">@gmail.com</span></button></div>
+        <div class="st"><span class="st-label">hover</span><button class="mail s-hover" type="button" style="font-size:1.5rem;padding:8px 16px"><span class="l">sebitabravocontacto</span><span class="l">@gmail.com</span></button></div>
+        <div class="st"><span class="st-label">press</span><button class="mail s-press" type="button" style="font-size:1.5rem;padding:8px 16px"><span class="l">sebitabravocontacto</span><span class="l">@gmail.com</span></button></div>
+        <div class="st"><span class="st-label">foco</span><button class="mail s-focus" type="button" style="font-size:1.5rem;padding:8px 16px"><span class="l">sebitabravocontacto</span><span class="l">@gmail.com</span></button></div>
+        <p class="st-note">Escala reducida para el board; en la vista real usa <code>min(8rem, …)</code>. Sin deshabilitado: es la CTA principal.</p>
+      </div>
+
+      <div class="spec">
+        <h2>controles del encabezado</h2>
+        <div class="st"><span class="st-label">sonido off</span><div class="controls"><button type="button" role="switch" aria-checked="false"><span class="dot" aria-hidden="true"></span><span>sonido: off</span></button></div></div>
+        <div class="st"><span class="st-label">sonido on</span><div class="controls"><button type="button" role="switch" aria-checked="false"><span class="dot" style="background:currentColor" aria-hidden="true"></span><span>sonido: on</span></button></div></div>
+        <div class="st"><span class="st-label">hover</span><div class="controls"><button class="s-hover" type="button" role="switch" aria-checked="false"><span class="dot" aria-hidden="true"></span><span>sonido: off</span></button></div></div>
+        <div class="st"><span class="st-label">press</span><div class="controls"><button class="s-press" type="button" role="switch" aria-checked="false"><span class="dot" aria-hidden="true"></span><span>sonido: off</span></button></div></div>
+        <div class="st"><span class="st-label">foco</span><div class="controls"><button class="s-focus" type="button" role="switch" aria-checked="false"><span class="dot" aria-hidden="true"></span><span>sonido: off</span></button></div></div>
+        <div class="st"><span class="st-label">tema</span><div class="controls"><button class="theme-btn" type="button" aria-label="Cambiar tema"><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="1.5" y="1.5" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1"/><path d="M8 1.5h6.5v13H8z" fill="currentColor"/></svg></button></div></div>
+        <div class="st"><span class="st-label">idioma</span><span class="lang" role="group" aria-label="Idioma"><span aria-current="true">es</span><span aria-hidden="true">/</span><span class="faint">en</span></span></div>
+        <p class="st-note">Sonido on: el dot lleno real es <code>#sound[aria-checked="true"]</code> (resolucion.css); acá se espeja en línea porque el selector es por id. El idioma es inerte en el prototipo (sus estados reales llegan con el toggle funcional): solo tiene <code>.lang [aria-current="true"]</code>. El botón de tema no tiene estado propio: el canvas cambia y listo.</p>
+      </div>
+
+      <div class="spec">
+        <h2>superficies</h2>
+        <div class="swatches">
+          <div class="swatch"><div class="box" style="background:#ffffff"></div><div class="k"><span>bg</span><span>#fff</span></div></div>
+          <div class="swatch"><div class="box" style="background:#000000"></div><div class="k"><span>fg</span><span>#000</span></div></div>
+          <div class="swatch"><div class="box" style="background:#5c5c5c"></div><div class="k"><span>muted</span><span>6.69:1</span></div></div>
+          <div class="swatch"><div class="box" style="background:#6b6b6b"></div><div class="k"><span>faint</span><span>5.33:1</span></div></div>
+          <div class="swatch"><div class="box" style="background:#f2f2f2"></div><div class="k"><span>fill</span><span>#f2f2f2</span></div></div>
+          <div class="swatch"><div class="box" style="background:#e5e5e5"></div><div class="k"><span>line</span><span>deco</span></div></div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <section class="media-notes" aria-label="Motion reducido e impresión">
+    <div class="wrap">
+      <h2>motion reducido e impresión</h2>
+      <p><span class="k">prefers-reduced-motion: reduce.</span> <code>boot.js</code> no agrega la clase <code>motion</code> a <code>&lt;html&gt;</code>, así que no hay resolve del nombre, ni reveals por sección, ni contadores, ni campo de puntos: todo se ve en su estado final, quieto. Además <code>resolucion.css</code> apaga transiciones y animaciones de forma global (<code>transition: none !important; animation: none !important</code>), por si algo quedara vivo.</p>
+      <p><span class="k">Impresión.</span> <code>@page</code> A4 con 14mm de margen y la página es el CV: el esquema se fuerza a claro aunque el tema guardado sea oscuro (<code>:root, :root[data-theme] { color-scheme: light }</code>); nav, controles del encabezado, CTAs, capturas, campo de puntos y reloj se ocultan; el escenario interactivo se reemplaza por <code>.print-list</code> con las URL completas impresas; las filas no se cortan entre páginas y los títulos de sección no quedan huérfanos al pie de página.</p>
+    </div>
+  </section>
+</div>
+
+<script src="common.js"></script>
+</body>
+</html>

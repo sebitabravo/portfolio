@@ -1,26 +1,13 @@
 ---
-// Fila de trayectoria: el resumen se lee de un vistazo y el detalle se despliega nativo.
-import { Picture } from "astro:assets"
-import ArrowUpRight from "@/components/icons/ArrowUpRight.astro"
-import { formatPeriod } from "@/lib/utils"
+// Resolución — fila CV de experiencia (§6): fechas en la columna label con <time datetime>,
+// empresa, rol, descripción, stack tenue y el enlace al caso. Puerto de las filas de
+// design/resolucion/index.html. Las evidencias (highlights) se conservan como línea tenue (S7).
+import { formatMonthYear } from "@/lib/utils"
 import { getTranslations, type Locale } from "@/lib/i18n"
-import type { ExperienceLogo } from "@/lib/data"
+import type { WorkExperience } from "@/lib/data"
 
-interface Props {
-  company: string
-  position: string
-  description: string
-  startDate: Date
-  endDate?: Date | null
-  current: boolean
-  location?: string
-  employmentType?: string
-  skills: string[]
-  logos?: ExperienceLogo[]
-  url?: string
-  highlights?: { label: string; value: string }[]
+interface Props extends WorkExperience {
   locale?: Locale
-  index?: number
 }
 
 const {
@@ -30,107 +17,62 @@ const {
   startDate,
   endDate,
   current,
-  location,
-  employmentType,
   skills,
-  logos,
   url,
   highlights = [],
   locale = "es",
-  index = 0,
 } = Astro.props
 const t = getTranslations(locale)
+
+const datetime = (date: Date): string => date.toISOString().slice(0, 10)
+// El diseño muestra mes + año visibles, en minúscula ("feb 2026", §1).
+const monthYear = (date: Date): string => formatMonthYear(date, locale).toLowerCase()
+const period = current
+  ? t.work.currently
+  : `<time datetime="${datetime(startDate)}">${monthYear(startDate)}</time> – <time datetime="${datetime(endDate ?? startDate)}">${monthYear(endDate ?? startDate)}</time>`
+
+// La convención del data layer: el último highlight es el caso publicado y `url` su destino.
+const caseHighlight = highlights.find(
+  (highlight) => /caso|case/i.test(highlight.label),
+) ?? highlights.at(-1)
+const evidence = caseHighlight ? highlights.filter((highlight) => highlight !== caseHighlight) : highlights
 const externalUrl = url?.startsWith("http")
-// Un fin abierto usa el mismo término que Formación: una sola palabra por idioma para "en curso".
-const period = current ? t.work.currently : formatPeriod(startDate, endDate, current, t.education.present, locale)
 ---
 
-<details
-  data-animate
-  data-animate-delay={String(index + 1)}
-  class:list={["experience-item", { "experience-item-secondary": index > 0 }]}
-  name={`experience-${locale}`}
-  open={index === 0}
->
-  <summary class="experience-summary focus-ring">
-    <span class="experience-meta meta-label"><time datetime={startDate.toISOString().slice(0, 7)}>{period}</time></span>
-    <h3 class="experience-role">{position}</h3>
-    <span class="experience-company">{company}</span>
-    <span class="experience-employment-type meta-label">{employmentType}</span>
-    <span class="experience-toggle" aria-hidden="true"></span>
-  </summary>
-
-  <div class="experience-description">
-    {location && <p class="experience-location meta-label">{location}</p>}
-    <p class="experience-copy">{description}</p>
-
+<div class="row">
+  <div class="label">
     {
-      highlights.length > 0 && (
-        <div class="experience-highlights" aria-label={t.work.evidenceLabel}>
-          {highlights.map((highlight) => (
-            <div class="experience-highlight">
-              <span>{highlight.label}</span>
-              <strong>{highlight.value}</strong>
-            </div>
-          ))}
-        </div>
-      )
+      current && <span class="mark" aria-hidden="true" />
     }
-
-    {
-      skills.length > 0 && (
-        <div class="experience-skills">
-          {skills.map((skill) => (
-            <span class="chip">{skill}</span>
-          ))}
-        </div>
-      )
-    }
-
-    <div class="experience-footer">
-      {
-        logos && logos.length > 0 && (
-          <div class="experience-logos">
-            {logos.map((logo) => (
-              <a
-                href={logo.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                title={logo.alt}
-                aria-label={logo.alt}
-                class="experience-logo focus-ring"
-              >
-                <Picture
-                  src={logo.src}
-                  formats={["avif"]}
-                  fallbackFormat="webp"
-                  alt={logo.alt}
-                  width={48}
-                  height={48}
-                  densities={[1, 2]}
-                  fit="contain"
-                  loading="lazy"
-                  decoding="async"
-                  class="size-full object-contain"
-                />
-              </a>
-            ))}
-          </div>
-        )
-      }
-      {
-        url && (
-          <a
-            href={url}
-            target={externalUrl ? "_blank" : undefined}
-            rel={externalUrl ? "noopener noreferrer" : undefined}
-            class="experience-case project-action project-action-primary focus-ring"
-          >
-            {t.work.viewCaseStudy}
-            <ArrowUpRight class="size-3.5 shrink-0" />
-          </a>
-        )
-      }
-    </div>
+    <Fragment set:html={period} />
   </div>
-</details>
+  <div class="main">
+    <p class="who">{company}</p>
+    <p>{position}</p>
+    <p class="desc">{description}</p>
+    {
+      skills.length > 0 && <p class="stack">{skills.join(", ")}</p>
+    }
+    {
+      evidence.length > 0 && (
+        <p class="stack" aria-label={t.work.evidenceLabel}>
+          {evidence.map((highlight, i) => (
+            <>
+              {i > 0 && " · "}
+              <span>{highlight.label}</span> {highlight.value}
+            </>
+          ))}
+        </p>
+      )
+    }
+    {
+      url && (
+        <p class="links small">
+          <a href={url} target={externalUrl ? "_blank" : undefined} rel={externalUrl ? "noopener noreferrer" : undefined}>
+            {t.work.viewCaseStudy}{caseHighlight && `: ${caseHighlight.value}`}
+          </a>
+        </p>
+      )
+    }
+  </div>
+</div>

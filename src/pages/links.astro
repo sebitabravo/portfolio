@@ -1,0 +1,104 @@
+---
+// Resolución — hub de enlaces (/links, design/resolucion/links.html §12): columna angosta,
+// filas .lk de 64px con el indicador de 8px, bloque "para youtube" con snippets planos y su
+// vista previa al compartir. Toda la copy vive en src/lib/data/links.ts.
+import Layout from "@/layouts/Layout.astro"
+import { personalInfo } from "@/lib/data"
+import { createStaticAlternates, getTranslations } from "@/lib/i18n"
+import { hubContent } from "@/lib/data/links"
+
+const t = getTranslations("es")
+const c = hubContent.es
+const canonicalUrl = "https://sebita.dev/links"
+const alternates = createStaticAlternates("es", "https://sebita.dev/links", "https://sebita.dev/en/links")
+---
+
+<Layout title={c.metaTitle} description={c.metaDescription} locale="es" canonicalUrl={canonicalUrl} alternates={alternates}>
+  <main id="main-content">
+    <section class="page-top" aria-labelledby="h-links">
+      <div class="wrap hub">
+        <p class="hero-role small muted">{c.role}</p>
+        <h1 id="h-links" class="page-title" data-load-resolve>{"Sebastián\nBravo"}</h1>
+        <p class="lead">{c.lead}</p>
+        <p class="meta-line">
+          <span><span class="dot" aria-hidden="true"></span>{t.hero.available}</span>
+          <span>{t.hero.timezone}</span>
+        </p>
+        <div class="hub-list">
+          {
+            c.links.map((link) => (
+              <a
+                class="lk"
+                href={link.href}
+                download={link.download ? true : undefined}
+                target={link.external ? "_blank" : undefined}
+                rel={link.external ? "me noopener noreferrer" : undefined}
+              >
+                <span class="t">{link.title}</span>
+                <span class="u">{link.display}</span>
+              </a>
+            ))
+          }
+          <button
+            class="lk"
+            id="mail"
+            type="button"
+            aria-label={c.emailAria}
+            data-email={personalInfo.email}
+            data-copied={c.emailCopied}
+            data-failed={c.emailFailed}
+            data-ok={t.contact.copied}
+            data-error={t.contact.copyError}
+          >
+            <span class="t">{c.emailTitle}</span>
+            <span class="u" id="mail-u">{personalInfo.email}</span>
+          </button>
+        </div>
+        <p class="sr" id="mail-status" role="status" aria-live="polite"></p>
+      </div>
+    </section>
+    <section class="hub-sec" aria-labelledby="h-youtube">
+      <div class="wrap hub">
+        <div class="sec-head"><h2 id="h-youtube" data-resolve>{c.youtubeHeading}</h2></div>
+        <p class="hub-note">{c.youtubeNote}</p>
+        {
+          c.blocks.map((block) => (
+            <>
+              <h3>{block.label}</h3>
+              <pre class="copyblock" id={block.id} tabindex="0">{block.content}</pre>
+              <button
+                class={`btn ${block.variant}`}
+                type="button"
+                data-copy={block.id}
+                data-copied={t.blog.copied}
+                data-retry={t.blog.retry}
+                data-ok={c.textCopied}
+              >
+                {block.button}
+              </button>
+            </>
+          ))
+        }
+        <p class="sr" id="copy-status" role="status" aria-live="polite"></p>
+      </div>
+    </section>
+    <section class="hub-sec" aria-label={c.previewHeading}>
+      <div class="wrap hub">
+        <h3>{c.previewHeading}</h3>
+        <img src="/og/es/links.svg" width="1200" height="630" alt={c.previewAlt} loading="lazy" />
+      </div>
+    </section>
+  </main>
+</Layout>
+
+<script>
+  import { setupHub } from "@/scripts/hub"
+  import { setupPageResolve } from "@/scripts/page-resolve"
+
+  setupHub()
+  setupPageResolve()
+  document.addEventListener("astro:page-load", () => {
+    setupHub()
+    setupPageResolve()
+  })
+</script>

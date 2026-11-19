@@ -2,7 +2,7 @@
 // Most social crawlers (X, Facebook, LinkedIn, WhatsApp) cannot render SVG
 // og:images, so Layout.astro points og:image at these static PNGs while the
 // dynamic /og/:locale.svg endpoint stays alive for previously shared URLs.
-// Run: pnpm generate:og (requires devDependency sharp, already allowlisted).
+// Run: bun run generate:og (requires devDependency sharp, already allowlisted).
 import { mkdir, writeFile } from "node:fs/promises"
 import { dirname, join } from "node:path"
 import { fileURLToPath } from "node:url"

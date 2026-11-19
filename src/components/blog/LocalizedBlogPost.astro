@@ -1,12 +1,17 @@
 ---
-import { render, type CollectionEntry } from "astro:content"
+// Resolución — artículo (design/resolucion/post.html §12): page-top con crumb, post-title en
+// Pixel a tamaño fijo (un título de 100 caracteres tardaría 8 s en resolverse), meta-line con
+// fecha, tiempo de lectura y tags, post-shot 16/10, TOC sticky ≥960px con anclas reales,
+// prosa 17px/30px, post-foot más nuevo/más antiguo y post-actions con copiar enlace (chirp).
+// El cuerpo MDX pasa por el pipeline existente sin reestructurar el contenido.
+import { getCollection, render, type CollectionEntry } from "astro:content"
 import Layout from "@/layouts/Layout.astro"
 import { personalInfo } from "@/lib/data"
 import { getBlogImageUrl } from "@/lib/blog-image"
 import { getProjectSocialImage } from "@/lib/portfolio-images"
 import { createBlogAlternates } from "@/lib/blog-alternates"
 import { getTranslations, type Locale } from "@/lib/i18n"
-import { formatDate } from "@/lib/utils"
+import { formatDate, formatMonthYear } from "@/lib/utils"
 import { articleTitleTransitionName } from "@/scripts/transitions"
 
 interface Props {
@@ -16,8 +21,11 @@ interface Props {
   translationId?: string
 }
 
+const HIDDEN_POST_SLUG = "rapido-sur-erp-mantenimiento-flotas"
+const READING_WORDS_PER_MINUTE = 220
+
 const { locale, post, isFallback = false, translationId } = Astro.props
-const { Content } = await render(post)
+const { Content, headings } = await render(post)
 const isEnglish = locale === "en"
 const t = getTranslations(locale)
 const spanishUrl = `https://sebita.dev/blog/${post.id}`
@@ -48,8 +56,16 @@ const articleJsonLd = JSON.stringify({
 }).replace(/</g, "\\u003c")
 const homePath = isEnglish ? "/en" : "/"
 const blogPath = isEnglish ? "/en/blog" : "/blog"
-// Lectura estimada a 220 palabras por minuto sobre el MDX crudo.
-const readingMinutes = Math.max(1, Math.round((post.body ?? "").split(/\s+/).filter(Boolean).length / 220))
+const prefix = isEnglish ? "/en" : ""
+const toc = headings.filter((heading) => heading.depth === 2)
+const readingMinutes = Math.max(1, Math.round((post.body ?? "").split(/\s+/).filter(Boolean).length / READING_WORDS_PER_MINUTE))
+const visiblePosts = (await getCollection("blog"))
+  .filter((p) => (isEnglish ? ["en", "es"].includes(p.data.locale ?? "es") : (p.data.locale ?? "es") === "es"))
+  .filter((p) => p.id !== HIDDEN_POST_SLUG)
+  .sort((a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime())
+const currentIndex = visiblePosts.findIndex((p) => p.id === post.id)
+const newer = currentIndex > 0 ? visiblePosts[currentIndex - 1] : undefined
+const older = currentIndex >= 0 && currentIndex < visiblePosts.length - 1 ? visiblePosts[currentIndex + 1] : undefined
 ---
 
 <Layout
@@ -60,169 +76,141 @@ const readingMinutes = Math.max(1, Math.round((post.body ?? "").split(/\s+/).fil
   canonicalUrl={canonicalUrl}
   alternates={alternates}
 >
-  <main id="main-content" class="blog-post frame">
-    <nav class="blog-post-breadcrumb" aria-label={t.nav.breadcrumb}>
-      <ol class="meta-label flex flex-wrap items-center gap-2 text-muted-foreground">
-        <li><a href={homePath} class="transition-colors hover:text-foreground">{t.nav.home}</a></li>
-        <li aria-hidden="true">/</li>
-        <li><a href={blogPath} class="transition-colors hover:text-foreground">{t.blog.title}</a></li>
-        <li aria-hidden="true">/</li>
-        <li lang={isFallback ? "es" : undefined} class="blog-post-crumb text-foreground" aria-current="page">
-          {post.data.title}
-        </li>
-      </ol>
-    </nav>
-
+  <main id="main-content">
     <article lang={isEnglish ? (isFallback ? "es" : "en") : undefined}>
-      <header class="blog-post-header" data-animate>
-        {
-          isEnglish && isFallback && (
-            <aside lang={locale} class="blog-post-note meta-label" role="note">
-              {t.blog.fallbackNotice}
-            </aside>
-          )
-        }
-        <p class="blog-post-meta meta-label">
-          <time lang={locale} datetime={post.data.publishDate.toISOString()} class="text-muted-foreground">
-            {formatDate(post.data.publishDate, locale)}
-          </time>
-          <span aria-hidden="true">·</span>
-          <span lang={locale}>{readingMinutes} {t.blog.readingTime}</span>
-        </p>
-        <h1 transition:name={articleTitleTransitionName(post.id)} class="blog-post-title">
-          {post.data.title}
-        </h1>
-        <p class="blog-post-description">
-          {post.data.description}
-        </p>
-        <p class="blog-post-tags">{post.data.tags.map((tag) => <span class="chip">{tag}</span>)}</p>
-      </header>
-
-      {
-        optimizedImageUrl && heroImage && (
-          <figure class="blog-post-figure os-window" data-animate>
-            <span class="os-window-bar" aria-hidden="true">
-              <span class="os-window-lights">
-                <>
-                  <span />
-                  <span />
-                  <span />
-                </>
-              </span>
-              <span class="os-window-title">{post.id}.mdx</span>
+      <header class="page-top">
+        <div class="wrap">
+          <nav aria-label={t.nav.breadcrumb}>
+            <ol class="crumb">
+              <li><a href={homePath}>{t.nav.home}</a></li>
+              <li aria-hidden="true">/</li>
+              <li><a href={blogPath}>{t.blog.title}</a></li>
+              <li aria-hidden="true">/</li>
+              <li lang={isFallback ? "es" : undefined} aria-current="page">{post.data.title}</li>
+            </ol>
+          </nav>
+          <h1 class="post-title" transition:name={articleTitleTransitionName(post.id)}>{post.data.title}</h1>
+          <p class="meta-line">
+            <span>
+              <time lang={locale} datetime={post.data.publishDate.toISOString()}>
+                {formatDate(post.data.publishDate, locale)}
+              </time>
             </span>
-            <img
-              src={optimizedImageUrl}
-              alt={post.data.title}
-              width={heroImageWidth}
-              height={heroImageHeight}
-              loading="eager"
-              fetchpriority="high"
-              class="aspect-video w-full object-cover object-top"
-            />
-          </figure>
-        )
-      }
-
-      <div class="prose-custom blog-post-body">
-        <Content />
-      </div>
+            <span>{readingMinutes} {t.blog.readingTime}</span>
+            <span>{post.data.tags.join(", ")}</span>
+          </p>
+          {
+            isEnglish && isFallback && (
+              <aside lang={locale} class="small" role="note">
+                {t.blog.fallbackNotice}
+              </aside>
+            )
+          }
+          {
+            optimizedImageUrl && heroImage && (
+              <div class="post-shot">
+                <img
+                  src={optimizedImageUrl}
+                  alt={post.data.title}
+                  width={heroImageWidth}
+                  height={heroImageHeight}
+                  loading="eager"
+                  fetchpriority="high"
+                  decoding="async"
+                />
+              </div>
+            )
+          }
+        </div>
+      </header>
+      <section aria-label={t.blog.articleBodyLabel}>
+        <div class="wrap">
+          <div class="post-grid">
+            {
+              toc.length > 0 && (
+                <nav class="toc" aria-label={t.blog.tocTitle}>
+                  <h2>{t.blog.tocTitle}</h2>
+                  {toc.map((heading) => (
+                    <a href={`#${heading.slug}`}>{heading.text}</a>
+                  ))}
+                </nav>
+              )
+            }
+            <div class="prose">
+              <Content />
+            </div>
+          </div>
+          {
+            (newer || older) && (
+              <div class="post-foot">
+                {newer && (
+                  <div class="row">
+                    <div class="label">{t.blog.newer}</div>
+                    <div class="main">
+                      <p class="who">
+                        <a href={`${prefix}/blog/${newer.id}`} transition:name={articleTitleTransitionName(newer.id)}>
+                          {newer.data.title}
+                        </a>
+                      </p>
+                      <p class="stack">
+                        <time datetime={newer.data.publishDate.toISOString().slice(0, 10)}>
+                          {formatMonthYear(newer.data.publishDate, locale)}
+                        </time>
+                      </p>
+                    </div>
+                  </div>
+                )}
+                {older && (
+                  <div class="row">
+                    <div class="label">{t.blog.older}</div>
+                    <div class="main">
+                      <p class="who">
+                        <a href={`${prefix}/blog/${older.id}`} transition:name={articleTitleTransitionName(older.id)}>
+                          {older.data.title}
+                        </a>
+                      </p>
+                      <p class="stack">
+                        <time datetime={older.data.publishDate.toISOString().slice(0, 10)}>
+                          {formatMonthYear(older.data.publishDate, locale)}
+                        </time>
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )
+          }
+          <div class="post-actions">
+            <button
+              class="btn primary"
+              id="share"
+              type="button"
+              data-url={canonicalUrl}
+              data-link={t.blog.copyLink}
+              data-copied={t.blog.copied}
+              data-retry={t.blog.retry}
+              data-link-copied={t.blog.linkCopied}
+              data-error={t.contact.copyError}
+            >
+              {t.blog.copyLink}
+            </button>
+            <nav aria-label={t.blog.postNavigation}>
+              <a class="btn sm" href={blogPath}>{`← ${t.blog.back}`}</a>
+              <a class="btn sm" href={homePath}>{`${t.nav.home} →`}</a>
+            </nav>
+          </div>
+          <p class="sr" id="share-status" role="status" aria-live="polite"></p>
+        </div>
+      </section>
     </article>
-
-    <footer class="blog-post-footer" data-animate>
-      <nav class="flex flex-wrap items-center justify-between gap-4" aria-label={t.blog.postNavigation}>
-        <a href={blogPath} class="btn btn-ghost focus-ring">
-          {`← ${t.blog.back}`}
-        </a>
-        <a href={homePath} class="btn btn-solid focus-ring">
-          {`${t.nav.home} →`}
-        </a>
-      </nav>
-    </footer>
   </main>
 
   <script is:inline type="application/ld+json" set:html={articleJsonLd} />
 </Layout>
 
-<style>
-  .blog-post {
-    padding: 6.5rem clamp(1rem, 4vw, 3.5rem) clamp(4rem, 8vw, 7rem);
-  }
+<script>
+  import { setupCopyLink } from "@/scripts/copy-link"
 
-  .blog-post-breadcrumb {
-    margin-bottom: clamp(2.5rem, 6vw, 4.5rem);
-  }
-
-  .blog-post-crumb {
-    max-width: 40ch;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  .blog-post-header {
-    max-width: 62rem;
-    margin-bottom: clamp(2.5rem, 5vw, 4rem);
-  }
-
-  .blog-post-note {
-    margin: 0 0 1.5rem;
-    line-height: 1.6;
-    text-transform: none;
-    letter-spacing: 0.02em;
-  }
-
-  .blog-post-meta {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0.5rem 0.75rem;
-    margin: 0 0 1.5rem;
-  }
-
-  .blog-post-title {
-    margin: 0 0 1.5rem;
-    font-size: clamp(2.75rem, 6.5vw, 5.75rem);
-    line-height: 0.92;
-    letter-spacing: -0.03em;
-    text-wrap: balance;
-  }
-
-  .blog-post-description {
-    max-width: 60ch;
-    margin: 0 0 1.5rem;
-    color: hsl(var(--muted-foreground));
-    font-size: clamp(1.0625rem, 1.4vw, 1.25rem);
-    line-height: 1.55;
-  }
-
-  .blog-post-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.4rem;
-    margin: 0;
-  }
-
-  .blog-post-figure {
-    max-width: 62rem;
-    margin: 0 0 clamp(3rem, 6vw, 4.5rem);
-  }
-
-  .blog-post-body {
-    max-width: 44rem;
-  }
-
-  .blog-post-footer {
-    max-width: 44rem;
-    margin-top: 4rem;
-    padding-top: 2rem;
-    border-top: 1px solid hsl(var(--border));
-  }
-
-  @media (min-width: 1100px) {
-    .blog-post-body,
-    .blog-post-footer {
-      margin-left: clamp(0rem, 8vw, 9rem);
-    }
-  }
-</style>
+  setupCopyLink()
+  document.addEventListener("astro:page-load", setupCopyLink)
+</script>

@@ -1,4 +1,5 @@
 ---
+// Resolución — sección de experiencia: filas CV dentro de un único .reveal por sección (§2).
 import { getWorkExperience } from "@/lib/data"
 import { getTranslations, type Locale } from "@/lib/i18n"
 import ExperienceItem from "@/components/ExperienceItem.astro"
@@ -9,36 +10,12 @@ interface Props {
 
 const { locale = "es" } = Astro.props
 const t = getTranslations(locale)
-const workExperience = getWorkExperience(locale)
+const entries = getWorkExperience(locale)
 ---
 
-{
-  workExperience.length > 0 ? (
-    <div class="experience-table">
-      <p class="experience-columns meta-label" aria-hidden="true">
-        <span>{t.work.period}</span>
-        <span>{t.work.role}</span>
-        <span>{t.work.company}</span>
-        <span>{t.work.mode}</span>
-        <span />
-      </p>
-      <div class="relative">
-        <span class="experience-progress" data-experience-progress aria-hidden="true" />
-        <ol class="experience-list" data-experience-list>
-          {workExperience.map((experience, i) => (
-            <li data-experience-item>
-              <ExperienceItem {...experience} locale={locale} index={i} />
-            </li>
-          ))}
-        </ol>
-      </div>
-      <p class="experience-timeline-note meta-label" data-experience-timeline>
-        {t.work.timeline}
-      </p>
-    </div>
-  ) : (
-    <div class="mt-8 text-center text-foreground/80">
-      <p>{t.work.noExperience}</p>
-    </div>
-  )
-}
+<div class="reveal">
+  {
+    entries.length === 0 && <p>{t.work.noExperience}</p>
+  }
+  {entries.map((entry) => <ExperienceItem {...entry} locale={locale} />)}
+</div>

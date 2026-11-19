@@ -14,7 +14,8 @@ const aboutMeData = {
       "Clean code & testing automatizado",
     ],
     interestsTitle: "Intereses",
-    lookingFor: `Busco mi primer rol full-time como Desarrollador Full-Stack Junior. Me motivan los proyectos que resuelven problemas concretos con tecnología bien aplicada — TypeScript, Python, cloud y testing automatizado.`,
+    // DESIGN.md §9: corrección de copy — sin "primer rol" ni autoetiqueta "Junior"; hechos intactos.
+    lookingFor: `Rol full-time como desarrollador full-stack, en equipos que resuelven problemas concretos con tecnología bien aplicada. Inglés C1.`,
   },
   en: {
     intro: `I like turning concrete problems into web products that people can use, maintain and understand without the hype. I work across product, interface and backend, with care for the details that make an experience hold together.`,
@@ -29,7 +30,8 @@ const aboutMeData = {
       "Clean code & automated testing",
     ],
     interestsTitle: "Interests",
-    lookingFor: `I'm looking for my first full-time role as a Junior Full-Stack Developer. I'm motivated by projects that solve concrete problems with well-applied technology — TypeScript, Python, cloud and automated testing.`,
+    // DESIGN.md §9: copy fix — no "first" / "Junior" self-label; facts unchanged.
+    lookingFor: `Full-time role as a full-stack developer, on teams that solve concrete problems with well-applied technology. English C1.`,
   },
 }
 

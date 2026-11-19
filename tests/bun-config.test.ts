@@ -97,11 +97,7 @@ describe("bun install policy", () => {
 
     expect(manifest.packageManager).toBe("bun@1.4.4");
     expect(manifest.overrides).toEqual(OVERRIDES);
-    expect(manifest.trustedDependencies).toEqual([
-      "@tailwindcss/oxide",
-      "esbuild",
-      "sharp",
-    ]);
+    expect(manifest.trustedDependencies).toEqual(["esbuild", "sharp"]);
     expect(manifest.pnpm).toBeUndefined();
     expect(manifest.engines.node).toBe(">=22.23.4");
   });

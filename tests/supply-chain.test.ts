@@ -66,12 +66,12 @@ describe("bun install hardening", () => {
     expect(bunfig).toContain("http-cache-semantics@4.3.0");
     expect(bunfig).toContain("undici@8.12.2");
     expect(bunfig).toContain("fast-uri@4.2.3");
-    // Defining trustedDependencies replaces Bun's default list; all three
-    // build packages must stay or their postinstalls stop running.
+    // Defining trustedDependencies replaces Bun's default list; both build
+    // packages must stay or their postinstalls stop running.
     expect(manifest.trustedDependencies).toEqual(
-      expect.arrayContaining(["@tailwindcss/oxide", "esbuild", "sharp"]),
+      expect.arrayContaining(["esbuild", "sharp"]),
     );
-    expect(manifest.trustedDependencies).toHaveLength(3);
+    expect(manifest.trustedDependencies).toHaveLength(2);
   });
 });
 

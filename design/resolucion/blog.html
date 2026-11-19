@@ -1,0 +1,413 @@
+<!doctype html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Blog — Sebastián Bravo</title>
+<meta name="description" content="Artículos sobre desarrollo full-stack, IoT, Machine Learning y lecciones de código en producción.">
+<link rel="icon" href="data:,">
+<meta name="color-scheme" content="dark light">
+<link rel="canonical" href="https://sebita.dev/blog">
+<link rel="alternate" hreflang="es" href="https://sebita.dev/blog">
+<link rel="alternate" hreflang="en" href="https://sebita.dev/en/blog">
+<link rel="alternate" hreflang="x-default" href="https://sebita.dev/blog">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Blog — Sebastián Bravo">
+<meta property="og:description" content="Artículos sobre desarrollo full-stack, IoT, Machine Learning y lecciones de código en producción.">
+<meta property="og:url" content="https://sebita.dev/blog">
+<meta property="og:image" content="https://sebita.dev/og/blog.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preload" href="fonts/GeistPixel-Square.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/GeistMono-Regular.woff2" as="font" type="font/woff2" crossorigin>
+<script src="boot.js"></script>
+<link rel="stylesheet" href="resolucion.css">
+<link rel="stylesheet" href="views.css">
+</head>
+<body>
+<a class="skip" href="#main">saltar al contenido</a>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="index.html" aria-label="Inicio, Sebastián Bravo">sebastián bravo</a>
+    <nav class="nav-main" aria-label="Navegación principal">
+      <a href="index.html#trabajo">trabajo</a>
+      <a href="index.html#experiencia">experiencia</a>
+      <a href="blog.html" aria-current="page">blog</a>
+      <a href="index.html#contacto">contacto</a>
+    </nav>
+    <div class="controls">
+      <button id="sound" type="button" role="switch" aria-checked="false"><span class="dot" aria-hidden="true"></span><span id="sound-label">sonido: off</span></button>
+      <span class="lang" role="group" aria-label="Idioma"><span aria-current="true">es</span><span aria-hidden="true">/</span><a class="faint" style="text-decoration:none" href="en/blog.html">en</a></span>
+      <button id="theme" class="theme-btn" type="button" aria-label="Cambiar tema">
+        <svg viewBox="0 0 16 16" aria-hidden="true"><rect x="1.5" y="1.5" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1"/><path d="M8 1.5h6.5v13H8z" fill="currentColor"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+  <section class="page-top" aria-labelledby="h-blog">
+    <div class="wrap">
+      <nav class="crumb" aria-label="Ruta"><a href="index.html">inicio</a><span aria-hidden="true">/</span><span aria-current="page">blog</span></nav>
+      <h1 id="h-blog" class="page-title" data-load-resolve>blog</h1>
+      <p class="lead">Escribo sobre lo que aprendo construyendo. Full-stack, IoT, Machine Learning y lecciones de código en producción.</p>
+      <div class="filters" role="group" aria-label="Filtrar artículos">
+        <button class="chip" type="button" data-f="all" aria-pressed="true">todos 40</button>
+        <button class="chip" type="button" data-f="caso" aria-pressed="false">casos 11</button>
+        <button class="chip" type="button" data-f="educacional" aria-pressed="false">educacional 29</button>
+      </div>
+    </div>
+  </section>
+  <section aria-label="Artículos">
+    <div class="wrap">
+      <div class="posts" id="posts">
+        <article class="row" data-kind="caso">
+          <div class="label"><time datetime="2026-10-28">oct 2026</time></div>
+          <div class="main">
+            <p class="who"><a href="post.html">Copiloto de Recepción: un agente hotelero que no inventa datos ni confirma reservas</a></p>
+            <p class="desc">Asistente de WhatsApp para pymes de alojamiento: FastAPI, Chatwoot, PMS simulado y modelo local. Doce conversaciones de prueba, 194 tests y Lighthouse en 100.</p>
+            <p class="stack">FastAPI, Python, LLM local, Chatwoot, Docker, Agentes IA<br>4 min de lectura</p>
+          </div>
+        </article>
+        <article class="row" data-kind="caso">
+          <div class="label"><time datetime="2026-05-10">may 2026</time></div>
+          <div class="main">
+            <p class="who"><a href="post.html">Lo que aprendí construyendo una plataforma IoT con Machine Learning para predecir fallas industriales</a></p>
+            <p class="desc">FastAPI, React 18, MQTT, MySQL 8 y Random Forest con 5 features de telemetría. Proyecto académico PMBOK en INACAP con Docker Compose, simulador MQTT y auto-registro de ESP32.</p>
+            <p class="stack">Python, FastAPI, React, MQTT, ML, IoT, Docker<br>5 min de lectura</p>
+          </div>
+        </article>
+        <article class="row" data-kind="caso">
+          <div class="label"><time datetime="2026-05-03">may 2026</time></div>
+          <div class="main">
+            <p class="who"><a href="post.html">Werken-mapu: un asistente climático por WhatsApp para agricultores de La Araucanía — primer lugar hackathon NTTData TICSUR 2026</a></p>
+            <p class="desc">Chatbot de WhatsApp que entrega alertas de helada, lluvia y recomendaciones por cultivo a pequeños agricultores. Ganador de la hackathon NTTData TICSUR en la Universidad Santo Tomás de Temuco — 4 horas, una idea, una landing page y una presentación. FastAPI, Groq Llama 3.1 70B, Open-Meteo.</p>
+            <p class="stack">FastAPI, Python, WhatsApp, Groq LLM, Open-Meteo, Civic Tech<br>6 min de lectura</p>
+          </div>
+        </article>
+        <article class="row" data-kind="caso">
+          <div class="label"><time datetime="2026-03-24">mar 2026</time></div>
+          <div class="main">
+            <p class="who"><a href="post.html">MIMASOFT: migré una landing corporativa de HTML estático a WordPress con Docker y un MU Plugin de 1983 líneas</a></p>
+            <p class="desc">Landing corporativa WordPress dockerizada con MariaDB, un MU Plugin monolítico de 1983 líneas, 18 plugins premium y dump SQL completo de la base de datos de producción. Migración desde HTML/CSS/JS estático.</p>
+            <p class="stack">WordPress, Docker, MariaDB, PHP, PHPMyAdmin<br>3 min de lectura</p>
+          </div>
+        </article>
+        <article class="row" data-kind="caso">
+          <div class="label"><time datetime="2026-03-19">mar 2026</time></div>
+          <div class="main">
+            <p class="who"><a href="post.html">DEA Points: una app móvil de crowdsourcing de desfibriladores con React Native y Express</a></p>
+            <p class="desc">App React Native (Expo) + API Express + MySQL para mapear y reportar desfibriladores externos automáticos. Mapa interactivo, Redux, TailwindCSS, JWT. Multi-plataforma iOS y Android.</p>
+            <p class="stack">React Native, Express, MySQL, TypeScript, Expo, TailwindCSS<br>3 min de lectura</p>
+          </div>
+        </article>
+        <article class="row" data-kind="educacional">
+          <div class="label"><time datetime="2026-03-02">mar 2026</time></div>
+          <div class="main">
+            <p class="who"><a href="post.html">Rioclaro Mokup: Clean Architecture en el frontend con React 19, TypeScript y Playwright</a></p>
+            <p class="desc">Proyecto educacional de INACAP. SPA con React 19, TypeScript 5.9 y Vite 6 que implementa Clean Architecture completa en el frontend. Zustand, Leaflet, Recharts y testing E2E con Playwright.</p>
+            <p class="stack">React, TypeScript, Clean Architecture, Vite, Zustand, Leaflet, Playwright, Educacional<br>1 min de lectura</p>
+          </div>
+        </article>
+        <article class="row" data-kind="caso">
+          <div class="label"><time datetime="2025-12-14">dic 2025</time></div>
+          <div class="main">
+            <p class="who"><a href="post.html">Minepanel en Docker: un panel de gestión de servidores Minecraft con auto-updates y FileBrowser</a></p>
+            <p class="desc">Stack Docker Compose con Minepanel, FileBrowser y Watchtower para gestión de servidores Minecraft. Despliegue auto-actualizable, persistencia de datos, resource limits y configuración lista para Dokploy.</p>
+            <p class="stack">Docker, Minecraft, Minepanel, Watchtower, DevOps<br>3 min de lectura</p>
+          </div>
+        </article>
+        <article class="row" data-kind="caso">
+          <div class="label"><time datetime="2025-11-15">nov 2025</time></div>
+          <div class="main">
+            <p class="who"><a href="post.html">Un bot de Discord con 19 comandos, Lavalink y PostgreSQL: sistema de moderación y música con Docker</a></p>
+            <p class="desc">Bot de Discord profesional con 9 comandos de moderación, 10 comandos de música vía Lavalink, Prisma ORM, PostgreSQL y Docker. Auto-moderation, multi-stage builds, healthchecks.</p>
+            <p class="stack">Discord.js, Node.js, PostgreSQL, Prisma, Lavalink, Docker<br>3 min de lectura</p>
+          </div>
+        </article>
+        <article class="row" data-kind="educacional">
+          <div class="label"><time datetime="2025-10-29">oct 2025</time></div>
+          <div class="main">
+            <p class="who"><a href="post.html">Minería de datos educacional en R: análisis de titulados en educación superior chilena</a></p>
+            <p class="desc">Proyecto educacional de INACAP. Análisis de datos con R y tidyverse sobre titulados de educación superior en Chile. Limpieza, transformación y visualización de datos del SIES.</p>
+            <p class="stack">R, tidyverse, dplyr, ggplot2, Minería de Datos, Educacional<br>1 min de lectura</p>
+          </div>
+        </article>
+        <article class="row" data-kind="educacional">
+          <div class="label"><time datetime="2025-10-28">oct 2025</time></div>
+          <div class="main">
+            <p class="who"><a href="post.html">Metro Quest: juego de acción rítmico del Metro de Santiago con React Native Web</a></p>
+            <p class="desc">Proyecto educacional de INACAP. Juego de acción rítmico en React Native Web ambientado en la Línea 1 del Metro de Santiago. Motor de física 2D custom, 5 estaciones, bosses con patrones de ataque y rankings.</p>
+            <p class="stack">React Native, TypeScript, Game Dev, Zustand, Expo, Educacional<br>1 min de lectura</p>
+          </div>
+        </article>
+        <article class="row" data-kind="educacional">
+          <div class="label"><time datetime="2025-10-11">oct 2025</time></div>
+          <div class="main">
+            <p class="who"><a href="post.html">EVA3: sistema de gestión de clientes bancarios con Django REST Framework y React</a></p>
+            <p class="desc">Proyecto educacional de INACAP. Full-stack bancario con Django 5.1, DRF, React 18 y PostgreSQL. Dashboard con gráficos Recharts, JWT, rate limiting y modo demo protegido.</p>
+            <p class="stack">Django, React, DRF, PostgreSQL, Docker, JWT, Recharts, Educacional<br>1 min de lectura</p>
+          </div>
+        </article>
+        <article class="row" data-kind="caso">
+          <div class="label"><time datetime="2025-10-08">oct 2025</time></div>
+          <div class="main">
+            <p class="who"><a href="post.html">Reducción de ruido en tiempo real con Web Audio API: DSP en el navegador sin backend</a></p>
+            <p class="desc">Sistema web de reducción de ruido con pipeline DSP completo en el navegador: high-pass, low-pass, compressor, noise gate. Dashboard interactivo con Chart.js y Web Audio API. Procesamiento 100% client-side.</p>
+            <p class="stack">JavaScript, Web Audio API, DSP, Flask, Chart.js, Tailwind CSS<br>4 min de lectura</p>
+          </div>
+        </article>
+        <article class="row" data-kind="educacional">
+          <div class="label"><time datetime="2025-10-07">oct 2025</time></div>
+          <div class="main">
+            <p class="who"><a href="post.html">EVA2: API REST de reservas para restaurantes con Django y PostgreSQL</a></p>
+            <p class="desc">Proyecto educacional de INACAP. API REST profesional para gestión de reservas de restaurantes. Django 5.1, DRF, JWT, rate limiting diferenciado, estadísticas avanzadas y Docker.</p>
+            <p class="stack">Django, DRF, PostgreSQL, REST API, Docker, JWT, Educacional<br>1 min de lectura</p>
+          </div>
+        </article>
+        <article class="row" data-kind="educacional">
+          <div class="label"><time datetime="2025-10-03">oct 2025</time></div>
+          <div class="main">
+            <p class="who"><a href="post.html">EVA1: mi primera API REST — logística forestal con Django REST Framework</a></p>
+            <p class="desc">Proyecto educacional de INACAP. Primera API REST profesional para gestión de logística forestal de Maderas del Sur S.A. Django 5.1, PostgreSQL, rate limiting y optimización para servidores con 512MB RAM.</p>
+            <p class="stack">Django, DRF, Python, PostgreSQL, REST API, Docker, Educacional<br>1 min de lectura</p>
+          </div>
+        </article>
+        <article class="row" data-kind="educacional">
+          <div class="label"><time datetime="2025-08-26">ago 2025</time></div>
+          <div class="main">
+            <p class="who"><a href="post.html">Mock Pucón: dashboard de monitoreo hidrológico del Río Claro en React</a></p>
+            <p class="desc">Proyecto educacional de INACAP. Dashboard en tiempo real para variables hidrológicas del Río Claro. React 18, TypeScript, Vite, Tailwind CSS, Recharts y Framer Motion.</p>
+            <p class="stack">React, TypeScript, Vite, Tailwind CSS, Recharts, Dashboard, Educacional<br>1 min de lectura</p>
+          </div>
+        </article>
+        <article class="row" data-kind="educacional">
+          <div class="label"><time datetime="2025-08-17">ago 2025</time></div>
+          <div class="main">
+            <p class="who"><a href="post.html">Servidor de correo Poste.io con Dokploy en Hostinger</a></p>
+            <p class="desc">Proyecto educacional de INACAP. Servidor de correo autogestionado con Poste.io, Docker Compose y Dokploy en VPS Hostinger. SPF, DKIM, DMARC y configuración DNS completa.</p>
+            <p class="stack">Docker, Poste.io, Dokploy, Hostinger, DNS, SMTP, Educacional<br>1 min de lectura</p>
+          </div>
+        </article>
+        <article class="row" data-kind="caso">
+          <div class="label"><time datetime="2025-08-17">ago 2025</time></div>
+          <div class="main">
+            <p class="who"><a href="post.html">Video Downloader: una app Flask para descargar videos de YouTube y Twitch con rotación de proxies y anti-bot</a></p>
+            <p class="desc">App web Flask + yt-dlp con rotación de proxies, cookies falsas, rate limiting y Docker. Sistema completo anti-detección con healthcheck, headers de seguridad y cola de descargas automática.</p>
+            <p class="stack">Python, Flask, Docker, yt-dlp, Proxy Rotation, Anti-bot<br>3 min de lectura</p>
+          </div>
+        </article>
+        <article class="row" data-kind="caso">
+          <div class="label"><time datetime="2025-08-16">ago 2025</time></div>
+          <div class="main">
+            <p class="who"><a href="post.html">EcoAnalyzer: migré un tracker de ventas de Tkinter a Flask y Docker, y sobreviví para contarlo</a></p>
+            <p class="desc">App de escritorio Tkinter migrada a aplicación web Flask con Docker, MySQL y Chart.js. Seguimiento de ventas diarias, dashboard interactivo y visualizaciones. Proyecto universitario de primer año convertido en app web.</p>
+            <p class="stack">Python, Flask, Docker, MySQL, Tkinter, Chart.js<br>3 min de lectura</p>
+          </div>
+        </article>
+        <article class="row" data-kind="educacional">
+          <div class="label"><time datetime="2025-08-13">ago 2025</time></div>
+          <div class="main">
+            <p class="who"><a href="post.html">Rioclaro: monitoreo fluvial con Django REST API, React y MySQL</a></p>
+            <p class="desc">Proyecto educacional de INACAP. Sistema de monitoreo en tiempo real del Río Claro en Pucón. Backend Django REST Framework, frontend React con Vite, MySQL 8.0 y Docker Compose.</p>
+            <p class="stack">Django, React, MySQL, Docker, IoT, DRF, Educacional<br>1 min de lectura</p>
+          </div>
+        </article>
+        <article class="row" data-kind="educacional">
+          <div class="label"><time datetime="2025-08-13">ago 2025</time></div>
+          <div class="main">
+            <p class="who"><a href="post.html">Sistema de Monitoreo Río Claro: landing page institucional con Next.js y shadcn/ui</a></p>
+            <p class="desc">Proyecto educacional de INACAP. Landing page en Next.js 14 para presentar el sistema de monitoreo del Río Claro. Componentes shadcn/ui, TypeScript y Tailwind CSS.</p>
+            <p class="stack">Next.js, TypeScript, Tailwind CSS, shadcn/ui, Landing Page, Educacional<br>1 min de lectura</p>
+          </div>
+        </article>
+        <article class="row" data-kind="educacional">
+          <div class="label"><time datetime="2025-08-04">ago 2025</time></div>
+          <div class="main">
+            <p class="who"><a href="post.html">VisualAnime: plataforma de anime con Next.js 14, Express y MongoDB</a></p>
+            <p class="desc">Proyecto educacional de INACAP. Plataforma completa de streaming de anime con Next.js 14, Express.js, MongoDB y sincronización desde MyAnimeList. Socket.IO, Puppeteer y extracción de enlaces M3U8.</p>
+            <p class="stack">Next.js, Express, MongoDB, Socket.IO, Tailwind CSS, Puppeteer, Educacional<br>1 min de lectura</p>
+          </div>
+        </article>
+        <article class="row" data-kind="educacional">
+          <div class="label"><time datetime="2025-08-04">ago 2025</time></div>
+          <div class="main">
+            <p class="who"><a href="post.html">Workshop Mokup: monitoreo Río Claro con Vite + React y Django REST Framework</a></p>
+            <p class="desc">Proyecto educacional de INACAP. Sistema de monitoreo del Río Claro en Pucón con Vite, React, TypeScript, Tailwind CSS y Django REST Framework. 8 sensores IoT, dashboard con métricas en vivo y alertas.</p>
+            <p class="stack">React, TypeScript, Vite, Tailwind CSS, Django, DRF, IoT, Educacional<br>1 min de lectura</p>
+          </div>
+        </article>
+        <article class="row" data-kind="educacional">
+          <div class="label"><time datetime="2025-07-20">jul 2025</time></div>
+          <div class="main">
+            <p class="who"><a href="post.html">Data Warehouse: análisis de defunciones COVID-19 en Chile con Python</a></p>
+            <p class="desc">Proyecto educacional de INACAP. Proceso ETL en Python para analizar 832MB de datos oficiales del DEIS. 55,060 defunciones COVID-19 de Chile procesadas con Pandas y modelo dimensional.</p>
+            <p class="stack">Python, Pandas, ETL, Data Warehouse, COVID-19, Minería de Datos, Educacional<br>1 min de lectura</p>
+          </div>
+        </article>
+        <article class="row" data-kind="caso">
+          <div class="label"><time datetime="2025-06-10">jun 2025</time></div>
+          <div class="main">
+            <p class="who"><a href="post.html">Vulcania: monitoreo volcánico comunitario con Next.js, Supabase y síntesis de audio</a></p>
+            <p class="desc">Plataforma de monitoreo volcánico para Chile. Next.js 15, React 19, Supabase real-time, Leaflet y alertas de emergencia con Web Audio API. Modo demo sin backend, modo completo con Row Level Security.</p>
+            <p class="stack">Next.js, Supabase, Leaflet, Open Source, TypeScript, Civic Tech<br>5 min de lectura</p>
+          </div>
+        </article>
+        <article class="row" data-kind="educacional">
+          <div class="label"><time datetime="2025-05-29">may 2025</time></div>
+          <div class="main">
+            <p class="who"><a href="post.html">QRGen: generador de códigos QR en Python</a></p>
+            <p class="desc">Proyecto educacional de INACAP. Herramienta simple en Python para generar códigos QR desde URLs. Usa la librería qrcode[pil] y exporta imágenes PNG.</p>
+            <p class="stack">Python, QR Code, CLI, Educacional<br>1 min de lectura</p>
+          </div>
+        </article>
+        <article class="row" data-kind="educacional">
+          <div class="label"><time datetime="2025-03-30">mar 2025</time></div>
+          <div class="main">
+            <p class="who"><a href="post.html">Masterdots Game: página web con HTML y CSS</a></p>
+            <p class="desc">Proyecto educacional de INACAP. Página web para el juego Masterdots construida solo con HTML y CSS. Primer acercamiento al desarrollo frontend.</p>
+            <p class="stack">HTML, CSS, Frontend, Educacional<br>1 min de lectura</p>
+          </div>
+        </article>
+        <article class="row" data-kind="educacional">
+          <div class="label"><time datetime="2025-01-09">ene 2025</time></div>
+          <div class="main">
+            <p class="who"><a href="post.html">Curso Docker: apuntes y ejercicios prácticos con Dockerfiles y Multi-Stage builds</a></p>
+            <p class="desc">Proyecto educacional de INACAP. Apuntes del curso de Docker con ejercicios prácticos: Node, Express, Flask, Laravel, Rails, Gin y Axum en contenedores.</p>
+            <p class="stack">Docker, DevOps, Contenedores, Curso, Educacional<br>1 min de lectura</p>
+          </div>
+        </article>
+        <article class="row" data-kind="educacional">
+          <div class="label"><time datetime="2024-12-29">dic 2024</time></div>
+          <div class="main">
+            <p class="who"><a href="post.html">Curso Git: apuntes y flujo de trabajo con Git</a></p>
+            <p class="desc">Proyecto educacional de INACAP. Apuntes del curso Git Mastermind: comandos esenciales, ramas, remotos, merge, buenas prácticas y flujo de trabajo colaborativo.</p>
+            <p class="stack">Git, Control de Versiones, Curso, Educacional<br>1 min de lectura</p>
+          </div>
+        </article>
+        <article class="row" data-kind="educacional">
+          <div class="label"><time datetime="2024-12-24">dic 2024</time></div>
+          <div class="main">
+            <p class="who"><a href="post.html">REDP: registro de experiencias y descubrimientos personales con Django</a></p>
+            <p class="desc">Proyecto educacional de INACAP. Aplicación Django para registrar experiencias personales con autenticación JWT, comentarios, favoritos y exportación CSV.</p>
+            <p class="stack">Django, DRF, PostgreSQL, JWT, CRUD, Educacional<br>1 min de lectura</p>
+          </div>
+        </article>
+        <article class="row" data-kind="educacional">
+          <div class="label"><time datetime="2024-11-28">nov 2024</time></div>
+          <div class="main">
+            <p class="who"><a href="post.html">IoT Lights: app Android para control de luces IoT con Firebase y OneSignal</a></p>
+            <p class="desc">Proyecto educacional de INACAP. App Android nativa en Java para control de luces IoT con autenticación Firebase, notificaciones push OneSignal y persistencia en Firestore.</p>
+            <p class="stack">Android, Java, Firebase, IoT, OneSignal, Educacional<br>1 min de lectura</p>
+          </div>
+        </article>
+        <article class="row" data-kind="educacional">
+          <div class="label"><time datetime="2024-11-28">nov 2024</time></div>
+          <div class="main">
+            <p class="who"><a href="post.html">SistemBiblio: sistema de inventario para librería con Django</a></p>
+            <p class="desc">Proyecto educacional de INACAP. Sistema de gestión de inventario para librerías con Django. Productos, bodegas, movimientos entre bodegas y roles de usuario.</p>
+            <p class="stack">Django, Python, SQLite, CRUD, Inventario, Educacional<br>1 min de lectura</p>
+          </div>
+        </article>
+        <article class="row" data-kind="educacional">
+          <div class="label"><time datetime="2024-11-16">nov 2024</time></div>
+          <div class="main">
+            <p class="who"><a href="post.html">Rentacar: app Android de registro de devoluciones de vehículos con Firebase</a></p>
+            <p class="desc">Proyecto educacional de INACAP. App Android en Java para registro de devoluciones de vehículos arrendados. Firestore para persistencia con modelo de datos personalizado.</p>
+            <p class="stack">Android, Java, Firebase, Firestore, Educacional<br>1 min de lectura</p>
+          </div>
+        </article>
+        <article class="row" data-kind="educacional">
+          <div class="label"><time datetime="2024-10-14">oct 2024</time></div>
+          <div class="main">
+            <p class="who"><a href="post.html">VR Escape Room: experiencia de realidad virtual con Unity y PlayFab</a></p>
+            <p class="desc">Proyecto educacional de INACAP. Experiencia de realidad virtual en Unity con autenticación PlayFab, obstacle course en primera persona y escenas interactivas.</p>
+            <p class="stack">Unity, VR, C#, PlayFab, Realidad Virtual, Educacional<br>1 min de lectura</p>
+          </div>
+        </article>
+        <article class="row" data-kind="educacional">
+          <div class="label"><time datetime="2024-10-10">oct 2024</time></div>
+          <div class="main">
+            <p class="who"><a href="post.html">Peso Ideal: calculadora de peso ideal infantil para Android</a></p>
+            <p class="desc">Proyecto educacional de INACAP. App Android en Java que calcula el peso ideal de niños entre 1 y 10 años. Validación de datos, paso de parámetros entre actividades.</p>
+            <p class="stack">Android, Java, Salud, Educacional<br>1 min de lectura</p>
+          </div>
+        </article>
+        <article class="row" data-kind="educacional">
+          <div class="label"><time datetime="2024-10-10">oct 2024</time></div>
+          <div class="main">
+            <p class="who"><a href="post.html">SeguroApp: calculadora de seguro vehicular para Android</a></p>
+            <p class="desc">Proyecto educacional de INACAP. App Android en Java para cotizar seguros de vehículos según marca, modelo y año. Cálculo de antigüedad y paso de objetos entre actividades.</p>
+            <p class="stack">Android, Java, Seguros, Educacional<br>1 min de lectura</p>
+          </div>
+        </article>
+        <article class="row" data-kind="educacional">
+          <div class="label"><time datetime="2024-08-16">ago 2024</time></div>
+          <div class="main">
+            <p class="who"><a href="post.html">CRM Workers: monorepo pnpm fullstack con React 18, Vite, JWT y Docker</a></p>
+            <p class="desc">Proyecto educacional de INACAP. Versión final del CRM como monorepo pnpm con React 18, Vite, Tailwind CSS, Express, JWT auth con roles y Docker Compose con 4 servicios.</p>
+            <p class="stack">React, TypeScript, Vite, Tailwind CSS, Node.js, JWT, Docker, pnpm, Educacional<br>2 min de lectura</p>
+          </div>
+        </article>
+        <article class="row" data-kind="educacional">
+          <div class="label"><time datetime="2024-06-10">jun 2024</time></div>
+          <div class="main">
+            <p class="who"><a href="post.html">SchoolBravo: página web institucional con Bootstrap</a></p>
+            <p class="desc">Proyecto educacional de INACAP. Página web construida únicamente con Bootstrap, HTML y CSS como evaluación de programación frontend. Carrusel, formulario y tarjetas.</p>
+            <p class="stack">Bootstrap, HTML, CSS, Frontend, Educacional<br>1 min de lectura</p>
+          </div>
+        </article>
+        <article class="row" data-kind="educacional">
+          <div class="label"><time datetime="2023-11-15">nov 2023</time></div>
+          <div class="main">
+            <p class="who"><a href="post.html">CRM Backend: API REST con Express, MySQL y seguridad desde el diseño</a></p>
+            <p class="desc">Proyecto educacional de INACAP. Backend REST para el CRM con Node.js, Express y MySQL 8.0. Prepared statements, rate limiting, Helmet, CORS y Docker Compose.</p>
+            <p class="stack">Node.js, Express, MySQL, Docker, REST API, Educacional<br>1 min de lectura</p>
+          </div>
+        </article>
+        <article class="row" data-kind="educacional">
+          <div class="label"><time datetime="2023-06-15">jun 2023</time></div>
+          <div class="main">
+            <p class="who"><a href="post.html">CRM React: migración de vanilla JS a componentes con Create React App y Bootstrap</a></p>
+            <p class="desc">Proyecto educacional de INACAP. Segunda versión del CRM migrada a React con CRA, React Router, Axios y Bootstrap. El salto de manipular el DOM a pensar en componentes.</p>
+            <p class="stack">React, CRA, Bootstrap, React Router, Axios, Educacional<br>1 min de lectura</p>
+          </div>
+        </article>
+        <article class="row" data-kind="educacional">
+          <div class="label"><time datetime="2022-06-15">jun 2022</time></div>
+          <div class="main">
+            <p class="who"><a href="post.html">CRM Native: una SPA en JavaScript vanilla para gestión de clientes</a></p>
+            <p class="desc">Primer CRM construido como proyecto educacional en INACAP. Single Page Application con JavaScript vanilla, CSS y HTML. Seis secciones de gestión sin frameworks ni bundlers.</p>
+            <p class="stack">JavaScript, SPA, CSS, HTML, Educacional<br>1 min de lectura</p>
+          </div>
+        </article>
+      </div>
+      <p class="count small" id="count" role="status" aria-live="polite">40 artículos</p>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap"><span>© 2026 sebastián bravo</span><a href="privacidad.html">privacidad</a><a href="links.html">links</a></div>
+</footer>
+
+<script src="common.js"></script>
+<script>
+(() => {
+  const { $, $$, Sound } = R
+  const chips = $$(".chip")
+  const rows = $$("#posts .row")
+  chips.forEach((c) => c.addEventListener("click", () => {
+    const f = c.dataset.f
+    chips.forEach((x) => x.setAttribute("aria-pressed", String(x === c)))
+    let n = 0
+    rows.forEach((r) => { const on = f === "all" || r.dataset.kind === f; r.hidden = !on; if (on) n++ })
+    $("#count").textContent = `${n} artículo${n === 1 ? "" : "s"}`
+    Sound.play("tick")
+  }))
+})()
+</script>
+</body>
+</html>

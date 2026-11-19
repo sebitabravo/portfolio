@@ -1,0 +1,128 @@
+/* Vistas interiores: blog, post, privacidad, 404 y links. Tokens y componentes base viven en resolucion.css. */
+
+.page-top { border-top: 0; padding-block: 48px 40px; }
+.page-top + section { border-top: 0; padding-top: 0; }
+@media (min-width: 720px) { .page-top { padding-block: 72px 56px; } }
+.crumb { display: flex; flex-wrap: wrap; gap: 4px 8px; margin-bottom: 32px; color: var(--fg-faint); font-size: var(--fs-small); line-height: 20px; }
+.crumb a { text-decoration: none; }
+.crumb a:hover { color: var(--fg); }
+.crumb [aria-current] { color: var(--fg-muted); }
+.page-title { font-family: var(--pixel); font-weight: 400; line-height: .9; letter-spacing: 0; white-space: pre; font-size: clamp(3rem, 14vw, 9rem); }
+.lead { max-width: 52ch; color: var(--fg-muted); margin-top: 24px; }
+.meta-line { display: flex; flex-wrap: wrap; gap: 4px 24px; margin-top: 24px; color: var(--fg-faint); font-size: var(--fs-small); line-height: 20px; }
+.meta-line .dot { background: var(--fg); border-color: var(--fg); margin-right: 8px; }
+
+/* ---------- Blog: índice ---------- */
+.filters { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 32px; }
+.chip { height: 32px; padding: 0 12px; border: 1px solid var(--line); font-size: var(--fs-small); transition: background-color var(--t-feedback), color var(--t-feedback), border-color var(--t-feedback), transform var(--t-feedback); }
+.chip:hover { border-color: var(--fg); background: var(--fill); }
+.chip[aria-pressed="true"] { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+.posts { border-bottom: 1px solid var(--line); }
+.posts .row:last-child { border-bottom: 0; }
+.posts .who a { text-decoration: none; display: inline; }
+.posts .who a:hover { text-decoration: underline; text-underline-offset: 4px; }
+.posts .row[hidden] { display: none; }
+.count { color: var(--fg-faint); font-size: var(--fs-small); margin-top: 16px; }
+
+/* ---------- Post ---------- */
+.post-title { font-family: var(--pixel); font-weight: 400; letter-spacing: 0; font-size: clamp(1.75rem, 4vw, 3rem); line-height: 1.1; max-width: 30ch; text-wrap: balance; }
+.post-shot { margin-top: 40px; aspect-ratio: 16 / 10; background: var(--fill); border: 1px solid var(--line); overflow: hidden; max-width: 72rem; }
+.post-shot img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.post-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 32px; }
+@media (min-width: 960px) { .post-grid { grid-template-columns: 14rem minmax(0, 44rem); column-gap: 48px; } .toc { position: sticky; top: calc(var(--header) + 24px); align-self: start; } }
+.toc h2 { font: 400 var(--fs-small)/20px var(--mono); color: var(--fg-faint); margin-bottom: 8px; white-space: normal; }
+.toc a { display: block; padding: 6px 0; text-decoration: none; color: var(--fg-muted); font-size: var(--fs-small); line-height: 20px; }
+.toc a:hover { color: var(--fg); }
+@media (max-width: 959px) { .toc { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding-block: 16px; } }
+
+/* La prosa es la única superficie de lectura larga del sitio, y por eso tiene su propia escala.
+   A 44rem, 15px mono daba ~78 caracteres por línea (fuera del rango legible); 17px queda en ~69
+   y conserva la identidad mono. Comparativa en 08-post-prosa.html. */
+.prose { font-size: 17px; line-height: 30px; }
+.prose > * + * { margin-top: 20px; }
+.prose p, .prose li { color: var(--fg-muted); }
+.prose strong { color: var(--fg); font-weight: 500; }
+.prose h2 { font-family: var(--pixel); font-weight: 400; font-size: 1.75rem; line-height: 36px; white-space: normal; margin-top: 56px; color: var(--fg); scroll-margin-top: calc(var(--header) + 24px); }
+.prose h2:first-child { margin-top: 0; }
+.prose h3 { font-size: inherit; font-weight: 500; }
+.prose ul, .prose ol { padding-left: 0; }
+.prose ul > li { position: relative; padding-left: 24px; }
+.prose ul > li + li, .prose ol > li + li { margin-top: 12px; }
+.prose ul > li::before { content: ""; position: absolute; left: 4px; top: 10px; width: 6px; height: 6px; background: var(--fg-faint); }
+.prose ol { list-style: none; counter-reset: n; }
+.prose ol > li { counter-increment: n; position: relative; padding-left: 32px; }
+.prose ol > li::before { content: counter(n); position: absolute; left: 0; color: var(--fg-faint); font-size: var(--fs-small); }
+.prose code { font-family: var(--mono); font-size: .92em; background: var(--fill); padding: 1px 6px; color: var(--fg); }
+.prose pre { overflow-x: auto; border: 1px solid var(--line); background: var(--fill); padding: 16px; font-size: var(--fs-small); line-height: 20px; }
+.prose pre code { background: none; padding: 0; }
+.prose table { width: 100%; border-collapse: collapse; font-size: var(--fs-small); line-height: 20px; display: block; overflow-x: auto; }
+.prose th, .prose td { text-align: left; padding: 10px 16px 10px 0; border-top: 1px solid var(--line); vertical-align: top; }
+.prose th { color: var(--fg-faint); font-weight: 400; }
+.prose tr:last-child td { border-bottom: 1px solid var(--line); }
+.prose td { color: var(--fg-muted); }
+.prose blockquote { margin-left: 0; padding-left: 16px; border-left: 1px solid var(--fg); }
+.prose .cards > div { padding-block: 16px; border-top: 1px solid var(--line); }
+.prose .cards > div:last-child { border-bottom: 1px solid var(--line); }
+.prose .cards h3 { color: var(--fg); margin-bottom: 4px; }
+.prose .note { border: 1px solid var(--line); background: var(--fill); padding: 16px; }
+.prose .note p + p { margin-top: 8px; }
+.prose a { color: var(--fg); }
+.post-foot { margin-top: 64px; }
+.post-foot .row { grid-template-columns: 1fr; }
+@media (min-width: 720px) { .post-foot .row { grid-template-columns: 10rem minmax(0, 1fr); } }
+.post-actions { display: flex; flex-wrap: wrap; gap: 8px 16px; margin-top: 32px; }
+
+/* ---------- Privacidad ---------- */
+.legal .row .main > * + * { margin-top: 12px; }
+.legal .row p, .legal .row li { color: var(--fg-muted); max-width: 68ch; }
+.legal .row strong { color: var(--fg); font-weight: 500; }
+.legal .row ul { margin-top: 12px; }
+.legal .row li { padding-block: 4px; }
+.legal .row li strong + span { color: var(--fg-muted); }
+
+/* ---------- 404 ---------- */
+.nf-code { font-family: var(--pixel); font-weight: 400; line-height: .85; letter-spacing: 0; font-size: min(22rem, calc((100vw - 2 * var(--gutter)) / 2.1)); white-space: pre; }
+.nf-ramp { display: flex; flex-wrap: wrap; gap: 8px 24px; margin-top: 32px; color: var(--fg-faint); font-size: 2rem; line-height: 40px; }
+.nf-ramp span { font-family: var(--pixel); }
+.nf-ramp .s0 { font-family: "GP Line", var(--pixel); }
+.nf-ramp .s1 { font-family: "GP Triangle", var(--pixel); }
+.nf-ramp .s2 { font-family: "GP Grid", var(--pixel); }
+.nf-ramp .s3 { font-family: "GP Circle", var(--pixel); }
+.nf-title { font-family: var(--pixel); font-weight: 400; font-size: clamp(1.75rem, 5vw, 3rem); line-height: 1.1; margin-top: 48px; white-space: normal; text-wrap: balance; max-width: 22ch; }
+.nf-links { display: flex; flex-wrap: wrap; gap: 8px 24px; margin-top: 24px; }
+
+/* ---------- Links: hub para descripciones de YouTube y bio ---------- */
+.wrap.hub { max-width: calc(40rem + 2 * var(--gutter)); margin-left: max(0px, calc((100% - var(--page)) / 2)); margin-right: auto; }
+.hub .page-title { font-size: clamp(2.5rem, 12vw, 5.5rem); }
+.lk { position: relative; display: grid; grid-template-columns: 24px 1fr auto; align-items: center; column-gap: 8px; width: 100%; min-height: 64px; padding: 8px 8px 8px 0; border-top: 1px solid var(--line); text-decoration: none; text-align: left; transition: background-color var(--t-feedback), transform var(--t-feedback); }
+.lk::before { content: ""; width: 8px; height: 8px; margin-left: 8px; background: var(--fg); opacity: 0; transition: opacity var(--t-feedback); }
+.lk:hover { background: var(--fill); }
+.lk:hover::before, .lk:focus-visible::before { opacity: 1; }
+.lk .t { font-family: var(--pixel); font-size: 1.5rem; line-height: 32px; }
+.lk .u { color: var(--fg-faint); font-size: var(--fs-small); line-height: 20px; text-align: right; overflow-wrap: anywhere; }
+.lk[aria-disabled="true"] { cursor: default; }
+.lk[aria-disabled="true"] .t { color: var(--fg-faint); }
+.lk[aria-disabled="true"]:hover { background: none; }
+.lk[aria-disabled="true"]:hover::before { opacity: 0; }
+.hub-list { border-bottom: 1px solid var(--line); margin-top: 40px; }
+.hub h2 { font-size: clamp(1.75rem, 5vw, 2.5rem); margin-bottom: 16px; white-space: normal; }
+.hub-sec { border-top: 0; padding-block: 56px 0; }
+.hub-sec .sec-head { margin-bottom: 16px; }
+.hub-note { color: var(--fg-muted); max-width: 52ch; margin-bottom: 24px; }
+.copyblock { border: 1px solid var(--line); background: var(--fill); padding: 16px; font: 400 var(--fs-small)/20px var(--mono); white-space: pre-wrap; overflow-wrap: anywhere; user-select: all; }
+.hub .copyblock + .btn { margin-top: 16px; }
+.hub .copyblock + .btn + h3, .hub h3 { font-size: var(--fs-small); font-weight: 400; color: var(--fg-faint); margin: 32px 0 8px; }
+
+/* ---------- Tarjeta social (og.html): 1200 x 630 ---------- */
+.og { width: 1200px; height: 630px; overflow: hidden; position: relative; display: flex; flex-direction: column; justify-content: space-between; padding: 56px 64px; background: var(--bg); }
+.og::before { content: ""; position: absolute; inset: 0; background-image: radial-gradient(circle, var(--line) 2px, transparent 2.5px); background-size: 24px 24px; background-position: 12px 12px; }
+.og > * { position: relative; }
+.og .k { color: var(--fg-muted); font-size: 22px; line-height: 32px; }
+.og .n { font-family: var(--pixel); font-size: 190px; line-height: .9; white-space: pre; }
+.og .n.sm { font-size: 150px; }
+.og .f { display: flex; justify-content: space-between; align-items: flex-end; font-size: 22px; line-height: 32px; color: var(--fg-muted); }
+.og .f b { color: var(--fg); font-weight: 500; }
+
+/* Listas de la política: mismo cuadro de 6px que la prosa. */
+.legal .row ul > li { position: relative; padding-left: 24px; }
+.legal .row ul > li::before { content: ""; position: absolute; left: 4px; top: 14px; width: 6px; height: 6px; background: var(--fg-faint); }

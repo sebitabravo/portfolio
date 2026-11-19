@@ -13,8 +13,7 @@ const t = getTranslations(locale)
 
 const projects = getStageProjects(locale)
 
-const blogUrl = (blogSlug: string): string =>
-  locale === "en" ? `/en/blog/${blogSlug}` : `/blog/${blogSlug}`
+const blogUrl = (blogSlug: string): string => (locale === "en" ? `/en/blog/${blogSlug}` : `/blog/${blogSlug}`)
 
 const statusLabel = (status: string, liveUrl?: string, githubUrl?: string): string => {
   if (status === "development") return t.projects.statusDevelopment
@@ -66,7 +65,9 @@ const codeSegments = (text: string): Array<{ code: boolean; text: string }> =>
             {tradeoff && (
               <>
                 <h4>{t.stage.tradeoff}</h4>
-                <p>{codeSegments(tradeoff).map((segment) => (segment.code ? <code>{segment.text}</code> : segment.text))}</p>
+                <p>
+                  {codeSegments(tradeoff).map((segment) => (segment.code ? <code>{segment.text}</code> : segment.text))}
+                </p>
               </>
             )}
             {(metrics ?? []).length > 0 && (

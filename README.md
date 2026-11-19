@@ -1,6 +1,6 @@
 # Portfolio - Sebastian Bravo
 
-> Modern, fast, and accessible portfolio built with Astro, TypeScript, and the Resolución design system
+> Modern, fast, and accessible portfolio built with Astro and TypeScript. The visual layer is a skeleton: semantic markup only, design pending port from `design/resolucion/`
 
 [![Astro](https://img.shields.io/badge/Astro-7-FF5D01?style=for-the-badge&logo=astro&logoColor=white)](https://astro.build)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org)
@@ -18,12 +18,8 @@ un puntaje estático como garantía permanente.
 
 - **Lightning Fast** - Static site generation with Astro
 - **Internationalization** - Spanish & English (`/` and `/en`)
-- **Dark Mode** - Light, dark, and system preference
-- **Responsive** - Mobile-first design
 - **Image Optimization** - Automatic WebP/AVIF via `astro:assets`
-- **View Transitions** - Smooth page navigation
 - **Direct Contact Links** - Email, LinkedIn, and GitHub destinations without a fake backend form
-- **Progressive Motion** - CSS-only motion (`steps()` timing, View Transitions) with reduced-motion, Save-Data and pointer gating; no client-side animation framework
 - **SEO Ready** - Automatic sitemap + robots + JSON-LD schema
 - **Quality Gates** - Astro check, Vitest with coverage, three-browser Playwright E2E, build and project-link validation in CI
 - **Security Gates** - Production dependency audit, security-header contract and exact CSP hash parity, and source/bundle-size limits
@@ -31,11 +27,10 @@ un puntaje estático como garantía permanente.
 ## Tech Stack
 
 - **Framework:** Astro 7
-- **Styling:** Resolución design system (vanilla CSS with custom properties, `src/styles/resolucion.css`)
+- **Styling:** none yet (design pending port from `design/resolucion/`)
 - **Language:** TypeScript
 - **Images:** Sharp
 - **Content:** MDX (blog)
-- **Motion:** CSS only (`steps()`, View Transitions) — no GSAP, no Three.js, no WebGL
 
 ## Prerequisites
 
@@ -142,7 +137,6 @@ src/
 ├── assets/             # Astro-optimized assets
 ├── components/         # Shared localized Astro components
 │   ├── blog/           # Shared localized blog pages
-│   └── ui/             # Button
 ├── content/blog/       # Blog MDX entries
 ├── content.config.ts   # Astro/Zod schema for the blog collection
 ├── layouts/            # Shared page layout
@@ -159,12 +153,11 @@ src/
 │   ├── tech-badges.ts        # Canonical tech badge colors + icons
 │   └── utils.ts              # Date formatting helpers and cn() class merge
 ├── pages/              # Spanish default and /en routes, blog, links, privacy, 404, OG
-├── scripts/            # Small client behaviors: header nav, theme, sound, copy, filters, reveals
-├── styles/             # Resolución layers: tokens, base, layout, components, prose, print
+├── scripts/            # Functional client behavior: language-switch links keep query/hash
 └── types/              # TypeScript type definitions
 scripts/                 # Source/bundle/CSP checks and link validation
 tests/                   # Vitest and Playwright suites
-public/                  # Static files, including icons/sprite.svg
+public/                  # Static files: fonts, CV, certifications, OG images
 ```
 
 ## Types
@@ -176,15 +169,12 @@ Single source of truth lives in const-objects; types are derived from them:
 | `LOCALES` (`ES`/`EN`) | `Locale` | `src/lib/i18n/index.ts` |
 | `PROJECT_STATUSES` | `ProjectStatus` | `src/lib/data/types.ts` |
 | `CERTIFICATION_CATEGORIES` | `CertificationCategory` | `src/lib/data/types.ts` |
-| `THEMES` | `ThemePreference` | `src/types/index.ts` |
 
 `CarouselCertification` keeps its `{ data }` shape (carousel contract) but the
 payload is a flat `CarouselCertificationData` interface, not an inline object.
 Import domain types from `@/lib/data`, UI/carousel types from `@/types`, and
-`Locale` helpers from `@/lib/i18n`. `THEMES` lives in `@/types` on purpose:
-the theme type is shared with the client scripts without importing runtime
-code; the only CSP-hashed inline script is the theme/motion bootstrap in
-`src/layouts/Layout.astro`.
+`Locale` helpers from `@/lib/i18n`. The only CSP-hashed inline script is the
+bundled `src/scripts/language-links.ts`, emitted by `src/layouts/Layout.astro`.
 
 ## Adding a language, page, or translated post
 

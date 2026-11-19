@@ -1,5 +1,7 @@
 export const personalInfo = {
   name: "Sebastian Bravo",
+  // Nombre display del hero (h1 y contacto): con tilde, como lo escribe el diseño (§2).
+  displayName: "Sebastián Bravo",
   title: "Full-Stack Developer",
   description:
     "Desarrollador Full-Stack junior. Construyo plataformas web en producción con React, TypeScript, IoT y Machine Learning. Inglés C1.",

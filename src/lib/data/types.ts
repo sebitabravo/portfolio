@@ -55,7 +55,12 @@ export interface Project {
   description: string
   stage: ProjectStage
   tags: string[]
+  /** Bandera del diseño (DESIGN.md §10): presencia del proyecto fuera del escenario del home. */
   featured: boolean
+  /** Bandera del escenario del home: false excluye el proyecto del índice y el escenario (§10). */
+  homeStage: boolean
+  /** Orden del índice del escenario (§3: copiloto, wenuke, vulcania, manttoai). */
+  stageOrder: number
   status: ProjectStatus
   metrics?: { label: string; value: string }[]
   publishDate: Date
@@ -63,6 +68,9 @@ export interface Project {
   liveUrl?: string
   order: number
   blogSlug?: string
+  /** Decisión técnica del escenario (§2 momento 2); null/ausente = la columna no se pinta. */
+  decision?: string
+  tradeoff?: string
 }
 
 export interface Education {

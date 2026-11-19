@@ -1,130 +1,74 @@
 ---
-// Barra plana: marca, cuatro enlaces y una sola acción; el resto vive en el contenido.
+// Resolución — barra plana del encabezado: marca, cuatro enlaces con el
+// indicador de sección activa y controles (sonido, idioma, tema).
+// Puerto del header de design/resolucion/index.html (§3 de DESIGN.md); usa
+// exactamente las clases que el CSS define: site-header, brand, nav-main,
+// controls, lang, dot, theme-btn.
 import { getTranslations, type Locale } from "@/lib/i18n"
-import { homeSectionFragment, homeSectionIds } from "@/lib/home-sections"
-import BrandMark from "./BrandMark.astro"
+import { homeSectionFragment } from "@/lib/home-sections"
 import ThemeToggle from "./ThemeToggle.astro"
 import LanguageToggle from "./LanguageToggle.astro"
-import DropdownMenu from "./ui/DropdownMenu.astro"
-import ArrowUpRight from "./icons/ArrowUpRight.astro"
 
 interface Props {
   locale?: Locale
-  home?: boolean
 }
 
-const { locale = "es", home = false } = Astro.props
+const { locale = "es" } = Astro.props
 const t = getTranslations(locale)
 const prefix = locale === "es" ? "" : "/en"
-
-const ids = homeSectionIds[locale]
-const mobileMenuId = `mobile-nav-${locale}`
 const homeUrl = prefix || "/"
-const contactUrl = `${homeUrl}${homeSectionFragment(locale, "contact")}`
 
-const desktopNavItems = [
-  { title: t.nav.projects, label: ids.projects, url: `${homeUrl}${homeSectionFragment(locale, "projects")}` },
-  { title: t.nav.experience, label: ids.experience, url: `${homeUrl}${homeSectionFragment(locale, "experience")}` },
-  { title: t.nav.formation, label: ids.education, url: `${homeUrl}${homeSectionFragment(locale, "education")}` },
-  { title: t.nav.blog, label: "blog", url: `${prefix}/blog` },
+const navItems = [
+  { label: t.nav.projects, url: `${homeUrl}${homeSectionFragment(locale, "work")}` },
+  { label: t.nav.experience, url: `${homeUrl}${homeSectionFragment(locale, "experience")}` },
+  { label: t.nav.blog, url: `${prefix}/blog`, route: true },
+  { label: t.nav.contact, url: `${homeUrl}${homeSectionFragment(locale, "contact")}` },
 ]
 
-const mobileNavItems = [
-  { title: t.nav.home, label: "home", url: homeUrl },
-  ...desktopNavItems,
-  { title: t.nav.contact, label: ids.contact, url: contactUrl },
-]
 const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/"
-const isCurrentRoute = (url: string) => {
-  if (url.includes("#")) return false
+const isCurrentRoute = (url: string): boolean => {
   const routePath = url.replace(/\/$/, "") || "/"
   return routePath === currentPath
 }
 ---
 
-<header class="site-header fixed inset-x-0 top-0 z-50" data-home={home ? "true" : "false"}>
-  <div class="frame site-header-frame">
-    <nav
-      aria-label={t.nav.mainNavigation}
-      class:list={[
-        "site-nav flex min-h-14 items-center justify-between gap-3 px-3 text-xs text-foreground sm:px-5",
-        { "site-nav-home": home },
-      ]}
-    >
-      <a
-        href={homeUrl}
-        class="brand-mark-link inline-flex shrink-0 items-center gap-2.5 focus-ring"
-        aria-label={t.nav.brandHome}
-      >
-        <BrandMark class="brand-mark h-[1.15rem] w-auto" />
-        <span class="brand-word hidden whitespace-nowrap sm:inline" aria-hidden="true">
-          Sebastian <em class="brand-lastname">Bravo</em>
-        </span>
-      </a>
-
-      <div class="desktop-nav relative hidden items-center gap-1 lg:flex" data-nav-list>
-        <span class="nav-indicator" data-nav-indicator aria-hidden="true"></span>
-        {
-          desktopNavItems.map((link) => (
-            <a
-              class="nav-link relative px-3 py-2 focus-ring"
-              data-section={link.label}
-              href={link.url}
-              aria-current={isCurrentRoute(link.url) ? "page" : undefined}
-            >
-              {link.title}
-            </a>
-          ))
-        }
-      </div>
-
-      <div class="flex items-center gap-1.5 sm:gap-2">
-        <div class="header-toggles flex items-center gap-0.5 sm:gap-1">
-          <ThemeToggle locale={locale} />
-          <LanguageToggle locale={locale} />
-        </div>
-
-        <a href={contactUrl} class="header-cta btn btn-solid hidden focus-ring sm:inline-flex">
-          {t.nav.cta}
-          <ArrowUpRight class="btn-arrow size-3.5" />
-        </a>
-
-        <div class="lg:hidden">
-          <DropdownMenu id={mobileMenuId} triggerLabel={t.nav.menu}>
-            <div class="flex min-w-56 flex-col gap-0.5 p-1">
-              {
-                mobileNavItems.map((link) => (
-                  <a
-                    href={link.url}
-                    class="mobile-nav-link px-3 py-2.5 focus-ring"
-                    aria-current={isCurrentRoute(link.url) ? "page" : undefined}
-                  >
-                    {link.title}
-                  </a>
-                ))
-              }
-            </div>
-          </DropdownMenu>
-        </div>
-      </div>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href={homeUrl} aria-label={t.nav.brandHome}>sebastián bravo</a>
+    <nav class="nav-main" aria-label={t.nav.mainNavigation}>
+      {
+        navItems.map((item) => (
+          <a href={item.url} aria-current={item.route && isCurrentRoute(item.url) ? "page" : undefined}>
+            {item.label}
+          </a>
+        ))
+      }
     </nav>
+    <div class="controls">
+      <button id="sound" type="button" role="switch" aria-checked="false">
+        <span class="dot" aria-hidden="true"></span><span id="sound-label">{t.sound.off}</span>
+      </button>
+      <LanguageToggle locale={locale} />
+      <ThemeToggle locale={locale} />
+    </div>
   </div>
 </header>
 
 <script>
+  import { initSoundToggle } from "@/scripts/sound/toggle"
+  import { initThemeToggle } from "@/scripts/theme-toggle"
   import { setupHeaderNav, teardownHeaderNav } from "@/scripts/header-nav"
-  import { setupNavIndicator, teardownNavIndicator } from "@/scripts/motion/nav-indicator"
 
-  const startNavigation = () => {
+  const startControls = () => {
+    initSoundToggle()
+    initThemeToggle()
     setupHeaderNav()
-    setupNavIndicator()
   }
-  const stopNavigation = () => {
+  const stopControls = () => {
     teardownHeaderNav()
-    teardownNavIndicator()
   }
 
-  startNavigation()
-  document.addEventListener("astro:page-load", startNavigation)
-  document.addEventListener("astro:before-swap", stopNavigation)
+  startControls()
+  document.addEventListener("astro:page-load", startControls)
+  document.addEventListener("astro:before-swap", stopControls)
 </script>

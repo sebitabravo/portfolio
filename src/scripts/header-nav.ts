@@ -1,89 +1,66 @@
-import { HEADER_NAV_CHANGE_EVENT, type HeaderNavChangeDetail } from "./motion/types"
+// Resolución — sección activa en el nav: un solo IntersectionObserver sobre
+// main > section[data-nav], banda 40%–45% del viewport, aria-current="location".
+// Se desconecta en pagehide y se re-crea al restaurar bfcache (pageshow
+// persistido). Puerto de la parte de nav de design/resolucion/common.js.
+// Los enlaces de ruta (blog) llevan aria-current="page" renderizado en el
+// servidor; el observer solo gobierna los enlaces ancla.
 
-let headerController: AbortController | null = null
-let headerObserver: IntersectionObserver | null = null
+let navTeardown: (() => void) | null = null
 
 export function setupHeaderNav(): void {
-  headerController?.abort()
-  headerObserver?.disconnect()
+  teardownHeaderNav()
 
-  const controller = new AbortController()
-  headerController = controller
-  const { signal } = controller
-  const navLinks = Array.from(document.querySelectorAll<HTMLAnchorElement>(".site-nav .nav-link"))
-  const navigableIds = new Set(navLinks.map((link) => link.getAttribute("data-section")))
-  const sections = document.querySelector('.site-header[data-home="true"]')
-    ? Array.from(document.querySelectorAll("section[id]")).filter((section) => navigableIds.has(section.id))
-    : []
-  const siteNav = document.querySelector<HTMLElement>(".site-nav")
-
-  if (!siteNav) return
-
-  let activeLink: HTMLAnchorElement | null = null
-  const announceActive = () => {
-    const next = navLinks.find((link) => link.classList.contains("nav-active")) ?? null
-    if (next === activeLink) return
-    activeLink = next
-    siteNav.dispatchEvent(
-      new CustomEvent<HeaderNavChangeDetail>(HEADER_NAV_CHANGE_EVENT, {
-        detail: { link: next },
-        bubbles: true,
-      }),
-    )
-  }
-
-  const setActive = (sectionId: string) => {
-    if (document.querySelector(".site-header")?.getAttribute("data-home") !== "true" || !navigableIds.has(sectionId))
-      return
-    navLinks.forEach((link) => {
-      const isActive = link.getAttribute("data-section") === sectionId
-      link.classList.toggle("nav-active", isActive)
-      if (isActive) {
-        link.setAttribute("aria-current", "page")
-      } else {
-        link.removeAttribute("aria-current")
-      }
-    })
-    announceActive()
-  }
-
-  const currentPath = window.location.pathname.replace(/\/$/, "") || "/"
-  navLinks.forEach((link) => {
-    const href = link.getAttribute("href") ?? ""
-    const linkPath = href.split("#")[0].replace(/\/$/, "") || "/"
-    if (!href.includes("#") && linkPath === currentPath) {
-      link.classList.add("nav-active")
-      link.setAttribute("aria-current", "page")
-    }
-  })
-  announceActive()
-
-  headerObserver = new IntersectionObserver(
-    (entries) => {
-      const visible = entries
-        .filter((entry) => entry.isIntersecting)
-        .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0]
-      if (visible) setActive(visible.target.id)
-    },
-    { threshold: [0.15, 0.35, 0.6], rootMargin: "-15% 0px -55% 0px" },
+  const navLinks = new Map(
+    Array.from(document.querySelectorAll<HTMLAnchorElement>(".nav-main a[href^='#']")).map((link) => [
+      (link.getAttribute("href") ?? "").slice(1),
+      link,
+    ]),
   )
-  sections.forEach((section) => headerObserver?.observe(section))
+  if (navLinks.size === 0) return
 
-  const onScroll = () => siteNav.classList.toggle("scrolled", window.scrollY > 36)
-  onScroll()
-  window.addEventListener("scroll", onScroll, { passive: true, signal })
+  const sections = Array.from(document.querySelectorAll<HTMLElement>("main > section[data-nav]"))
+  const inBand = new Set<HTMLElement>()
 
-  const onVisibilityChange = () => {
-    if (document.visibilityState === "hidden") {
-      headerObserver?.disconnect()
-    } else {
-      sections.forEach((section) => headerObserver?.observe(section))
-    }
+  const paintNav = (): void => {
+    const active = sections.filter((section) => inBand.has(section)).pop()
+    const key = active ? (active.dataset.nav ?? null) : null
+    navLinks.forEach((link, id) => {
+      if (id === key) link.setAttribute("aria-current", "location")
+      else link.removeAttribute("aria-current")
+    })
   }
-  document.addEventListener("visibilitychange", onVisibilityChange, { signal })
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        if (entry.isIntersecting) inBand.add(entry.target as HTMLElement)
+        else inBand.delete(entry.target as HTMLElement)
+      }
+      paintNav()
+    },
+    { rootMargin: "-40% 0px -55% 0px" },
+  )
+  sections.forEach((section) => observer.observe(section))
+
+  const stop = (): void => {
+    observer.disconnect()
+    inBand.clear()
+  }
+  const onPageHide = (): void => stop()
+  const onPageShow = (event: PageTransitionEvent): void => {
+    if (event.persisted) setupHeaderNav()
+  }
+  window.addEventListener("pagehide", onPageHide)
+  window.addEventListener("pageshow", onPageShow)
+
+  navTeardown = () => {
+    stop()
+    window.removeEventListener("pagehide", onPageHide)
+    window.removeEventListener("pageshow", onPageShow)
+  }
 }
 
 export function teardownHeaderNav(): void {
-  headerController?.abort()
-  headerObserver?.disconnect()
+  navTeardown?.()
+  navTeardown = null
 }

@@ -1,74 +1,24 @@
 ---
-// LanguageToggle Component - Toggle between ES and EN
-import LanguagesIcon from "./icons/Languages.astro"
+// Resolución — control de idioma: par de enlaces reales (no un menú), con
+// aria-current="true" en el idioma activo. Puerto de design/resolucion/index.html.
 import { getTranslations, type Locale } from "@/lib/i18n"
 
 interface Props {
   locale?: Locale
 }
 
-const { locale = 'es' } = Astro.props
-const currentLangCode = locale === 'es' ? 'ES' : 'EN'
-const labels = {
-  es: getTranslations('es').language.toggleLabel,
-  en: getTranslations('en').language.toggleLabel,
-}
-const toggleLabel = labels[locale].replace('{code}', currentLangCode)
+const { locale = "es" } = Astro.props
+const t = getTranslations(locale)
+
+const currentPath = Astro.url.pathname || "/"
+// Cada idioma enlaza a la misma ruta en su locale; el activo apunta a la
+// página actual (el par vive en ambas rutas, estáticas).
+const esHref = locale === "es" ? currentPath : currentPath.replace(/^\/en(?=\/|$)/, "") || "/"
+const enHref = locale === "en" ? currentPath : `/en${currentPath === "/" ? "/" : currentPath}`
 ---
 
-<div class="relative inline-block" id="language-toggle-wrapper" data-label-template-es={labels.es} data-label-template-en={labels.en}>
-  <button
-    id="language-toggle"
-    type="button"
-    class="inline-flex h-11 min-w-11 items-center justify-center gap-2 rounded-md px-2.5 py-2 text-xs font-medium text-current transition-colors hover:bg-muted dark:hover:bg-white/10 dark:group-[:not(.scrolled)]:text-nav-glass-text-dark focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
-    aria-label={toggleLabel}
-    aria-haspopup="menu"
-    aria-expanded="false"
-    aria-controls="language-menu"
-  >
-    <LanguagesIcon class="size-4" />
-    <span id="current-language">{locale === 'en' ? 'EN' : 'ES'}</span>
-  </button>
-
-  <div
-    id="language-menu"
-    class="hidden absolute left-1/2 -translate-x-1/2 mt-2 w-32 min-w-max rounded-md shadow-lg bg-card ring-1 ring-black/5 dark:ring-white/10 z-[9999]"
-    role="menu"
-  >
-    <div class="py-1">
-      <button
-        type="button"
-        role="menuitemradio"
-        aria-checked={locale === 'es' ? 'true' : 'false'}
-        tabindex={locale === 'es' ? 0 : -1}
-        data-lang="es"
-        class="language-option focus-ring flex items-center justify-between w-full px-4 py-2 text-xs text-foreground/80 hover:bg-muted/50 text-left"
-      >
-        <span>Español</span>
-        <span class="check-es hidden" aria-hidden="true">✓</span>
-      </button>
-      <button
-        type="button"
-        role="menuitemradio"
-        aria-checked={locale === 'en' ? 'true' : 'false'}
-        tabindex={locale === 'en' ? 0 : -1}
-        data-lang="en"
-        class="language-option focus-ring flex items-center justify-between w-full px-4 py-2 text-xs text-foreground/80 hover:bg-muted/50 text-left"
-      >
-        <span>English</span>
-        <span class="check-en hidden" aria-hidden="true">✓</span>
-      </button>
-    </div>
-  </div>
-</div>
-
-<script>
-  import { initLanguageToggle } from '@/scripts/language-toggle'
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initLanguageToggle, { once: true })
-  } else {
-    initLanguageToggle()
-  }
-  document.addEventListener('astro:after-swap', initLanguageToggle)
-</script>
+<span class="lang" role="group" aria-label={t.language.groupLabel}>
+  <a href={esHref} aria-current={locale === "es" ? "true" : undefined}>es</a>
+  <span aria-hidden="true">/</span>
+  <a href={enHref} aria-current={locale === "en" ? "true" : undefined}>en</a>
+</span>

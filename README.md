@@ -142,7 +142,6 @@ src/
 ├── assets/             # Astro-optimized assets
 ├── components/         # Shared localized Astro components
 │   ├── blog/           # Shared localized blog pages
-│   ├── icons/          # Icon components backed by public/icons/sprite.svg
 │   └── ui/             # Button
 ├── content/blog/       # Blog MDX entries
 ├── content.config.ts   # Astro/Zod schema for the blog collection

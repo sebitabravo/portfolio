@@ -14,8 +14,8 @@
 // Sin JavaScript los enlaces siguen funcionando por prefijo de ruta: se pierden
 // el fragmento y los parámetros, no el cambio de idioma.
 
-const LANGUAGE_SELECTOR = "a[hreflang][href]"
-const ACTIVE_LANGUAGE_SELECTOR = "a[hreflang][aria-current='true']"
+const LANGUAGE_SELECTOR = ".lang a[href]"
+const ACTIVE_LANGUAGE_SELECTOR = ".lang a[aria-current='true']"
 
 /** Anclas del home en ambos sentidos. Los ids del diseño son neutros en el DOM
  * y se traducen acá, así el visitante ve #projects en inglés y #proyectos en
@@ -54,7 +54,7 @@ function isArticlePath(pathname: string): boolean {
 }
 
 function targetFor(link: HTMLAnchorElement): string {
-  const language = link.getAttribute("hreflang") ?? ""
+  const language = (link.textContent ?? "").trim()
   const params = window.location.search
   const hash = window.location.hash
   const isActive = link.getAttribute("aria-current") === "true"
@@ -85,15 +85,15 @@ function syncLanguageLinks(): void {
   const links = document.querySelectorAll<HTMLAnchorElement>(LANGUAGE_SELECTOR)
 
   for (const link of links) {
-    if (link.getAttribute("hreflang") === null) continue
+    if ((link.textContent ?? "").trim() === "") continue
     link.setAttribute("href", targetFor(link))
   }
 }
 
 // El idioma activo es parte del par de control, no un enlace muerto: el click
 // se cancela para que no recargue la misma página y no ensucie el historial.
-// Para el otro idioma el destino se recalcula en `pointerdown`, antes de que
-// el navegador lea el href al comenzar el click.
+// Para el otro idioma el destino se recalcula en `pointerdown` porque el
+// ClientRouter lee el href al comienzo del click: mutarlo ahí llega tarde.
 document.addEventListener(
   "pointerdown",
   (event) => {
@@ -111,11 +111,13 @@ document.addEventListener(
     const target = event.target
     if (!(target instanceof Element)) return
 
-    // En captura para correr antes que cualquier otro handler del enlace.
+    // En captura: el ClientRouter cancela la propagación al interceptar el
+    // enlace, así que un listener burbujeante nunca llegaría a tiempo.
     const active = target.closest(ACTIVE_LANGUAGE_SELECTOR)
     if (active !== null) event.preventDefault()
   },
   true,
 )
 
+document.addEventListener("astro:page-load", syncLanguageLinks)
 syncLanguageLinks()

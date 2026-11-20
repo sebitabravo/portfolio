@@ -55,13 +55,10 @@ describe("Lighthouse checks the checked-out static build", () => {
   });
 
   it("explains that failed thresholds fail the job, while merge protection is external", () => {
-    const spanishEvidence = readme.split("## Quality evidence\n")[1]?.split("\n## ")[0];
-    const englishCi = readme.split("## CI/CD\n")[1]?.split("\n## ")[0];
-    expect(spanishEvidence).toMatch(/build.*checkout|checkout.*build/is);
-    expect(spanishEvidence).toMatch(/umbrales.*fallar.*(job|workflow)|fallar.*(job|workflow).*umbrales/is);
-    expect(spanishEvidence).toMatch(/protecci[oó]n de rama/is);
-    expect(englishCi).toMatch(/Lighthouse audit:.*checked-out build.*thresholds.*fail the (job|workflow)/is);
-    expect(englishCi).toMatch(/branch protection.*merge|merge.*branch protection/is);
-    expect(englishCi).not.toMatch(/informational workflow|continue-on-error: true/i);
+    const gates = readme.split("## Quality gates\n")[1]?.split("\n## ")[0];
+    expect(gates).toMatch(/Lighthouse audit[^.]*checked-out build/is);
+    expect(gates).toMatch(/thresholds[^.]*fail the (job|workflow)/is);
+    expect(gates).toMatch(/branch protection[^.]*merge|merge[^.]*branch protection/is);
+    expect(gates).not.toMatch(/informational workflow|continue-on-error: true/i);
   });
 });

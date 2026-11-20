@@ -1,6 +1,6 @@
 ---
-// Una credencial sin PDF se muestra como texto estático, nunca como enlace vacío
-// (tests/certifications-render.test.ts).
+// Resolución — fila de certificaciones (§6): lista plana con enlace al PDF; una credencial sin
+// PDF se muestra como texto estático, nunca como enlace vacío (tests/certifications-render).
 import { getCertifications } from "@/lib/data"
 import { getTranslations, type Locale } from "@/lib/i18n"
 
@@ -13,21 +13,27 @@ const t = getTranslations(locale)
 const entries = getCertifications(locale)
 ---
 
-<h3>{t.certifications.title}</h3>
-<ul>
-  {
-    entries.map((entry) => (
-      <li>
-        {entry.pdfUrl ? (
-          <a href={entry.pdfUrl} target="_blank" rel="noopener noreferrer">
-            <span>{t.certifications.viewCertificate}: </span>
-            {entry.name}
-          </a>
-        ) : (
-          entry.name
-        )}{" "}
-        <small>{entry.organization}</small>
-      </li>
-    ))
-  }
-</ul>
+<div class="reveal">
+  <div class="row">
+    <div class="label">{t.certifications.title}</div>
+    <div class="main">
+      <ul>
+        {
+          entries.map((entry) => (
+            <li class="cert-item">
+              {entry.pdfUrl ? (
+                <a class="cert-link focus-ring" href={entry.pdfUrl} target="_blank" rel="noopener noreferrer">
+                  <span class="sr">{t.certifications.viewCertificate}: </span>
+                  {entry.name}
+                </a>
+              ) : (
+                entry.name
+              )}{" "}
+              <span class="faint">{entry.organization}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</div>

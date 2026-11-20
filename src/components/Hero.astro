@@ -1,7 +1,9 @@
 ---
+// Resolución — momento 1 (§2): el nombre se resuelve. Hero del diseño: rol, h1 en Geist Pixel
+// a dos líneas, intro, meta (disponibilidad + reloj de Chile), enlaces de texto y CTAs.
+// Clases exactas del contrato: hero, hero-role, hero-intro, hero-meta, hero-links, cta.
 import { personalInfo, social } from "@/lib/data"
 import { getTranslations, type Locale } from "@/lib/i18n"
-import { homeSectionFragment } from "@/lib/home-sections"
 
 interface Props {
   locale?: Locale
@@ -10,21 +12,54 @@ interface Props {
 const { locale = "es" } = Astro.props
 const t = getTranslations(locale)
 
+// El h1 es texto real y visible sin JS; la animación de resolución es aditiva (hero.ts).
+const [firstName, lastName] = personalInfo.displayName.split(" ")
 const cvHref = "/cv/Sebastian_Bravo_CV.pdf"
 ---
 
-<section aria-labelledby="name">
-  <p>{t.hero.role.toLowerCase()}</p>
-  <h1 id="name">{personalInfo.displayName}</h1>
-  <p>{t.hero.intro}</p>
-  {personalInfo.available && <p>{t.hero.available}</p>}
-  <ul>
-    <li><a href={`mailto:${personalInfo.email}`}>{personalInfo.email}</a></li>
-    <li><a href={social.github} target="_blank" rel="me noopener noreferrer">github</a></li>
-    <li><a href={social.linkedin} target="_blank" rel="me noopener noreferrer">linkedin</a></li>
-  </ul>
-  <p>
-    <a href={homeSectionFragment(locale, "work")}>{t.hero.viewProjects}</a>
-    <a href={cvHref} download>{t.hero.downloadCv}</a>
-  </p>
+<section class="hero" aria-labelledby="name">
+  <canvas id="field" aria-hidden="true"></canvas>
+  <div class="wrap">
+    <p class="hero-role small">{t.hero.role.toLowerCase()}</p>
+    <h1 id="name"><span class="line">{firstName}</span><span class="line">{lastName}</span></h1>
+    <p class="hero-intro">{t.hero.intro}</p>
+    <div class="hero-meta small">
+      {
+        personalInfo.available && (
+          <span>
+            <span class="dot" aria-hidden="true" />
+            {t.hero.available}
+          </span>
+        )
+      }
+      <span>
+        {t.hero.timezone.toLowerCase()} <time id="clock">--:--</time>
+      </span>
+    </div>
+    <div class="hero-links small">
+      <a href={`mailto:${personalInfo.email}`}>{personalInfo.email}</a>
+      <a href={social.github} target="_blank" rel="me noopener noreferrer">github</a>
+      <a href={social.linkedin} target="_blank" rel="me noopener noreferrer">linkedin</a>
+    </div>
+    <div class="cta">
+      <a class="btn primary" href="#trabajo">{t.hero.viewProjects}</a>
+      <a class="btn ghost" href={cvHref} download>{t.hero.downloadCv}</a>
+    </div>
+  </div>
 </section>
+
+<script>
+  import { setupHero, teardownHero } from "@/scripts/hero"
+  import { setupDotField, teardownDotField } from "@/scripts/dot-field"
+
+  setupHero()
+  setupDotField()
+  document.addEventListener("astro:page-load", () => {
+    setupHero()
+    setupDotField()
+  })
+  document.addEventListener("astro:before-swap", () => {
+    teardownHero()
+    teardownDotField()
+  })
+</script>

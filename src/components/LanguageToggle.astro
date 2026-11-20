@@ -1,6 +1,6 @@
 ---
-// Par de enlaces reales (no un menú); aria-current="true" marca el idioma activo.
-// language-links.ts localiza los enlaces por `hreflang` y ajusta el destino en el navegador.
+// Resolución — control de idioma: par de enlaces reales (no un menú), con
+// aria-current="true" en el idioma activo. Puerto de design/resolucion/index.html.
 import { getTranslations, type Locale } from "@/lib/i18n"
 
 interface Props {
@@ -17,7 +17,8 @@ const esHref = locale === "es" ? currentPath : currentPath.replace(/^\/en(?=\/|$
 const enHref = locale === "en" ? currentPath : `/en${currentPath === "/" ? "/" : currentPath}`
 ---
 
-<div role="group" aria-label={t.language.groupLabel}>
-  <a href={esHref} hreflang="es" aria-current={locale === "es" ? "true" : undefined}>es</a>
-  <a href={enHref} hreflang="en" aria-current={locale === "en" ? "true" : undefined}>en</a>
-</div>
+<span class="lang" role="group" aria-label={t.language.groupLabel}>
+  <a href={esHref} aria-current={locale === "es" ? "true" : undefined}>es</a>
+  <span aria-hidden="true">/</span>
+  <a href={enHref} aria-current={locale === "en" ? "true" : undefined}>en</a>
+</span>

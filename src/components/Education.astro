@@ -1,4 +1,6 @@
 ---
+// Resolución — fila CV de formación (§6): años en la columna label, cuadro .mark en la fila
+// vigente, institución, título y descripción. La fila INACAP (en curso) lleva el marcador (§1).
 import { getEducation } from "@/lib/data"
 import type { Locale } from "@/lib/i18n"
 import type { Education } from "@/lib/data"
@@ -13,18 +15,21 @@ const entries: Education[] = getEducation(locale)
 const year = (date: Date): string => String(date.getUTCFullYear())
 ---
 
-<ul>
+<div class="reveal">
   {
     entries.map((entry) => (
-      <li>
-        <h3>{entry.institution}</h3>
-        <p>
+      <div class:list={["row", { current: entry.current }]}>
+        <div class="label">
+          {entry.current && <span class="mark" aria-hidden="true" />}
           <time datetime={year(entry.startDate)}>{year(entry.startDate)}</time> –{" "}
           <time datetime={year(entry.endDate ?? entry.startDate)}>{year(entry.endDate ?? entry.startDate)}</time>
-        </p>
-        <p>{entry.degree}</p>
-        <p>{entry.description}</p>
-      </li>
+        </div>
+        <div class="main">
+          <p class="who">{entry.institution}</p>
+          <p>{entry.degree}</p>
+          <p class="desc">{entry.description}</p>
+        </div>
+      </div>
     ))
   }
-</ul>
+</div>

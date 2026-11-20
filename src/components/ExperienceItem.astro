@@ -1,4 +1,7 @@
 ---
+// Resolución — fila CV de experiencia (§6): fechas en la columna label con <time datetime>,
+// empresa, rol, descripción, stack tenue y el enlace al caso. Puerto de las filas de
+// design/resolucion/index.html. Las evidencias (highlights) se conservan como línea tenue (S7).
 import { formatMonthYear } from "@/lib/utils"
 import { getTranslations, type Locale } from "@/lib/i18n"
 import type { WorkExperience } from "@/lib/data"
@@ -22,7 +25,11 @@ const {
 const t = getTranslations(locale)
 
 const datetime = (date: Date): string => date.toISOString().slice(0, 10)
+// El diseño muestra mes + año visibles, en minúscula ("feb 2026", §1).
 const monthYear = (date: Date): string => formatMonthYear(date, locale).toLowerCase()
+const period = current
+  ? t.work.currently
+  : `<time datetime="${datetime(startDate)}">${monthYear(startDate)}</time> – <time datetime="${datetime(endDate ?? startDate)}">${monthYear(endDate ?? startDate)}</time>`
 
 // La convención del data layer: el último highlight es el caso publicado y `url` su destino.
 const caseHighlight = highlights.find((highlight) => /caso|case/i.test(highlight.label)) ?? highlights.at(-1)
@@ -30,43 +37,41 @@ const evidence = caseHighlight ? highlights.filter((highlight) => highlight !== 
 const externalUrl = url?.startsWith("http")
 ---
 
-<article>
-  <h3>{company}</h3>
-  <p>
+<div class="row">
+  <div class="label">
+    {current && <span class="mark" aria-hidden="true" />}
+    <Fragment set:html={period} />
+  </div>
+  <div class="main">
+    <p class="who">{company}</p>
+    <p>{position}</p>
+    <p class="desc">{description}</p>
+    {skills.length > 0 && <p class="stack">{skills.join(", ")}</p>}
     {
-      current ? (
-        t.work.currently
-      ) : (
-        <>
-          <time datetime={datetime(startDate)}>{monthYear(startDate)}</time> –{" "}
-          <time datetime={datetime(endDate ?? startDate)}>{monthYear(endDate ?? startDate)}</time>
-        </>
+      evidence.length > 0 && (
+        <p class="stack" aria-label={t.work.evidenceLabel}>
+          {evidence.map((highlight, i) => (
+            <>
+              {i > 0 && " · "}
+              <span>{highlight.label}</span> {highlight.value}
+            </>
+          ))}
+        </p>
       )
     }
-  </p>
-  <p>{position}</p>
-  <p>{description}</p>
-  {skills.length > 0 && <p>{skills.join(", ")}</p>}
-  {
-    evidence.length > 0 && (
-      <p aria-label={t.work.evidenceLabel}>
-        {evidence.map((highlight, i) => (
-          <>
-            {i > 0 && " · "}
-            <span>{highlight.label}</span> {highlight.value}
-          </>
-        ))}
-      </p>
-    )
-  }
-  {
-    url && (
-      <p>
-        <a href={url} target={externalUrl ? "_blank" : undefined} rel={externalUrl ? "noopener noreferrer" : undefined}>
-          {t.work.viewCaseStudy}
-          {caseHighlight && `: ${caseHighlight.value}`}
-        </a>
-      </p>
-    )
-  }
-</article>
+    {
+      url && (
+        <p class="links small">
+          <a
+            href={url}
+            target={externalUrl ? "_blank" : undefined}
+            rel={externalUrl ? "noopener noreferrer" : undefined}
+          >
+            {t.work.viewCaseStudy}
+            {caseHighlight && `: ${caseHighlight.value}`}
+          </a>
+        </p>
+      )
+    }
+  </div>
+</div>

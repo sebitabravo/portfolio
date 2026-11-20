@@ -1,4 +1,8 @@
 ---
+// Resolución — artículo (design/resolucion/post.html §12): page-top con crumb, post-title en
+// Pixel a tamaño fijo (un título de 100 caracteres tardaría 8 s en resolverse), meta-line con
+// fecha, tiempo de lectura y tags, post-shot 16/10, TOC sticky ≥960px con anclas reales,
+// prosa 17px/30px, post-foot más nuevo/más antiguo y post-actions con copiar enlace (chirp).
 // El cuerpo MDX pasa por el pipeline existente sin reestructurar el contenido.
 import { getCollection, render, type CollectionEntry } from "astro:content"
 import Layout from "@/layouts/Layout.astro"
@@ -8,6 +12,7 @@ import { getProjectSocialImage } from "@/lib/portfolio-images"
 import { createBlogAlternates } from "@/lib/blog-alternates"
 import { getTranslations, type Locale } from "@/lib/i18n"
 import { formatDate, formatMonthYear } from "@/lib/utils"
+import { articleTitleTransitionName } from "@/scripts/transitions"
 
 interface Props {
   locale: Locale
@@ -76,88 +81,139 @@ const older = currentIndex >= 0 && currentIndex < visiblePosts.length - 1 ? visi
 >
   <main id="main-content">
     <article lang={isEnglish ? (isFallback ? "es" : "en") : undefined}>
-      <header>
-        <nav aria-label={t.nav.breadcrumb}>
-          <ol>
-            <li><a href={homePath}>{t.nav.home}</a></li>
-            <li><a href={blogPath}>{t.blog.title}</a></li>
-            <li lang={isFallback ? "es" : undefined} aria-current="page">{post.data.title}</li>
-          </ol>
-        </nav>
-        <h1>{post.data.title}</h1>
-        <p>
-          <time lang={locale} datetime={post.data.publishDate.toISOString()}>
-            {formatDate(post.data.publishDate, locale)}
-          </time>
-          · {readingMinutes}
-          {t.blog.readingTime} · {post.data.tags.join(", ")}
-        </p>
-        {
-          isEnglish && isFallback && (
-            <aside lang={locale} role="note">
-              {t.blog.fallbackNotice}
-            </aside>
-          )
-        }
-        {
-          optimizedImageUrl && heroImage && (
-            <img
-              src={optimizedImageUrl}
-              alt={post.data.title}
-              width={heroImageWidth}
-              height={heroImageHeight}
-              loading="eager"
-              fetchpriority="high"
-              decoding="async"
-            />
-          )
-        }
+      <header class="page-top">
+        <div class="wrap">
+          <nav aria-label={t.nav.breadcrumb}>
+            <ol class="crumb">
+              <li><a href={homePath}>{t.nav.home}</a></li>
+              <li aria-hidden="true">/</li>
+              <li><a href={blogPath}>{t.blog.title}</a></li>
+              <li aria-hidden="true">/</li>
+              <li lang={isFallback ? "es" : undefined} aria-current="page">{post.data.title}</li>
+            </ol>
+          </nav>
+          <h1 class="post-title" transition:name={articleTitleTransitionName(post.id)}>{post.data.title}</h1>
+          <p class="meta-line">
+            <span>
+              <time lang={locale} datetime={post.data.publishDate.toISOString()}>
+                {formatDate(post.data.publishDate, locale)}
+              </time>
+            </span>
+            <span>{readingMinutes} {t.blog.readingTime}</span>
+            <span>{post.data.tags.join(", ")}</span>
+          </p>
+          {
+            isEnglish && isFallback && (
+              <aside lang={locale} class="small" role="note">
+                {t.blog.fallbackNotice}
+              </aside>
+            )
+          }
+          {
+            optimizedImageUrl && heroImage && (
+              <div class="post-shot">
+                <img
+                  src={optimizedImageUrl}
+                  alt={post.data.title}
+                  width={heroImageWidth}
+                  height={heroImageHeight}
+                  loading="eager"
+                  fetchpriority="high"
+                  decoding="async"
+                />
+              </div>
+            )
+          }
+        </div>
       </header>
       <section aria-label={t.blog.articleBodyLabel}>
-        {
-          toc.length > 0 && (
-            <nav aria-label={t.blog.tocTitle}>
-              <h2>{t.blog.tocTitle}</h2>
-              <ul>
-                {toc.map((heading) => (
-                  <li>
+        <div class="wrap">
+          <div class="post-grid">
+            {
+              toc.length > 0 && (
+                <nav class="toc" aria-label={t.blog.tocTitle}>
+                  <h2>{t.blog.tocTitle}</h2>
+                  {toc.map((heading) => (
                     <a href={`#${heading.slug}`}>{heading.text}</a>
-                  </li>
-                ))}
-              </ul>
+                  ))}
+                </nav>
+              )
+            }
+            <div class="prose">
+              <Content />
+            </div>
+          </div>
+          {
+            (newer || older) && (
+              <div class="post-foot">
+                {newer && (
+                  <div class="row">
+                    <div class="label">{t.blog.newer}</div>
+                    <div class="main">
+                      <p class="who">
+                        <a href={`${prefix}/blog/${newer.id}`} transition:name={articleTitleTransitionName(newer.id)}>
+                          {newer.data.title}
+                        </a>
+                      </p>
+                      <p class="stack">
+                        <time datetime={newer.data.publishDate.toISOString().slice(0, 10)}>
+                          {formatMonthYear(newer.data.publishDate, locale)}
+                        </time>
+                      </p>
+                    </div>
+                  </div>
+                )}
+                {older && (
+                  <div class="row">
+                    <div class="label">{t.blog.older}</div>
+                    <div class="main">
+                      <p class="who">
+                        <a href={`${prefix}/blog/${older.id}`} transition:name={articleTitleTransitionName(older.id)}>
+                          {older.data.title}
+                        </a>
+                      </p>
+                      <p class="stack">
+                        <time datetime={older.data.publishDate.toISOString().slice(0, 10)}>
+                          {formatMonthYear(older.data.publishDate, locale)}
+                        </time>
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )
+          }
+          <div class="post-actions">
+            <button
+              class="btn primary"
+              id="share"
+              type="button"
+              data-url={canonicalUrl}
+              data-link={t.blog.copyLink}
+              data-copied={t.blog.copied}
+              data-retry={t.blog.retry}
+              data-link-copied={t.blog.linkCopied}
+              data-error={t.contact.copyError}
+            >
+              {t.blog.copyLink}
+            </button>
+            <nav aria-label={t.blog.postNavigation}>
+              <a class="btn sm" href={blogPath}>{`← ${t.blog.back}`}</a>
+              <a class="btn sm" href={homePath}>{`${t.nav.home} →`}</a>
             </nav>
-          )
-        }
-        <Content />
+          </div>
+          <p class="sr" id="share-status" role="status" aria-live="polite"></p>
+        </div>
       </section>
-      <nav aria-label={t.blog.postNavigation}>
-        {
-          (newer || older) && (
-            <ul>
-              {newer && (
-                <li>
-                  {t.blog.newer}: <a href={`${prefix}/blog/${newer.id}`}>{newer.data.title}</a>{" "}
-                  <time datetime={newer.data.publishDate.toISOString().slice(0, 10)}>
-                    {formatMonthYear(newer.data.publishDate, locale)}
-                  </time>
-                </li>
-              )}
-              {older && (
-                <li>
-                  {t.blog.older}: <a href={`${prefix}/blog/${older.id}`}>{older.data.title}</a>{" "}
-                  <time datetime={older.data.publishDate.toISOString().slice(0, 10)}>
-                    {formatMonthYear(older.data.publishDate, locale)}
-                  </time>
-                </li>
-              )}
-            </ul>
-          )
-        }
-        <a href={blogPath}>{`← ${t.blog.back}`}</a>
-        <a href={homePath}>{`${t.nav.home} →`}</a>
-      </nav>
     </article>
   </main>
 
   <script is:inline type="application/ld+json" set:html={articleJsonLd} />
 </Layout>
+
+<script>
+  import { setupCopyLink } from "@/scripts/copy-link"
+
+  setupCopyLink()
+  document.addEventListener("astro:page-load", setupCopyLink)
+</script>

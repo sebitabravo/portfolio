@@ -1,4 +1,6 @@
 ---
+// Resolución — pie (§3): © año nombre + enlaces. Se conservan los dos nav con rótulo del
+// diccionario (perfiles y enlaces del pie) que la capa i18n fija para todo el sitio.
 import { personalInfo, social } from "@/lib/data"
 import { getTranslations, type Locale } from "@/lib/i18n"
 
@@ -13,13 +15,15 @@ const prefix = locale === "es" ? "" : "/en"
 ---
 
 <footer>
-  <p>© {currentYear} {personalInfo.displayName.toLowerCase()}</p>
-  <nav aria-label={t.footer.professionalProfiles}>
-    <a href={social.github} target="_blank" rel="me noopener noreferrer">github</a>
-    <a href={social.linkedin} target="_blank" rel="me noopener noreferrer">linkedin</a>
-  </nav>
-  <nav aria-label={t.footer.links}>
-    <a href={`${prefix}/blog`}>{t.nav.blog}</a>
-    <a href={`${prefix}/privacy`}>{t.footer.privacy}</a>
-  </nav>
+  <div class="wrap">
+    <span>© {currentYear} {personalInfo.displayName.toLowerCase()}</span>
+    <nav aria-label={t.footer.professionalProfiles}>
+      <a href={social.github} target="_blank" rel="me noopener noreferrer">github</a>
+      <a href={social.linkedin} target="_blank" rel="me noopener noreferrer">linkedin</a>
+    </nav>
+    <nav aria-label={t.footer.links}>
+      <a href={`${prefix}/blog`}>{t.nav.blog}</a>
+      <a href={`${prefix}/privacy`}>{t.footer.privacy}</a>
+    </nav>
+  </div>
 </footer>

@@ -1,5 +1,8 @@
 ---
+import { ClientRouter } from "astro:transitions"
 import { SEO } from "astro-seo"
+
+import "@/styles/resolucion.css"
 
 import Footer from "@/components/Footer.astro"
 import Header from "@/components/Header.astro"
@@ -23,13 +26,13 @@ const {
   title = siteConfig.title,
   description: pageDescription,
   image,
-  locale = "es",
+  locale = 'es',
   noindex = false,
   canonicalUrl,
   alternates = [],
 } = Astro.props
 
-const description = pageDescription ?? (locale === "en" ? personalInfo.descriptionEn : personalInfo.description)
+const description = pageDescription ?? (locale === 'en' ? personalInfo.descriptionEn : personalInfo.description)
 
 const profileUrl = locale === "es" ? "https://sebita.dev/" : "https://sebita.dev/en/"
 const canonical = canonicalUrl ?? profileUrl
@@ -37,9 +40,14 @@ const canonical = canonicalUrl ?? profileUrl
 // not render SVG og:images, so the default card is the checked-in
 // public/og/<locale>.png (1200x630, regenerated with bun run generate:og).
 // Pages with their own photography (blog posts) keep passing `image`.
-const staticOgImage = new URL(`/og/${locale}.png`, "https://sebita.dev").toString()
+const staticOgImage = new URL(
+  `/og/${locale}.png`,
+  "https://sebita.dev",
+).toString()
 const seoImage = image ?? staticOgImage
-const sameAsProfiles = [social.github, social.linkedin].filter((url): url is string => Boolean(url))
+const sameAsProfiles = [social.github, social.linkedin].filter(
+  (url): url is string => Boolean(url),
+)
 
 const jsonLdString = buildLayoutJsonLd({
   title,
@@ -58,13 +66,17 @@ const jsonLdString = buildLayoutJsonLd({
 ---
 
 <!doctype html>
-<html lang={locale}>
+<html lang={locale} data-theme="dark">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="dark light" />
+    <ClientRouter />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
-    {alternates.map(({ hreflang, href }) => <link rel="alternate" hreflang={hreflang} href={href} />)}
+    {alternates.map(({ hreflang, href }) => (
+      <link rel="alternate" hreflang={hreflang} href={href} />
+    ))}
 
     <SEO
       title={title}
@@ -122,11 +134,33 @@ const jsonLdString = buildLayoutJsonLd({
       }}
     />
 
-    <script is:inline type="application/ld+json" set:html={jsonLdString} />
+    <!-- LCP: el h1 va en Geist Pixel Square y el cuerpo en Geist Mono; solo
+      esas dos fuentes van al camino crítico (§8 de DESIGN.md). -->
+    <link rel="preload" href="/fonts/GeistPixel-Square.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/GeistMono-Regular.woff2" as="font" type="font/woff2" crossorigin />
+
+    <script is:inline type="application/ld+json" set:html={jsonLdString}></script>
+
+    <!-- Theme bootstrap stays inline by design: it must run synchronously in
+      <head> before first paint to avoid a flash of the wrong theme. An
+      external or bundled (deferred) script runs after parsing, too late.
+      Puerto verbatim de design/resolucion/boot.js: data-theme desde
+      localStorage ("sb-theme") y las clases motion/ambient gated por
+      prefers-reduced-motion, Save-Data y puntero fino. -->
+    <script is:inline>
+      (function () {
+        var d = document.documentElement
+        try { var t = localStorage.getItem("sb-theme"); if (t === "light" || t === "dark") d.dataset.theme = t } catch (e) {}
+        var reduce = matchMedia("(prefers-reduced-motion: reduce)").matches
+        var saveData = navigator.connection && navigator.connection.saveData
+        if (!reduce) d.classList.add("motion")
+        if (!reduce && !saveData && matchMedia("(hover: hover) and (pointer: fine)").matches) d.classList.add("ambient")
+      })()
+    </script>
   </head>
   <body>
-    <a href="#main-content">
-      {locale === "es" ? "Saltar al contenido" : "Skip to content"}
+    <a class="skip" href="#main-content">
+      {locale === 'es' ? 'Saltar al contenido' : 'Skip to content'}
     </a>
     <Header locale={locale} />
     <slot />

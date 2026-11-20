@@ -379,172 +379,205 @@ const alternates = createStaticAlternates(locale, spanishUrl, englishUrl)
 
 <Layout title={c.title} description={c.description} locale={locale} canonicalUrl={canonicalUrl} alternates={alternates}>
   <main id="main-content">
-    <nav aria-label={t.nav.breadcrumb}>
-      <ol>
-        <li><a href={homePath}>{t.nav.home}</a></li>
-        <li aria-current="page">{t.footer.privacy}</li>
-      </ol>
-    </nav>
-    <h1>{c.heading}</h1>
-    <p>{c.updatedLabel} <time datetime="2026-09-25">{c.lastUpdate}</time></p>
-    <section>
-      <h2>{c.controllerHeading}</h2>
-      <p><strong>{personalInfo.name}</strong> <span>{c.controllerCountry}</span></p>
-      <p>
-        {c.emailLead}{" "}
-        <a href={`mailto:${personalInfo.email}`}>{personalInfo.email}</a>
-      </p>
-      <p>
-        {c.siteLead}<a href="https://sebita.dev">sebita.dev</a>{c.siteRest}
-      </p>
-    </section>
-
-    <section>
-      <h2>{c.noCollectHeading}</h2>
-      <p>{c.noCollectLeadA}<strong>{c.noCollectLeadStrong}</strong>{c.noCollectLeadB}</p>
-      <p>{c.noCollectListLead}</p>
-      <ul>
-        {c.noCollectBullets.map((bullet) => <li>{bullet}</li>)}
-      </ul>
-    </section>
-
-    <section>
-      <h2>{c.analyticsHeading}</h2>
-      <p>{c.analyticsIntro}</p>
-      <p>{c.analyticsListLead}</p>
-      <ul>
-        {
-          c.analyticsBullets.map((bullet) => (
-            <li>
-              <strong>{bullet.term}</strong> <span>{bullet.detail}</span>
-            </li>
-          ))
-        }
-      </ul>
-      <p>{c.analyticsNote}</p>
-    </section>
-
-    <section>
-      <h2>{c.linksHeading}</h2>
-      <p>{c.linksLead}</p>
-      <ul>
-        {
-          c.links.map((link) => (
-            <li>
-              <strong>
-                <a href={link.href} target="_blank" rel="noopener noreferrer">
-                  {link.label}
-                </a>
-              </strong>
-              <span>{link.note}</span>
-            </li>
-          ))
-        }
-      </ul>
-      <p>{c.linksOutro}</p>
-    </section>
-
-    {
-      isEnglish ? (
-        <>
-          <section>
-            <h2>{c.gdpr.heading}</h2>
-            <p>
-              {c.gdpr.introLead}
-              <strong>{c.gdpr.introStrong}</strong>
-              {c.gdpr.introRest}
-            </p>
-            <ul>
-              {c.gdpr.bullets.map((bullet) => (
-                <li>
-                  <strong>{bullet.term}</strong> <span>{bullet.detail}</span>
-                </li>
-              ))}
-            </ul>
-            <p>
-              <strong>{c.gdpr.basisLead}</strong>
-              {c.gdpr.basisRest}
-            </p>
+    <div class="page-top">
+      <div class="wrap">
+        <nav aria-label={t.nav.breadcrumb}>
+          <ol class="crumb">
+            <li><a href={homePath}>{t.nav.home}</a></li>
+            <li aria-hidden="true">/</li>
+            <li aria-current="page">{t.footer.privacy}</li>
+          </ol>
+        </nav>
+        <h1 class="post-title">{c.heading}</h1>
+        <p class="meta-line">
+          <span>{c.updatedLabel} <time datetime="2026-09-25">{c.lastUpdate}</time></span>
+        </p>
+      </div>
+    </div>
+    <div class="legal">
+      <div class="wrap">
+        <div class="posts">
+          <section class="row">
+            <div class="label">{c.controllerHeading}</div>
+            <div class="main">
+              <p><strong>{personalInfo.name}</strong> <span>{c.controllerCountry}</span></p>
+              <p>
+                {c.emailLead}{" "}
+                <a href={`mailto:${personalInfo.email}`}>{personalInfo.email}</a>
+              </p>
+              <p>
+                {c.siteLead}<a href="https://sebita.dev">sebita.dev</a>{c.siteRest}
+              </p>
+            </div>
           </section>
 
-          <section>
-            <h2>{c.arco.heading}</h2>
-            <p>
-              {c.arco.introLead}
-              <strong>{c.arco.law1}</strong>
-              {c.arco.law1Note}
-              {c.arco.mid}
-              <strong>{c.arco.law2}</strong>
-              {c.arco.law2Note}
-            </p>
-            <ul>
-              {c.arco.bullets.map((bullet) => (
-                <li>
-                  <strong>{bullet.term}</strong> <span>{bullet.detail}</span>
-                </li>
-              ))}
-            </ul>
-            <p>{c.arco.outro}</p>
-          </section>
-        </>
-      ) : (
-        <>
-          <section>
-            <h2>{c.arco.heading}</h2>
-            <p>
-              {c.arco.introLead}
-              <strong>{c.arco.law1}</strong>
-              {c.arco.law1Note}
-              {c.arco.mid}
-              <strong>{c.arco.law2}</strong>
-              {c.arco.law2Note}
-            </p>
-            <ul>
-              {c.arco.bullets.map((bullet) => (
-                <li>
-                  <strong>{bullet.term}</strong> <span>{bullet.detail}</span>
-                </li>
-              ))}
-            </ul>
-            <p>{c.arco.outro}</p>
+          <section class="row">
+            <div class="label">{c.noCollectHeading}</div>
+            <div class="main">
+              <p>{c.noCollectLeadA}<strong>{c.noCollectLeadStrong}</strong>{c.noCollectLeadB}</p>
+              <p>{c.noCollectListLead}</p>
+              <ul>
+                {c.noCollectBullets.map((bullet) => <li>{bullet}</li>)}
+              </ul>
+            </div>
           </section>
 
-          <section>
-            <h2>{c.gdpr.heading}</h2>
-            <p>
-              {c.gdpr.introLead}
-              <strong>{c.gdpr.introStrong}</strong>
-              {c.gdpr.introRest}
-            </p>
-            <ul>
-              {c.gdpr.bullets.map((bullet) => (
-                <li>
-                  <strong>{bullet.term}</strong> <span>{bullet.detail}</span>
-                </li>
-              ))}
-            </ul>
-            <p>
-              <strong>{c.gdpr.basisLead}</strong>
-              {c.gdpr.basisRest}
-            </p>
+          <section class="row">
+            <div class="label">{c.analyticsHeading}</div>
+            <div class="main">
+              <p>{c.analyticsIntro}</p>
+              <p>{c.analyticsListLead}</p>
+              <ul>
+                {
+                  c.analyticsBullets.map((bullet) => (
+                    <li>
+                      <strong>{bullet.term}</strong> <span>{bullet.detail}</span>
+                    </li>
+                  ))
+                }
+              </ul>
+              <p>{c.analyticsNote}</p>
+            </div>
           </section>
-        </>
-      )
-    }
 
-    <section>
-      <h2>{c.changesHeading}</h2>
-      <p>{c.changesP1}</p>
-      <p>{c.changesP2}</p>
-    </section>
+          <section class="row">
+            <div class="label">{c.linksHeading}</div>
+            <div class="main">
+              <p>{c.linksLead}</p>
+              <ul>
+                {
+                  c.links.map((link) => (
+                    <li>
+                      <strong>
+                        <a href={link.href} target="_blank" rel="noopener noreferrer">
+                          {link.label}
+                        </a>
+                      </strong>
+                      <span>{link.note}</span>
+                    </li>
+                  ))
+                }
+              </ul>
+              <p>{c.linksOutro}</p>
+            </div>
+          </section>
 
-    <section>
-      <h2>{c.contactHeading}</h2>
-      <p>{c.contactP1}</p>
-      <p>
-        <a href={`mailto:${personalInfo.email}`}>{personalInfo.email}</a>
-      </p>
-      <p>{c.contactNote}</p>
-    </section>
+          {
+            isEnglish ? (
+              <>
+                <section class="row">
+                  <div class="label">{c.gdpr.heading}</div>
+                  <div class="main">
+                    <p>
+                      {c.gdpr.introLead}
+                      <strong>{c.gdpr.introStrong}</strong>
+                      {c.gdpr.introRest}
+                    </p>
+                    <ul>
+                      {c.gdpr.bullets.map((bullet) => (
+                        <li>
+                          <strong>{bullet.term}</strong> <span>{bullet.detail}</span>
+                        </li>
+                      ))}
+                    </ul>
+                    <p>
+                      <strong>{c.gdpr.basisLead}</strong>
+                      {c.gdpr.basisRest}
+                    </p>
+                  </div>
+                </section>
+
+                <section class="row">
+                  <div class="label">{c.arco.heading}</div>
+                  <div class="main">
+                    <p>
+                      {c.arco.introLead}
+                      <strong>{c.arco.law1}</strong>
+                      {c.arco.law1Note}
+                      {c.arco.mid}
+                      <strong>{c.arco.law2}</strong>
+                      {c.arco.law2Note}
+                    </p>
+                    <ul>
+                      {c.arco.bullets.map((bullet) => (
+                        <li>
+                          <strong>{bullet.term}</strong> <span>{bullet.detail}</span>
+                        </li>
+                      ))}
+                    </ul>
+                    <p>{c.arco.outro}</p>
+                  </div>
+                </section>
+              </>
+            ) : (
+              <>
+                <section class="row">
+                  <div class="label">{c.arco.heading}</div>
+                  <div class="main">
+                    <p>
+                      {c.arco.introLead}
+                      <strong>{c.arco.law1}</strong>
+                      {c.arco.law1Note}
+                      {c.arco.mid}
+                      <strong>{c.arco.law2}</strong>
+                      {c.arco.law2Note}
+                    </p>
+                    <ul>
+                      {c.arco.bullets.map((bullet) => (
+                        <li>
+                          <strong>{bullet.term}</strong> <span>{bullet.detail}</span>
+                        </li>
+                      ))}
+                    </ul>
+                    <p>{c.arco.outro}</p>
+                  </div>
+                </section>
+
+                <section class="row">
+                  <div class="label">{c.gdpr.heading}</div>
+                  <div class="main">
+                    <p>
+                      {c.gdpr.introLead}
+                      <strong>{c.gdpr.introStrong}</strong>
+                      {c.gdpr.introRest}
+                    </p>
+                    <ul>
+                      {c.gdpr.bullets.map((bullet) => (
+                        <li>
+                          <strong>{bullet.term}</strong> <span>{bullet.detail}</span>
+                        </li>
+                      ))}
+                    </ul>
+                    <p>
+                      <strong>{c.gdpr.basisLead}</strong>
+                      {c.gdpr.basisRest}
+                    </p>
+                  </div>
+                </section>
+              </>
+            )
+          }
+
+          <section class="row">
+            <div class="label">{c.changesHeading}</div>
+            <div class="main">
+              <p>{c.changesP1}</p>
+              <p>{c.changesP2}</p>
+            </div>
+          </section>
+
+          <section class="row">
+            <div class="label">{c.contactHeading}</div>
+            <div class="main">
+              <p>{c.contactP1}</p>
+              <p>
+                <a href={`mailto:${personalInfo.email}`}>{personalInfo.email}</a>
+              </p>
+              <p>{c.contactNote}</p>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
   </main>
 </Layout>

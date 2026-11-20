@@ -1,4 +1,7 @@
 ---
+// Resolución — momento 3 (§2): el email es el CTA. La dirección partida en @ son dos líneas de
+// Geist Pixel dentro de un <button> con aria-label completo; click copia y re-resuelve.
+// Clases del contrato: mail, mail-hint, contact-links; el status vive en .sr con role="status".
 import { personalInfo, social } from "@/lib/data"
 import { getTranslations, type Locale } from "@/lib/i18n"
 
@@ -10,6 +13,7 @@ const { locale = "es" } = Astro.props
 const t = getTranslations(locale)
 const cvHref = "/cv/Sebastian_Bravo_CV.pdf"
 
+const [user, domain] = personalInfo.email.split("@")
 const mailtoHref = `mailto:${personalInfo.email}?subject=${encodeURIComponent(t.contact.mailSubject)}`
 
 // Enlaces de texto con su descripción accesible; los enlaces directos evitan recopilar datos.
@@ -32,22 +36,40 @@ const contactLinks = [
 ]
 ---
 
-<p>{t.contact.responseTime}</p>
+<button
+  id="mail"
+  class="mail"
+  type="button"
+  aria-label={`${t.contact.copy} ${personalInfo.email}`}
+  data-email={personalInfo.email}
+  data-copied={t.contact.copied}
+  data-error={t.contact.copyError}
+>
+  <span class="l">{user}</span><span class="l">@{domain}</span>
+</button>
+<p class="mail-hint small">{t.contact.mailHint}</p>
 <p>{t.contact.cvHelper}</p>
-<ul>
+<p class="sr" id="mail-status" role="status" aria-live="polite"></p>
+<div class="contact-links">
   {
     contactLinks.map(({ href, label, description }) => (
-      <li>
-        <a
-          href={href}
-          target={href.startsWith("http") ? "_blank" : undefined}
-          rel={href.startsWith("http") ? "me noopener noreferrer" : undefined}
-          aria-label={description}
-        >
-          {label}
-        </a>
-      </li>
+      <a
+        href={href}
+        target={href.startsWith("http") ? "_blank" : undefined}
+        rel={href.startsWith("http") ? "me noopener noreferrer" : undefined}
+        aria-label={description}
+      >
+        {label}
+      </a>
     ))
   }
-  <li><a href={cvHref} download aria-label={t.hero.downloadCv}>{t.hero.downloadCv}</a></li>
-</ul>
+  <a href={cvHref} download aria-label={t.hero.downloadCv}>{t.hero.downloadCv}</a>
+</div>
+
+<script>
+  import { setupMail, teardownMail } from "@/scripts/mail"
+
+  setupMail()
+  document.addEventListener("astro:page-load", setupMail)
+  document.addEventListener("astro:before-swap", teardownMail)
+</script>

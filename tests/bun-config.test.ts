@@ -6,8 +6,8 @@ import { describe, expect, it } from "vitest";
 //   (20160 pnpm minutes = 1209600 Bun seconds).
 // - The three cooldown excludes are carried over verbatim.
 // - trustedDependencies replaces pnpm's allowBuilds allowlist. Defining it
-//   REPLACES Bun's built-in default list, so all three build packages must
-//   stay listed or their postinstalls stop running.
+//   REPLACES Bun's built-in default list, so sharp must stay
+//   listed or its postinstall stops running.
 // - blockExoticSubdeps has no Bun equivalent: the registry-only resolution
 //   check on bun.lock below is the executable replacement.
 // - trustPolicy no-downgrade also has no Bun equivalent; dependabot's 7-day
@@ -23,7 +23,6 @@ const OVERRIDES = {
   devalue: "5.9.3",
   vite: ">=8.2.4",
   picomatch: ">=4.0.4",
-  esbuild: ">=0.28.1",
   "js-yaml": "4.3.2",
   nanoid: ">=3.3.18",
   postcss: ">=8.5.23",
@@ -97,7 +96,7 @@ describe("bun install policy", () => {
 
     expect(manifest.packageManager).toBe("bun@1.4.4");
     expect(manifest.overrides).toEqual(OVERRIDES);
-    expect(manifest.trustedDependencies).toEqual(["esbuild", "sharp"]);
+    expect(manifest.trustedDependencies).toEqual(["sharp"]);
     expect(manifest.pnpm).toBeUndefined();
     expect(manifest.engines.node).toBe(">=22.23.4");
   });

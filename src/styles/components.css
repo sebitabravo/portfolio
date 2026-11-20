@@ -361,11 +361,12 @@ html.motion .reveal.in .mark {
 .kv {
   display: grid;
   grid-template-columns: 8rem minmax(0, 1fr);
-  gap: 4px 16px;
+  gap: 16px;
 }
 .kv dt {
   color: var(--fg-faint);
   font-size: var(--fs-small);
+  line-height: 28px;
 }
 .kv dd {
   color: var(--fg-muted);

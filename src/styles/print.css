@@ -129,4 +129,13 @@
   a {
     text-decoration: none;
   }
+  /* Los íconos son ayuda visual en pantalla; en papel solo suman tinta. */
+  .ico {
+    display: none;
+  }
+  .tech li {
+    height: auto;
+    padding: 1pt 4pt;
+    font-size: 9pt;
+  }
 }

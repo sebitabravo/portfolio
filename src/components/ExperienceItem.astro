@@ -4,6 +4,7 @@
 // design/resolucion/index.html. Los highlights solo alimentan el enlace al caso: repetirlos
 // como línea aparte duplicaba la descripción.
 import Icon from "@/components/Icon.astro"
+import TechList from "@/components/TechList.astro"
 import { formatMonthYear } from "@/lib/utils"
 import { getTranslations, type Locale } from "@/lib/i18n"
 import type { WorkExperience } from "@/lib/data"
@@ -47,7 +48,13 @@ const externalUrl = url?.startsWith("http")
     <p class="who">{company}</p>
     <p>{position}</p>
     <p class="desc">{description}</p>
-    {skills.length > 0 && <p class="stack">{skills.join(", ")}</p>}
+    {
+      skills.length > 0 && (
+        <div class="stack">
+          <TechList items={skills} />
+        </div>
+      )
+    }
     {
       url && (
         <p class="links small">

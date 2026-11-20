@@ -342,9 +342,6 @@ html.motion .reveal.in .mark {
   max-width: 68ch;
 }
 .row .stack {
-  color: var(--fg-faint);
-  font-size: var(--fs-small);
-  line-height: 20px;
   margin-top: 12px;
 }
 .row .links {

@@ -88,12 +88,14 @@ const absolute = (href: string): string => (href.startsWith("/") ? ORIGIN + href
                 src={screenshot}
                 formats={["avif"]}
                 fallbackFormat="webp"
-                widths={[800, 1600]}
+                widths={[400, 800, 1600]}
                 quality={90}
                 width={1600}
                 height={1000}
-                sizes="(min-width: 960px) 60vw, 100vw"
+                sizes="(min-width: 960px) calc(100vw - 33rem), calc(100vw - 32px)"
                 alt={t.projects.screenshotAlt.replace("{title}", title)}
+                loading={i === 0 ? "eager" : "lazy"}
+                fetchpriority={i === 0 ? "high" : undefined}
                 decoding="async"
               />
             )}

@@ -31,7 +31,10 @@ export default defineConfig({
       // Keep Vite's advisory aligned with that intentional optional chunk;
       // verify:bundle enforces both raw and compressed budgets separately.
       chunkSizeWarningLimit: 600,
-      target: "esnext",
+      // S4: el presupuesto de compatibilidad es el mismo de los scripts: sin
+      // downleveling a `esnext`, motores de la clase Chrome 87/Safari 13.1
+      // ejecutan el bundle tal cual.
+      target: ["chrome87", "edge88", "firefox78", "safari13.1"],
     },
   },
 })

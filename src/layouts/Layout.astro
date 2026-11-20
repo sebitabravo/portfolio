@@ -151,10 +151,13 @@ const jsonLdString = buildLayoutJsonLd({
       (function () {
         var d = document.documentElement
         try { var t = localStorage.getItem("sb-theme"); if (t === "light" || t === "dark") d.dataset.theme = t } catch (e) {}
-        var reduce = matchMedia("(prefers-reduced-motion: reduce)").matches
+        /* S4: matchMedia no existe en motores muy viejos y una query inválida
+           lanza en algunos; sin media queries el default es motion + ambient off. */
+        var mq = function (q) { try { return typeof matchMedia === "function" ? matchMedia(q).matches : false } catch (e) { return false } }
+        var reduce = mq("(prefers-reduced-motion: reduce)")
         var saveData = navigator.connection && navigator.connection.saveData
         if (!reduce) d.classList.add("motion")
-        if (!reduce && !saveData && matchMedia("(hover: hover) and (pointer: fine)").matches) d.classList.add("ambient")
+        if (!reduce && !saveData && mq("(hover: hover) and (pointer: fine)")) d.classList.add("ambient")
       })()
     </script>
   </head>

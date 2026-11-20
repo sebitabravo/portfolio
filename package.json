@@ -13,7 +13,7 @@
     "dev": "astro dev",
     "build": "rm -rf dist && astro check && bun run verify:limits && bun run build:static && bun run verify:bundle && bun run verify:csp",
     "build:ci": "rm -rf dist && bun run verify:limits && bun run build:static && bun run verify:bundle && bun run verify:csp",
-    "build:static": "env -u VERCEL -u PUBLIC_VERCEL_OBSERVABILITY_BASEPATH -u PUBLIC_VERCEL_OBSERVABILITY_CLIENT_CONFIG astro build",
+    "build:static": "env -u VERCEL -u PUBLIC_VERCEL_OBSERVABILITY_BASEPATH -u PUBLIC_VERCEL_OBSERVABILITY_CLIENT_CONFIG astro build && bun scripts/generate-sitemap.ts",
     "preview": "astro preview",
     "check": "astro check",
     "format": "prettier --write .",
@@ -32,21 +32,19 @@
   },
   "dependencies": {
     "@astrojs/mdx": "^7.0.5",
-    "@astrojs/sitemap": "^3.7.3",
     "astro": "^7.4.7",
-    "astro-seo": "^1.1.0",
     "sharp": "^0.35.5"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
     "@axe-core/playwright": "^4.11.0",
     "@playwright/test": "^1.65.0",
-    "@vitest/coverage-v8": "3.2.6",
-    "happy-dom": "20.11.2",
+    "@vitest/coverage-v8": "4.1.12",
+    "happy-dom": "21.0.4",
     "prettier": "3.9.6",
     "prettier-plugin-astro": "0.14.1",
     "typescript": "^6.0.3",
-    "vitest": "^3.2.6"
+    "vitest": "^4.1.12"
   },
   "overrides": {
     "fast-uri": ">=4.2.3",

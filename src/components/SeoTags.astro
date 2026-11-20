@@ -1,0 +1,41 @@
+---
+// Etiquetas SEO y sociales hechas a mano (reemplaza a astro-seo): title, description, canonical,
+// robots, Open Graph y Twitter. og:url repite el canonical a propósito: una sola URL por página.
+interface Props {
+  title: string
+  description: string
+  canonical: string
+  image: string
+  locale: "es" | "en"
+  author: string
+  twitterHandle: string
+  noindex?: boolean
+}
+
+const { title, description, canonical, image, locale, author, twitterHandle, noindex = false } = Astro.props
+const robots = noindex ? "noindex, nofollow" : "index, follow"
+const ogLocale = locale === "es" ? "es-CL" : "en-US"
+---
+
+<title>{title}</title>
+<link rel="canonical" href={canonical} />
+<meta name="description" content={description} />
+<meta name="robots" content={robots} />
+<meta name="author" content={author} />
+
+<meta property="og:title" content={title} />
+<meta property="og:type" content="website" />
+<meta property="og:url" content={canonical} />
+<meta property="og:locale" content={ogLocale} />
+<meta property="og:image" content={image} />
+<meta property="og:image:alt" content={title} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:site" content={twitterHandle} />
+<meta name="twitter:creator" content={twitterHandle} />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={image} />
+<meta name="twitter:image:alt" content={title} />

@@ -210,7 +210,7 @@
     "back": "Volver al blog",
     "readingTime": "min de lectura",
     "filtersLabel": "Filtrar artículos",
-    "filters": { "all": "todos", "case": "casos", "educational": "educacional" },
+    "filters": { "all": "todos", "web": "web", "ia-datos": "ia y datos", "apps": "apps", "infra": "infra" },
     "countLabel": "artículos",
     "tocTitle": "en esta página",
     "newer": "más nuevo",

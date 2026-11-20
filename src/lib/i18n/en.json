@@ -206,7 +206,7 @@
     "back": "Back to blog",
     "readingTime": "min read",
     "filtersLabel": "Filter articles",
-    "filters": { "all": "all", "case": "case studies", "educational": "educational" },
+    "filters": { "all": "all", "web": "web", "ia-datos": "ai & data", "apps": "apps", "infra": "infra" },
     "countLabel": "articles",
     "tocTitle": "on this page",
     "newer": "newer",

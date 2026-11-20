@@ -2,6 +2,7 @@ import { defineCollection } from "astro:content"
 import { z } from "astro/zod"
 import { glob } from "astro/loaders"
 import { LOCALES } from "@/lib/i18n"
+import { BLOG_TOPICS } from "@/lib/blog-topics"
 
 const blog = defineCollection({
   loader: glob({ pattern: "**/*.mdx", base: "src/content/blog" }),
@@ -13,6 +14,7 @@ const blog = defineCollection({
     image: z.string().optional(),
     locale: z.enum([LOCALES.ES, LOCALES.EN]).default(LOCALES.ES),
     translationKey: z.string().optional(),
+    topic: z.enum(BLOG_TOPICS),
   }),
 })
 

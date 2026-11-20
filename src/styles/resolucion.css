@@ -1,0 +1,9 @@
+/* Resolución — punto de entrada único. Importa los módulos en orden de dependencia:
+   tokens → base → layout → componentes → prosa → impresión. Los @import van primero. */
+
+@import "./tokens.css";
+@import "./base.css";
+@import "./layout.css";
+@import "./components.css";
+@import "./prose.css";
+@import "./print.css";

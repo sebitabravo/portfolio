@@ -1,0 +1,344 @@
+/* Resolución — prosa: la superficie de lectura larga (17px/30px), TOC, ruta, metadatos,
+   artículos, privacidad y 404.
+   Puerto verbatim de design/resolucion/views.css. */
+
+/* ---------- Ruta y metadatos ---------- */
+.crumb {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+  margin-bottom: 32px;
+  color: var(--fg-faint);
+  font-size: var(--fs-small);
+  line-height: 20px;
+}
+.crumb a {
+  text-decoration: none;
+}
+.crumb a:hover {
+  color: var(--fg);
+}
+.crumb [aria-current] {
+  color: var(--fg-muted);
+}
+.meta-line {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 24px;
+  margin-top: 24px;
+  color: var(--fg-faint);
+  font-size: var(--fs-small);
+  line-height: 20px;
+}
+.meta-line .dot {
+  background: var(--fg);
+  border-color: var(--fg);
+  margin-right: 8px;
+}
+
+/* ---------- Post: título, captura y TOC ---------- */
+.post-title {
+  font-family: var(--pixel);
+  font-weight: 400;
+  letter-spacing: 0;
+  font-size: clamp(1.75rem, 4vw, 3rem);
+  line-height: 1.1;
+  max-width: 30ch;
+  text-wrap: balance;
+}
+.post-shot {
+  margin-top: 40px;
+  aspect-ratio: 16 / 10;
+  background: var(--fill);
+  border: 1px solid var(--line);
+  overflow: hidden;
+  max-width: 72rem;
+}
+.post-shot img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.post-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  margin-top: 32px;
+}
+.post-foot {
+  margin-top: 64px;
+}
+.post-foot .row {
+  grid-template-columns: 1fr;
+}
+@media (min-width: 720px) {
+  .post-foot .row {
+    grid-template-columns: 10rem minmax(0, 1fr);
+  }
+}
+.toc h2 {
+  font: 400 var(--fs-small)/20px var(--mono);
+  color: var(--fg-faint);
+  margin-bottom: 8px;
+  white-space: normal;
+}
+.toc a {
+  display: block;
+  padding: 6px 0;
+  text-decoration: none;
+  color: var(--fg-muted);
+  font-size: var(--fs-small);
+  line-height: 20px;
+}
+.toc a:hover {
+  color: var(--fg);
+}
+/* En el diseño esta regla comparte el @media de 960px con .post-grid (layout.css); se separa aquí
+   porque el sticky le pertenece al TOC. */
+@media (min-width: 960px) {
+  .toc {
+    position: sticky;
+    top: calc(var(--header) + 24px);
+    align-self: start;
+  }
+}
+@media (max-width: 959px) {
+  .toc {
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    padding-block: 16px;
+  }
+}
+
+/* La prosa es la única superficie de lectura larga del sitio, y por eso tiene su propia escala.
+   A 44rem, 15px mono daba ~78 caracteres por línea (fuera del rango legible); 17px queda en ~69
+   y conserva la identidad mono. Comparativa en 08-post-prosa.html. */
+.prose {
+  font-size: 17px;
+  line-height: 30px;
+}
+.prose > * + * {
+  margin-top: 20px;
+}
+.prose p,
+.prose li {
+  color: var(--fg-muted);
+}
+.prose strong {
+  color: var(--fg);
+  font-weight: 500;
+}
+.prose h2 {
+  font-family: var(--pixel);
+  font-weight: 400;
+  font-size: 1.75rem;
+  line-height: 36px;
+  white-space: normal;
+  margin-top: 56px;
+  color: var(--fg);
+  scroll-margin-top: calc(var(--header) + 24px);
+}
+.prose h2:first-child {
+  margin-top: 0;
+}
+.prose h3 {
+  font-size: inherit;
+  font-weight: 500;
+}
+.prose ul,
+.prose ol {
+  padding-left: 0;
+}
+.prose ul > li {
+  position: relative;
+  padding-left: 24px;
+}
+.prose ul > li + li,
+.prose ol > li + li {
+  margin-top: 12px;
+}
+.prose ul > li::before {
+  content: "";
+  position: absolute;
+  left: 4px;
+  top: 10px;
+  width: 6px;
+  height: 6px;
+  background: var(--fg-faint);
+}
+.prose ol {
+  list-style: none;
+  counter-reset: n;
+}
+.prose ol > li {
+  counter-increment: n;
+  position: relative;
+  padding-left: 32px;
+}
+.prose ol > li::before {
+  content: counter(n);
+  position: absolute;
+  left: 0;
+  color: var(--fg-faint);
+  font-size: var(--fs-small);
+}
+.prose code {
+  font-family: var(--mono);
+  font-size: 0.92em;
+  background: var(--fill);
+  padding: 1px 6px;
+  color: var(--fg);
+}
+.prose pre {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  background: var(--fill);
+  padding: 16px;
+  font-size: var(--fs-small);
+  line-height: 20px;
+}
+.prose pre code {
+  background: none;
+  padding: 0;
+}
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--fs-small);
+  line-height: 20px;
+  display: block;
+  overflow-x: auto;
+}
+.prose th,
+.prose td {
+  text-align: left;
+  padding: 10px 16px 10px 0;
+  border-top: 1px solid var(--line);
+  vertical-align: top;
+}
+.prose th {
+  color: var(--fg-faint);
+  font-weight: 400;
+}
+.prose tr:last-child td {
+  border-bottom: 1px solid var(--line);
+}
+.prose td {
+  color: var(--fg-muted);
+}
+.prose blockquote {
+  margin-left: 0;
+  padding-left: 16px;
+  border-left: 1px solid var(--fg);
+}
+.prose .cards > div {
+  padding-block: 16px;
+  border-top: 1px solid var(--line);
+}
+.prose .cards > div:last-child {
+  border-bottom: 1px solid var(--line);
+}
+.prose .cards h3 {
+  color: var(--fg);
+  margin-bottom: 4px;
+}
+.prose .note {
+  border: 1px solid var(--line);
+  background: var(--fill);
+  padding: 16px;
+}
+.prose .note p + p {
+  margin-top: 8px;
+}
+.prose a {
+  color: var(--fg);
+}
+
+/* ---------- Privacidad ---------- */
+.legal .row .main > * + * {
+  margin-top: 12px;
+}
+.legal .row p,
+.legal .row li {
+  color: var(--fg-muted);
+  max-width: 68ch;
+}
+.legal .row strong {
+  color: var(--fg);
+  font-weight: 500;
+}
+.legal .row ul {
+  margin-top: 12px;
+}
+.legal .row li {
+  padding-block: 4px;
+}
+.legal .row li strong + span {
+  color: var(--fg-muted);
+}
+
+/* Listas de la política: mismo cuadro de 6px que la prosa. */
+.legal .row ul > li {
+  position: relative;
+  padding-left: 24px;
+}
+.legal .row ul > li::before {
+  content: "";
+  position: absolute;
+  left: 4px;
+  top: 14px;
+  width: 6px;
+  height: 6px;
+  background: var(--fg-faint);
+}
+
+/* ---------- 404 ---------- */
+.nf-code {
+  font-family: var(--pixel);
+  font-weight: 400;
+  line-height: 0.85;
+  letter-spacing: 0;
+  font-size: min(22rem, calc((100vw - 2 * var(--gutter)) / 2.1));
+  white-space: pre;
+}
+.nf-ramp {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+  margin-top: 32px;
+  color: var(--fg-faint);
+  font-size: 2rem;
+  line-height: 40px;
+}
+.nf-ramp span {
+  font-family: var(--pixel);
+}
+.nf-ramp .s0 {
+  font-family: "GP Line", var(--pixel);
+}
+.nf-ramp .s1 {
+  font-family: "GP Triangle", var(--pixel);
+}
+.nf-ramp .s2 {
+  font-family: "GP Grid", var(--pixel);
+}
+.nf-ramp .s3 {
+  font-family: "GP Circle", var(--pixel);
+}
+.nf-title {
+  font-family: var(--pixel);
+  font-weight: 400;
+  font-size: clamp(1.75rem, 5vw, 3rem);
+  line-height: 1.1;
+  margin-top: 48px;
+  white-space: normal;
+  text-wrap: balance;
+  max-width: 22ch;
+}
+.nf-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+  margin-top: 24px;
+}

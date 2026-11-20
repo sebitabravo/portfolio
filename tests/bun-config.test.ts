@@ -6,8 +6,8 @@ import { describe, expect, it } from "vitest";
 //   (20160 pnpm minutes = 1209600 Bun seconds).
 // - The three cooldown excludes are carried over verbatim.
 // - trustedDependencies replaces pnpm's allowBuilds allowlist. Defining it
-//   REPLACES Bun's built-in default list, so sharp must stay
-//   listed or its postinstall stops running.
+//   REPLACES Bun's built-in default list, so every build package that needs a
+//   postinstall (only sharp after the Vite 8/Rolldown move) must stay listed.
 // - blockExoticSubdeps has no Bun equivalent: the registry-only resolution
 //   check on bun.lock below is the executable replacement.
 // - trustPolicy no-downgrade also has no Bun equivalent; dependabot's 7-day
@@ -85,7 +85,7 @@ describe("bun install policy", () => {
     );
   });
 
-  it("pins Bun, moves the 16 overrides verbatim to the top level, and trusts the three build packages", async () => {
+  it("pins Bun, moves the 15 overrides verbatim to the top level, and trusts the build packages", async () => {
     const manifest = JSON.parse(await readFile("package.json", "utf8")) as {
       packageManager: string;
       overrides: Record<string, string>;

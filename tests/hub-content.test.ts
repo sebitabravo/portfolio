@@ -19,6 +19,7 @@ describe("hub content", () => {
       content.role,
       content.lead,
       content.emailTitle,
+      content.emailAria,
       content.youtubeHeading,
       content.youtubeNote,
       content.previewHeading,
@@ -49,6 +50,7 @@ describe("hub content", () => {
     for (const block of blocks) {
       expect(block.id.trim()).not.toBe("")
       expect(block.label.trim()).not.toBe("")
+      expect(block.button.trim()).not.toBe("")
       expect(block.content.trim()).not.toBe("")
       // YouTube solo auto-enlaza la URL completa dentro del texto pegado.
       expect(block.content).toMatch(/https:\/\//)

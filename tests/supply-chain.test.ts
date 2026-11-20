@@ -66,9 +66,13 @@ describe("bun install hardening", () => {
     expect(bunfig).toContain("http-cache-semantics@4.3.0");
     expect(bunfig).toContain("undici@8.12.2");
     expect(bunfig).toContain("fast-uri@4.2.3");
-    // Defining trustedDependencies replaces Bun's default list; sharp must
-    // stay or its postinstall stops running.
-    expect(manifest.trustedDependencies).toEqual(["sharp"]);
+    // Defining trustedDependencies replaces Bun's default list; every package
+    // whose postinstall we actually need must stay listed (only sharp after
+    // Vite 8/Rolldown stopped bundling esbuild).
+    expect(manifest.trustedDependencies).toEqual(
+      expect.arrayContaining(["sharp"]),
+    );
+    expect(manifest.trustedDependencies).toHaveLength(1);
   });
 });
 

@@ -1,0 +1,66 @@
+// @vitest-environment happy-dom
+
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
+import { setupProjects, teardownProjects } from "../src/scripts/projects"
+
+function pointerEvent(type: string, clientX: number, clientY: number): Event {
+  const event = new Event(type, { bubbles: true })
+  Object.defineProperties(event, {
+    clientX: { value: clientX },
+    clientY: { value: clientY },
+  })
+  return event
+}
+
+describe("project interaction lifecycle", () => {
+  beforeEach(() => {
+    teardownProjects()
+    document.body.innerHTML = `
+      <article data-project-card>
+        <button data-track-project="vulcania" data-track-action="live">Demo</button>
+        <img data-img-fallback src="/missing.webp" />
+      </article>
+    `
+    const card = document.querySelector<HTMLElement>("[data-project-card]")!
+    Object.defineProperty(card, "getBoundingClientRect", {
+      configurable: true,
+      value: vi.fn(() => ({ left: 10, top: 20, width: 200, height: 100, right: 210, bottom: 120 })),
+    })
+    vi.stubGlobal("ResizeObserver", undefined)
+    vi.stubGlobal("requestAnimationFrame", (callback: FrameRequestCallback) => {
+      callback(0)
+      return 1
+    })
+    vi.stubGlobal("cancelAnimationFrame", vi.fn())
+    vi.clearAllMocks()
+  })
+
+  afterEach(() => {
+    teardownProjects()
+    document.body.innerHTML = ""
+    vi.unstubAllGlobals()
+  })
+
+  it("leaves cards untouched on pointer movement: no CSS consumes pointer variables", () => {
+    setupProjects()
+    const card = document.querySelector<HTMLElement>("[data-project-card]")!
+
+    card.dispatchEvent(pointerEvent("pointerenter", 160, 70))
+    card.dispatchEvent(pointerEvent("pointermove", 160, 70))
+
+    expect(card.getAttribute("style")).toBeNull()
+  })
+
+  it("hides broken screenshots and tears down listeners", () => {
+    setupProjects()
+    const image = document.querySelector<HTMLImageElement>("[data-img-fallback]")!
+
+    image.dispatchEvent(new Event("error"))
+    expect(image.classList.contains("hidden")).toBe(true)
+
+    teardownProjects()
+    image.classList.remove("hidden")
+    image.dispatchEvent(new Event("error"))
+    expect(image.classList.contains("hidden")).toBe(false)
+  })
+})

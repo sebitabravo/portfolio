@@ -35,7 +35,7 @@ for (const { locale, dataLocale, home, blogPrefix } of [
         const article = page.locator("main#main-content article")
         await expect(article, context).toHaveCount(1)
         await expect(article.locator("header h1"), context).toHaveText(/\S/)
-        await expect(article.locator("> section"), context).toContainText(/\S/)
+        await expect(article.locator(".prose"), context).toContainText(/\S/)
 
         if (dataLocale === "en") {
           const articleLanguage = await article.getAttribute("lang")

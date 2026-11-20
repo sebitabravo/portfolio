@@ -39,6 +39,6 @@ for (const route of [
   test(`${route.path} names the article navigation in its locale`, async ({ page }) => {
     await page.goto(route.path)
     await expect(page.getByRole("navigation", { name: route.landmark, exact: true })).toBeVisible()
-    await expect(page.locator("main#main-content article > section")).not.toBeEmpty()
+    await expect(page.locator("main#main-content article .prose")).not.toBeEmpty()
   })
 }

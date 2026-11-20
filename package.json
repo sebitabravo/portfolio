@@ -41,12 +41,12 @@
     "@astrojs/check": "^0.9.10",
     "@axe-core/playwright": "^4.11.0",
     "@playwright/test": "^1.65.0",
-    "@vitest/coverage-v8": "3.2.6",
-    "happy-dom": "20.11.2",
+    "@vitest/coverage-v8": "4.1.12",
+    "happy-dom": "21.0.4",
     "prettier": "3.9.6",
     "prettier-plugin-astro": "0.14.1",
     "typescript": "^6.0.3",
-    "vitest": "^3.2.6"
+    "vitest": "^4.1.12"
   },
   "overrides": {
     "fast-uri": ">=4.2.3",

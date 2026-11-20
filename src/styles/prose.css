@@ -36,6 +36,18 @@
   margin-right: 8px;
 }
 
+/* Fallback flex gap para la ruta y los metadatos sin gap. */
+@supports not (gap: 1px) {
+  .crumb > * {
+    margin-right: 8px;
+    margin-bottom: 4px;
+  }
+  .meta-line > * {
+    margin-right: 24px;
+    margin-bottom: 4px;
+  }
+}
+
 /* ---------- Post: título, captura y TOC ---------- */
 .post-title {
   font-family: var(--pixel);
@@ -60,11 +72,33 @@
   object-fit: cover;
   display: block;
 }
+/* Fallback para motores sin aspect-ratio: padding-top sostiene la caja y la imagen pasa a
+   position:absolute + inset:0 para llenarla (el de .shot ya vive así en layout.css). */
+@supports not (aspect-ratio: 16 / 10) {
+  .post-shot {
+    height: 0;
+    padding-top: 62.5%;
+    position: relative;
+  }
+  .post-shot img {
+    position: absolute;
+    inset: 0;
+  }
+}
 .post-actions {
   display: flex;
   flex-wrap: wrap;
   gap: 8px 16px;
   margin-top: 32px;
+}
+@supports not (gap: 1px) {
+  .post-actions {
+    margin-top: calc(32px - 8px);
+  }
+  .post-actions > * {
+    margin-right: 16px;
+    margin-bottom: 8px;
+  }
 }
 .post-foot {
   margin-top: 64px;
@@ -311,6 +345,15 @@
   font-size: 2rem;
   line-height: 40px;
 }
+@supports not (gap: 1px) {
+  .nf-ramp {
+    margin-top: calc(32px - 8px);
+  }
+  .nf-ramp > * {
+    margin-right: 24px;
+    margin-bottom: 8px;
+  }
+}
 .nf-ramp span {
   font-family: var(--pixel);
 }
@@ -341,4 +384,10 @@
   flex-wrap: wrap;
   gap: 8px 24px;
   margin-top: 24px;
+}
+@supports not (gap: 1px) {
+  .nf-links > * {
+    margin-right: 24px;
+    margin-bottom: 8px;
+  }
 }

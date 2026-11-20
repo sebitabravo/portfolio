@@ -49,7 +49,9 @@ h1 {
   font-weight: 400;
   line-height: 0.9;
   letter-spacing: 0;
-  /* Se ajusta al ancho (9 celdas de 0,5776em) y a la altura útil del viewport. */
+  /* Se ajusta al ancho (9 celdas de 0,5776em) y a la altura útil del viewport.
+     Fallback 100vh idéntico antes del 100svh para motores sin unidades de viewport pequeño. */
+  font-size: min(15rem, calc((100vw - 2 * var(--gutter)) / 5.3), calc((100vh - 22rem) / 1.8));
   font-size: min(15rem, calc((100vw - 2 * var(--gutter)) / 5.3), calc((100svh - 22rem) / 1.8));
   margin-bottom: 40px;
 }
@@ -110,7 +112,7 @@ h1 .line {
 .index [role="tab"] {
   position: relative;
   display: grid;
-  grid-template-columns: 24px 1fr;
+  grid-template-columns: 24px minmax(0, 1fr);
   align-items: center;
   width: 100%;
   text-align: left;
@@ -175,6 +177,14 @@ h1 .line {
   display: block;
   object-fit: cover;
 }
+/* Fallback para motores sin aspect-ratio: la caja se sostiene con padding-top (62.5% = 10/16);
+   el contenido ya es position:absolute + inset:0, así que hereda el alto del padding. */
+@supports not (aspect-ratio: 16 / 10) {
+  .shot {
+    height: 0;
+    padding-top: 62.5%;
+  }
+}
 .shot canvas {
   image-rendering: pixelated;
 }
@@ -214,6 +224,51 @@ h1 .line {
   flex-wrap: wrap;
   gap: 8px 16px;
   margin-top: 32px;
+}
+
+/* Fallbacks flex gap para motores sin gap (Safari 14-class): filas con varios hijos
+   envueltos pierden la separación entre líneas y columnas. Margen negativo en el
+   contenedor y margen derecho/inferior en cada hijo reproducen `gap` con flex-wrap.
+   La superficie moderna arriba queda intacta. */
+@supports not (gap: 1px) {
+  .hero-meta {
+    margin-bottom: calc(32px - 8px);
+  }
+  .hero-meta > * {
+    margin-right: 32px;
+    margin-bottom: 8px;
+  }
+  .hero-meta span > * + * {
+    margin-left: 8px;
+  }
+  .hero-links {
+    margin-bottom: calc(32px - 8px);
+  }
+  .hero-links > * {
+    margin-right: 24px;
+    margin-bottom: 8px;
+  }
+  .cta {
+    margin-bottom: calc(32px - 16px);
+  }
+  .cta > * {
+    margin-right: 16px;
+    margin-bottom: 16px;
+  }
+  .panel-head {
+    margin-top: calc(24px - 4px);
+  }
+  .panel-head > * {
+    margin-right: 24px;
+    margin-bottom: 4px;
+  }
+  .panel-links {
+    margin-top: calc(32px - 8px);
+  }
+  .panel-links > * {
+    margin-right: 16px;
+    margin-bottom: 8px;
+  }
 }
 
 /* ---------- Páginas interiores: cabecera de página ---------- */

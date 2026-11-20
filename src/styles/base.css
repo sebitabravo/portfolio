@@ -19,6 +19,13 @@ body {
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
+/* S4: ninguna imagen puede empujar el layout (el preview del hub es un PNG de
+   1200px servido desde /og). Las imágenes con caja propia (.shot, .post-shot) fijan
+   alto y ancho con selectores de clase, que ganan a este tipo. */
+img {
+  max-width: 100%;
+  height: auto;
+}
 h1,
 h2,
 h3,

@@ -1,0 +1,23 @@
+---
+// Chips planos de tecnología: logo monocromo + nombre. Sin logo oficial, solo texto.
+import Icon from "./Icon.astro"
+import { techIcons } from "@/lib/icons/tech"
+
+interface Props {
+  items: readonly string[]
+  label?: string
+}
+
+const { items, label } = Astro.props
+---
+
+<ul class="tech" aria-label={label}>
+  {
+    items.map((item) => (
+      <li>
+        {techIcons[item] && <Icon icon={techIcons[item]} size={14} />}
+        <span>{item}</span>
+      </li>
+    ))
+  }
+</ul>

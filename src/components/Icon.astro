@@ -1,0 +1,39 @@
+---
+// Un único <svg> decorativo: el texto vecino es el nombre accesible, nunca el ícono.
+// width/height son atributos, no style=, porque el CSP se basa en hashes.
+import { uiIcons, type UiIconName } from "@/lib/icons/ui"
+import type { IconDef } from "@/lib/icons/types"
+
+interface Props {
+  name?: UiIconName
+  icon?: IconDef
+  size?: number
+}
+
+const { name, icon, size = 16 } = Astro.props
+const def: IconDef | undefined = icon ?? (name ? uiIcons[name] : undefined)
+const stroke = def?.style === "stroke"
+---
+
+{
+  def && (
+    <svg
+      class="ico"
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      width={size}
+      height={size}
+      fill={stroke ? "none" : "currentColor"}
+      stroke={stroke ? "currentColor" : undefined}
+      stroke-width={stroke ? "1.5" : undefined}
+      stroke-linecap={stroke ? "square" : undefined}
+      stroke-linejoin={stroke ? "miter" : undefined}
+      aria-hidden="true"
+      focusable="false"
+    >
+      {def.paths.map((d) => (
+        <path d={d} />
+      ))}
+    </svg>
+  )
+}

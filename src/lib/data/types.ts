@@ -1,5 +1,3 @@
-import type { ImageMetadata } from "astro"
-
 export const PROJECT_STATUSES = {
   PRODUCTION: "production",
   DEVELOPMENT: "development",
@@ -27,12 +25,6 @@ export const CERTIFICATION_CATEGORIES = {
 
 export type CertificationCategory = (typeof CERTIFICATION_CATEGORIES)[keyof typeof CERTIFICATION_CATEGORIES]
 
-export interface ExperienceLogo {
-  src: ImageMetadata
-  alt: string
-  url: string
-}
-
 export interface WorkExperience {
   company: string
   position: string
@@ -43,7 +35,6 @@ export interface WorkExperience {
   location?: string
   employmentType?: string
   skills: string[]
-  logos?: ExperienceLogo[]
   url?: string
   highlights?: { label: string; value: string }[]
 }

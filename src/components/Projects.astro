@@ -5,6 +5,8 @@
 // stage.ts solo alterna, enfoca el screenshot y cuenta las métricas.
 // Lista para impresión (§6.1): misma data, URLs completas visibles.
 import { Picture } from "astro:assets"
+import Icon from "@/components/Icon.astro"
+import TechList from "@/components/TechList.astro"
 import { getStageProjects } from "@/lib/data/projects"
 import { getProjectScreenshot } from "@/lib/portfolio-images"
 import { getTranslations, type Locale } from "@/lib/i18n"
@@ -104,13 +106,8 @@ const absolute = (href: string): string => (href.startsWith("/") ? ORIGIN + href
             <h3>{title}</h3>
           </div>
           <p class="tagline">{tagline}</p>
-          <div class="panel-stack" aria-label={t.projects.technologiesLabel}>
-            {tags.map((tag, tagIndex) => (
-              <>
-                {tagIndex > 0 && ", "}
-                {tag}
-              </>
-            ))}
+          <div class="panel-stack">
+            <TechList items={tags} label={t.projects.technologiesLabel} />
           </div>
           {(decision || tradeoff) && (
             <div class:list={["dt", { two: Boolean(decision && tradeoff) }]}>
@@ -147,17 +144,20 @@ const absolute = (href: string): string => (href.startsWith("/") ? ORIGIN + href
           <div class="panel-links">
             {blogSlug && (
               <a class="btn primary" href={blogUrl(blogSlug)}>
-                {t.projects.readMore}
+                <Icon name="file-text" />
+                <span>{t.projects.readMore}</span>
               </a>
             )}
             {githubUrl && (
               <a class="btn sm" href={githubUrl} target="_blank" rel="noopener noreferrer">
-                {t.projects.viewCode}
+                <Icon name="brand-github" />
+                <span>{t.projects.viewCode}</span>
               </a>
             )}
             {liveUrl && (
               <a class="btn sm" href={liveUrl} target="_blank" rel="noopener noreferrer">
-                {t.projects.viewProject}
+                <Icon name="external-link" />
+                <span>{t.projects.viewProject}</span>
               </a>
             )}
           </div>

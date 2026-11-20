@@ -4,8 +4,7 @@ type ShellCopy = {
   nav: { mainNavigation: string; brandHome: string }
   footer: { professionalProfiles: string; links: string }
   projects: { screenshotAlt: string; evidenceLabel: string; technologiesLabel: string }
-  work: { evidenceLabel: string }
-  contact: { mailSubject: string; responseTime: string; linkedinDescription: string; githubDescription: string; cvHelper: string }
+  contact: { mailSubject: string; sendEmail: string; cvHelper: string }
   error404: { description: string; heading: string; message: string; backHome: string }
   blog: { postNavigation: string }
 }
@@ -59,45 +58,35 @@ const localizedUiCopy = [
   {
     dictionary: es, locale: "Spanish", screenshotAlt: "Captura de {title}",
     projectEvidence: "Evidencia del proyecto", technologies: "Tecnologías",
-    workEvidence: "Evidencia del trabajo", mailSubject: "Contacto desde tu portfolio",
-    responseTime: "Te respondo en menos de 24h", linkedin: "Conectemos profesionalmente",
-    github: "Mirá mi código abierto", cvHelper: "CV disponible para revisar mi experiencia completa.",
+    mailSubject: "Contacto desde tu portfolio",
+    sendEmail: "Enviar email", cvHelper: "CV disponible para revisar mi experiencia completa.",
   },
   {
     dictionary: en, locale: "English", screenshotAlt: "{title} screenshot",
     projectEvidence: "Project evidence", technologies: "Technologies",
-    workEvidence: "Work evidence", mailSubject: "Contact from your portfolio",
-    responseTime: "I'll reply within 24h", linkedin: "Let's connect professionally",
-    github: "Check my open source code", cvHelper: "Download the CV for the full experience overview.",
+    mailSubject: "Contact from your portfolio",
+    sendEmail: "Send email", cvHelper: "Download the CV for the full experience overview.",
   },
 ] as const
 
 describe("project, work, and contact UI copy", () => {
-  it.each(localizedUiCopy)("keeps exact $locale labels and helper text in the dictionary", ({ dictionary, screenshotAlt, projectEvidence, technologies, workEvidence, mailSubject, responseTime, linkedin, github, cvHelper }) => {
+  it.each(localizedUiCopy)("keeps exact $locale labels and helper text in the dictionary", ({ dictionary, screenshotAlt, projectEvidence, technologies, mailSubject, sendEmail, cvHelper }) => {
     expect(dictionary.projects.screenshotAlt).toBe(screenshotAlt)
     expect(dictionary.projects.evidenceLabel).toBe(projectEvidence)
     expect(dictionary.projects.technologiesLabel).toBe(technologies)
-    expect(dictionary.work.evidenceLabel).toBe(workEvidence)
     expect(dictionary.contact.mailSubject).toBe(mailSubject)
-    expect(dictionary.contact.responseTime).toBe(responseTime)
-    expect(dictionary.contact.linkedinDescription).toBe(linkedin)
-    expect(dictionary.contact.githubDescription).toBe(github)
+    expect(dictionary.contact.sendEmail).toBe(sendEmail)
     expect(dictionary.contact.cvHelper).toBe(cvHelper)
   })
 
-  it("binds project and work labels to the dictionary without changing data-driven metric or tag content", () => {
-    expect(experienceItem).toContain('aria-label={t.work.evidenceLabel}')
-    expect(experienceItem).toContain("<span>{highlight.label}</span>")
+  it("binds the work description to the data layer", () => {
     expect(experienceItem).toContain("{description}")
   })
 
   it("binds mail subject and contact help text to the dictionary", () => {
     expect(contact).toContain("encodeURIComponent(t.contact.mailSubject)")
-    expect(contact).toContain("description: t.contact.responseTime")
-    expect(contact).toContain("description: t.contact.linkedinDescription")
-    expect(contact).toContain("description: t.contact.githubDescription")
+    expect(contact).toContain("label: t.contact.sendEmail")
     expect(contact).toContain("<p>{t.contact.cvHelper}</p>")
-    expect(contact).toContain("label: personalInfo.email")
   })
 })
 

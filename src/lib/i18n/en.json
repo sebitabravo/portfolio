@@ -36,7 +36,7 @@
     "available": "Available for work",
     "downloadCv": "Download CV",
     "timezone": "Chile",
-    "viewProjects": "view projects"
+    "viewProjects": "View projects"
   },
   "story": {
     "label": "From concept to deployment",
@@ -110,7 +110,6 @@
     "currently": "Currently...",
     "viewMore": "View more →",
     "viewCaseStudy": "Read case study",
-    "evidenceLabel": "Work evidence",
     "period": "Period",
     "role": "Role",
     "company": "Company",
@@ -122,9 +121,7 @@
     "headline": "Had enough reading?",
     "headlineAccent": "Let's build something.",
     "mailSubject": "Contact from your portfolio",
-    "responseTime": "I'll reply within 24h",
-    "linkedinDescription": "Let's connect professionally",
-    "githubDescription": "Check my open source code",
+    "sendEmail": "Send email",
     "cvHelper": "Download the CV for the full experience overview.",
     "copy": "Copy email",
     "copied": "Email copied",

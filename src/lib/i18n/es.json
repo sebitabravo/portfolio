@@ -36,7 +36,7 @@
     "available": "Disponible para trabajar",
     "downloadCv": "Descargar CV",
     "timezone": "Chile",
-    "viewProjects": "ver proyectos"
+    "viewProjects": "Ver proyectos"
   },
   "story": {
     "label": "Del concepto al despliegue",
@@ -114,7 +114,6 @@
     "currently": "Actualmente...",
     "viewMore": "Ver más →",
     "viewCaseStudy": "Ver caso de estudio",
-    "evidenceLabel": "Evidencia del trabajo",
     "period": "Periodo",
     "role": "Rol",
     "company": "Empresa",
@@ -126,9 +125,7 @@
     "headline": "¿Suficiente lectura?",
     "headlineAccent": "Hagamos algo juntos.",
     "mailSubject": "Contacto desde tu portfolio",
-    "responseTime": "Te respondo en menos de 24h",
-    "linkedinDescription": "Conectemos profesionalmente",
-    "githubDescription": "Mirá mi código abierto",
+    "sendEmail": "Enviar email",
     "cvHelper": "CV disponible para revisar mi experiencia completa.",
     "copy": "Copiar email",
     "copied": "Email copiado",

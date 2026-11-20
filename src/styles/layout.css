@@ -83,7 +83,7 @@ h1 .line {
 .hero-links {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px 24px;
+  gap: 8px;
   margin-bottom: 32px;
 }
 .cta {
@@ -245,7 +245,7 @@ h1 .line {
     margin-bottom: calc(32px - 8px);
   }
   .hero-links > * {
-    margin-right: 24px;
+    margin-right: 8px;
     margin-bottom: 8px;
   }
   .cta {

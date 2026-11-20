@@ -1,7 +1,10 @@
 ---
 // Resolución — fila CV de experiencia (§6): fechas en la columna label con <time datetime>,
 // empresa, rol, descripción, stack tenue y el enlace al caso. Puerto de las filas de
-// design/resolucion/index.html. Las evidencias (highlights) se conservan como línea tenue (S7).
+// design/resolucion/index.html. Los highlights solo alimentan el enlace al caso: repetirlos
+// como línea aparte duplicaba la descripción.
+import Icon from "@/components/Icon.astro"
+import TechList from "@/components/TechList.astro"
 import { formatMonthYear } from "@/lib/utils"
 import { getTranslations, type Locale } from "@/lib/i18n"
 import type { WorkExperience } from "@/lib/data"
@@ -33,7 +36,6 @@ const period = current
 
 // La convención del data layer: el último highlight es el caso publicado y `url` su destino.
 const caseHighlight = highlights.find((highlight) => /caso|case/i.test(highlight.label)) ?? highlights.at(-1)
-const evidence = caseHighlight ? highlights.filter((highlight) => highlight !== caseHighlight) : highlights
 const externalUrl = url?.startsWith("http")
 ---
 
@@ -46,17 +48,11 @@ const externalUrl = url?.startsWith("http")
     <p class="who">{company}</p>
     <p>{position}</p>
     <p class="desc">{description}</p>
-    {skills.length > 0 && <p class="stack">{skills.join(", ")}</p>}
     {
-      evidence.length > 0 && (
-        <p class="stack" aria-label={t.work.evidenceLabel}>
-          {evidence.map((highlight, i) => (
-            <>
-              {i > 0 && " · "}
-              <span>{highlight.label}</span> {highlight.value}
-            </>
-          ))}
-        </p>
+      skills.length > 0 && (
+        <div class="stack">
+          <TechList items={skills} />
+        </div>
       )
     }
     {
@@ -67,8 +63,11 @@ const externalUrl = url?.startsWith("http")
             target={externalUrl ? "_blank" : undefined}
             rel={externalUrl ? "noopener noreferrer" : undefined}
           >
-            {t.work.viewCaseStudy}
-            {caseHighlight && `: ${caseHighlight.value}`}
+            <span>
+              {t.work.viewCaseStudy}
+              {caseHighlight && `: ${caseHighlight.value}`}
+            </span>
+            <Icon name="arrow-right" />
           </a>
         </p>
       )

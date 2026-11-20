@@ -9,7 +9,7 @@ const notFoundRoutes = [
     backHome: "Volver al inicio",
   },
   {
-    path: "/en/404", lang: "en", home: "/en",
+    path: "/en/404", lang: "en", home: "/en/",
     description: "The page you requested does not exist.",
     heading: "This page got lost in deployment",
     message: "We could not find what you asked for. Jump back home and keep exploring.",
@@ -21,7 +21,7 @@ for (const route of notFoundRoutes) {
   test(`${route.path} renders localized not-found copy and preserves metadata and home link`, async ({ page }) => {
     await page.goto(route.path)
     await expect(page.locator("html")).toHaveAttribute("lang", route.lang)
-    await expect(page).toHaveTitle(/^404 \| Sebastian Bravo$/)
+    await expect(page).toHaveTitle(/^404 — Sebastián Bravo$/)
     await expect(page.locator('head meta[name="description"]')).toHaveAttribute("content", route.description)
     await expect(page.locator('head link[rel="canonical"]')).toHaveAttribute("href", `https://sebita.dev${route.path}`)
     await expect(page.locator('head meta[name="robots"]')).toHaveAttribute("content", /\bnoindex\b/i)

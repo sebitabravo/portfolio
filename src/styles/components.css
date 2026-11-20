@@ -179,6 +179,62 @@
   background: var(--fill);
 }
 
+/* ---------- Íconos y chips de tecnología ---------- */
+.ico {
+  flex: none;
+}
+.btn,
+.hero-links a,
+.contact-links a,
+.row .links a,
+.cert-link,
+.panel-links a {
+  gap: 8px;
+}
+.hero-links a,
+.contact-links a,
+.row .links a,
+.cert-link {
+  display: inline-flex;
+  align-items: center;
+}
+.tech {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.tech li {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 28px;
+  padding: 0 10px;
+  border: 1px solid var(--line);
+  color: var(--fg-muted);
+  font-size: var(--fs-small);
+  line-height: 1;
+}
+.row .tech li {
+  padding-block: 0;
+}
+@supports not (gap: 1px) {
+  .tech li {
+    margin: 0 8px 8px 0;
+  }
+  .tech li > * + * {
+    margin-left: 8px;
+  }
+  .btn > * + *,
+  .hero-links a > * + *,
+  .contact-links a > * + *,
+  .panel-links a > * + * {
+    margin-left: 8px;
+  }
+}
+
 /* ---------- Fichas de filtro (blog) ---------- */
 .chip {
   height: 32px;
@@ -286,9 +342,6 @@ html.motion .reveal.in .mark {
   max-width: 68ch;
 }
 .row .stack {
-  color: var(--fg-faint);
-  font-size: var(--fs-small);
-  line-height: 20px;
   margin-top: 12px;
 }
 .row .links {
@@ -305,11 +358,12 @@ html.motion .reveal.in .mark {
 .kv {
   display: grid;
   grid-template-columns: 8rem minmax(0, 1fr);
-  gap: 4px 16px;
+  gap: 16px;
 }
 .kv dt {
   color: var(--fg-faint);
   font-size: var(--fs-small);
+  line-height: 28px;
 }
 .kv dd {
   color: var(--fg-muted);

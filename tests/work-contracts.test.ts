@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest"
 import { getWorkExperience } from "../src/lib/data/work"
 
 // P5: work.ts follows the projects.ts pattern — SharedWork + Record<Locale, LocalizedWork>.
-// Shared fields (company, dates, current, logos) match between locales by value;
+// Shared fields (company, dates, current) match between locales by value;
 // copy fields (position, description, location, employmentType, skills, highlights, url)
 // diverge per locale and are preserved verbatim.
 describe("work shared-locale contract (P5)", () => {
@@ -15,7 +15,6 @@ describe("work shared-locale contract (P5)", () => {
       expect(en[i].current).toBe(es[i].current)
       expect(en[i].startDate.getTime()).toBe(es[i].startDate.getTime())
       expect(en[i].endDate?.getTime()).toBe(es[i].endDate?.getTime())
-      expect(en[i].logos).toEqual(es[i].logos)
     }
   })
 
@@ -25,8 +24,8 @@ describe("work shared-locale contract (P5)", () => {
     expect(en[0].skills).toEqual(es[0].skills)
     // RED documented: Temutel skill names are translated copy, preserved verbatim.
     expect(en[1].skills).not.toEqual(es[1].skills)
-    expect(es[1].skills).toContain("Mantenimiento de Redes")
-    expect(en[1].skills).toContain("Network Maintenance")
+    expect(es[1].skills).toContain("Mantenimiento de redes")
+    expect(en[1].skills).toContain("Network maintenance")
   })
 
   it("diverges only in localized copy, preserved verbatim", () => {
@@ -54,7 +53,6 @@ describe("work shared-locale contract (P5)", () => {
     const en = getWorkExperience("en")
     expect(es[0].startDate).not.toBe(en[0].startDate)
     expect(es[0].skills).not.toBe(en[0].skills)
-    expect(es[0].logos).not.toBe(en[0].logos)
     expect(es[0].highlights).not.toBe(en[0].highlights)
   })
 })

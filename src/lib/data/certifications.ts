@@ -3,7 +3,7 @@ import type { Locale } from "@/lib/i18n"
 const certificationsData = {
   es: [
     {
-      name: "AWS Academy Graduate - AWS Academy Cloud Foundations",
+      name: "AWS Academy Cloud Foundations",
       organization: "Amazon Web Services (AWS)",
       pdfUrl: "/certifications/aws-cloud-foundations.pdf",
       monogram: "AWS",
@@ -45,7 +45,7 @@ const certificationsData = {
   ],
   en: [
     {
-      name: "AWS Academy Graduate - AWS Academy Cloud Foundations",
+      name: "AWS Academy Cloud Foundations",
       organization: "Amazon Web Services (AWS)",
       pdfUrl: "/certifications/aws-cloud-foundations.pdf",
       monogram: "AWS",

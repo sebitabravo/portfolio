@@ -27,8 +27,9 @@ describe("OG social image fallback", () => {
 
     expect(layout).toContain("`/og/${locale}.png`");
     expect(layout).not.toMatch(/\.svg\?title=/);
-    expect(layout).toContain('"1200"');
-    expect(layout).toContain('"630"');
+    const seoTags = await readFile("src/components/SeoTags.astro", "utf8");
+    expect(seoTags).toContain('"1200"');
+    expect(seoTags).toContain('"630"');
   });
 
   it("ships a 1200x630 PNG fallback for every OG locale", async () => {

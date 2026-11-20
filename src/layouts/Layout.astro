@@ -1,11 +1,11 @@
 ---
 import { ClientRouter } from "astro:transitions"
-import { SEO } from "astro-seo"
 
 import "@/styles/resolucion.css"
 
 import Footer from "@/components/Footer.astro"
 import Header from "@/components/Header.astro"
+import SeoTags from "@/components/SeoTags.astro"
 import { siteConfig } from "@/lib/config"
 import { personalInfo, social } from "@/lib/data"
 import type { Locale } from "@/lib/i18n"
@@ -71,60 +71,15 @@ const jsonLdString = buildLayoutJsonLd({
 
     {alternates.map(({ hreflang, href }) => <link rel="alternate" hreflang={hreflang} href={href} />)}
 
-    <SEO
+    <SeoTags
       title={title}
       description={description}
       canonical={canonical}
+      image={seoImage}
+      locale={locale}
+      author={personalInfo.name}
+      twitterHandle="@sebitabravo"
       noindex={noindex}
-      nofollow={noindex}
-      openGraph={{
-        basic: {
-          title: title,
-          type: "website",
-          image: seoImage,
-        },
-      }}
-      twitter={{
-        card: "summary_large_image",
-        creator: "@sebitabravo",
-        site: "@sebitabravo",
-        title: title,
-        description: description,
-        image: seoImage,
-      }}
-      extend={{
-        meta: [
-          {
-            name: "twitter:image:alt",
-            content: title,
-          },
-          {
-            property: "og:image:alt",
-            content: title,
-          },
-          {
-            property: "og:image:width",
-            content: "1200",
-          },
-          {
-            property: "og:image:height",
-            content: "630",
-          },
-          {
-            property: "og:url",
-            content: canonical,
-          },
-          {
-            property: "og:locale",
-            content: locale === "es" ? "es-CL" : "en-US",
-          },
-          {
-            name: "author",
-            content: personalInfo.name,
-          },
-        ],
-        link: [],
-      }}
     />
 
     <!-- LCP: el h1 va en Geist Pixel Square y el cuerpo en Geist Mono; solo

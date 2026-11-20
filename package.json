@@ -13,7 +13,7 @@
     "dev": "astro dev",
     "build": "rm -rf dist && astro check && bun run verify:limits && bun run build:static && bun run verify:bundle && bun run verify:csp",
     "build:ci": "rm -rf dist && bun run verify:limits && bun run build:static && bun run verify:bundle && bun run verify:csp",
-    "build:static": "env -u VERCEL -u PUBLIC_VERCEL_OBSERVABILITY_BASEPATH -u PUBLIC_VERCEL_OBSERVABILITY_CLIENT_CONFIG astro build",
+    "build:static": "env -u VERCEL -u PUBLIC_VERCEL_OBSERVABILITY_BASEPATH -u PUBLIC_VERCEL_OBSERVABILITY_CLIENT_CONFIG astro build && bun scripts/generate-sitemap.ts",
     "preview": "astro preview",
     "check": "astro check",
     "format": "prettier --write .",
@@ -32,9 +32,7 @@
   },
   "dependencies": {
     "@astrojs/mdx": "^7.0.5",
-    "@astrojs/sitemap": "^3.7.3",
     "astro": "^7.4.7",
-    "astro-seo": "^1.1.0",
     "sharp": "^0.35.5"
   },
   "devDependencies": {

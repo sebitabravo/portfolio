@@ -1,13 +1,12 @@
 // @ts-check
 import { defineConfig } from "astro/config"
-import sitemap from "@astrojs/sitemap"
 import mdx from "@astrojs/mdx"
 
 // https://astro.build/config
 export default defineConfig({
   site: "https://sebita.dev",
   output: "static",
-  integrations: [sitemap({ filter: (page) => !page.includes("/404") }), mdx()],
+  integrations: [mdx()],
   devToolbar: {
     enabled: false,
   },

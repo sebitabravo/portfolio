@@ -81,7 +81,7 @@ The long-reading surface is the only place with its own scale: at 44rem, 15px mo
 | `.wrap` | `max-width: var(--page)`, `margin-inline: auto`, `padding-inline: var(--gutter)` | Every section | `src/styles/base.css:91-96` |
 | Section rhythm | `padding-block: 64px` (96px ≥720px), `--line` top border | Sections | `src/styles/layout.css:6-14` |
 | CV row grid | `10rem minmax(0, 40rem)` columns, `32px` column gap ≥720px; one column below | Label + content rows | `src/styles/components.css:237-252` |
-| 8px unit | `--u: 8px` is declared but never referenced (see report) | Declared nominal unit | `src/styles/tokens.css:77` |
+| 8px unit | No token: the 8px unit is literal across the 8px squares, hit-area padding and gaps | Nominal unit | `src/styles/components.css:71-81,260-267`; `src/styles/layout.css:132-140` |
 
 The 8px grid governs the small geometry everywhere: 8px squares (nav indicator `src/styles/components.css:71-81`, row mark `src/styles/components.css:260-267`, index indicator `src/styles/layout.css:132-140`, `.dot` `src/styles/components.css:95-101`), 8px hit-area padding, 8px gaps.
 
@@ -99,10 +99,9 @@ One grammar only, all `steps()`, no bezier curves in the UI.
 
 | Token | Value | Usage | Source |
 |---|---|---|---|
-| `--t-feedback` | `80ms steps(4, end)` | Hover, colour change, indicator | `src/styles/tokens.css:82` |
-| `--t-transition` | `240ms steps(6, end)` | Declared; view transitions consume the same values literally (see report) | `src/styles/tokens.css:83`; `src/styles/layout.css:455-461` |
-| `--t-enter` | `480ms steps(8, end)` | One reveal per section | `src/styles/tokens.css:84` |
-| `--dist` | `8px` | Reveal travel distance | `src/styles/tokens.css:85`; `src/styles/layout.css:446-449` |
+| `--t-feedback` | `80ms steps(4, end)` | Hover, colour change, indicator | `src/styles/tokens.css:81` |
+| `--t-enter` | `480ms steps(8, end)` | One reveal per section | `src/styles/tokens.css:82` |
+| `--dist` | `8px` | Reveal travel distance | `src/styles/tokens.css:83`; `src/styles/layout.css:446-449` |
 | Press | `transform: translateY(2px)` on `:active`, shared by every boxed control (buttons, chips, tabs, nav, header controls, hub rows, email) | The control drops 2px; it does not darken | `src/styles/components.css:213-221` |
 | View transitions | `@view-transition { navigation: auto }`, root group `240ms steps(6, end)` | Page-to-page dissolve | `src/styles/layout.css:455-461` |
 | Reduced motion | `transition: none !important; animation: none !important` on everything under `prefers-reduced-motion: reduce` | Everything renders in its final state | `src/styles/layout.css:462-469` |

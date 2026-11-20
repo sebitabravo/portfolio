@@ -74,13 +74,11 @@
   --mono: "Geist Mono", "Geist Mono Fallback", "Geist Mono Fallback CN", ui-monospace, "SF Mono", Menlo, monospace;
   --pixel: "Geist Pixel", ui-monospace, "SF Mono", Menlo, monospace;
 
-  --u: 8px;
   --gutter: 16px;
   --page: 90rem;
   --header: 64px;
 
   --t-feedback: 80ms steps(4, end);
-  --t-transition: 240ms steps(6, end);
   --t-enter: 480ms steps(8, end);
   --dist: 8px;
 

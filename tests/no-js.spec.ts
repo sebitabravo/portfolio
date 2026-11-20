@@ -5,7 +5,7 @@
 // visibles, el header expone los dos enlaces de idioma y en /links cada fila del hub es
 // visible con href no vacío. La visibilidad se afirma con toBeVisible() más un chequeo de
 // computed style, porque toBeVisible() por sí solo no considera opacity: 0.
-import { expect, test, type Locator, type Page } from "@playwright/test"
+import { expect, test, type Locator } from "@playwright/test"
 
 test.use({ javaScriptEnabled: false })
 

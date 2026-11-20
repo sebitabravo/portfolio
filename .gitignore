@@ -65,3 +65,7 @@ AGENTS.md
 
 # Evidencia visual regenerable del prototipo (no se versiona: se regenera)
 design/resolucion/screens/
+
+# Design sources and ODD tracking live outside the shipped repo (kept locally)
+/design/
+/odd/

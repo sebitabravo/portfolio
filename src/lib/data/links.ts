@@ -1,8 +1,7 @@
-// Datos del hub de enlaces (/links). Toda la copy del hub
+// Resolución — datos del hub de enlaces (/links, §12 de DESIGN.md). Toda la copy del hub
 // vive acá y no enterrada en el markup; cada línea de las descargas de YouTube lleva la URL
 // completa porque YouTube solo auto-enlaza direcciones enteras. UTM/ref se omiten a propósito.
 import type { Locale } from "@/lib/i18n"
-import { homeSectionIds } from "@/lib/home-sections"
 import { personalInfo } from "./personal"
 
 export interface HubLink {
@@ -16,6 +15,8 @@ export interface HubLink {
 export interface HubCopyBlock {
   id: string
   label: string
+  button: string
+  variant: "primary" | "sm"
   content: string
 }
 
@@ -26,9 +27,13 @@ export interface HubCopy {
   lead: string
   links: HubLink[]
   emailTitle: string
+  emailAria: string
+  emailCopied: string
+  emailFailed: string
   youtubeHeading: string
   youtubeNote: string
   blocks: HubCopyBlock[]
+  textCopied: string
   previewHeading: string
   previewAlt: string
 }
@@ -48,12 +53,7 @@ export const hubContent: Record<Locale, HubCopy> = {
     lead: "Plataformas web completas, del front-end al despliegue, con IA donde resuelve un problema real.",
     links: [
       { title: "portafolio", href: BASE, display: "sebita.dev", external: true },
-      {
-        title: "proyectos",
-        href: `${BASE}/#${homeSectionIds.es.work}`,
-        display: `sebita.dev/#${homeSectionIds.es.work}`,
-        external: true,
-      },
+      { title: "proyectos", href: `${BASE}/#trabajo`, display: "sebita.dev/#trabajo", external: true },
       { title: "blog", href: `${BASE}/blog`, display: "sebita.dev/blog", external: true },
       { title: "cv", href: CV, display: "descargar pdf", download: true },
       { title: "github", href: "https://github.com/sebitabravo", display: "github.com/sebitabravo", external: true },
@@ -67,18 +67,24 @@ export const hubContent: Record<Locale, HubCopy> = {
       { title: "youtube", href: YOUTUBE, display: "youtube.com/@sebitabravo", external: true },
     ],
     emailTitle: "email",
+    emailAria: `Copiar email ${EMAIL}`,
+    emailCopied: "copiado",
+    emailFailed: "reintentar",
     youtubeHeading: "para youtube",
     youtubeNote:
       "Texto plano listo para pegar en la descripción de un video. YouTube convierte las URL completas en enlaces; por eso cada línea lleva la dirección entera.",
+    textCopied: "Texto copiado",
     blocks: [
       {
         id: "blk-full",
         label: "descripción completa",
+        button: "copiar descripción",
+        variant: "primary",
         content: [
           "Sebastián Bravo, desarrollador full-stack",
           "",
           `portafolio: ${BASE}`,
-          `proyectos: ${BASE}/#${homeSectionIds.es.work}`,
+          `proyectos: ${BASE}/#trabajo`,
           `blog: ${BASE}/blog`,
           "github: https://github.com/sebitabravo",
           "linkedin: https://linkedin.com/in/sebitabravo",
@@ -90,6 +96,8 @@ export const hubContent: Record<Locale, HubCopy> = {
       {
         id: "blk-short",
         label: "una línea (comentario fijado)",
+        button: "copiar línea",
+        variant: "sm",
         content: `Más en ${BASE} | GitHub https://github.com/sebitabravo`,
       },
     ],
@@ -104,12 +112,7 @@ export const hubContent: Record<Locale, HubCopy> = {
     lead: "Complete web platforms, from front-end to deployment, with AI where it solves a real problem.",
     links: [
       { title: "portfolio", href: BASE, display: "sebita.dev", external: true },
-      {
-        title: "projects",
-        href: `${BASE}/en/#${homeSectionIds.en.work}`,
-        display: `sebita.dev/en/#${homeSectionIds.en.work}`,
-        external: true,
-      },
+      { title: "projects", href: `${BASE}/#trabajo`, display: "sebita.dev/#trabajo", external: true },
       { title: "blog", href: `${BASE}/blog`, display: "sebita.dev/blog", external: true },
       { title: "cv", href: CV, display: "download pdf", download: true },
       { title: "github", href: "https://github.com/sebitabravo", display: "github.com/sebitabravo", external: true },
@@ -123,18 +126,24 @@ export const hubContent: Record<Locale, HubCopy> = {
       { title: "youtube", href: YOUTUBE, display: "youtube.com/@sebitabravo", external: true },
     ],
     emailTitle: "email",
+    emailAria: `Copy email ${EMAIL}`,
+    emailCopied: "copied",
+    emailFailed: "retry",
     youtubeHeading: "for youtube",
     youtubeNote:
       "Plain text ready to paste into a video description. YouTube turns full URLs into links; that is why every line carries the whole address.",
+    textCopied: "Text copied",
     blocks: [
       {
         id: "blk-full",
         label: "full description",
+        button: "copy description",
+        variant: "primary",
         content: [
           "Sebastián Bravo, full-stack developer",
           "",
           `portfolio: ${BASE}`,
-          `projects: ${BASE}/en/#${homeSectionIds.en.work}`,
+          `projects: ${BASE}/#trabajo`,
           `blog: ${BASE}/blog`,
           "github: https://github.com/sebitabravo",
           "linkedin: https://linkedin.com/in/sebitabravo",
@@ -146,6 +155,8 @@ export const hubContent: Record<Locale, HubCopy> = {
       {
         id: "blk-short",
         label: "one line (pinned comment)",
+        button: "copy line",
+        variant: "sm",
         content: `More at ${BASE} | GitHub https://github.com/sebitabravo`,
       },
     ],

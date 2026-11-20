@@ -4,25 +4,99 @@
     "mainNavigation": "Navegación principal",
     "brandHome": "Inicio — Sebastian Bravo",
     "breadcrumb": "Migas de pan",
+    "menu": "Menú",
     "experience": "Experiencia",
     "projects": "Proyectos",
+    "education": "Educación",
+    "certifications": "Certificaciones",
+    "about": "Sobre mí",
     "contact": "Contacto",
     "blog": "Blog",
     "formation": "Formación",
+    "linkedin": "LinkedIn",
+    "cta": "Hablemos",
     "links": "links"
+  },
+  "boot": {
+    "version": "Portfolio de desarrollo · Versión 2.6",
+    "loading": "Cargando módulos",
+    "modules": "react · typescript · fastapi · ml · docker",
+    "copyright": "Copyright (c) Sebastian Bravo, 2026. Todos los derechos reservados.",
+    "skip": "Presioná cualquier tecla para continuar"
   },
   "hero": {
     "role": "Desarrollador Full-Stack",
+    "greeting": "Hola, soy",
+    "roleLocation": "Chile / Remoto",
+    "specialization": "Web en producción · ML aplicado",
+    "language": "Inglés C1",
+    "level": "Full-Stack Junior · primer rol full-time",
+    "metaLabel": "Disponibilidad y ubicación",
     "intro": "Convierto ideas en plataformas web en producción y aplico Machine Learning a problemas reales, del concepto al despliegue.",
+    "contact": "Contactar",
     "available": "Disponible para trabajar",
     "downloadCv": "Descargar CV",
     "timezone": "Chile",
     "viewProjects": "ver proyectos"
   },
+  "story": {
+    "label": "Del concepto al despliegue",
+    "acts": [
+      "Empieza con un problema real.",
+      "Se vuelve código que se puede mantener.",
+      "Y termina funcionando en producción."
+    ]
+  },
+  "os": {
+    "shortcuts": "Accesos directos del escritorio",
+    "menu": ["Archivo", "Editar", "Ver", "Ayuda"],
+    "online": "En línea",
+    "dragHint": "psst… las ventanas se arrastran",
+    "folderProjects": "Proyectos",
+    "fileCv": "CV.pdf",
+    "appContact": "Contacto",
+    "terminalTitle": "terminal — zsh",
+    "portraitTitle": "sebastian.jpg",
+    "terminal": [
+      {
+        "cmd": "whoami",
+        "out": "sebastian bravo — desarrollador full-stack"
+      },
+      {
+        "cmd": "cat stack.txt",
+        "out": "typescript · react · next.js · python · fastapi"
+      },
+      {
+        "cmd": "./status --now",
+        "out": "● disponible para trabajar"
+      }
+    ]
+  },
   "projects": {
+    "title": "Proyectos",
+    "outcomesTitle": "Evidencia antes que promesas",
+    "stats": [
+      {
+        "value": "94.1%",
+        "label": "F1-Score detectando fallas en ManttoAI"
+      },
+      {
+        "value": "4",
+        "label": "Plataformas full-stack publicadas"
+      },
+      {
+        "value": "2",
+        "label": "Demos públicas en vivo"
+      }
+    ],
     "viewProject": "Demo",
     "viewCode": "Código",
     "readMore": "Leer el caso",
+    "contactPrompt": "¿Te interesa cómo lo construí?",
+    "contactCta": "Hablemos",
+    "viewMoreGithub": "Ver más proyectos en GitHub",
+    "archiveTitle": "¿Querés ver más?",
+    "archiveText": "Experimentos, apuntes y código abierto.",
     "evidenceLabel": "Evidencia del proyecto",
     "technologiesLabel": "Tecnologías",
     "screenshotAlt": "Captura de {title}",
@@ -31,26 +105,60 @@
     "statusDevelopment": "En desarrollo",
     "statusDemo": "Demo"
   },
+  "signal": {
+    "label": "Stack con el que construyo",
+    "pause": "Pausar tecnologías en movimiento",
+    "resume": "Reanudar tecnologías en movimiento"
+  },
   "work": {
     "title": "Experiencia",
     "currently": "Actualmente...",
+    "viewMore": "Ver más →",
     "viewCaseStudy": "Ver caso de estudio",
     "evidenceLabel": "Evidencia del trabajo",
+    "period": "Periodo",
+    "role": "Rol",
+    "company": "Empresa",
+    "mode": "Modalidad",
+    "timeline": "Entre contratos: 2023–2026 · Ingeniería Informática en INACAP y proyectos personales en producción.",
     "noExperience": "Experiencia laboral próximamente..."
   },
   "contact": {
+    "headline": "¿Suficiente lectura?",
+    "headlineAccent": "Hagamos algo juntos.",
     "mailSubject": "Contacto desde tu portfolio",
     "responseTime": "Te respondo en menos de 24h",
     "linkedinDescription": "Conectemos profesionalmente",
     "githubDescription": "Mirá mi código abierto",
-    "cvHelper": "CV disponible para revisar mi experiencia completa."
+    "cvHelper": "CV disponible para revisar mi experiencia completa.",
+    "copy": "Copiar email",
+    "copied": "Email copiado",
+    "mailHint": "click para copiar. te respondo en menos de 24 h.",
+    "copyError": "No se pudo copiar"
+  },
+  "education": {
+    "title": "Educación",
+    "present": "Presente",
+    "grade": "Calificación"
   },
   "certifications": {
     "title": "Certificaciones",
-    "viewCertificate": "Ver certificado"
+    "viewCertificate": "Ver certificado",
+    "carouselLabel": "Carrusel de certificaciones",
+    "professional": "Profesional",
+    "academic": "Académico",
+    "previous": "Anterior",
+    "next": "Siguiente"
   },
   "about": {
     "title": "Sobre mí",
+    "focusTitle": "Dónde aporto mejor",
+    "contactCta": "Hablemos",
+    "tvLabel": "Televisor retro con tres canales",
+    "channel": "Canal",
+    "channels": ["Retrato", "ASCII", "Sin señal"],
+    "noSignal": "Sin señal",
+    "facts": ["Ing. Informática · INACAP", "Inglés C1", "Chile / Remoto"],
     "profileLabel": "perfil",
     "stackLabel": "stack",
     "seekingLabel": "busco",
@@ -59,12 +167,26 @@
     "stackData": "datos",
     "stackTools": "herramientas"
   },
+  "theme": {
+    "toggle": "Cambiar tema",
+    "light": "Claro",
+    "dark": "Oscuro",
+    "system": "Sistema"
+  },
+  "sound": {
+    "off": "sonido: off",
+    "on": "sonido: on"
+  },
   "footer": {
     "professionalProfiles": "Perfiles profesionales",
     "links": "Enlaces del pie",
-    "privacy": "Privacidad"
+    "madeWith": "Hecho con",
+    "privacy": "Privacidad",
+    "tagline": "Desarrollo full-stack de alta tecnología",
+    "rights": "Todos los derechos reservados."
   },
   "language": {
+    "toggleLabel": "Cambiar idioma (actual: {code})",
     "groupLabel": "Idioma"
   },
   "error404": {
@@ -87,10 +209,16 @@
     "fallbackCardLabel": "Disponible en español",
     "back": "Volver al blog",
     "readingTime": "min de lectura",
+    "filtersLabel": "Filtrar artículos",
+    "filters": { "all": "todos", "case": "casos", "educational": "educacional" },
     "countLabel": "artículos",
     "tocTitle": "en esta página",
     "newer": "más nuevo",
-    "older": "más antiguo"
+    "older": "más antiguo",
+    "copyLink": "copiar enlace",
+    "copied": "copiado",
+    "retry": "reintentar",
+    "linkCopied": "Enlace copiado"
   },
   "stage": {
     "decision": "decisión",

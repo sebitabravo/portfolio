@@ -46,6 +46,8 @@ Las notificaciones de navegador usan `document.visibilityState`: solo disparan c
 
 ## Desafíos
 
+<div class="cards">
+
 <div>
   <h3>Sincronización en tiempo real multi-usuario</h3>
   <p>El chat y las alertas debían reflejarse instantáneamente para todos los usuarios. Supabase Realtime resolvió el canal de broadcast, pero tuvimos que manejar race conditions en mensajes concurrentes con ordenamiento por timestamp del servidor.</p>
@@ -61,11 +63,15 @@ Las notificaciones de navegador usan `document.visibilityState`: solo disparan c
   <p>Las alertas de actividad volcánica son críticas. Implementamos reintentos exponenciales, suscripción a tópicos por nivel de urgencia, y notificaciones de navegador que solo disparan cuando la pestaña no está visible — usando <code>document.visibilityState</code>.</p>
 </div>
 
+</div>
+
 ## Arquitectura
 
-<p><strong>Next.js 14 App Router</strong> → Supabase (PostgreSQL + PostGIS + Realtime) → Leaflet mapa interactivo → PWA Service Worker.</p>
-<p>Autenticación con Supabase Auth (OAuth + email). Row Level Security para datos comunitarios.</p>
-<p>Vercel para hosting con Edge Functions.</p>
+<div class="note">
+  <p><strong>Next.js 14 App Router</strong> → Supabase (PostgreSQL + PostGIS + Realtime) → Leaflet mapa interactivo → PWA Service Worker.</p>
+  <p>Autenticación con Supabase Auth (OAuth + email). Row Level Security para datos comunitarios.</p>
+  <p>Vercel para hosting con Edge Functions.</p>
+</div>
 
 ## Resultados
 

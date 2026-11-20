@@ -54,6 +54,8 @@ El scheduler es un loop `asyncio` que cada 6 horas evalúa las reglas por cultiv
 
 ## Desafíos
 
+<div class="cards">
+
 <div>
   <h3>Formato de mensajes WhatsApp</h3>
   <p>WhatsApp limita mensajes a 4096 caracteres y no soporta markdown completo. Diseñamos respuestas concisas con formato simple (emojis, saltos de línea, negritas limitadas) priorizando información accionable sobre exhaustividad. Un agricultor no necesita el forecast completo de 7 días — necesita saber si hay helada mañana.</p>
@@ -69,12 +71,16 @@ El scheduler es un loop `asyncio` que cada 6 horas evalúa las reglas por cultiv
   <p>Los LLMs genéricos no conocen bien términos agrícolas chilenos ("rulo" para secano, "chacra", "media sombra"). Fine-tuneamos prompts con glosario de términos y ejemplos de conversaciones reales de agricultores. "Harta helada pa' mañana, cubra las papas" conecta más que "Alta probabilidad de heladas".</p>
 </div>
 
+</div>
+
 ## Arquitectura
 
-<p><strong>FastAPI (webhook handler + REST API)</strong> → Twilio WhatsApp Business API → Groq LLM (Llama 3.1 70B) → Open-Meteo API (datos climáticos) → Turso DB (libsql, edge).</p>
-<p>APScheduler para alertas programadas cada 6 horas.</p>
-<p>Fallback offline con reglas expertas si no hay API key de Groq disponible.</p>
-<p>Vercel para hosting serverless del frontend informativo. GitHub Actions: ruff + mypy + pytest.</p>
+<div class="note">
+  <p><strong>FastAPI (webhook handler + REST API)</strong> → Twilio WhatsApp Business API → Groq LLM (Llama 3.1 70B) → Open-Meteo API (datos climáticos) → Turso DB (libsql, edge).</p>
+  <p>APScheduler para alertas programadas cada 6 horas.</p>
+  <p>Fallback offline con reglas expertas si no hay API key de Groq disponible.</p>
+  <p>Vercel para hosting serverless del frontend informativo. GitHub Actions: ruff + mypy + pytest.</p>
+</div>
 
 ## Resultados
 

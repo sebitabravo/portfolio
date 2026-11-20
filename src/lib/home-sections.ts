@@ -3,7 +3,9 @@ import type { Locale } from "@/lib/i18n"
 /**
  * Secciones del home Resolución, en el orden del diseño (§3): hero, trabajo,
  * experiencia, sobre mí, formación, contacto. Los ids son neutros por idioma:
- * el header y language-links.ts traducen los mismos anclas entre es y en.
+ * el header porta los mismos anclas (#trabajo/#experiencia/#contacto) en es y
+ * en, y el observer de sección activa (header-nav) cruza `data-nav` con el
+ * href del enlace.
  *
  * El índice queda abierto a string porque la unidad final de tests migra las
  * aserciones viejas de home-sections (tests/pages-smoke) y, mientras tanto,

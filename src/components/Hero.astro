@@ -3,6 +3,7 @@
 // a dos líneas, intro, meta (disponibilidad + reloj de Chile), enlaces de texto y CTAs.
 // Clases exactas del contrato: hero, hero-role, hero-intro, hero-meta, hero-links, cta.
 import { personalInfo, social } from "@/lib/data"
+import { homeSectionFragment } from "@/lib/home-sections"
 import { getTranslations, type Locale } from "@/lib/i18n"
 
 interface Props {
@@ -43,7 +44,7 @@ const cvHref = "/cv/Sebastian_Bravo_CV.pdf"
       <a href={social.linkedin} target="_blank" rel="me noopener noreferrer">linkedin</a>
     </div>
     <div class="cta">
-      <a class="btn primary" href="#trabajo">{t.hero.viewProjects}</a>
+      <a class="btn primary" href={homeSectionFragment(locale, "work")}>{t.hero.viewProjects}</a>
       <a class="btn ghost" href={cvHref} download>{t.hero.downloadCv}</a>
     </div>
   </div>

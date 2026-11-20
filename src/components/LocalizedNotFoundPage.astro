@@ -4,6 +4,7 @@
 // SMPTE desaparecen (la UI es monocroma).
 import Layout from "@/layouts/Layout.astro"
 import { personalInfo } from "@/lib/data"
+import { homeSectionFragment } from "@/lib/home-sections"
 import { getTranslations, type Locale } from "@/lib/i18n"
 
 interface Props {
@@ -12,8 +13,10 @@ interface Props {
 
 const { locale } = Astro.props
 const t = getTranslations(locale)
-const homeUrl = locale === "es" ? "/" : "/en"
+// S4: el home en inglés vive en /en/ — sin la barra final, `/en` + `blog` daba `/enblog`.
+const homeUrl = locale === "es" ? "/" : "/en/"
 const blogUrl = `${homeUrl}blog`
+const linksUrl = `${homeUrl}links`
 ---
 
 <Layout
@@ -45,9 +48,9 @@ const blogUrl = `${homeUrl}blog`
           <a class="btn ghost" href={blogUrl}>{t.error404.viewBlog}</a>
         </div>
         <div class="nf-links small">
-          <a href={`${homeUrl}#trabajo`}>{t.nav.projects}</a>
-          <a href={`${homeUrl}#contacto`}>{t.nav.contact}</a>
-          <a href={`${homeUrl}links`}>{t.nav.links}</a>
+          <a href={`${homeUrl}${homeSectionFragment(locale, "work")}`}>{t.nav.projects}</a>
+          <a href={`${homeUrl}${homeSectionFragment(locale, "contact")}`}>{t.nav.contact}</a>
+          <a href={linksUrl}>{t.nav.links}</a>
         </div>
       </div>
     </div>

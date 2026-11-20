@@ -1,9 +1,9 @@
 import type { Locale } from "@/lib/i18n"
 
 /**
- * Secciones del home Resolución, en el orden del diseño (§3): hero, trabajo,
+ * Secciones del home Resolución, en el orden del diseño (§3): hero, proyectos,
  * experiencia, sobre mí, formación, contacto. Los ids son neutros por idioma:
- * el header porta los mismos anclas (#trabajo/#experiencia/#contacto) en es y
+ * el header porta los mismos anclas (#proyectos/#experiencia/#contacto) en es y
  * en, y el observer de sección activa (header-nav) cruza `data-nav` con el
  * href del enlace.
  *

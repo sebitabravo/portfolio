@@ -2,6 +2,7 @@
 // Resolución — momento 1 (§2): el nombre se resuelve. Hero del diseño: rol, h1 en Geist Pixel
 // a dos líneas, intro, meta (disponibilidad + reloj de Chile), enlaces de texto y CTAs.
 // Clases exactas del contrato: hero, hero-role, hero-intro, hero-meta, hero-links, cta.
+import Icon from "@/components/Icon.astro"
 import { personalInfo, social } from "@/lib/data"
 import { homeSectionFragment } from "@/lib/home-sections"
 import { getTranslations, type Locale } from "@/lib/i18n"
@@ -42,15 +43,28 @@ const cvHref = "/cv/Sebastian_Bravo_CV.pdf"
       </span>
     </div>
     <div class="hero-links small">
-      <a href={`mailto:${personalInfo.email}`}
-        ><span>{mailUser}</span><span aria-hidden="true">@</span><span>{mailDomain}</span></a
-      >
-      <a href={social.github} target="_blank" rel="me noopener noreferrer">github</a>
-      <a href={social.linkedin} target="_blank" rel="me noopener noreferrer">linkedin</a>
+      <a class="btn sm" href={`mailto:${personalInfo.email}`}>
+        <Icon name="mail" />
+        <span><span>{mailUser}</span><span aria-hidden="true">@</span><span>{mailDomain}</span></span>
+      </a>
+      <a class="btn sm" href={social.github} target="_blank" rel="me noopener noreferrer">
+        <Icon name="brand-github" />
+        <span>GitHub</span>
+      </a>
+      <a class="btn sm" href={social.linkedin} target="_blank" rel="me noopener noreferrer">
+        <Icon name="brand-linkedin" />
+        <span>LinkedIn</span>
+      </a>
     </div>
     <div class="cta">
-      <a class="btn primary" href={homeSectionFragment(locale, "work")}>{t.hero.viewProjects}</a>
-      <a class="btn ghost" href={cvHref} download>{t.hero.downloadCv}</a>
+      <a class="btn primary" href={homeSectionFragment(locale, "work")}>
+        <span>{t.hero.viewProjects}</span>
+        <Icon name="arrow-down" />
+      </a>
+      <a class="btn ghost" href={cvHref} download>
+        <Icon name="download" />
+        <span>{t.hero.downloadCv}</span>
+      </a>
     </div>
   </div>
 </section>

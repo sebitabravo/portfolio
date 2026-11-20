@@ -1,7 +1,6 @@
 # build output
 dist/
 .vercel/
-/build
 
 # generated types
 .astro/
@@ -20,11 +19,8 @@ logs
 
 # environment variables
 .env
-.env.production
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+.env.*
+!.env.example
 
 # macOS-specific files
 .DS_Store
@@ -44,27 +40,20 @@ Thumbs.db
 /coverage
 playwright-report/
 test-results/
-tests/screenshots/*.png
-.tmp-lighthouse.json
 
 # audit artifacts
 .audit/
 .trash/
 
-# QA/debug snapshots
-lighthouse-scores.png
-
 # Claude Code local config
 .playwright-mcp/
+.codegraph/
 .claude/skills/
 .claude/agents/
 .mcp.json
 AGENTS.md
 /DESIGN.md
 .atl/
-
-# Evidencia visual regenerable del prototipo (no se versiona: se regenera)
-design/resolucion/screens/
 
 # Design sources and ODD tracking live outside the shipped repo (kept locally)
 /design/

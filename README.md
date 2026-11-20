@@ -93,6 +93,14 @@ and `tests/fonts.spec.ts`.
 - **Page:** add a route under `src/pages/` (and `src/pages/en/`), compose `Layout` with the locale.
 - **Locale string:** add the key to both `src/lib/i18n/es.json` and `en.json`; the dictionary parity test fails otherwise.
 
+## Third-party assets
+
+Icons are copied inline (no package, no runtime request); only the glyphs in use live in `src/lib/glyphs/`.
+
+- **UI icons:** [Tabler Icons](https://tabler.io/icons) v3.52.0, MIT. Notice in `third-party/LICENSE-tabler.txt`.
+- **Technology logos:** [Simple Icons](https://simpleicons.org) v16.38.0, CC0. AWS is not in Simple Icons and uses Tabler's `brand-aws`.
+- **Fonts:** Geist Mono and Geist Pixel, license in `public/fonts/LICENSE.txt`.
+
 ## License
 
 See [LICENSE](LICENSE). Contact: sebitabravocontacto@gmail.com.

@@ -136,7 +136,7 @@ domain data behind the `src/lib/data.ts` facade.
 src/
 ├── assets/             # Astro-optimized assets
 ├── components/         # Shared localized Astro components
-│   ├── blog/           # Shared localized blog pages
+│   └── blog/           # Shared localized blog pages
 ├── content/blog/       # Blog MDX entries
 ├── content.config.ts   # Astro/Zod schema for the blog collection
 ├── layouts/            # Shared page layout
@@ -148,10 +148,10 @@ src/
 │   ├── data/                 # Typed projects, work, certifications and other domains
 │   ├── home-sections.ts      # Localized home anchor IDs
 │   ├── i18n/                 # Spanish/English dictionaries + Locale helpers
+│   ├── og-image.ts           # OG card locale/title helpers
 │   ├── portfolio-images.ts   # Project card/social image registry
 │   ├── seo-structured-data.ts# JSON-LD builders
-│   ├── tech-badges.ts        # Canonical tech badge colors + icons
-│   └── utils.ts              # Date formatting helpers and cn() class merge
+│   └── utils.ts              # Date formatting helpers
 ├── pages/              # Spanish default and /en routes, blog, links, privacy, 404, OG
 ├── scripts/            # Functional client behavior: language-switch links keep query/hash
 └── types/              # TypeScript type definitions
@@ -170,10 +170,7 @@ Single source of truth lives in const-objects; types are derived from them:
 | `PROJECT_STATUSES` | `ProjectStatus` | `src/lib/data/types.ts` |
 | `CERTIFICATION_CATEGORIES` | `CertificationCategory` | `src/lib/data/types.ts` |
 
-`CarouselCertification` keeps its `{ data }` shape (carousel contract) but the
-payload is a flat `CarouselCertificationData` interface, not an inline object.
-Import domain types from `@/lib/data`, UI/carousel types from `@/types`, and
-`Locale` helpers from `@/lib/i18n`. The only CSP-hashed inline script is the
+Import domain types from `@/lib/data` and `Locale` helpers from `@/lib/i18n`. The only CSP-hashed inline script is the
 bundled `src/scripts/language-links.ts`, emitted by `src/layouts/Layout.astro`.
 
 ## Adding a language, page, or translated post

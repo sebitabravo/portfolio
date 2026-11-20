@@ -23,13 +23,13 @@ const {
   title = siteConfig.title,
   description: pageDescription,
   image,
-  locale = 'es',
+  locale = "es",
   noindex = false,
   canonicalUrl,
   alternates = [],
 } = Astro.props
 
-const description = pageDescription ?? (locale === 'en' ? personalInfo.descriptionEn : personalInfo.description)
+const description = pageDescription ?? (locale === "en" ? personalInfo.descriptionEn : personalInfo.description)
 
 const profileUrl = locale === "es" ? "https://sebita.dev/" : "https://sebita.dev/en/"
 const canonical = canonicalUrl ?? profileUrl
@@ -37,14 +37,9 @@ const canonical = canonicalUrl ?? profileUrl
 // not render SVG og:images, so the default card is the checked-in
 // public/og/<locale>.png (1200x630, regenerated with bun run generate:og).
 // Pages with their own photography (blog posts) keep passing `image`.
-const staticOgImage = new URL(
-  `/og/${locale}.png`,
-  "https://sebita.dev",
-).toString()
+const staticOgImage = new URL(`/og/${locale}.png`, "https://sebita.dev").toString()
 const seoImage = image ?? staticOgImage
-const sameAsProfiles = [social.github, social.linkedin].filter(
-  (url): url is string => Boolean(url),
-)
+const sameAsProfiles = [social.github, social.linkedin].filter((url): url is string => Boolean(url))
 
 const jsonLdString = buildLayoutJsonLd({
   title,
@@ -69,9 +64,7 @@ const jsonLdString = buildLayoutJsonLd({
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
-    {alternates.map(({ hreflang, href }) => (
-      <link rel="alternate" hreflang={hreflang} href={href} />
-    ))}
+    {alternates.map(({ hreflang, href }) => <link rel="alternate" hreflang={hreflang} href={href} />)}
 
     <SEO
       title={title}
@@ -129,11 +122,11 @@ const jsonLdString = buildLayoutJsonLd({
       }}
     />
 
-    <script is:inline type="application/ld+json" set:html={jsonLdString}></script>
+    <script is:inline type="application/ld+json" set:html={jsonLdString} />
   </head>
   <body>
     <a href="#main-content">
-      {locale === 'es' ? 'Saltar al contenido' : 'Skip to content'}
+      {locale === "es" ? "Saltar al contenido" : "Skip to content"}
     </a>
     <Header locale={locale} />
     <slot />

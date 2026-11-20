@@ -1,6 +1,7 @@
 ---
 // Resolución — fila de certificaciones (§6): lista plana con enlace al PDF; una credencial sin
 // PDF se muestra como texto estático, nunca como enlace vacío (tests/certifications-render).
+import Icon from "@/components/Icon.astro"
 import { getCertifications } from "@/lib/data"
 import { getTranslations, type Locale } from "@/lib/i18n"
 
@@ -15,7 +16,7 @@ const entries = getCertifications(locale)
 
 <div class="reveal">
   <div class="row">
-    <div class="label">{t.certifications.title}</div>
+    <div class="label">{t.certifications.title.toLowerCase()}</div>
     <div class="main">
       <ul>
         {
@@ -23,8 +24,11 @@ const entries = getCertifications(locale)
             <li class="cert-item">
               {entry.pdfUrl ? (
                 <a class="cert-link focus-ring" href={entry.pdfUrl} target="_blank" rel="noopener noreferrer">
-                  <span class="sr">{t.certifications.viewCertificate}: </span>
-                  {entry.name}
+                  <Icon name="file-type-pdf" />
+                  <span>
+                    <span class="sr">{t.certifications.viewCertificate}: </span>
+                    {entry.name}
+                  </span>
                 </a>
               ) : (
                 entry.name

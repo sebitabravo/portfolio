@@ -2,6 +2,7 @@
 // Resolución — momento 3 (§2): el email es el CTA. La dirección partida en @ son dos líneas de
 // Geist Pixel dentro de un <button> con aria-label completo; click copia y re-resuelve.
 // Clases del contrato: mail, mail-hint, contact-links; el status vive en .sr con role="status".
+import Icon from "@/components/Icon.astro"
 import { personalInfo, social } from "@/lib/data"
 import { getTranslations, type Locale } from "@/lib/i18n"
 
@@ -16,24 +17,12 @@ const cvHref = "/cv/Sebastian_Bravo_CV.pdf"
 const [user, domain] = personalInfo.email.split("@")
 const mailtoHref = `mailto:${personalInfo.email}?subject=${encodeURIComponent(t.contact.mailSubject)}`
 
-// Enlaces de texto con su descripción accesible; los enlaces directos evitan recopilar datos.
+// Enlaces con ícono: el texto visible es el nombre accesible (WCAG 2.5.3), sin aria-label.
 const contactLinks = [
-  {
-    href: mailtoHref,
-    label: personalInfo.email,
-    description: t.contact.responseTime,
-  },
-  {
-    href: social.github,
-    label: "github",
-    description: t.contact.githubDescription,
-  },
-  {
-    href: social.linkedin,
-    label: "linkedin",
-    description: t.contact.linkedinDescription,
-  },
-]
+  { href: mailtoHref, label: t.contact.sendEmail, icon: "mail" },
+  { href: social.github, label: "GitHub", icon: "brand-github" },
+  { href: social.linkedin, label: "LinkedIn", icon: "brand-linkedin" },
+] as const
 ---
 
 <button
@@ -52,26 +41,21 @@ const contactLinks = [
 <p class="sr" id="mail-status" role="status" aria-live="polite"></p>
 <div class="contact-links">
   {
-    contactLinks.map(({ href, label, description }) => (
+    contactLinks.map(({ href, label, icon }) => (
       <a
         href={href}
         target={href.startsWith("http") ? "_blank" : undefined}
         rel={href.startsWith("http") ? "me noopener noreferrer" : undefined}
-        aria-label={description}
       >
-        {href.startsWith("mailto:") ? (
-          <>
-            <span>{user}</span>
-            <span aria-hidden="true">@</span>
-            <span>{domain}</span>
-          </>
-        ) : (
-          label
-        )}
+        <Icon name={icon} />
+        <span>{label}</span>
       </a>
     ))
   }
-  <a href={cvHref} download aria-label={t.hero.downloadCv}>{t.hero.downloadCv}</a>
+  <a href={cvHref} download>
+    <Icon name="download" />
+    <span>{t.hero.downloadCv}</span>
+  </a>
 </div>
 
 <script>

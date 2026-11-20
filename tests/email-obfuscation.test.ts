@@ -16,6 +16,10 @@ const PAGES = ["index.html", "en/index.html", "privacy/index.html", "en/privacy/
 const mailtoAnchors = (html: string): string[] =>
   [...html.matchAll(/<a\b[^>]*href="mailto:[^"]*"[^>]*>[\s\S]*?<\/a>/g)].map((match) => match[0])
 
+// Texto que ve el usuario: sin svg ni etiquetas. Un enlace sin la dirección en su texto no le interesa a Cloudflare.
+const visibleText = (anchor: string): string =>
+  anchor.replace(/<svg[\s\S]*?<\/svg>/g, "").replace(/<[^>]+>/g, "").trim()
+
 describe.runIf(existsSync(DIST))("email obfuscation resilience", () => {
   for (const page of PAGES) {
     it(`${page} renders the address split so Cloudflare cannot rewrite it`, () => {
@@ -25,11 +29,16 @@ describe.runIf(existsSync(DIST))("email obfuscation resilience", () => {
       const anchors = mailtoAnchors(html)
       expect(anchors.length, `${page}: no hay enlaces mailto`).toBeGreaterThan(0)
       for (const anchor of anchors) {
-        const spans = anchor.match(/<\/span>/g) ?? []
-        expect(
-          spans.length,
-          `${page}: el texto del enlace mailto debe estar partido en spans (usuario / @ / dominio)`,
-        ).toBeGreaterThanOrEqual(2)
+        const text = visibleText(anchor)
+        if (text.includes("@")) {
+          const spans = anchor.match(/<\/span>/g) ?? []
+          expect(
+            spans.length,
+            `${page}: el texto del enlace mailto debe estar partido en spans (usuario / @ / dominio)`,
+          ).toBeGreaterThanOrEqual(2)
+        }
+        const markup = anchor.replace(/^<a\b[^>]*>/, "")
+        expect(markup, `${page}: el texto del enlace no imprime la dirección completa`).not.toContain(personalInfo.email)
         expect(anchor, `${page}: el href conserva la dirección completa`).toContain(personalInfo.email)
       }
     })

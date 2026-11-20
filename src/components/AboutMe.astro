@@ -1,6 +1,7 @@
 ---
-// Resolución — sobre mí (§3): perfil, stack como texto plano (kv) y busco. El retrato ASCII fue
+// Resolución — sobre mí (§3): perfil, stack como chips planos con logo monocromo (kv) y busco. El retrato ASCII fue
 // cortado por el diseño (§10); el stack sale del data layer, no de strings sueltas.
+import TechList from "@/components/TechList.astro"
 import { getAboutMe, skills } from "@/lib/data"
 import { getTranslations, type Locale } from "@/lib/i18n"
 
@@ -36,7 +37,9 @@ const stackRows: Array<{ label: string; items: string[] }> = [
           stackRows.map(({ label, items }) => (
             <>
               <dt>{label}</dt>
-              <dd>{items.join(", ")}</dd>
+              <dd>
+                <TechList items={items} />
+              </dd>
             </>
           ))
         }

@@ -78,7 +78,12 @@ function createSound() {
       const AudioContextCtor: typeof AudioContext | undefined =
         window.AudioContext ?? (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext
       if (!AudioContextCtor) return false
-      ctx = new AudioContextCtor()
+      try {
+        ctx = new AudioContextCtor()
+      } catch {
+        /* navegador sin Web Audio real: el sonido falla silencioso */
+        return false
+      }
       root.dataset.audio = "ready"
     }
     if (ctx.state === "suspended") void ctx.resume()

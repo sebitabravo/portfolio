@@ -18,6 +18,10 @@ export function setupHeaderNav(): void {
   )
   if (navLinks.size === 0) return
 
+  // Sin IntersectionObserver: sin seguimiento de sección activa, sin lanzar;
+  // aria-current queda ausente (los enlaces siguen navegando igual).
+  if (!("IntersectionObserver" in window)) return
+
   const sections = Array.from(document.querySelectorAll<HTMLElement>("main > section[data-nav]"))
   const inBand = new Set<HTMLElement>()
 

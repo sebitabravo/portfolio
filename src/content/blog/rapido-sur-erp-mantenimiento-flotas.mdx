@@ -52,8 +52,6 @@ Tres archivos docker-compose: `dev.yml` (solo base de datos), `full.yml` (stack 
 
 ## Desafíos
 
-<div class="cards">
-
 <div>
   <h3>Lógica de mantenimiento preventivo</h3>
   <p>Los planes combinan reglas por kilometraje, tiempo calendario y tipo de vehículo. Modelamos un engine de reglas configurable en vez de hardcodear intervalos, permitiendo ajustes por cliente sin deploy. Un cron job diario a las 6:00 AM evalúa cada vehículo contra sus planes activos.</p>
@@ -69,16 +67,12 @@ Tres archivos docker-compose: `dev.yml` (solo base de datos), `full.yml` (stack 
   <p>Muchas flotas tenían datos históricos en Excel. Construimos un importador CSV con validación, deduplicación y trazabilidad de origen para preservar el historial durante la migración sin perder datos ni introducir inconsistencias.</p>
 </div>
 
-</div>
-
 ## Arquitectura
 
-<div class="note">
-  <p><strong>NestJS API REST (modular monolith)</strong> → Next.js 14 App Router → PostgreSQL + Prisma ORM → Docker Compose.</p>
-  <p>Autenticación JWT con access/refresh tokens rotativos. Guards por rol (admin, supervisor, mecánico).</p>
-  <p>Swagger auto-generado desde decoradores NestJS.</p>
-  <p>Nginx como reverse proxy + Let's Encrypt SSL. Dokploy en Hostinger VPS para zero-downtime deploys.</p>
-</div>
+<p><strong>NestJS API REST (modular monolith)</strong> → Next.js 14 App Router → PostgreSQL + Prisma ORM → Docker Compose.</p>
+<p>Autenticación JWT con access/refresh tokens rotativos. Guards por rol (admin, supervisor, mecánico).</p>
+<p>Swagger auto-generado desde decoradores NestJS.</p>
+<p>Nginx como reverse proxy + Let's Encrypt SSL. Dokploy en Hostinger VPS para zero-downtime deploys.</p>
 
 ## Resultados
 

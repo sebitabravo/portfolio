@@ -49,8 +49,6 @@ El comando `make ml-report` que genera JSON + Markdown con métricas del modelo 
 
 ## Desafíos
 
-<div class="cards">
-
 <div>
   <h3>Procesamiento de datos en tiempo real</h3>
   <p>Los sensores transmiten a 1Hz. Con 10+ sensores, son 864.000 registros/día. Implementamos ventanas de agregación y downsampling para mantener queries rápidos.</p>
@@ -66,16 +64,12 @@ El comando `make ml-report` que genera JSON + Markdown con métricas del modelo 
   <p>El dashboard debía ser intuitivo para personal de planta sin experiencia en ML. Diseñamos indicadores visuales simples (verde/amarillo/rojo) con drill-down progresivo hacia datos técnicos.</p>
 </div>
 
-</div>
-
 ## Arquitectura
 
-<div class="note">
-  <p><strong>Microservicios con Docker Compose:</strong> broker MQTT (Mosquitto) → FastAPI ingestion worker → PostgreSQL (timeseries) → FastAPI REST API → React SPA.</p>
-  <p>El modelo ML se sirve como un servicio independiente con joblib.</p>
-  <p>Nginx como reverse proxy.</p>
-  <p>Comunicación asincrónica vía MQTT para telemetría, REST síncrono para queries del dashboard.</p>
-</div>
+<p><strong>Microservicios con Docker Compose:</strong> broker MQTT (Mosquitto) → FastAPI ingestion worker → PostgreSQL (timeseries) → FastAPI REST API → React SPA.</p>
+<p>El modelo ML se sirve como un servicio independiente con joblib.</p>
+<p>Nginx como reverse proxy.</p>
+<p>Comunicación asincrónica vía MQTT para telemetría, REST síncrono para queries del dashboard.</p>
 
 ## Resultados
 

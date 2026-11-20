@@ -6,7 +6,9 @@
     <title>Design System — sebastianbravo.dev (Resolución, shipped)</title>
     <style>
       /* Self-contained artboard. Vendored fonts only (resolucion/fonts/); no external URL, no CDN.
-     Tokens are copied verbatim from src/styles/tokens.css — the design's own variables, no new ones. */
+     Tokens are copied verbatim from src/styles/tokens.css — the design's own variables, no new ones.
+     Shipped form: static values per theme (:root dark, [data-theme="light"] light), refined to
+     light-dark() pairs inside one @supports block when the engine supports it. */
       @font-face {
         font-family: "Geist Pixel";
         src: url(resolucion/fonts/GeistPixel-Square.woff2) format("woff2");
@@ -47,12 +49,15 @@
 
       :root {
         color-scheme: dark;
-        --bg: light-dark(#ffffff, #000000);
-        --fg: light-dark(#000000, #ffffff);
-        --fg-muted: light-dark(#5c5c5c, #a1a1a1);
-        --fg-faint: light-dark(#6b6b6b, #8a8a8a);
-        --line: light-dark(#e5e5e5, #262626);
-        --fill: light-dark(#f2f2f2, #141414);
+        /* Static fallback for engines without light-dark(): dark is the documented
+           default, independent of the OS. With support, the @supports block below
+           re-declares the six tokens with light-dark(). */
+        --bg: #000000;
+        --fg: #ffffff;
+        --fg-muted: #a1a1a1;
+        --fg-faint: #8a8a8a;
+        --line: #262626;
+        --fill: #141414;
 
         --mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, monospace;
         --pixel: "Geist Pixel", ui-monospace, "SF Mono", Menlo, monospace;
@@ -70,6 +75,32 @@
         --fs-body: 15px;
         --fs-small: 13px;
         --fs-h2: clamp(2.5rem, 6vw, 5rem);
+      }
+      :root[data-theme="light"] {
+        color-scheme: light;
+        --bg: #ffffff;
+        --fg: #000000;
+        --fg-muted: #5c5c5c;
+        --fg-faint: #6b6b6b;
+        --line: #e5e5e5;
+        --fill: #f2f2f2;
+      }
+      :root[data-theme="dark"] {
+        color-scheme: dark;
+      }
+
+      /* With light-dark() support, :root returns to OS-responsive values (dark is
+         the default by color-scheme) and [data-theme="light"] keeps winning by
+         specificity — same shape as src/styles/tokens.css:104-115. */
+      @supports (color: light-dark(#ffffff, #000000)) {
+        :root {
+          --bg: light-dark(#ffffff, #000000);
+          --fg: light-dark(#000000, #ffffff);
+          --fg-muted: light-dark(#5c5c5c, #a1a1a1);
+          --fg-faint: light-dark(#6b6b6b, #8a8a8a);
+          --line: light-dark(#e5e5e5, #262626);
+          --fill: light-dark(#f2f2f2, #141414);
+        }
       }
 
       * {
@@ -752,18 +783,22 @@
         True black / pure white, never tinted. One mono family for everything,
         one pixel face for display, four extra pixel shapes only for the resolve
         animation. No accent colour, no radius, no shadows. Dark is the default;
-        both themes are the same six pairs of
-        <span class="pixel">light-dark()</span>. Values recorded from source;
+        both themes are the same six tokens declared statically per theme and
+        refined to <span class="pixel">light-dark()</span> pairs inside one
+        <span class="pixel">@supports</span> block. Values recorded from source;
         nothing proposed.
       </p>
 
       <section>
-        <h2 class="sec">colores — las seis parejas</h2>
+        <h2 class="sec">colores — estáticos por tema, refinados con light-dark()</h2>
         <p class="sec-sub">
-          Six <span class="tok">light-dark()</span> pairs resolved by
-          <span class="tok">color-scheme</span>:
-          <span class="tok">dark</span> on <span class="tok">:root</span>,
-          re-pointed by <span class="tok">[data-theme]</span>. Swatch chips show
+          Six tokens declared statically: <span class="tok">:root</span> carries
+          the dark values (tokens.css:67-72),
+          <span class="tok">[data-theme="light"]</span> the light ones
+          (tokens.css:91-99), and one
+          <span class="tok">@supports (color: light-dark(...))</span> block
+          re-declares the pairs for supported engines (tokens.css:106-115) —
+          without support the static layer is the whole story. Swatch chips show
           <span class="tok">--bg</span>, <span class="tok">--fg</span>,
           <span class="tok">--fg-muted</span>,
           <span class="tok">--fg-faint</span>, <span class="tok">--line</span>,
@@ -833,7 +868,7 @@
             </div>
             <div class="scheme">
               color-scheme: dark — :root default (tokens.css:63), re-asserted by
-              [data-theme="dark"] (tokens.css:91-92)
+              [data-theme="dark"] (tokens.css:100-102)
             </div>
           </div>
           <div class="panel theme-light">
@@ -899,7 +934,9 @@
             </div>
             <div class="scheme">
               color-scheme: light — applied by [data-theme="light"]
-              (tokens.css:88-89); the panel forces it to render the other side
+              (tokens.css:91-92); the panel forces it to render the other side
+              of the light-dark() pairs, which live statically here too
+              (tokens.css:93-98)
             </div>
           </div>
         </div>
@@ -909,11 +946,18 @@
         <h2 class="sec">tipografía</h2>
         <p class="sec-sub">
           Vendored woff2 under <span class="tok">public/fonts/</span>, declared
-          in <span class="tok">tokens.css:4-43</span>. Geist Pixel Square for
-          display; GP Line / Triangle / Grid / Circle only for resolve frames;
-          Geist Mono 400/500 for everything else. Two metric-matched fallbacks
-          (<span class="tok">Menlo</span>, <span class="tok">Courier New</span>)
-          keep the swap from moving layout. No serif, no Geist Sans.
+          in <span class="tok">tokens.css:5-42</span>, subsetted to the
+          codepoints the site renders — ranges in
+          <span class="tok">scripts/font-subset.json</span>, reproducible with
+          <span class="tok">scripts/subset-fonts.py</span>: 233,820 B → 87,352 B
+          (-63%), 0 advance drift, 0 dropped glyphs. Geist Pixel Square for
+          display; GP Line / Triangle / Grid / Circle (51,760 B subsetted) only
+          for resolve frames, loaded on idle only when motion is active
+          (<span class="tok">resolve.ts shapesReady</span>) — not part of the
+          first paint; Geist Mono 400/500 for everything else. Two
+          metric-matched fallbacks (<span class="tok">Menlo</span>,
+          <span class="tok">Courier New</span>) keep the swap from moving
+          layout. No serif, no Geist Sans.
         </p>
         <div class="typegrid">
           <div class="tspec">

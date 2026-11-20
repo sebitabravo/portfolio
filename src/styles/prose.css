@@ -11,6 +11,10 @@
   color: var(--fg-faint);
   font-size: var(--fs-small);
   line-height: 20px;
+  /* El crumb es un <ol> por semántica; el diseño lo dibuja sin numeración
+     (design/resolucion/views.css:6-9). El reset base solo cubre <ul>. */
+  list-style: none;
+  padding: 0;
 }
 .crumb a {
   text-decoration: none;

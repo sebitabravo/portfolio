@@ -67,10 +67,9 @@ const alternates = createStaticAlternates(locale, spanishUrl, englishUrl)
           <button class="chip" type="button" data-f="caso" aria-pressed="false"
             >{t.blog.filters.case} {caseCount}</button
           >
-          <button class="chip" type="button" data-f="educacional" aria-pressed="false">
-            {t.blog.filters.educational}
-            {educationalCount}
-          </button>
+          <button class="chip" type="button" data-f="educacional" aria-pressed="false"
+            >{t.blog.filters.educational} {educationalCount}</button
+          >
         </div>
       </div>
     </section>
@@ -118,6 +117,7 @@ const alternates = createStaticAlternates(locale, spanishUrl, englishUrl)
         }
         <p class="count small" id="count" role="status" aria-live="polite" data-label={t.blog.countLabel}>
           {posts.length}
+          {" "}
           {t.blog.countLabel}
         </p>
       </div>

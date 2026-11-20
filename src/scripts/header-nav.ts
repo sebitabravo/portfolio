@@ -10,12 +10,28 @@ let navTeardown: (() => void) | null = null
 export function setupHeaderNav(): void {
   teardownHeaderNav()
 
-  const navLinks = new Map(
-    Array.from(document.querySelectorAll<HTMLAnchorElement>(".nav-main a[href^='#']")).map((link) => [
-      (link.getAttribute("href") ?? "").slice(1),
-      link,
-    ]),
-  )
+  // El header renderiza los ancla con ruta absoluta ("/#proyectos" en es,
+  // "/en/#projects" en en; el prototipo usaba href^="#"): el map cruza el
+  // FRAGMENTO del href, no el href crudo, y sólo cuando el destino es esta
+  // misma página (origen + ruta + query): los enlaces a la home desde otras
+  // rutas (p. ej. "/#proyectos" en /blog/) no son anclas acá y no se marcan.
+  // El fragmento además debe resolver a una sección real del documento actual.
+  const here = new URL(location.href)
+  const pageKey = (url: URL): string => `${url.origin}${url.pathname.replace(/\/$/, "") || "/"}${url.search}`
+  const navLinks = new Map<string, HTMLAnchorElement>()
+  for (const link of document.querySelectorAll<HTMLAnchorElement>(".nav-main a[href]")) {
+    let url: URL
+    try {
+      url = new URL(link.getAttribute("href") ?? "", here)
+    } catch {
+      continue
+    }
+    const fragment = url.hash.slice(1)
+    if (fragment === "") continue
+    if (pageKey(url) !== pageKey(here)) continue
+    if (!document.getElementById(fragment)) continue
+    navLinks.set(fragment, link)
+  }
   if (navLinks.size === 0) return
 
   // Sin IntersectionObserver: sin seguimiento de sección activa, sin lanzar;

@@ -155,6 +155,12 @@
 .prose {
   font-size: 17px;
   line-height: 30px;
+  /* S4: las URLs largas y el código inline son cadenas indivisibles que empujan el
+     ancho del documento más allá del viewport (desde 320px). Se permite romper en
+     cualquier punto dentro de la prosa; overflow-wrap hereda a p, li, a, celdas y
+     notas, y no afecta a pre (white-space: pre no envuelve). Esto reduce también el
+     min-content de la subrama, así no reabre pistas intrínsecas de grid/flex. */
+  overflow-wrap: anywhere;
 }
 .prose > * + * {
   margin-top: 20px;
@@ -230,6 +236,7 @@
 }
 .prose pre {
   overflow-x: auto;
+  max-width: 100%;
   border: 1px solid var(--line);
   background: var(--fill);
   padding: 16px;
@@ -242,6 +249,7 @@
 }
 .prose table {
   width: 100%;
+  max-width: 100%;
   border-collapse: collapse;
   font-size: var(--fs-small);
   line-height: 20px;

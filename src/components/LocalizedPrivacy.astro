@@ -394,7 +394,7 @@ const alternates = createStaticAlternates(locale, spanishUrl, englishUrl)
               <p><strong>{personalInfo.name}</strong> <span>{c.controllerCountry}</span></p>
               <p>
                 {c.emailLead}{" "}
-                <a href={`mailto:${personalInfo.email}`}
+                <a href={`mailto:${personalInfo.email}`} aria-label={personalInfo.email}
                   ><span>{privacyUser}</span><span aria-hidden="true">@</span><span>{privacyDomain}</span></a
                 >
               </p>
@@ -564,7 +564,7 @@ const alternates = createStaticAlternates(locale, spanishUrl, englishUrl)
             <div class="main">
               <p>{c.contactP1}</p>
               <p>
-                <a href={`mailto:${personalInfo.email}`}
+                <a href={`mailto:${personalInfo.email}`} aria-label={personalInfo.email}
                   ><span>{privacyUser}</span><span aria-hidden="true">@</span><span>{privacyDomain}</span></a
                 >
               </p>

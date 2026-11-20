@@ -2,6 +2,7 @@ import { experimental_AstroContainer as AstroContainer } from "astro/container"
 import { describe, expect, it } from "vitest"
 import { personalInfo } from "../src/lib/data/personal"
 import Contact from "../src/components/Contact.astro"
+import Hero from "../src/components/Hero.astro"
 import ExperienceItem from "../src/components/ExperienceItem.astro"
 import { getWorkExperience } from "../src/lib/data/work"
 
@@ -38,5 +39,16 @@ describe("ExperienceItem", () => {
     expect(html).not.toContain("Evidencia del trabajo")
     expect(html).not.toMatch(/Control Guards por tenant\s*·/)
     expect(html).toContain("Ver caso de estudio")
+  })
+})
+
+describe("Hero email link", () => {
+  it("exposes the full address as its accessible name even though it is split in spans", async () => {
+    const container = await AstroContainer.create()
+    const html = await container.renderToString(Hero, { props: { locale: "es" } })
+    const link = anchors(html).find((anchor) => anchor.includes('href="mailto:'))
+    expect(link).toBeDefined()
+    expect(link).toContain(`aria-label="${personalInfo.email}"`)
+    expect(link?.match(/<\/span>/g)?.length).toBeGreaterThanOrEqual(2)
   })
 })

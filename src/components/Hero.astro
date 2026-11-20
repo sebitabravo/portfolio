@@ -43,7 +43,7 @@ const cvHref = "/cv/Sebastian_Bravo_CV.pdf"
       </span>
     </div>
     <div class="hero-links small">
-      <a class="btn sm" href={`mailto:${personalInfo.email}`}>
+      <a class="btn sm" href={`mailto:${personalInfo.email}`} aria-label={personalInfo.email}>
         <Icon name="mail" />
         <span><span>{mailUser}</span><span aria-hidden="true">@</span><span>{mailDomain}</span></span>
       </a>

@@ -6,6 +6,30 @@ import { motion, resolve, shapesReady, type ResolveTarget } from "./resolve"
 
 let teardown: (() => void) | null = null
 
+const CONFIRM_CLOCK_MS = 15000
+const CLOCK_PLACEHOLDER = "--:--"
+
+/** Formato del reloj: con la zona de Chile; si la zona no está soportada (o el locale
+ *  falla) reintenta sin timeZone; si Intl mismo no está disponible devuelve null y el
+ *  reloj queda en el placeholder del prototipo ("--:--"). */
+function makeFormatter(locale: string): Intl.DateTimeFormat | null {
+  try {
+    return new Intl.DateTimeFormat(locale, {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+      timeZone: "America/Santiago",
+    })
+  } catch {
+    /* zona u otro parámetro no soportado: reintenta sin timeZone */
+  }
+  try {
+    return new Intl.DateTimeFormat(locale, { hour: "2-digit", minute: "2-digit", hour12: false })
+  } catch {
+    return null
+  }
+}
+
 export function setupHero(): void {
   // astro:page-load también dispara en la carga inicial: sin guardia se duplican los
   // listeners del reloj y la resolución se programa dos veces.
@@ -26,23 +50,27 @@ export function setupHero(): void {
   }
 
   // Reloj de Chile: actualiza cada 15s; el formato sigue el idioma del documento.
+  // Cada formato va en try/catch: ante cualquier fallo se pinta el placeholder existente.
   const clock = document.getElementById("clock")
   let clockTimer: ReturnType<typeof setInterval> | null = null
   if (clock) {
     const locale = (document.documentElement.getAttribute("lang") || "es").toLowerCase().startsWith("es")
       ? "es-CL"
       : "en-GB"
-    const fmt = new Intl.DateTimeFormat(locale, {
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: false,
-      timeZone: "America/Santiago",
-    })
+    const fmt = makeFormatter(locale)
     const tick = (): void => {
-      clock.textContent = fmt.format(new Date())
+      let text = CLOCK_PLACEHOLDER
+      if (fmt) {
+        try {
+          text = fmt.format(new Date())
+        } catch {
+          text = CLOCK_PLACEHOLDER
+        }
+      }
+      clock.textContent = text
     }
     tick()
-    clockTimer = setInterval(tick, 15000)
+    if (fmt) clockTimer = setInterval(tick, CONFIRM_CLOCK_MS)
   }
 
   teardown = () => {

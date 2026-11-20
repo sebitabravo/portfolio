@@ -57,6 +57,27 @@ function renderRoutePage() {
   `
 }
 
+// Espejo del DOM que produce Header.astro en el home real: los enlaces ancla
+// salen con ruta absoluta y fragmento ("/#proyectos" en es, "/en/#projects" en
+// en), no con href^="#".
+function renderHomeAbsoluteHrefs() {
+  document.body.innerHTML = `
+    <header class="site-header">
+      <nav class="nav-main">
+        <a href="/#trabajo">Trabajo</a>
+        <a href="/#experiencia">Experiencia</a>
+        <a href="/blog">Blog</a>
+        <a href="/#contacto">Contacto</a>
+      </nav>
+    </header>
+    <main>
+      <section id="trabajo" data-nav="trabajo"></section>
+      <section id="experiencia" data-nav="experiencia"></section>
+      <section id="contacto" data-nav="contacto"></section>
+    </main>
+  `
+}
+
 function emit(
   observer: FakeIntersectionObserver,
   entries: Array<{ target: Element; isIntersecting: boolean }>,
@@ -115,6 +136,21 @@ describe("header nav section observer", () => {
     expect(anchorLink("trabajo").hasAttribute("aria-current")).toBe(false)
     expect(anchorLink("contacto").hasAttribute("aria-current")).toBe(false)
     // El enlace de ruta (blog) no es ancla: el observer no lo toca.
+    expect(document.querySelector('a[href="/blog"]')!.hasAttribute("aria-current")).toBe(false)
+  })
+
+  it("marks the section whose absolute-href fragment matches, ignoring route links and other fragments", () => {
+    renderHomeAbsoluteHrefs()
+    setupHeaderNav()
+    const [observer] = intersectionInstances
+    expect(intersectionInstances).toHaveLength(1)
+
+    emit(observer, [{ target: document.getElementById("experiencia")!, isIntersecting: true }])
+
+    const experiencia = document.querySelector('a[href="/#experiencia"]')!
+    expect(experiencia.getAttribute("aria-current")).toBe("location")
+    expect(document.querySelector('a[href="/#trabajo"]')!.hasAttribute("aria-current")).toBe(false)
+    expect(document.querySelector('a[href="/#contacto"]')!.hasAttribute("aria-current")).toBe(false)
     expect(document.querySelector('a[href="/blog"]')!.hasAttribute("aria-current")).toBe(false)
   })
 

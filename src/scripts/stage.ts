@@ -141,7 +141,12 @@ export function setupStage(): void {
   tabs.forEach((tab, i) => {
     tab.addEventListener("click", () => select(tab.dataset.slug ?? "", ctx, true))
     // §5: hover del índice suena tick; click selecciona (el prototipo descartó hover-select).
-    tab.addEventListener("pointerenter", () => sound.play("tick"))
+    // Solo puntero mouse: un tap táctil entra por pointerenter y dispararía tick
+    // junto al shutter del click.
+    tab.addEventListener("pointerenter", (e) => {
+      if (e.pointerType !== "mouse") return
+      sound.play("tick")
+    })
     tab.addEventListener("focus", () => select(tab.dataset.slug ?? "", ctx, false))
     tab.addEventListener("keydown", (e) => {
       const delta = e.key === "ArrowDown" ? 1 : e.key === "ArrowUp" ? -1 : 0

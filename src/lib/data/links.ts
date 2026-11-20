@@ -41,19 +41,24 @@ export interface HubCopy {
 const EMAIL = personalInfo.email
 const BASE = "https://sebita.dev"
 const YOUTUBE = "https://www.youtube.com/@sebitabravo"
-const CAL = "https://cal.com/sebitabravo/15min"
 const CV = "/cv/Sebastian_Bravo_CV.pdf"
+
+/** Ancla real del escenario de proyectos en cada home (los ids son neutros por
+ *  idioma y el home inglés vive en /en/). */
+const PROJECTS: Record<Locale, string> = {
+  es: `${BASE}/#proyectos`,
+  en: `${BASE}/en/#projects`,
+}
 
 export const hubContent: Record<Locale, HubCopy> = {
   es: {
     metaTitle: "Links — Sebastián Bravo",
-    metaDescription:
-      "Portafolio, proyectos, blog, GitHub, LinkedIn y agenda de Sebastián Bravo, desarrollador full-stack.",
+    metaDescription: "Portafolio, proyectos, blog, GitHub y LinkedIn de Sebastián Bravo, desarrollador full-stack.",
     role: "desarrollador full-stack",
     lead: "Plataformas web completas, del front-end al despliegue, con IA donde resuelve un problema real.",
     links: [
       { title: "portafolio", href: BASE, display: "sebita.dev", external: true },
-      { title: "proyectos", href: `${BASE}/#trabajo`, display: "sebita.dev/#trabajo", external: true },
+      { title: "proyectos", href: PROJECTS.es, display: "sebita.dev/#proyectos", external: true },
       { title: "blog", href: `${BASE}/blog`, display: "sebita.dev/blog", external: true },
       { title: "cv", href: CV, display: "descargar pdf", download: true },
       { title: "github", href: "https://github.com/sebitabravo", display: "github.com/sebitabravo", external: true },
@@ -63,7 +68,6 @@ export const hubContent: Record<Locale, HubCopy> = {
         display: "linkedin.com/in/sebitabravo",
         external: true,
       },
-      { title: "agenda", href: CAL, display: "cal.com/sebitabravo/15min", external: true },
       { title: "youtube", href: YOUTUBE, display: "youtube.com/@sebitabravo", external: true },
     ],
     emailTitle: "email",
@@ -84,11 +88,10 @@ export const hubContent: Record<Locale, HubCopy> = {
           "Sebastián Bravo, desarrollador full-stack",
           "",
           `portafolio: ${BASE}`,
-          `proyectos: ${BASE}/#trabajo`,
+          `proyectos: ${PROJECTS.es}`,
           `blog: ${BASE}/blog`,
           "github: https://github.com/sebitabravo",
           "linkedin: https://linkedin.com/in/sebitabravo",
-          "agenda 15 min: https://cal.com/sebitabravo/15min",
           `youtube: ${YOUTUBE}`,
           `contacto: ${EMAIL}`,
         ].join("\n"),
@@ -106,13 +109,12 @@ export const hubContent: Record<Locale, HubCopy> = {
   },
   en: {
     metaTitle: "Links — Sebastián Bravo",
-    metaDescription:
-      "Portfolio, projects, blog, GitHub, LinkedIn and booking for Sebastián Bravo, full-stack developer.",
+    metaDescription: "Portfolio, projects, blog, GitHub and LinkedIn by Sebastián Bravo, full-stack developer.",
     role: "Full-Stack Developer",
     lead: "Complete web platforms, from front-end to deployment, with AI where it solves a real problem.",
     links: [
       { title: "portfolio", href: BASE, display: "sebita.dev", external: true },
-      { title: "projects", href: `${BASE}/#trabajo`, display: "sebita.dev/#trabajo", external: true },
+      { title: "projects", href: PROJECTS.en, display: "sebita.dev/en/#projects", external: true },
       { title: "blog", href: `${BASE}/blog`, display: "sebita.dev/blog", external: true },
       { title: "cv", href: CV, display: "download pdf", download: true },
       { title: "github", href: "https://github.com/sebitabravo", display: "github.com/sebitabravo", external: true },
@@ -122,7 +124,6 @@ export const hubContent: Record<Locale, HubCopy> = {
         display: "linkedin.com/in/sebitabravo",
         external: true,
       },
-      { title: "book a call", href: CAL, display: "cal.com/sebitabravo/15min", external: true },
       { title: "youtube", href: YOUTUBE, display: "youtube.com/@sebitabravo", external: true },
     ],
     emailTitle: "email",
@@ -143,11 +144,10 @@ export const hubContent: Record<Locale, HubCopy> = {
           "Sebastián Bravo, full-stack developer",
           "",
           `portfolio: ${BASE}`,
-          `projects: ${BASE}/#trabajo`,
+          `projects: ${PROJECTS.en}`,
           `blog: ${BASE}/blog`,
           "github: https://github.com/sebitabravo",
           "linkedin: https://linkedin.com/in/sebitabravo",
-          "book 15 min: https://cal.com/sebitabravo/15min",
           `youtube: ${YOUTUBE}`,
           `contact: ${EMAIL}`,
         ].join("\n"),

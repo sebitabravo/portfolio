@@ -18,15 +18,38 @@ export function initSoundToggle(): void {
   const isSpanish = (root.getAttribute("lang") || "es").toLowerCase().startsWith("es")
   const labelText = isSpanish ? esLabel : enLabel
 
-  const paint = (): void => {
-    button.setAttribute("aria-checked", String(sound.on))
-    if (label) label.textContent = labelText(sound.on)
+  // aria-checked refleja la preferencia persistida; el texto refleja la verdad
+  // audible: con el audio bloqueado la etiqueta no reclama "on" en silencio.
+  const paint = (preference: boolean, audible = preference): void => {
+    button.setAttribute("aria-checked", String(preference))
+    if (label) label.textContent = labelText(audible)
   }
 
-  paint()
+  paint(sound.on)
+
   button.addEventListener("click", () => {
-    sound.set(!sound.on)
-    paint()
-    sound.play("press")
+    if (sound.on) {
+      // OFF: press suena mientras el sonido sigue habilitado, después desactiva.
+      sound.play("press")
+      sound.set(false)
+      paint(false)
+      return
+    }
+    // ON: pintura inmediata de la preferencia; la verdad audible llega tras el await.
+    paint(true)
+    void (async () => {
+      sound.set(true)
+      const ok = await sound.unlock()
+      if (!sound.on) return // el usuario apagó durante el await: no repintar encima
+      if (ok) {
+        sound.play("press") // el switch se confirma a sí mismo ya audible
+        paint(true)
+        return
+      }
+      // Sin audio real (política o sin dispositivo) la preferencia vuelve a off:
+      // un switch encendido con la etiqueta "off" se contradice a sí mismo.
+      sound.set(false)
+      paint(false)
+    })()
   })
 }

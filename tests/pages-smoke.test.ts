@@ -57,7 +57,7 @@ describe("home pages smoke", () => {
 
 describe("remaining localized pages", () => {
   it("uses dictionary copy for the blog index title, description, intro, and empty state", () => {
-    expect(blogIndex).toContain('title={`${t.blog.title} - ${personalInfo.name}`}')
+    expect(blogIndex).toContain('title={`${t.blog.title} — ${personalInfo.name}`}')
     expect(blogIndex).toContain('description={t.blog.description}')
     expect(blogIndex).toMatch(/<h1\b[^>]*>\{t\.blog\.title\}<\/h1>/)
     expect(blogIndex).toMatch(/<p\b[^>]*>\s*\{t\.blog\.intro\}\s*<\/p>/)

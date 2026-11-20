@@ -27,7 +27,7 @@ const COPY: Record<OgDesignLocale, Record<OgDesignCard, CardCopy>> = {
     links: {
       kicker: "sebastián bravo, desarrollador full-stack",
       name: "links",
-      description: "portafolio, proyectos, blog, github, linkedin y agenda",
+      description: "portafolio, proyectos, blog, github y linkedin",
       domain: "sebita.dev/links",
     },
     blog: {

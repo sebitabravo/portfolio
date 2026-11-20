@@ -21,8 +21,7 @@ const projects = getStageProjects(locale)
 
 const tabName = (blogSlug: string): string => articleTitleTransitionName(blogSlug)
 
-const blogUrl = (blogSlug: string): string =>
-  locale === "en" ? `/en/blog/${blogSlug}` : `/blog/${blogSlug}`
+const blogUrl = (blogSlug: string): string => (locale === "en" ? `/en/blog/${blogSlug}` : `/blog/${blogSlug}`)
 
 const statusLabel = (status: string, liveUrl?: string, githubUrl?: string): string => {
   if (status === "development") return t.projects.statusDevelopment
@@ -88,12 +87,14 @@ const absolute = (href: string): string => (href.startsWith("/") ? ORIGIN + href
                 src={screenshot}
                 formats={["avif"]}
                 fallbackFormat="webp"
-                widths={[800, 1600]}
+                widths={[400, 800, 1600]}
                 quality={90}
                 width={1600}
                 height={1000}
-                sizes="(min-width: 960px) 60vw, 100vw"
+                sizes="(min-width: 960px) calc(100vw - 33rem), calc(100vw - 32px)"
                 alt={t.projects.screenshotAlt.replace("{title}", title)}
+                loading={i === 0 ? "eager" : "lazy"}
+                fetchpriority={i === 0 ? "high" : undefined}
                 decoding="async"
               />
             )}
@@ -122,7 +123,11 @@ const absolute = (href: string): string => (href.startsWith("/") ? ORIGIN + href
               {tradeoff && (
                 <div>
                   <h4>{t.stage.tradeoff}</h4>
-                  <p>{codeSegments(tradeoff).map((segment) => (segment.code ? <code>{segment.text}</code> : segment.text))}</p>
+                  <p>
+                    {codeSegments(tradeoff).map((segment) =>
+                      segment.code ? <code>{segment.text}</code> : segment.text,
+                    )}
+                  </p>
                 </div>
               )}
             </div>
@@ -130,8 +135,12 @@ const absolute = (href: string): string => (href.startsWith("/") ? ORIGIN + href
           <div class="metrics" aria-label={t.projects.evidenceLabel}>
             {(metrics ?? []).map((metric) => (
               <div>
-                <h4><span>{metric.label}</span></h4>
-                <div class="v" data-value={metric.value}>{metric.value}</div>
+                <h4>
+                  <span>{metric.label}</span>
+                </h4>
+                <div class="v" data-value={metric.value}>
+                  {metric.value}
+                </div>
               </div>
             ))}
           </div>
@@ -167,9 +176,21 @@ const absolute = (href: string): string => (href.startsWith("/") ? ORIGIN + href
           <h3>{title}</h3>
           <p>{tagline}</p>
           <p class="faint small">{tags.join(", ")}</p>
-          {blogSlug && <span class="u">{t.projects.readMore}: {absolute(blogUrl(blogSlug))}</span>}
-          {githubUrl && <span class="u">{t.projects.viewCode}: {absolute(githubUrl)}</span>}
-          {liveUrl && <span class="u">{t.projects.viewProject}: {absolute(liveUrl)}</span>}
+          {blogSlug && (
+            <span class="u">
+              {t.projects.readMore}: {absolute(blogUrl(blogSlug))}
+            </span>
+          )}
+          {githubUrl && (
+            <span class="u">
+              {t.projects.viewCode}: {absolute(githubUrl)}
+            </span>
+          )}
+          {liveUrl && (
+            <span class="u">
+              {t.projects.viewProject}: {absolute(liveUrl)}
+            </span>
+          )}
         </li>
       )
     })

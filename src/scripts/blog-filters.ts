@@ -1,6 +1,7 @@
 // Resolución — filtros del índice del blog: chips con aria-pressed que ocultan filas por
-// data-kind y actualizan el contador role="status". Puerto del script de design/resolucion/
-// blog.html; cada cambio de filtro suena un tick (§4: hover/click del índice).
+// data-topic (tema de src/lib/blog-topics.ts) y actualizan el contador role="status". Puerto
+// del script de design/resolucion/blog.html; cada cambio de filtro suena un tick (§4:
+// hover/click del índice). Sin JS, las filas salen visibles en el HTML.
 
 import { sound } from "./sound/engine"
 
@@ -20,7 +21,7 @@ export function setupBlogFilters(): void {
       for (const other of chips) other.setAttribute("aria-pressed", String(other === chip))
       let visible = 0
       for (const row of rows) {
-        const on = filter === "all" || row.dataset.kind === filter
+        const on = filter === "all" || row.dataset.topic === filter
         row.hidden = !on
         if (on) visible++
       }

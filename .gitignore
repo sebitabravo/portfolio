@@ -17,7 +17,6 @@ yarn-error.log*
 lerna-debug.log*
 *.log
 logs
-/specs/
 
 # environment variables
 .env
@@ -53,10 +52,6 @@ tests/screenshots/*.png
 .trash/
 
 # QA/debug snapshots
-qa-*.png
-*-snapshot.md
-*-postpolish.md
-*-menu-open.md
 lighthouse-scores.png
 
 # Claude Code local config
@@ -66,8 +61,6 @@ lighthouse-scores.png
 .mcp.json
 AGENTS.md
 /DESIGN.md
-PRODUCT.md
-.impeccable/
 .atl/
 
 # Evidencia visual regenerable del prototipo (no se versiona: se regenera)

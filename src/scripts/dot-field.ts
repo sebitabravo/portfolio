@@ -3,6 +3,8 @@
 // bajo html.ambient (puntero fino, sin Save-Data, sin reduced motion: el boot inline decide),
 // redibuja solo cuando el pointer cambia de celda de la grilla y queda pausado fuera de pantalla.
 
+import { saveData } from "./compat"
+
 let cleanup: (() => void) | null = null
 
 export function setupDotField(): void {
@@ -17,7 +19,10 @@ export function setupDotField(): void {
 
   const field = guard
   if (!(field instanceof HTMLCanvasElement)) return
-  if (!document.documentElement.classList.contains("ambient")) return
+  // Solo corre bajo html.ambient (puntero fino, sin Save-Data, sin reduced motion: el boot
+  // inline decide). Defensa en profundidad: si Save-Data se activó sin la clase, se salta
+  // igual y el canvas queda con su dibujo inicial.
+  if (!document.documentElement.classList.contains("ambient") || saveData()) return
   const ctx = field.getContext("2d")
   if (!ctx) return
 
@@ -79,10 +84,14 @@ export function setupDotField(): void {
   }
   window.addEventListener("themechange", themeHandler)
 
-  observer = new IntersectionObserver(([entry]) => {
-    visible = entry.isIntersecting
-  })
-  observer.observe(field)
+  // Sin IntersectionObserver: sin pausa fuera de pantalla (fallback documentado); el
+  // campo sigue pintando con visible=true (valor inicial) y el dibujo inicial se conserva.
+  if ("IntersectionObserver" in window) {
+    observer = new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting
+    })
+    observer.observe(field)
+  }
 
   moveHandler = (e) => {
     if (!visible) return

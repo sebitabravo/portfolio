@@ -1,10 +1,17 @@
 // Resolución — motor de sonido: Web Audio sintetizado, sin assets ni fetch.
 // Puerto de design/resolucion/common.js (§5 de DESIGN.md). Off por defecto,
 // persistido en localStorage bajo la clave propia del diseño ("sb-sound").
-// El AudioContext se crea o reanuda dentro de un gesto del usuario: el click
-// del switch o el primer pointerdown/keydown cuando el estado persistido es on.
-// Límite de 40ms por voz; nunca suena en scroll pasivo porque ninguna voz se
-// dispara desde scroll.
+//
+// Máquina de estados de <html data-audio>:
+//   idle    → sin intento aún, o el estado cayó de running (hace falta un gesto nuevo)
+//   ready   → el AudioContext existe y state === "running"
+//   blocked → se intentó reanudar y la política de autoplay (o el navegador) no dejó
+//
+// El contexto se crea o reanuda dentro de un gesto real: el click del switch o
+// un pointerdown/keydown en captura —permanente, no once— cuando la preferencia
+// persistida es on. visibilitychange suspende al ocultar (iOS ya lo hace) y, al
+// volver, exige un gesto nuevo en vez de reclamar readiness. Límite de 40ms por
+// voz; nunca suena en scroll pasivo porque ninguna voz se dispara desde scroll.
 
 export type SoundVoice = "tick" | "press" | "chirp" | "shutter"
 
@@ -73,21 +80,72 @@ function createSound() {
     },
   }
 
-  const unlock = (): boolean => {
+  const setState = (state: "idle" | "ready" | "blocked"): void => {
+    root.dataset.audio = state
+  }
+
+  /** Crea el contexto si falta, reanuda dentro del gesto y devuelve el estado real. */
+  const unlock = async (): Promise<boolean> => {
     if (!ctx) {
       const AudioContextCtor: typeof AudioContext | undefined =
         window.AudioContext ?? (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext
-      if (!AudioContextCtor) return false
-      ctx = new AudioContextCtor()
-      root.dataset.audio = "ready"
+      if (!AudioContextCtor) {
+        setState("blocked")
+        return false
+      }
+      try {
+        ctx = new AudioContextCtor()
+      } catch {
+        /* navegador sin Web Audio real: el sonido falla silencioso */
+        setState("blocked")
+        return false
+      }
+      // data-audio honesto: statechange es la única fuente de verdad.
+      ctx.addEventListener("statechange", () => {
+        if (ctx && ctx.state === "running") setState("ready")
+        else setState("idle") // cayó de running (iOS al ocultar): hace falta un gesto nuevo
+      })
     }
-    if (ctx.state === "suspended") void ctx.resume()
-    return true
+    if (ctx.state === "running") {
+      setState("ready")
+      return true
+    }
+    try {
+      await ctx.resume()
+    } catch {
+      /* política de autoplay o sin dispositivo de audio: unlock devuelve false */
+    }
+    const state = ctx.state as AudioContextState
+    const running = state === "running"
+    setState(running ? "ready" : "blocked")
+    return running
   }
+
+  /** Gesto real (captura, permanente): reanuda cuando la preferencia es on y no hay running. */
+  const onGesture = (): void => {
+    if (enabled && (!ctx || ctx.state !== "running")) void unlock()
+  }
+
+  /** iOS/Safari suspenden al ocultar la página: suspender explícitamente ahorra batería
+   *  y, al volver, se marca que hace falta un gesto en vez de reclamar readiness. */
+  const onVisibility = (): void => {
+    if (document.visibilityState === "hidden") {
+      if (ctx && ctx.state === "running") void ctx.suspend().catch(() => undefined)
+    } else if (ctx && ctx.state !== "running") {
+      setState("idle")
+    }
+  }
+
+  window.addEventListener("pointerdown", onGesture, { capture: true })
+  window.addEventListener("keydown", onGesture, { capture: true })
+  document.addEventListener("visibilitychange", onVisibility)
 
   return {
     get on() {
       return enabled
+    },
+    get running() {
+      return ctx !== null && ctx.state === "running"
     },
     set(value: boolean) {
       enabled = value
@@ -96,26 +154,36 @@ function createSound() {
       } catch {
         /* sin persistencia: el estado vive solo en esta página */
       }
-      if (value) unlock()
     },
     unlock,
     play(name: SoundVoice) {
-      if (!enabled || !ctx || ctx.state !== "running") return
-      const now = performance.now()
-      if (now - (last[name] ?? 0) < 40) return
-      last[name] = now
-      voices[name]()
+      if (!enabled) return
+      try {
+        if (!ctx || ctx.state !== "running") {
+          // reanudación fire-and-forget: sin un gesto real el resume falla y queda blocked
+          if (ctx) void unlock()
+          return
+        }
+        const now = performance.now()
+        if (now - (last[name] ?? 0) < 40) return
+        last[name] = now
+        voices[name]()
+      } catch {
+        /* el sonido nunca rompe la página */
+      }
+    },
+    /** Ciclo de vida: desmonta los listeners de página. En producción los listeners
+     *  viven toda la página; la suite de tests lo usa entre escenarios. */
+    teardown(): void {
+      window.removeEventListener("pointerdown", onGesture, { capture: true })
+      window.removeEventListener("keydown", onGesture, { capture: true })
+      document.removeEventListener("visibilitychange", onVisibility)
     },
   }
 }
 
 export const sound = createSound()
+export const teardownSound = sound.teardown
 
-// Sonido persistido en "on": el contexto se crea recién en el primer gesto real.
-const firstGesture = (): void => {
-  if (sound.on) sound.unlock()
-}
-window.addEventListener("pointerdown", firstGesture, { once: true, capture: true })
-window.addEventListener("keydown", firstGesture, { once: true, capture: true })
-
+// Sin intento aún: idle hasta el click del switch o el primer gesto real.
 document.documentElement.dataset.audio = "idle"

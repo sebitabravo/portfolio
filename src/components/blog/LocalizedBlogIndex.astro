@@ -8,6 +8,7 @@ import { getCollection } from "astro:content"
 import Layout from "@/layouts/Layout.astro"
 import { personalInfo } from "@/lib/data"
 import { createStaticAlternates, getTranslations, type Locale } from "@/lib/i18n"
+import { BLOG_TOPICS, countByTopic } from "@/lib/blog-topics"
 import { formatMonthYear } from "@/lib/utils"
 import { articleTitleTransitionName } from "@/scripts/transitions"
 
@@ -27,12 +28,10 @@ const posts = (await getCollection("blog"))
   .filter((p) => p.id !== HIDDEN_POST_SLUG)
   .sort((a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime())
 
-const kindOf = (tags: string[]): "caso" | "educacional" => (tags.includes("Educacional") ? "educacional" : "caso")
 const readingMinutes = (body: string | undefined): number =>
   Math.max(1, Math.round((body ?? "").split(/\s+/).filter(Boolean).length / READING_WORDS_PER_MINUTE))
 
-const caseCount = posts.filter((p) => kindOf(p.data.tags) === "caso").length
-const educationalCount = posts.length - caseCount
+const topicCounts = countByTopic(posts)
 const spanishUrl = "https://sebita.dev/blog"
 const englishUrl = "https://sebita.dev/en/blog"
 const canonicalUrl = isEnglish ? englishUrl : spanishUrl
@@ -40,7 +39,7 @@ const alternates = createStaticAlternates(locale, spanishUrl, englishUrl)
 ---
 
 <Layout
-  title={`${t.blog.title} - ${personalInfo.name}`}
+  title={`${t.blog.title} — ${personalInfo.name}`}
   description={t.blog.description}
   locale={locale}
   canonicalUrl={canonicalUrl}
@@ -64,13 +63,13 @@ const alternates = createStaticAlternates(locale, spanishUrl, englishUrl)
           <button class="chip" type="button" data-f="all" aria-pressed="true"
             >{t.blog.filters.all} {posts.length}</button
           >
-          <button class="chip" type="button" data-f="caso" aria-pressed="false"
-            >{t.blog.filters.case} {caseCount}</button
-          >
-          <button class="chip" type="button" data-f="educacional" aria-pressed="false">
-            {t.blog.filters.educational}
-            {educationalCount}
-          </button>
+          {
+            BLOG_TOPICS.map((topic) => (
+              <button class="chip" type="button" data-f={topic} aria-pressed="false">
+                {t.blog.filters[topic]} {topicCounts[topic]}
+              </button>
+            ))
+          }
         </div>
       </div>
     </section>
@@ -85,7 +84,7 @@ const alternates = createStaticAlternates(locale, spanishUrl, englishUrl)
                 const contentLocale = post.data.locale === "en" ? "en" : "es"
                 const isFallback = isEnglish && contentLocale === "es"
                 return (
-                  <article class="row" data-kind={kindOf(post.data.tags)} lang={contentLocale}>
+                  <article class="row" data-topic={post.data.topic} lang={contentLocale}>
                     <div class="label">
                       <time lang={locale} datetime={post.data.publishDate.toISOString().slice(0, 10)}>
                         {formatMonthYear(post.data.publishDate, locale)}
@@ -118,6 +117,7 @@ const alternates = createStaticAlternates(locale, spanishUrl, englishUrl)
         }
         <p class="count small" id="count" role="status" aria-live="polite" data-label={t.blog.countLabel}>
           {posts.length}
+          {" "}
           {t.blog.countLabel}
         </p>
       </div>

@@ -214,3 +214,20 @@ test.describe("Blog accessibility", () => {
     }
   }
 });
+
+// El crumb es un <ol> por semántica, pero el diseño lo dibuja sin numeración
+// (design/resolucion/views.css:6-9). El reset base solo cubre <ul>, así que el
+// número de lista se filtraba como "1. Inicio/ Blog" si faltaba `list-style: none`.
+for (const route of ["/blog/", "/en/blog/"]) {
+  test(`${route} renders the breadcrumb without list markers`, async ({ page }) => {
+    await page.goto(route);
+    const crumb = page.locator(".crumb");
+    await expect(crumb).toBeVisible();
+    const marker = await crumb
+      .locator("li")
+      .first()
+      .evaluate((li) => getComputedStyle(li).listStyleType);
+    expect(marker).toBe("none");
+    await expect(crumb).not.toHaveText(/^\s*\d+\./);
+  });
+}

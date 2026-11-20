@@ -5,6 +5,7 @@
 // prosa 17px/30px, post-foot más nuevo/más antiguo y post-actions con copiar enlace (chirp).
 // El cuerpo MDX pasa por el pipeline existente sin reestructurar el contenido.
 import { getCollection, render, type CollectionEntry } from "astro:content"
+import { Picture } from "astro:assets"
 import Layout from "@/layouts/Layout.astro"
 import { personalInfo } from "@/lib/data"
 import { getBlogImageUrl } from "@/lib/blog-image"
@@ -72,7 +73,7 @@ const older = currentIndex >= 0 && currentIndex < visiblePosts.length - 1 ? visi
 ---
 
 <Layout
-  title={`${post.data.title} - ${personalInfo.name}`}
+  title={`${post.data.title} — ${personalInfo.name}`}
   description={post.data.description}
   image={imageUrl}
   locale={locale}
@@ -112,11 +113,16 @@ const older = currentIndex >= 0 && currentIndex < visiblePosts.length - 1 ? visi
           {
             optimizedImageUrl && heroImage && (
               <div class="post-shot">
-                <img
-                  src={optimizedImageUrl}
-                  alt={post.data.title}
+                <Picture
+                  src={heroImage}
+                  formats={["avif"]}
+                  fallbackFormat="webp"
+                  widths={[400, 800, 1200]}
+                  quality={90}
                   width={heroImageWidth}
                   height={heroImageHeight}
+                  sizes="(min-width: 720px) min(calc(100vw - 64px), 72rem), calc(100vw - 32px)"
+                  alt={post.data.title}
                   loading="eager"
                   fetchpriority="high"
                   decoding="async"

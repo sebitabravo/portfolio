@@ -12,11 +12,16 @@ const CONFIRM_HOLD_MS = 1600
 let teardown: (() => void) | null = null
 
 async function copyText(text: string): Promise<boolean> {
-  try {
-    await navigator.clipboard.writeText(text)
-    return true
-  } catch {
-    /* sin permiso o sin API: se intenta el fallback */
+  // Clipboard API solo con la API presente y en contexto seguro; si no, el fallback
+  // del prototipo (textarea oculto + execCommand).
+  const clipboard = navigator.clipboard
+  if (clipboard && typeof clipboard.writeText === "function" && window.isSecureContext) {
+    try {
+      await clipboard.writeText(text)
+      return true
+    } catch {
+      /* sin permiso: se intenta el fallback */
+    }
   }
   const ta = document.createElement("textarea")
   ta.value = text

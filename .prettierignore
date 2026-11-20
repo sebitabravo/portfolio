@@ -15,7 +15,3 @@ odd
 tests
 **/*.spec.ts
 **/*.test.ts
-# Formatting these would exceed the source line limit or rewrite CSP-pinned inline scripts.
-src/components/Projects.astro
-src/layouts/Layout.astro
-src/components/Hero.astro

@@ -26,13 +26,13 @@ const {
   title = siteConfig.title,
   description: pageDescription,
   image,
-  locale = 'es',
+  locale = "es",
   noindex = false,
   canonicalUrl,
   alternates = [],
 } = Astro.props
 
-const description = pageDescription ?? (locale === 'en' ? personalInfo.descriptionEn : personalInfo.description)
+const description = pageDescription ?? (locale === "en" ? personalInfo.descriptionEn : personalInfo.description)
 
 const profileUrl = locale === "es" ? "https://sebita.dev/" : "https://sebita.dev/en/"
 const canonical = canonicalUrl ?? profileUrl
@@ -40,14 +40,9 @@ const canonical = canonicalUrl ?? profileUrl
 // not render SVG og:images, so the default card is the checked-in
 // public/og/<locale>.png (1200x630, regenerated with bun run generate:og).
 // Pages with their own photography (blog posts) keep passing `image`.
-const staticOgImage = new URL(
-  `/og/${locale}.png`,
-  "https://sebita.dev",
-).toString()
+const staticOgImage = new URL(`/og/${locale}.png`, "https://sebita.dev").toString()
 const seoImage = image ?? staticOgImage
-const sameAsProfiles = [social.github, social.linkedin].filter(
-  (url): url is string => Boolean(url),
-)
+const sameAsProfiles = [social.github, social.linkedin].filter((url): url is string => Boolean(url))
 
 const jsonLdString = buildLayoutJsonLd({
   title,
@@ -74,9 +69,7 @@ const jsonLdString = buildLayoutJsonLd({
     <ClientRouter />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
-    {alternates.map(({ hreflang, href }) => (
-      <link rel="alternate" hreflang={hreflang} href={href} />
-    ))}
+    {alternates.map(({ hreflang, href }) => <link rel="alternate" hreflang={hreflang} href={href} />)}
 
     <SEO
       title={title}
@@ -139,7 +132,7 @@ const jsonLdString = buildLayoutJsonLd({
     <link rel="preload" href="/fonts/GeistPixel-Square.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/fonts/GeistMono-Regular.woff2" as="font" type="font/woff2" crossorigin />
 
-    <script is:inline type="application/ld+json" set:html={jsonLdString}></script>
+    <script is:inline type="application/ld+json" set:html={jsonLdString} />
 
     <!-- Theme bootstrap stays inline by design: it must run synchronously in
       <head> before first paint to avoid a flash of the wrong theme. An
@@ -148,19 +141,31 @@ const jsonLdString = buildLayoutJsonLd({
       localStorage ("sb-theme") y las clases motion/ambient gated por
       prefers-reduced-motion, Save-Data y puntero fino. -->
     <script is:inline>
-      (function () {
+      ;(function () {
         var d = document.documentElement
-        try { var t = localStorage.getItem("sb-theme"); if (t === "light" || t === "dark") d.dataset.theme = t } catch (e) {}
-        var reduce = matchMedia("(prefers-reduced-motion: reduce)").matches
+        try {
+          var t = localStorage.getItem("sb-theme")
+          if (t === "light" || t === "dark") d.dataset.theme = t
+        } catch (e) {}
+        /* S4: matchMedia no existe en motores muy viejos y una query inválida
+           lanza en algunos; sin media queries el default es motion + ambient off. */
+        var mq = function (q) {
+          try {
+            return typeof matchMedia === "function" ? matchMedia(q).matches : false
+          } catch (e) {
+            return false
+          }
+        }
+        var reduce = mq("(prefers-reduced-motion: reduce)")
         var saveData = navigator.connection && navigator.connection.saveData
         if (!reduce) d.classList.add("motion")
-        if (!reduce && !saveData && matchMedia("(hover: hover) and (pointer: fine)").matches) d.classList.add("ambient")
+        if (!reduce && !saveData && mq("(hover: hover) and (pointer: fine)")) d.classList.add("ambient")
       })()
     </script>
   </head>
   <body>
     <a class="skip" href="#main-content">
-      {locale === 'es' ? 'Saltar al contenido' : 'Skip to content'}
+      {locale === "es" ? "Saltar al contenido" : "Skip to content"}
     </a>
     <Header locale={locale} />
     <slot />

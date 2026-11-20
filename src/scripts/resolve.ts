@@ -4,14 +4,18 @@
 // son aria-hidden y el texto real vive en un span .sr mientras dura la animación; al
 // terminar, el DOM vuelve a texto plano.
 
+import { idle, reducedMotion, saveData } from "./compat"
 import { sound } from "./sound/engine"
 
 export const FRAME = 80
 
 const SHAPES = ["s0", "s1", "s2", "s3"] as const
 
-/** El motion vive en una clase del <html> que el boot inline decide antes del primer paint. */
-export const motion = (): boolean => document.documentElement.classList.contains("motion")
+/** El motion vive en una clase del <html> que el boot inline decide antes del primer paint.
+ *  Defensa en profundidad S4: si reduce o Save-Data se activaron sin la clase (o cambian en
+ *  caliente), el trabajo de animación se salta igual y el contenido queda en su estado final. */
+export const motion = (): boolean =>
+  document.documentElement.classList.contains("motion") && !reducedMotion() && !saveData()
 
 export interface ResolveTarget {
   el: HTMLElement
@@ -35,21 +39,31 @@ function buildCells(el: HTMLElement, text: string): HTMLElement {
   return cells
 }
 
-/** La animación es aditiva: sin las fuentes de formas cargadas, el nombre simplemente queda final. */
+/** La animación es aditiva: sin las fuentes de formas cargadas, el nombre simplemente queda final.
+ *  Sin document.fonts o sin fonts.load (navegadores viejos) se resuelve true síncronamente;
+ *  cada load individual que rechaza cuenta como fuente no cargada en vez de romper el race. */
 export function fontsReady(): Promise<boolean> {
+  const fonts = document.fonts
+  if (!fonts || typeof fonts.load !== "function") return Promise.resolve(true)
   const loads = ["GP Line", "GP Triangle", "GP Grid", "GP Circle", "Geist Pixel"].map((family) =>
-    document.fonts.load(`1em "${family}"`, "Sebastián Bravo trabajo"),
+    fonts.load(`1em "${family}"`, "Sebastián Bravo trabajo").catch(() => false),
   )
-  return Promise.race([Promise.all(loads), new Promise((r) => setTimeout(r, 1200))]).then(
-    () => document.fonts.check('1em "GP Line"') && document.fonts.check('1em "GP Circle"'),
-  )
+  return Promise.race([Promise.all(loads), new Promise((r) => setTimeout(r, 1200))]).then(() => {
+    if (typeof fonts.check !== "function") return false
+    return fonts.check('1em "GP Line"') && fonts.check('1em "GP Circle"')
+  })
 }
 
 let shapes = false
-export const shapesReady: Promise<boolean> = fontsReady().then((ok) => {
-  shapes = ok
-  return ok
-})
+/** S4/perf: las cuatro fuentes de formas (~140 KB) solo se bajan cuando el motion está
+ *  activo y fuera del camino crítico (idle). Sin motion el nombre queda en su estado
+ *  final y no se descarga una sola fuente de formas. */
+export const shapesReady: Promise<boolean> = motion()
+  ? idle(fontsReady).then((ok) => {
+      shapes = ok
+      return ok
+    })
+  : Promise.resolve(false)
 export const hasShapes = (): boolean => shapes
 
 export function resolve(targets: ResolveTarget[], { stagger = 1 }: ResolveOptions = {}): Promise<void> {

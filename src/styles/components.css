@@ -10,7 +10,7 @@
 }
 .site-header .wrap {
   display: grid;
-  grid-template-columns: 1fr auto;
+  grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
   row-gap: 0;
   min-height: var(--header);
@@ -24,6 +24,10 @@
 }
 .nav-main {
   display: flex;
+  /* S4: bajo 360px los cinco links no entran en una línea; el diseño no cambia
+     sobre 390px y en pantallas mínimas el nav baja a una segunda línea en vez
+     de desbordar el viewport. */
+  flex-wrap: wrap;
   gap: 0;
   grid-column: 1 / -1;
   grid-row: 2;
@@ -124,6 +128,17 @@
   }
   .brand {
     padding-block: 20px;
+  }
+}
+
+/* Fallback flex gap para el encabezado sin gap: los controles se separan con margen. */
+@supports not (gap: 1px) {
+  .controls > * + * {
+    margin-left: 8px;
+  }
+  /* El switch de sonido separa el punto del rótulo con el gap del propio botón. */
+  .controls > * > * + * {
+    margin-left: 8px;
   }
 }
 
@@ -260,6 +275,7 @@ html.motion .reveal.in .mark {
 }
 .row .main {
   min-width: 0;
+  overflow-wrap: anywhere;
 }
 .row .who {
   font-weight: 500;
@@ -288,7 +304,7 @@ html.motion .reveal.in .mark {
 }
 .kv {
   display: grid;
-  grid-template-columns: 8rem 1fr;
+  grid-template-columns: 8rem minmax(0, 1fr);
   gap: 4px 16px;
 }
 .kv dt {
@@ -309,7 +325,7 @@ html.motion .reveal.in .mark {
 }
 @media (min-width: 720px) {
   .dt.two {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   }
 }
 .dt h4 {
@@ -327,6 +343,16 @@ html.motion .reveal.in .mark {
   flex-wrap: wrap;
   gap: 24px 48px;
   margin-top: 32px;
+}
+/* Fallback flex gap para .metrics sin gap: margen negativo compensa el último hijo. */
+@supports not (gap: 1px) {
+  .metrics {
+    margin-top: calc(32px - 24px);
+  }
+  .metrics > * {
+    margin-right: 48px;
+    margin-bottom: 24px;
+  }
 }
 .metrics h4 {
   margin: 0 0 4px;
@@ -371,6 +397,15 @@ html.motion .reveal.in .mark {
   gap: 8px 32px;
   margin-top: 32px;
 }
+@supports not (gap: 1px) {
+  .contact-links {
+    margin-top: calc(32px - 8px);
+  }
+  .contact-links > * {
+    margin-right: 32px;
+    margin-bottom: 8px;
+  }
+}
 
 /* ---------- Footer ---------- */
 footer {
@@ -384,12 +419,18 @@ footer .wrap {
   flex-wrap: wrap;
   gap: 8px 32px;
 }
+@supports not (gap: 1px) {
+  footer .wrap > * {
+    margin-right: 32px;
+    margin-bottom: 8px;
+  }
+}
 
 /* ---------- Links: filas del hub ---------- */
 .lk {
   position: relative;
   display: grid;
-  grid-template-columns: 24px 1fr auto;
+  grid-template-columns: 24px minmax(0, 1fr) auto;
   align-items: center;
   column-gap: 8px;
   width: 100%;

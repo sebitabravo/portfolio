@@ -1,5 +1,25 @@
 /* Resolución — punto de entrada único. Importa los módulos en orden de dependencia:
-   tokens → base → layout → componentes → prosa → impresión. Los @import van primero. */
+   tokens → base → layout → componentes → prosa → impresión. Los @import van primero.
+
+   Support floor (S4: perfecto en cualquier dispositivo, viejo y pequeño incluido):
+   - light-dark(): refinado — :root y :root[data-theme="light"] declaran valores estáticos
+     (oscuro por default, independiente del SO); con soporte, @supports re-declara los seis
+     tokens en :root con light-dark().
+   - svh: refinado — el h1 del hero lleva un 100vh idéntico antes del 100svh en la misma regla.
+   - aspect-ratio: refinado — .shot y .post-shot sostienen 16/10 con height:0 + padding-top
+     (62.5%) dentro de @supports not (aspect-ratio: 16 / 10).
+   - @view-transition: progresivo — sin soporte la navegación es simplemente sin transición.
+   - flex gap: refinado — las filas flex de varios hijos con espacio visible llevan fallback
+     de márgenes (margen negativo del contenedor + margen derecho/inferior por hijo) dentro de
+     @supports not (gap: 1px). Sin fallback: .og .f (space-between, sin gap), .nav-main y
+     .lang (gap 0); el único costo en motores viejos es el margen inferior extra del footer.
+   - :has(): no se usa — nada degrada porque no hay nada que reemplazar.
+   - color-mix(): no se usa — ídem.
+   - container queries: no se usan — los breakpoints son @media de ancho de viewport.
+   - env(safe-area-inset-*): no hay usos en la capa; nada que guardar.
+   - Sin scroll horizontal de 320 a 1920: pistas de grid ajustables con minmax(0, 1fr),
+     overflow-wrap en URLs y tamaños tipográficos en min()/clamp() que escalan con el viewport.
+     Única excepción deliberada: .og es un lienzo fijo de 1200x630 para la imagen OG. */
 
 @import "./tokens.css";
 @import "./base.css";

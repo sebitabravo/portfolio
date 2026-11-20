@@ -393,7 +393,8 @@ const alternates = createStaticAlternates(locale, spanishUrl, englishUrl)
               <p><strong>{personalInfo.name}</strong> <span>{c.controllerCountry}</span></p>
               <p>
                 {c.emailLead}{" "}
-                <a href={`mailto:${personalInfo.email}`}>{personalInfo.email}</a>
+                <!--email_off-->
+                <a href={`mailto:${personalInfo.email}`}>{personalInfo.email}</a><!--/email_off-->
               </p>
               <p>
                 {c.siteLead}<a href="https://sebita.dev">sebita.dev</a>{c.siteRest}
@@ -561,7 +562,8 @@ const alternates = createStaticAlternates(locale, spanishUrl, englishUrl)
             <div class="main">
               <p>{c.contactP1}</p>
               <p>
-                <a href={`mailto:${personalInfo.email}`}>{personalInfo.email}</a>
+                <!--email_off-->
+                <a href={`mailto:${personalInfo.email}`}>{personalInfo.email}</a><!--/email_off-->
               </p>
               <p>{c.contactNote}</p>
             </div>

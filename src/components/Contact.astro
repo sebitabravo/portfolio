@@ -36,6 +36,7 @@ const contactLinks = [
 ]
 ---
 
+<!--email_off-->
 <button
   id="mail"
   class="mail"
@@ -46,7 +47,7 @@ const contactLinks = [
   data-error={t.contact.copyError}
 >
   <span class="l">{user}</span><span class="l">@{domain}</span>
-</button>
+</button><!--/email_off-->
 <p class="mail-hint small">{t.contact.mailHint}</p>
 <p>{t.contact.cvHelper}</p>
 <p class="sr" id="mail-status" role="status" aria-live="polite"></p>

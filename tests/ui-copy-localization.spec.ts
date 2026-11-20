@@ -9,7 +9,7 @@ const notFoundRoutes = [
     backHome: "Volver al inicio",
   },
   {
-    path: "/en/404", lang: "en", home: "/en",
+    path: "/en/404", lang: "en", home: "/en/",
     description: "The page you requested does not exist.",
     heading: "This page got lost in deployment",
     message: "We could not find what you asked for. Jump back home and keep exploring.",

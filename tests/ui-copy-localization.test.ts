@@ -137,7 +137,7 @@ describe("not-found and article navigation UI copy", () => {
     expect(notFound).toContain("{t.error404.backHome}")
     expect(notFound).toContain('const homeUrl = locale === "es" ? "/" : "/en/"')
     expect(notFound).toContain("href={homeUrl}")
-    expect(notFound).toContain('title={`404 | ${personalInfo.name}`}')
+    expect(notFound).toContain('title={`404 — ${personalInfo.name}`}')
     expect(notFound).toContain('canonicalUrl={locale === "es" ? "https://sebita.dev/404" : "https://sebita.dev/en/404"}')
     expect(notFound).toContain("noindex")
     expect(notFound).not.toContain("const content =")

@@ -14,7 +14,7 @@ import {
 describe("portfolio data modules", () => {
   it("exposes stable personal and social contact data", () => {
     expect(personalInfo).toMatchObject({
-      name: "Sebastian Bravo",
+      name: "Sebastián Bravo",
       title: "Full-Stack Developer",
       available: true,
     })

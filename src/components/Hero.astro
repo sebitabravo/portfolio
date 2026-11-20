@@ -12,6 +12,9 @@ interface Props {
 
 const { locale = "es" } = Astro.props
 const t = getTranslations(locale)
+// Cloudflare Email Obfuscation reescribe un <a> cuyo texto es una dirección completa;
+// el CTA de contacto (dirección partida en spans) sobrevive. Mismo truco acá.
+const [mailUser, mailDomain] = personalInfo.email.split("@")
 
 // El h1 es texto real y visible sin JS; la animación de resolución es aditiva (hero.ts).
 const [firstName, lastName] = personalInfo.displayName.split(" ")
@@ -39,8 +42,9 @@ const cvHref = "/cv/Sebastian_Bravo_CV.pdf"
       </span>
     </div>
     <div class="hero-links small">
-      <!--email_off-->
-      <a href={`mailto:${personalInfo.email}`}>{personalInfo.email}</a><!--/email_off-->
+      <a href={`mailto:${personalInfo.email}`}
+        ><span>{mailUser}</span><span aria-hidden="true">@</span><span>{mailDomain}</span></a
+      >
       <a href={social.github} target="_blank" rel="me noopener noreferrer">github</a>
       <a href={social.linkedin} target="_blank" rel="me noopener noreferrer">linkedin</a>
     </div>

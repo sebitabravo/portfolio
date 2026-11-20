@@ -36,7 +36,6 @@ const contactLinks = [
 ]
 ---
 
-<!--email_off-->
 <button
   id="mail"
   class="mail"
@@ -47,7 +46,7 @@ const contactLinks = [
   data-error={t.contact.copyError}
 >
   <span class="l">{user}</span><span class="l">@{domain}</span>
-</button><!--/email_off-->
+</button>
 <p class="mail-hint small">{t.contact.mailHint}</p>
 <p>{t.contact.cvHelper}</p>
 <p class="sr" id="mail-status" role="status" aria-live="polite"></p>
@@ -60,7 +59,15 @@ const contactLinks = [
         rel={href.startsWith("http") ? "me noopener noreferrer" : undefined}
         aria-label={description}
       >
-        {label}
+        {href.startsWith("mailto:") ? (
+          <>
+            <span>{user}</span>
+            <span aria-hidden="true">@</span>
+            <span>{domain}</span>
+          </>
+        ) : (
+          label
+        )}
       </a>
     ))
   }

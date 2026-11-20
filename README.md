@@ -54,10 +54,12 @@ The policy pins every executable inline script by SHA-256, so **run
 `bun run update:csp:write` and rebuild after touching an inline script** — the
 build fails otherwise.
 
-The site is served through Cloudflare. Email addresses are wrapped in
-`<!--email_off-->` … `<!--/email_off-->` so Cloudflare's Email Obfuscation does
-not replace them with `[email protected]` (its decoder script is blocked by the
-CSP, which would leave the placeholder visible). Keep those markers.
+The site is served through Cloudflare, which by default rewrites any `<a>` whose
+text is a full address into `[email protected]` — and its decoder script is blocked
+by our CSP, so the placeholder would stay visible. Email addresses are therefore
+rendered **split into spans** (user / @ / domain), like the contact CTA, which
+Cloudflare leaves alone. Keep that markup; the alternative is to disable Email
+Obfuscation in the Cloudflare zone.
 
 ## Quality gates
 

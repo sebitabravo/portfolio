@@ -419,7 +419,18 @@ footer .wrap {
   flex-wrap: wrap;
   gap: 8px 32px;
 }
+/* Los dos <nav> del pie agrupan enlaces con rótulo propio. Astro recorta el
+   espacio entre elementos inline, así que sin regla propia quedaban pegados
+   ("githublinkedin", "BlogPrivacidad"); el ritmo es el de .hero-links/.nf-links. */
+footer nav {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+}
 @supports not (gap: 1px) {
+  footer nav a + a {
+    margin-left: 24px;
+  }
   footer .wrap > * {
     margin-right: 32px;
     margin-bottom: 8px;

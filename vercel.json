@@ -38,11 +38,20 @@
       ]
     },
     {
+      "source": "/icons/sprite.svg",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
       "source": "/(.*)",
       "headers": [
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self'; script-src 'self' 'sha256-K/IHLiutg8TmL5sW3IE2QKdH5Wd1/gRFmkajyK9uTw4='; script-src-attr 'none'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'self'; worker-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'; manifest-src 'self'; upgrade-insecure-requests;"
+          "value": "default-src 'self'; script-src 'self' 'sha256-JcdDVjSSbiwaACG/c4CIIuqTtA+ongpPVNqZ/6j/xT4=' 'sha256-gAclPl3eZIYNwdEnBoCujbP6KJidi1RZP20yQAmPHKM='; script-src-attr 'none'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'self'; worker-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'; manifest-src 'self'; upgrade-insecure-requests;"
         },
         {
           "key": "X-Frame-Options",
